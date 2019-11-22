@@ -1,0 +1,38 @@
+\subsection{Drug Expenditures}
+\label{sec:model_development_rxexp}
+
+\subsubsection{Drug Expenditures - MEPS}
+\label{sec:model_development_rxexp_meps}
+AHRQ produces a file of consolidated annual expenditures for each Medical Expenditure Panel Survey respondent in each calendar year.  
+The total drug expenditure variable sums all amounts paid out-ot-pocket and by third party payers for each prescription
+purchased in that year.  For comparison across years, we convert all amounts to 2010 dollars using the Medical CPI.
+
+\subsubsection{Drug Expenditures - MCBS}
+\label{sec:model_development_rxexp_mcbs}
+The Medicare Current Beneficiary Survey produces a Prescribed Medicine Events file at the individual-event level, with cost
+and utilization of prescribed medicines for the MCBS community population.  Collapsing this file to the individual provides an
+estimate of prescription drug cost for each person.  For comparison across years, we convert all amounts to 2010 dollars using the Medical CPI.
+
+
+There are two caveats to working with these data.  The first caveat regards how to handle the "ghost" respondents.  
+"Ghosts" are individuals who enroll in Medicare, but were not
+asked cost and use questions in the year of their enrollment.  For some outcomes, such as medical expenditures, the MCBS makes an 
+effort to impute.  For others, such as drug utilization and expenditures, the MCBS does not.  We imputed annual drug expenditures 
+for the ghosts, but for certain age ranges the drug expenditures were not reasonable.  This had the biggest effect on the 65 and 66 
+year olds, for two reasons.  The first is that the 65 and 66 year olds are more likely to be ghosts, as 65 is the typical age of 
+enrollment for Medicare.  The second is that the 65 and 66 year olds used for imputation (i.e., the non-"ghosts") are different.  To 
+be fully present in MCBS at age 65 would require enrolling in Medicare before age 65, which happen through a different channel, such
+as qualifying for Medicare due to receiving disability benefits from the federal government.  
+
+The second caveat relates to the filling in zeroes for individuals with no utilization data, but who were enrolled.  We assumed that
+individuals who were not ghosts and who did not appear on the Prescribed Medicine Events file had zero prescription expenditures.  
+  
+
+\subsubsection{Drug Expenditures - Estimation}
+\label{sec:model_development_rxexp_estimation}
+Due to the complexities of the age 65-66 population in the MCBS, we chose to estimate the drug expenditure models using the MEPS for 
+individuals 51 to 66 and the MCBS for individuals 67 and older.  Individuals under age 65 receiving Medicare due to disability are 
+estimated separately.  Since there are a number of individuals with zero expenditures, we estimate the models in two stages.  The 
+first stage is a probit predicting any drug expenditures and the second is an ordinary least squares model predicting the amount, 
+conditional on any.  Coefficient estimates and marginal effects are shown in the accompanying Excel workbook.
+

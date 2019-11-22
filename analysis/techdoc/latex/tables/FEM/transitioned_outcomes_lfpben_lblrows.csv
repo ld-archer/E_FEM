@@ -1,0 +1,8 @@
+work,"\multirow{8}{*}{LFP \& Benefits} ","\multicolumn{2}{|c}{working}","prevalence","$\mathrm{age} < 80$"
+idbclaim,"","\multicolumn{2}{|c}{DB pension receipt} ","biennial incidence","eligible \& not receiving"
+issclaim,"","\multicolumn{2}{|c}{SS benefit receipt} ","biennial incidence","eligible \& not receiving"
+diclaim,"","\multicolumn{2}{|c}{DI benefit receipt} ","prevalence","eligible \& $\mathrm{age} < 65$"
+anyhi,"","\multicolumn{2}{|c}{Any health insurance} ","prevalence","$\mathrm{age} < 65$"
+ssiclaim,"","\multicolumn{2}{|c}{SSI receipt} ","prevalence","all"
+nhmliv,"","\multicolumn{2}{|c}{Nursing Home residency} ","prevalence","all"
+died,"","\multicolumn{2}{|c}{Death} ","biennial incidence","all"

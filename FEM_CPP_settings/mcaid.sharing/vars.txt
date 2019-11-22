@@ -1,0 +1,2 @@
+caidmd_fed = caidmd * federal_medicaid_share(year)
+caidmd_state = caidmd * (1 - federal_medicaid_share(year) )

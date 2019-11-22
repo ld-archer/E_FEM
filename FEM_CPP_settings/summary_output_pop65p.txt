@@ -1,0 +1,3 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop65p,Total population 65+ (million) (Start),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million) (End),weight,sum,0.000001,1,died == 0 & age >= 65

@@ -1,0 +1,2 @@
+export MCBSDIR = /sch-projects/dua-data-projects/FEM/MCBS/$(LOGNAME)/rdata_trunk
+export HRSDIR = /sch-projects/dua-data-projects/FEM/HRS/$(LOGNAME)/rdata_trunk

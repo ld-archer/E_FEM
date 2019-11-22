@@ -1,0 +1,4 @@
+hatotax,"Financial","\multicolumn{2}{|c}{financial wealth}","median","all non-zero wealth"
+iearn_pt,"Resources","\multicolumn{2}{|c}{earnings} ","median","working full time"
+iearn_ft,"","\multicolumn{2}{|c}{earnings} ","median","working part time"
+wlth_nonzero,"(\$K 2009)","\multicolumn{2}{|c}{wealth non-zero} ","prevalence","all"

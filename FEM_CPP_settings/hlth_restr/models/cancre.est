@@ -1,0 +1,53 @@
+probit	
+cancre	
+black	-0.06915722
+hispan	-0.14199544
+hsless	-0.01758835
+college	0.04069009
+male	0.14305723
+lage65l	0.02759804
+lage6574	0.02366171
+lage75p	-0.00193624
+lhearte	-0.04732908
+lstroke	-0.00391363
+lhibpe	-0.08163342
+ldiabe	0.18352155
+llunge	0.01419005
+liadl1	0.09265968
+ladl12	0.01438306
+ladl3	-0.00197796
+lsmoken	0.03399243
+lwidowed	-0.01202735
+fhearte	0.10226165
+fstroke	0.03476124
+fhibpe	0.11723196
+fdiabe	-0.2255404
+flunge	0.07819149
+fsmokev	0.07956038
+fsmoken	0.05361583
+fiadl1	-0.13439189
+fadl12	0.06562476
+fadl3	0.13905113
+fwidowed	-0.02211913
+fsingle	0.09097406
+fwork	0.04457689
+flogiearnx	-0.86941395
+fwlth_nonzero	0.02751093
+floghatotax	1.3963209
+flogaime	0.46072384
+flogq	-0.68928424
+fshlt	-0.01092119
+fanydb	0.08783963
+frdb_na_2	-0.05296219
+frdb_na_3	-0.05975781
+frdb_na_4	-0.05729492
+fanydc	0.12333432
+flogdcwlthx	-3.6664161
+llogbmi_l30	-0.08457371
+llogbmi_30p	0.29284623
+flogbmi_l30	0.02075191
+flogbmi_30p	-0.02951008
+logdeltaage	0.53781676
+_cons	-4.1754783
+
+

@@ -1,0 +1,769 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+pop_medicare,Total Medicare Eligible Population (Millions),weight,sum,0.000001,1,l2died==0 & medicare_elig
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,l2died == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,l2died == 0 & mcare_ptb_enroll == 1
+m_startpop_all,startpop (millions): Sample = all,weight,sum,0.000001,1,l2died == 0
+m_startpop_m,startpop (millions): Sample = male,weight,sum,0.000001,1,l2died == 0& male == 1
+m_startpop_f,startpop (millions): Sample = female,weight,sum,0.000001,1,l2died == 0& male == 0
+m_startpop_educ1,startpop (millions): Sample = Educlvl = 1,weight,sum,0.000001,1,l2died == 0& educ1 == 1
+m_startpop_educ2,startpop (millions): Sample = Educlvl = 2,weight,sum,0.000001,1,l2died == 0& educ2 == 1
+m_startpop_educ3,startpop (millions): Sample = Educlvl = 3,weight,sum,0.000001,1,l2died == 0& educ3 == 1
+m_startpop_educ4,startpop (millions): Sample = Educlvl = 4,weight,sum,0.000001,1,l2died == 0& educ4 == 1
+m_startpop_ft,startpop (millions): Sample = Full-time,weight,sum,0.000001,1,l2died == 0& workcat == 4
+m_startpop_pt,startpop (millions): Sample = Part-time,weight,sum,0.000001,1,l2died == 0& workcat == 3
+m_endpop_all,endpop (millions): Sample = all,weight,sum,0.000001,1,died == 0
+m_endpop_m,endpop (millions): Sample = male,weight,sum,0.000001,1,died == 0& male == 1
+m_endpop_f,endpop (millions): Sample = female,weight,sum,0.000001,1,died == 0& male == 0
+m_endpop_educ1,endpop (millions): Sample = Educlvl = 1,weight,sum,0.000001,1,died == 0& educ1 == 1
+m_endpop_educ2,endpop (millions): Sample = Educlvl = 2,weight,sum,0.000001,1,died == 0& educ2 == 1
+m_endpop_educ3,endpop (millions): Sample = Educlvl = 3,weight,sum,0.000001,1,died == 0& educ3 == 1
+m_endpop_educ4,endpop (millions): Sample = Educlvl = 4,weight,sum,0.000001,1,died == 0& educ4 == 1
+m_endpop_ft,endpop (millions): Sample = Full-time,weight,sum,0.000001,1,died == 0& workcat == 4
+m_endpop_pt,endpop (millions): Sample = Part-time,weight,sum,0.000001,1,died == 0& workcat == 3
+a_iearnx_all,Average of iearnx: Sample= all,iearnx,mean,1,weight,l2died==0
+a_iearnx_m,Average of iearnx: Sample= male,iearnx,mean,1,weight,l2died==0& male == 1
+a_iearnx_f,Average of iearnx: Sample= female,iearnx,mean,1,weight,l2died==0& male == 0
+a_iearnx_educ1,Average of iearnx: Sample= Educlvl = 1,iearnx,mean,1,weight,l2died==0& educ1 == 1
+a_iearnx_educ2,Average of iearnx: Sample= Educlvl = 2,iearnx,mean,1,weight,l2died==0& educ2 == 1
+a_iearnx_educ3,Average of iearnx: Sample= Educlvl = 3,iearnx,mean,1,weight,l2died==0& educ3 == 1
+a_iearnx_educ4,Average of iearnx: Sample= Educlvl = 4,iearnx,mean,1,weight,l2died==0& educ4 == 1
+a_iearnx_ft,Average of iearnx: Sample= Full-time,iearnx,mean,1,weight,l2died==0& workcat == 4
+a_iearnx_pt,Average of iearnx: Sample= Part-time,iearnx,mean,1,weight,l2died==0& workcat == 3
+a_iearn_all,Average of iearn: Sample= all,iearn,mean,1,weight,l2died==0
+a_iearn_m,Average of iearn: Sample= male,iearn,mean,1,weight,l2died==0& male == 1
+a_iearn_f,Average of iearn: Sample= female,iearn,mean,1,weight,l2died==0& male == 0
+a_iearn_educ1,Average of iearn: Sample= Educlvl = 1,iearn,mean,1,weight,l2died==0& educ1 == 1
+a_iearn_educ2,Average of iearn: Sample= Educlvl = 2,iearn,mean,1,weight,l2died==0& educ2 == 1
+a_iearn_educ3,Average of iearn: Sample= Educlvl = 3,iearn,mean,1,weight,l2died==0& educ3 == 1
+a_iearn_educ4,Average of iearn: Sample= Educlvl = 4,iearn,mean,1,weight,l2died==0& educ4 == 1
+a_iearn_ft,Average of iearn: Sample= Full-time,iearn,mean,1,weight,l2died==0& workcat == 4
+a_iearn_pt,Average of iearn: Sample= Part-time,iearn,mean,1,weight,l2died==0& workcat == 3
+q10_iearnx_all,10 percentile of iearnx: Sample = all,iearnx,quantile-.10,1,weight,l2died==0
+q10_iearnx_m,10 percentile of iearnx: Sample = male,iearnx,quantile-.10,1,weight,l2died==0& male == 1
+q10_iearnx_f,10 percentile of iearnx: Sample = female,iearnx,quantile-.10,1,weight,l2died==0& male == 0
+q10_iearnx_educ1,10 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.10,1,weight,l2died==0& educ1 == 1
+q10_iearnx_educ2,10 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.10,1,weight,l2died==0& educ2 == 1
+q10_iearnx_educ3,10 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.10,1,weight,l2died==0& educ3 == 1
+q10_iearnx_educ4,10 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.10,1,weight,l2died==0& educ4 == 1
+q10_iearnx_ft,10 percentile of iearnx: Sample = Full-time,iearnx,quantile-.10,1,weight,l2died==0& workcat == 4
+q10_iearnx_pt,10 percentile of iearnx: Sample = Part-time,iearnx,quantile-.10,1,weight,l2died==0& workcat == 3
+q20_iearnx_all,20 percentile of iearnx: Sample = all,iearnx,quantile-.20,1,weight,l2died==0
+q20_iearnx_m,20 percentile of iearnx: Sample = male,iearnx,quantile-.20,1,weight,l2died==0& male == 1
+q20_iearnx_f,20 percentile of iearnx: Sample = female,iearnx,quantile-.20,1,weight,l2died==0& male == 0
+q20_iearnx_educ1,20 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.20,1,weight,l2died==0& educ1 == 1
+q20_iearnx_educ2,20 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.20,1,weight,l2died==0& educ2 == 1
+q20_iearnx_educ3,20 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.20,1,weight,l2died==0& educ3 == 1
+q20_iearnx_educ4,20 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.20,1,weight,l2died==0& educ4 == 1
+q20_iearnx_ft,20 percentile of iearnx: Sample = Full-time,iearnx,quantile-.20,1,weight,l2died==0& workcat == 4
+q20_iearnx_pt,20 percentile of iearnx: Sample = Part-time,iearnx,quantile-.20,1,weight,l2died==0& workcat == 3
+q30_iearnx_all,30 percentile of iearnx: Sample = all,iearnx,quantile-.30,1,weight,l2died==0
+q30_iearnx_m,30 percentile of iearnx: Sample = male,iearnx,quantile-.30,1,weight,l2died==0& male == 1
+q30_iearnx_f,30 percentile of iearnx: Sample = female,iearnx,quantile-.30,1,weight,l2died==0& male == 0
+q30_iearnx_educ1,30 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.30,1,weight,l2died==0& educ1 == 1
+q30_iearnx_educ2,30 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.30,1,weight,l2died==0& educ2 == 1
+q30_iearnx_educ3,30 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.30,1,weight,l2died==0& educ3 == 1
+q30_iearnx_educ4,30 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.30,1,weight,l2died==0& educ4 == 1
+q30_iearnx_ft,30 percentile of iearnx: Sample = Full-time,iearnx,quantile-.30,1,weight,l2died==0& workcat == 4
+q30_iearnx_pt,30 percentile of iearnx: Sample = Part-time,iearnx,quantile-.30,1,weight,l2died==0& workcat == 3
+q40_iearnx_all,40 percentile of iearnx: Sample = all,iearnx,quantile-.40,1,weight,l2died==0
+q40_iearnx_m,40 percentile of iearnx: Sample = male,iearnx,quantile-.40,1,weight,l2died==0& male == 1
+q40_iearnx_f,40 percentile of iearnx: Sample = female,iearnx,quantile-.40,1,weight,l2died==0& male == 0
+q40_iearnx_educ1,40 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.40,1,weight,l2died==0& educ1 == 1
+q40_iearnx_educ2,40 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.40,1,weight,l2died==0& educ2 == 1
+q40_iearnx_educ3,40 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.40,1,weight,l2died==0& educ3 == 1
+q40_iearnx_educ4,40 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.40,1,weight,l2died==0& educ4 == 1
+q40_iearnx_ft,40 percentile of iearnx: Sample = Full-time,iearnx,quantile-.40,1,weight,l2died==0& workcat == 4
+q40_iearnx_pt,40 percentile of iearnx: Sample = Part-time,iearnx,quantile-.40,1,weight,l2died==0& workcat == 3
+q50_iearnx_all,50 percentile of iearnx: Sample = all,iearnx,quantile-.50,1,weight,l2died==0
+q50_iearnx_m,50 percentile of iearnx: Sample = male,iearnx,quantile-.50,1,weight,l2died==0& male == 1
+q50_iearnx_f,50 percentile of iearnx: Sample = female,iearnx,quantile-.50,1,weight,l2died==0& male == 0
+q50_iearnx_educ1,50 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.50,1,weight,l2died==0& educ1 == 1
+q50_iearnx_educ2,50 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.50,1,weight,l2died==0& educ2 == 1
+q50_iearnx_educ3,50 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.50,1,weight,l2died==0& educ3 == 1
+q50_iearnx_educ4,50 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.50,1,weight,l2died==0& educ4 == 1
+q50_iearnx_ft,50 percentile of iearnx: Sample = Full-time,iearnx,quantile-.50,1,weight,l2died==0& workcat == 4
+q50_iearnx_pt,50 percentile of iearnx: Sample = Part-time,iearnx,quantile-.50,1,weight,l2died==0& workcat == 3
+q60_iearnx_all,60 percentile of iearnx: Sample = all,iearnx,quantile-.60,1,weight,l2died==0
+q60_iearnx_m,60 percentile of iearnx: Sample = male,iearnx,quantile-.60,1,weight,l2died==0& male == 1
+q60_iearnx_f,60 percentile of iearnx: Sample = female,iearnx,quantile-.60,1,weight,l2died==0& male == 0
+q60_iearnx_educ1,60 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.60,1,weight,l2died==0& educ1 == 1
+q60_iearnx_educ2,60 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.60,1,weight,l2died==0& educ2 == 1
+q60_iearnx_educ3,60 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.60,1,weight,l2died==0& educ3 == 1
+q60_iearnx_educ4,60 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.60,1,weight,l2died==0& educ4 == 1
+q60_iearnx_ft,60 percentile of iearnx: Sample = Full-time,iearnx,quantile-.60,1,weight,l2died==0& workcat == 4
+q60_iearnx_pt,60 percentile of iearnx: Sample = Part-time,iearnx,quantile-.60,1,weight,l2died==0& workcat == 3
+q70_iearnx_all,70 percentile of iearnx: Sample = all,iearnx,quantile-.70,1,weight,l2died==0
+q70_iearnx_m,70 percentile of iearnx: Sample = male,iearnx,quantile-.70,1,weight,l2died==0& male == 1
+q70_iearnx_f,70 percentile of iearnx: Sample = female,iearnx,quantile-.70,1,weight,l2died==0& male == 0
+q70_iearnx_educ1,70 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.70,1,weight,l2died==0& educ1 == 1
+q70_iearnx_educ2,70 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.70,1,weight,l2died==0& educ2 == 1
+q70_iearnx_educ3,70 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.70,1,weight,l2died==0& educ3 == 1
+q70_iearnx_educ4,70 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.70,1,weight,l2died==0& educ4 == 1
+q70_iearnx_ft,70 percentile of iearnx: Sample = Full-time,iearnx,quantile-.70,1,weight,l2died==0& workcat == 4
+q70_iearnx_pt,70 percentile of iearnx: Sample = Part-time,iearnx,quantile-.70,1,weight,l2died==0& workcat == 3
+q80_iearnx_all,80 percentile of iearnx: Sample = all,iearnx,quantile-.80,1,weight,l2died==0
+q80_iearnx_m,80 percentile of iearnx: Sample = male,iearnx,quantile-.80,1,weight,l2died==0& male == 1
+q80_iearnx_f,80 percentile of iearnx: Sample = female,iearnx,quantile-.80,1,weight,l2died==0& male == 0
+q80_iearnx_educ1,80 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.80,1,weight,l2died==0& educ1 == 1
+q80_iearnx_educ2,80 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.80,1,weight,l2died==0& educ2 == 1
+q80_iearnx_educ3,80 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.80,1,weight,l2died==0& educ3 == 1
+q80_iearnx_educ4,80 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.80,1,weight,l2died==0& educ4 == 1
+q80_iearnx_ft,80 percentile of iearnx: Sample = Full-time,iearnx,quantile-.80,1,weight,l2died==0& workcat == 4
+q80_iearnx_pt,80 percentile of iearnx: Sample = Part-time,iearnx,quantile-.80,1,weight,l2died==0& workcat == 3
+q90_iearnx_all,90 percentile of iearnx: Sample = all,iearnx,quantile-.90,1,weight,l2died==0
+q90_iearnx_m,90 percentile of iearnx: Sample = male,iearnx,quantile-.90,1,weight,l2died==0& male == 1
+q90_iearnx_f,90 percentile of iearnx: Sample = female,iearnx,quantile-.90,1,weight,l2died==0& male == 0
+q90_iearnx_educ1,90 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.90,1,weight,l2died==0& educ1 == 1
+q90_iearnx_educ2,90 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.90,1,weight,l2died==0& educ2 == 1
+q90_iearnx_educ3,90 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.90,1,weight,l2died==0& educ3 == 1
+q90_iearnx_educ4,90 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.90,1,weight,l2died==0& educ4 == 1
+q90_iearnx_ft,90 percentile of iearnx: Sample = Full-time,iearnx,quantile-.90,1,weight,l2died==0& workcat == 4
+q90_iearnx_pt,90 percentile of iearnx: Sample = Part-time,iearnx,quantile-.90,1,weight,l2died==0& workcat == 3
+q95_iearnx_all,95 percentile of iearnx: Sample = all,iearnx,quantile-.95,1,weight,l2died==0
+q95_iearnx_m,95 percentile of iearnx: Sample = male,iearnx,quantile-.95,1,weight,l2died==0& male == 1
+q95_iearnx_f,95 percentile of iearnx: Sample = female,iearnx,quantile-.95,1,weight,l2died==0& male == 0
+q95_iearnx_educ1,95 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.95,1,weight,l2died==0& educ1 == 1
+q95_iearnx_educ2,95 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.95,1,weight,l2died==0& educ2 == 1
+q95_iearnx_educ3,95 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.95,1,weight,l2died==0& educ3 == 1
+q95_iearnx_educ4,95 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.95,1,weight,l2died==0& educ4 == 1
+q95_iearnx_ft,95 percentile of iearnx: Sample = Full-time,iearnx,quantile-.95,1,weight,l2died==0& workcat == 4
+q95_iearnx_pt,95 percentile of iearnx: Sample = Part-time,iearnx,quantile-.95,1,weight,l2died==0& workcat == 3
+q99_iearnx_all,99 percentile of iearnx: Sample = all,iearnx,quantile-.99,1,weight,l2died==0
+q99_iearnx_m,99 percentile of iearnx: Sample = male,iearnx,quantile-.99,1,weight,l2died==0& male == 1
+q99_iearnx_f,99 percentile of iearnx: Sample = female,iearnx,quantile-.99,1,weight,l2died==0& male == 0
+q99_iearnx_educ1,99 percentile of iearnx: Sample = Educlvl = 1,iearnx,quantile-.99,1,weight,l2died==0& educ1 == 1
+q99_iearnx_educ2,99 percentile of iearnx: Sample = Educlvl = 2,iearnx,quantile-.99,1,weight,l2died==0& educ2 == 1
+q99_iearnx_educ3,99 percentile of iearnx: Sample = Educlvl = 3,iearnx,quantile-.99,1,weight,l2died==0& educ3 == 1
+q99_iearnx_educ4,99 percentile of iearnx: Sample = Educlvl = 4,iearnx,quantile-.99,1,weight,l2died==0& educ4 == 1
+q99_iearnx_ft,99 percentile of iearnx: Sample = Full-time,iearnx,quantile-.99,1,weight,l2died==0& workcat == 4
+q99_iearnx_pt,99 percentile of iearnx: Sample = Part-time,iearnx,quantile-.99,1,weight,l2died==0& workcat == 3
+q10_iearn_all,10 percentile of iearn: Sample = all,iearn,quantile-.10,1,weight,l2died==0
+q10_iearn_m,10 percentile of iearn: Sample = male,iearn,quantile-.10,1,weight,l2died==0& male == 1
+q10_iearn_f,10 percentile of iearn: Sample = female,iearn,quantile-.10,1,weight,l2died==0& male == 0
+q10_iearn_educ1,10 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.10,1,weight,l2died==0& educ1 == 1
+q10_iearn_educ2,10 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.10,1,weight,l2died==0& educ2 == 1
+q10_iearn_educ3,10 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.10,1,weight,l2died==0& educ3 == 1
+q10_iearn_educ4,10 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.10,1,weight,l2died==0& educ4 == 1
+q10_iearn_ft,10 percentile of iearn: Sample = Full-time,iearn,quantile-.10,1,weight,l2died==0& workcat == 4
+q10_iearn_pt,10 percentile of iearn: Sample = Part-time,iearn,quantile-.10,1,weight,l2died==0& workcat == 3
+q20_iearn_all,20 percentile of iearn: Sample = all,iearn,quantile-.20,1,weight,l2died==0
+q20_iearn_m,20 percentile of iearn: Sample = male,iearn,quantile-.20,1,weight,l2died==0& male == 1
+q20_iearn_f,20 percentile of iearn: Sample = female,iearn,quantile-.20,1,weight,l2died==0& male == 0
+q20_iearn_educ1,20 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.20,1,weight,l2died==0& educ1 == 1
+q20_iearn_educ2,20 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.20,1,weight,l2died==0& educ2 == 1
+q20_iearn_educ3,20 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.20,1,weight,l2died==0& educ3 == 1
+q20_iearn_educ4,20 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.20,1,weight,l2died==0& educ4 == 1
+q20_iearn_ft,20 percentile of iearn: Sample = Full-time,iearn,quantile-.20,1,weight,l2died==0& workcat == 4
+q20_iearn_pt,20 percentile of iearn: Sample = Part-time,iearn,quantile-.20,1,weight,l2died==0& workcat == 3
+q30_iearn_all,30 percentile of iearn: Sample = all,iearn,quantile-.30,1,weight,l2died==0
+q30_iearn_m,30 percentile of iearn: Sample = male,iearn,quantile-.30,1,weight,l2died==0& male == 1
+q30_iearn_f,30 percentile of iearn: Sample = female,iearn,quantile-.30,1,weight,l2died==0& male == 0
+q30_iearn_educ1,30 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.30,1,weight,l2died==0& educ1 == 1
+q30_iearn_educ2,30 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.30,1,weight,l2died==0& educ2 == 1
+q30_iearn_educ3,30 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.30,1,weight,l2died==0& educ3 == 1
+q30_iearn_educ4,30 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.30,1,weight,l2died==0& educ4 == 1
+q30_iearn_ft,30 percentile of iearn: Sample = Full-time,iearn,quantile-.30,1,weight,l2died==0& workcat == 4
+q30_iearn_pt,30 percentile of iearn: Sample = Part-time,iearn,quantile-.30,1,weight,l2died==0& workcat == 3
+q40_iearn_all,40 percentile of iearn: Sample = all,iearn,quantile-.40,1,weight,l2died==0
+q40_iearn_m,40 percentile of iearn: Sample = male,iearn,quantile-.40,1,weight,l2died==0& male == 1
+q40_iearn_f,40 percentile of iearn: Sample = female,iearn,quantile-.40,1,weight,l2died==0& male == 0
+q40_iearn_educ1,40 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.40,1,weight,l2died==0& educ1 == 1
+q40_iearn_educ2,40 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.40,1,weight,l2died==0& educ2 == 1
+q40_iearn_educ3,40 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.40,1,weight,l2died==0& educ3 == 1
+q40_iearn_educ4,40 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.40,1,weight,l2died==0& educ4 == 1
+q40_iearn_ft,40 percentile of iearn: Sample = Full-time,iearn,quantile-.40,1,weight,l2died==0& workcat == 4
+q40_iearn_pt,40 percentile of iearn: Sample = Part-time,iearn,quantile-.40,1,weight,l2died==0& workcat == 3
+q50_iearn_all,50 percentile of iearn: Sample = all,iearn,quantile-.50,1,weight,l2died==0
+q50_iearn_m,50 percentile of iearn: Sample = male,iearn,quantile-.50,1,weight,l2died==0& male == 1
+q50_iearn_f,50 percentile of iearn: Sample = female,iearn,quantile-.50,1,weight,l2died==0& male == 0
+q50_iearn_educ1,50 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.50,1,weight,l2died==0& educ1 == 1
+q50_iearn_educ2,50 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.50,1,weight,l2died==0& educ2 == 1
+q50_iearn_educ3,50 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.50,1,weight,l2died==0& educ3 == 1
+q50_iearn_educ4,50 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.50,1,weight,l2died==0& educ4 == 1
+q50_iearn_ft,50 percentile of iearn: Sample = Full-time,iearn,quantile-.50,1,weight,l2died==0& workcat == 4
+q50_iearn_pt,50 percentile of iearn: Sample = Part-time,iearn,quantile-.50,1,weight,l2died==0& workcat == 3
+q60_iearn_all,60 percentile of iearn: Sample = all,iearn,quantile-.60,1,weight,l2died==0
+q60_iearn_m,60 percentile of iearn: Sample = male,iearn,quantile-.60,1,weight,l2died==0& male == 1
+q60_iearn_f,60 percentile of iearn: Sample = female,iearn,quantile-.60,1,weight,l2died==0& male == 0
+q60_iearn_educ1,60 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.60,1,weight,l2died==0& educ1 == 1
+q60_iearn_educ2,60 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.60,1,weight,l2died==0& educ2 == 1
+q60_iearn_educ3,60 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.60,1,weight,l2died==0& educ3 == 1
+q60_iearn_educ4,60 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.60,1,weight,l2died==0& educ4 == 1
+q60_iearn_ft,60 percentile of iearn: Sample = Full-time,iearn,quantile-.60,1,weight,l2died==0& workcat == 4
+q60_iearn_pt,60 percentile of iearn: Sample = Part-time,iearn,quantile-.60,1,weight,l2died==0& workcat == 3
+q70_iearn_all,70 percentile of iearn: Sample = all,iearn,quantile-.70,1,weight,l2died==0
+q70_iearn_m,70 percentile of iearn: Sample = male,iearn,quantile-.70,1,weight,l2died==0& male == 1
+q70_iearn_f,70 percentile of iearn: Sample = female,iearn,quantile-.70,1,weight,l2died==0& male == 0
+q70_iearn_educ1,70 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.70,1,weight,l2died==0& educ1 == 1
+q70_iearn_educ2,70 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.70,1,weight,l2died==0& educ2 == 1
+q70_iearn_educ3,70 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.70,1,weight,l2died==0& educ3 == 1
+q70_iearn_educ4,70 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.70,1,weight,l2died==0& educ4 == 1
+q70_iearn_ft,70 percentile of iearn: Sample = Full-time,iearn,quantile-.70,1,weight,l2died==0& workcat == 4
+q70_iearn_pt,70 percentile of iearn: Sample = Part-time,iearn,quantile-.70,1,weight,l2died==0& workcat == 3
+q80_iearn_all,80 percentile of iearn: Sample = all,iearn,quantile-.80,1,weight,l2died==0
+q80_iearn_m,80 percentile of iearn: Sample = male,iearn,quantile-.80,1,weight,l2died==0& male == 1
+q80_iearn_f,80 percentile of iearn: Sample = female,iearn,quantile-.80,1,weight,l2died==0& male == 0
+q80_iearn_educ1,80 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.80,1,weight,l2died==0& educ1 == 1
+q80_iearn_educ2,80 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.80,1,weight,l2died==0& educ2 == 1
+q80_iearn_educ3,80 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.80,1,weight,l2died==0& educ3 == 1
+q80_iearn_educ4,80 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.80,1,weight,l2died==0& educ4 == 1
+q80_iearn_ft,80 percentile of iearn: Sample = Full-time,iearn,quantile-.80,1,weight,l2died==0& workcat == 4
+q80_iearn_pt,80 percentile of iearn: Sample = Part-time,iearn,quantile-.80,1,weight,l2died==0& workcat == 3
+q90_iearn_all,90 percentile of iearn: Sample = all,iearn,quantile-.90,1,weight,l2died==0
+q90_iearn_m,90 percentile of iearn: Sample = male,iearn,quantile-.90,1,weight,l2died==0& male == 1
+q90_iearn_f,90 percentile of iearn: Sample = female,iearn,quantile-.90,1,weight,l2died==0& male == 0
+q90_iearn_educ1,90 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.90,1,weight,l2died==0& educ1 == 1
+q90_iearn_educ2,90 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.90,1,weight,l2died==0& educ2 == 1
+q90_iearn_educ3,90 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.90,1,weight,l2died==0& educ3 == 1
+q90_iearn_educ4,90 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.90,1,weight,l2died==0& educ4 == 1
+q90_iearn_ft,90 percentile of iearn: Sample = Full-time,iearn,quantile-.90,1,weight,l2died==0& workcat == 4
+q90_iearn_pt,90 percentile of iearn: Sample = Part-time,iearn,quantile-.90,1,weight,l2died==0& workcat == 3
+q95_iearn_all,95 percentile of iearn: Sample = all,iearn,quantile-.95,1,weight,l2died==0
+q95_iearn_m,95 percentile of iearn: Sample = male,iearn,quantile-.95,1,weight,l2died==0& male == 1
+q95_iearn_f,95 percentile of iearn: Sample = female,iearn,quantile-.95,1,weight,l2died==0& male == 0
+q95_iearn_educ1,95 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.95,1,weight,l2died==0& educ1 == 1
+q95_iearn_educ2,95 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.95,1,weight,l2died==0& educ2 == 1
+q95_iearn_educ3,95 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.95,1,weight,l2died==0& educ3 == 1
+q95_iearn_educ4,95 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.95,1,weight,l2died==0& educ4 == 1
+q95_iearn_ft,95 percentile of iearn: Sample = Full-time,iearn,quantile-.95,1,weight,l2died==0& workcat == 4
+q95_iearn_pt,95 percentile of iearn: Sample = Part-time,iearn,quantile-.95,1,weight,l2died==0& workcat == 3
+q99_iearn_all,99 percentile of iearn: Sample = all,iearn,quantile-.99,1,weight,l2died==0
+q99_iearn_m,99 percentile of iearn: Sample = male,iearn,quantile-.99,1,weight,l2died==0& male == 1
+q99_iearn_f,99 percentile of iearn: Sample = female,iearn,quantile-.99,1,weight,l2died==0& male == 0
+q99_iearn_educ1,99 percentile of iearn: Sample = Educlvl = 1,iearn,quantile-.99,1,weight,l2died==0& educ1 == 1
+q99_iearn_educ2,99 percentile of iearn: Sample = Educlvl = 2,iearn,quantile-.99,1,weight,l2died==0& educ2 == 1
+q99_iearn_educ3,99 percentile of iearn: Sample = Educlvl = 3,iearn,quantile-.99,1,weight,l2died==0& educ3 == 1
+q99_iearn_educ4,99 percentile of iearn: Sample = Educlvl = 4,iearn,quantile-.99,1,weight,l2died==0& educ4 == 1
+q99_iearn_ft,99 percentile of iearn: Sample = Full-time,iearn,quantile-.99,1,weight,l2died==0& workcat == 4
+q99_iearn_pt,99 percentile of iearn: Sample = Part-time,iearn,quantile-.99,1,weight,l2died==0& workcat == 3
+a_hatotax_all,Average of hatotax: Sample= all,hatotax,mean,1,weight,l2died==0
+a_hatotax_m,Average of hatotax: Sample= male,hatotax,mean,1,weight,l2died==0& male == 1
+a_hatotax_f,Average of hatotax: Sample= female,hatotax,mean,1,weight,l2died==0& male == 0
+a_hatotax_educ1,Average of hatotax: Sample= Educlvl = 1,hatotax,mean,1,weight,l2died==0& educ1 == 1
+a_hatotax_educ2,Average of hatotax: Sample= Educlvl = 2,hatotax,mean,1,weight,l2died==0& educ2 == 1
+a_hatotax_educ3,Average of hatotax: Sample= Educlvl = 3,hatotax,mean,1,weight,l2died==0& educ3 == 1
+a_hatotax_educ4,Average of hatotax: Sample= Educlvl = 4,hatotax,mean,1,weight,l2died==0& educ4 == 1
+a_hatotax_ft,Average of hatotax: Sample= Full-time,hatotax,mean,1,weight,l2died==0& workcat == 4
+a_hatotax_pt,Average of hatotax: Sample= Part-time,hatotax,mean,1,weight,l2died==0& workcat == 3
+p_workcat1_all,Prevalence of workcat1: Sample= all,workcat1,mean,1,weight,l2died==0
+p_workcat1_m,Prevalence of workcat1: Sample= male,workcat1,mean,1,weight,l2died==0& male == 1
+p_workcat1_f,Prevalence of workcat1: Sample= female,workcat1,mean,1,weight,l2died==0& male == 0
+p_workcat1_educ1,Prevalence of workcat1: Sample= Educlvl = 1,workcat1,mean,1,weight,l2died==0& educ1 == 1
+p_workcat1_educ2,Prevalence of workcat1: Sample= Educlvl = 2,workcat1,mean,1,weight,l2died==0& educ2 == 1
+p_workcat1_educ3,Prevalence of workcat1: Sample= Educlvl = 3,workcat1,mean,1,weight,l2died==0& educ3 == 1
+p_workcat1_educ4,Prevalence of workcat1: Sample= Educlvl = 4,workcat1,mean,1,weight,l2died==0& educ4 == 1
+p_workcat1_ft,Prevalence of workcat1: Sample= Full-time,workcat1,mean,1,weight,l2died==0& workcat == 4
+p_workcat1_pt,Prevalence of workcat1: Sample= Part-time,workcat1,mean,1,weight,l2died==0& workcat == 3
+p_workcat2_all,Prevalence of workcat2: Sample= all,workcat2,mean,1,weight,l2died==0
+p_workcat2_m,Prevalence of workcat2: Sample= male,workcat2,mean,1,weight,l2died==0& male == 1
+p_workcat2_f,Prevalence of workcat2: Sample= female,workcat2,mean,1,weight,l2died==0& male == 0
+p_workcat2_educ1,Prevalence of workcat2: Sample= Educlvl = 1,workcat2,mean,1,weight,l2died==0& educ1 == 1
+p_workcat2_educ2,Prevalence of workcat2: Sample= Educlvl = 2,workcat2,mean,1,weight,l2died==0& educ2 == 1
+p_workcat2_educ3,Prevalence of workcat2: Sample= Educlvl = 3,workcat2,mean,1,weight,l2died==0& educ3 == 1
+p_workcat2_educ4,Prevalence of workcat2: Sample= Educlvl = 4,workcat2,mean,1,weight,l2died==0& educ4 == 1
+p_workcat2_ft,Prevalence of workcat2: Sample= Full-time,workcat2,mean,1,weight,l2died==0& workcat == 4
+p_workcat2_pt,Prevalence of workcat2: Sample= Part-time,workcat2,mean,1,weight,l2died==0& workcat == 3
+p_workcat3_all,Prevalence of workcat3: Sample= all,workcat3,mean,1,weight,l2died==0
+p_workcat3_m,Prevalence of workcat3: Sample= male,workcat3,mean,1,weight,l2died==0& male == 1
+p_workcat3_f,Prevalence of workcat3: Sample= female,workcat3,mean,1,weight,l2died==0& male == 0
+p_workcat3_educ1,Prevalence of workcat3: Sample= Educlvl = 1,workcat3,mean,1,weight,l2died==0& educ1 == 1
+p_workcat3_educ2,Prevalence of workcat3: Sample= Educlvl = 2,workcat3,mean,1,weight,l2died==0& educ2 == 1
+p_workcat3_educ3,Prevalence of workcat3: Sample= Educlvl = 3,workcat3,mean,1,weight,l2died==0& educ3 == 1
+p_workcat3_educ4,Prevalence of workcat3: Sample= Educlvl = 4,workcat3,mean,1,weight,l2died==0& educ4 == 1
+p_workcat3_ft,Prevalence of workcat3: Sample= Full-time,workcat3,mean,1,weight,l2died==0& workcat == 4
+p_workcat3_pt,Prevalence of workcat3: Sample= Part-time,workcat3,mean,1,weight,l2died==0& workcat == 3
+p_workcat4_all,Prevalence of workcat4: Sample= all,workcat4,mean,1,weight,l2died==0
+p_workcat4_m,Prevalence of workcat4: Sample= male,workcat4,mean,1,weight,l2died==0& male == 1
+p_workcat4_f,Prevalence of workcat4: Sample= female,workcat4,mean,1,weight,l2died==0& male == 0
+p_workcat4_educ1,Prevalence of workcat4: Sample= Educlvl = 1,workcat4,mean,1,weight,l2died==0& educ1 == 1
+p_workcat4_educ2,Prevalence of workcat4: Sample= Educlvl = 2,workcat4,mean,1,weight,l2died==0& educ2 == 1
+p_workcat4_educ3,Prevalence of workcat4: Sample= Educlvl = 3,workcat4,mean,1,weight,l2died==0& educ3 == 1
+p_workcat4_educ4,Prevalence of workcat4: Sample= Educlvl = 4,workcat4,mean,1,weight,l2died==0& educ4 == 1
+p_workcat4_ft,Prevalence of workcat4: Sample= Full-time,workcat4,mean,1,weight,l2died==0& workcat == 4
+p_workcat4_pt,Prevalence of workcat4: Sample= Part-time,workcat4,mean,1,weight,l2died==0& workcat == 3
+p_cancre_all,Prevalence of cancre: Sample= all,cancre,mean,1,weight,l2died==0
+p_cancre_m,Prevalence of cancre: Sample= male,cancre,mean,1,weight,l2died==0& male == 1
+p_cancre_f,Prevalence of cancre: Sample= female,cancre,mean,1,weight,l2died==0& male == 0
+p_cancre_educ1,Prevalence of cancre: Sample= Educlvl = 1,cancre,mean,1,weight,l2died==0& educ1 == 1
+p_cancre_educ2,Prevalence of cancre: Sample= Educlvl = 2,cancre,mean,1,weight,l2died==0& educ2 == 1
+p_cancre_educ3,Prevalence of cancre: Sample= Educlvl = 3,cancre,mean,1,weight,l2died==0& educ3 == 1
+p_cancre_educ4,Prevalence of cancre: Sample= Educlvl = 4,cancre,mean,1,weight,l2died==0& educ4 == 1
+p_cancre_ft,Prevalence of cancre: Sample= Full-time,cancre,mean,1,weight,l2died==0& workcat == 4
+p_cancre_pt,Prevalence of cancre: Sample= Part-time,cancre,mean,1,weight,l2died==0& workcat == 3
+p_diabe_all,Prevalence of diabe: Sample= all,diabe,mean,1,weight,l2died==0
+p_diabe_m,Prevalence of diabe: Sample= male,diabe,mean,1,weight,l2died==0& male == 1
+p_diabe_f,Prevalence of diabe: Sample= female,diabe,mean,1,weight,l2died==0& male == 0
+p_diabe_educ1,Prevalence of diabe: Sample= Educlvl = 1,diabe,mean,1,weight,l2died==0& educ1 == 1
+p_diabe_educ2,Prevalence of diabe: Sample= Educlvl = 2,diabe,mean,1,weight,l2died==0& educ2 == 1
+p_diabe_educ3,Prevalence of diabe: Sample= Educlvl = 3,diabe,mean,1,weight,l2died==0& educ3 == 1
+p_diabe_educ4,Prevalence of diabe: Sample= Educlvl = 4,diabe,mean,1,weight,l2died==0& educ4 == 1
+p_diabe_ft,Prevalence of diabe: Sample= Full-time,diabe,mean,1,weight,l2died==0& workcat == 4
+p_diabe_pt,Prevalence of diabe: Sample= Part-time,diabe,mean,1,weight,l2died==0& workcat == 3
+p_hearte_all,Prevalence of hearte: Sample= all,hearte,mean,1,weight,l2died==0
+p_hearte_m,Prevalence of hearte: Sample= male,hearte,mean,1,weight,l2died==0& male == 1
+p_hearte_f,Prevalence of hearte: Sample= female,hearte,mean,1,weight,l2died==0& male == 0
+p_hearte_educ1,Prevalence of hearte: Sample= Educlvl = 1,hearte,mean,1,weight,l2died==0& educ1 == 1
+p_hearte_educ2,Prevalence of hearte: Sample= Educlvl = 2,hearte,mean,1,weight,l2died==0& educ2 == 1
+p_hearte_educ3,Prevalence of hearte: Sample= Educlvl = 3,hearte,mean,1,weight,l2died==0& educ3 == 1
+p_hearte_educ4,Prevalence of hearte: Sample= Educlvl = 4,hearte,mean,1,weight,l2died==0& educ4 == 1
+p_hearte_ft,Prevalence of hearte: Sample= Full-time,hearte,mean,1,weight,l2died==0& workcat == 4
+p_hearte_pt,Prevalence of hearte: Sample= Part-time,hearte,mean,1,weight,l2died==0& workcat == 3
+p_hibpe_all,Prevalence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0
+p_hibpe_m,Prevalence of hibpe: Sample= male,hibpe,mean,1,weight,l2died==0& male == 1
+p_hibpe_f,Prevalence of hibpe: Sample= female,hibpe,mean,1,weight,l2died==0& male == 0
+p_hibpe_educ1,Prevalence of hibpe: Sample= Educlvl = 1,hibpe,mean,1,weight,l2died==0& educ1 == 1
+p_hibpe_educ2,Prevalence of hibpe: Sample= Educlvl = 2,hibpe,mean,1,weight,l2died==0& educ2 == 1
+p_hibpe_educ3,Prevalence of hibpe: Sample= Educlvl = 3,hibpe,mean,1,weight,l2died==0& educ3 == 1
+p_hibpe_educ4,Prevalence of hibpe: Sample= Educlvl = 4,hibpe,mean,1,weight,l2died==0& educ4 == 1
+p_hibpe_ft,Prevalence of hibpe: Sample= Full-time,hibpe,mean,1,weight,l2died==0& workcat == 4
+p_hibpe_pt,Prevalence of hibpe: Sample= Part-time,hibpe,mean,1,weight,l2died==0& workcat == 3
+p_lunge_all,Prevalence of lunge: Sample= all,lunge,mean,1,weight,l2died==0
+p_lunge_m,Prevalence of lunge: Sample= male,lunge,mean,1,weight,l2died==0& male == 1
+p_lunge_f,Prevalence of lunge: Sample= female,lunge,mean,1,weight,l2died==0& male == 0
+p_lunge_educ1,Prevalence of lunge: Sample= Educlvl = 1,lunge,mean,1,weight,l2died==0& educ1 == 1
+p_lunge_educ2,Prevalence of lunge: Sample= Educlvl = 2,lunge,mean,1,weight,l2died==0& educ2 == 1
+p_lunge_educ3,Prevalence of lunge: Sample= Educlvl = 3,lunge,mean,1,weight,l2died==0& educ3 == 1
+p_lunge_educ4,Prevalence of lunge: Sample= Educlvl = 4,lunge,mean,1,weight,l2died==0& educ4 == 1
+p_lunge_ft,Prevalence of lunge: Sample= Full-time,lunge,mean,1,weight,l2died==0& workcat == 4
+p_lunge_pt,Prevalence of lunge: Sample= Part-time,lunge,mean,1,weight,l2died==0& workcat == 3
+p_stroke_all,Prevalence of stroke: Sample= all,stroke,mean,1,weight,l2died==0
+p_stroke_m,Prevalence of stroke: Sample= male,stroke,mean,1,weight,l2died==0& male == 1
+p_stroke_f,Prevalence of stroke: Sample= female,stroke,mean,1,weight,l2died==0& male == 0
+p_stroke_educ1,Prevalence of stroke: Sample= Educlvl = 1,stroke,mean,1,weight,l2died==0& educ1 == 1
+p_stroke_educ2,Prevalence of stroke: Sample= Educlvl = 2,stroke,mean,1,weight,l2died==0& educ2 == 1
+p_stroke_educ3,Prevalence of stroke: Sample= Educlvl = 3,stroke,mean,1,weight,l2died==0& educ3 == 1
+p_stroke_educ4,Prevalence of stroke: Sample= Educlvl = 4,stroke,mean,1,weight,l2died==0& educ4 == 1
+p_stroke_ft,Prevalence of stroke: Sample= Full-time,stroke,mean,1,weight,l2died==0& workcat == 4
+p_stroke_pt,Prevalence of stroke: Sample= Part-time,stroke,mean,1,weight,l2died==0& workcat == 3
+p_more_educ_all,Prevalence of more_educ: Sample= all,more_educ,mean,1,weight,l2died==0
+p_more_educ_m,Prevalence of more_educ: Sample= male,more_educ,mean,1,weight,l2died==0& male == 1
+p_more_educ_f,Prevalence of more_educ: Sample= female,more_educ,mean,1,weight,l2died==0& male == 0
+p_more_educ_educ1,Prevalence of more_educ: Sample= Educlvl = 1,more_educ,mean,1,weight,l2died==0& educ1 == 1
+p_more_educ_educ2,Prevalence of more_educ: Sample= Educlvl = 2,more_educ,mean,1,weight,l2died==0& educ2 == 1
+p_more_educ_educ3,Prevalence of more_educ: Sample= Educlvl = 3,more_educ,mean,1,weight,l2died==0& educ3 == 1
+p_more_educ_educ4,Prevalence of more_educ: Sample= Educlvl = 4,more_educ,mean,1,weight,l2died==0& educ4 == 1
+p_more_educ_ft,Prevalence of more_educ: Sample= Full-time,more_educ,mean,1,weight,l2died==0& workcat == 4
+p_more_educ_pt,Prevalence of more_educ: Sample= Part-time,more_educ,mean,1,weight,l2died==0& workcat == 3
+p_educ1_all,Prevalence of educ1: Sample= all,educ1,mean,1,weight,l2died==0
+p_educ1_m,Prevalence of educ1: Sample= male,educ1,mean,1,weight,l2died==0& male == 1
+p_educ1_f,Prevalence of educ1: Sample= female,educ1,mean,1,weight,l2died==0& male == 0
+p_educ1_educ1,Prevalence of educ1: Sample= Educlvl = 1,educ1,mean,1,weight,l2died==0& educ1 == 1
+p_educ1_educ2,Prevalence of educ1: Sample= Educlvl = 2,educ1,mean,1,weight,l2died==0& educ2 == 1
+p_educ1_educ3,Prevalence of educ1: Sample= Educlvl = 3,educ1,mean,1,weight,l2died==0& educ3 == 1
+p_educ1_educ4,Prevalence of educ1: Sample= Educlvl = 4,educ1,mean,1,weight,l2died==0& educ4 == 1
+p_educ1_ft,Prevalence of educ1: Sample= Full-time,educ1,mean,1,weight,l2died==0& workcat == 4
+p_educ1_pt,Prevalence of educ1: Sample= Part-time,educ1,mean,1,weight,l2died==0& workcat == 3
+p_educ2_all,Prevalence of educ2: Sample= all,educ2,mean,1,weight,l2died==0
+p_educ2_m,Prevalence of educ2: Sample= male,educ2,mean,1,weight,l2died==0& male == 1
+p_educ2_f,Prevalence of educ2: Sample= female,educ2,mean,1,weight,l2died==0& male == 0
+p_educ2_educ1,Prevalence of educ2: Sample= Educlvl = 1,educ2,mean,1,weight,l2died==0& educ1 == 1
+p_educ2_educ2,Prevalence of educ2: Sample= Educlvl = 2,educ2,mean,1,weight,l2died==0& educ2 == 1
+p_educ2_educ3,Prevalence of educ2: Sample= Educlvl = 3,educ2,mean,1,weight,l2died==0& educ3 == 1
+p_educ2_educ4,Prevalence of educ2: Sample= Educlvl = 4,educ2,mean,1,weight,l2died==0& educ4 == 1
+p_educ2_ft,Prevalence of educ2: Sample= Full-time,educ2,mean,1,weight,l2died==0& workcat == 4
+p_educ2_pt,Prevalence of educ2: Sample= Part-time,educ2,mean,1,weight,l2died==0& workcat == 3
+p_educ3_all,Prevalence of educ3: Sample= all,educ3,mean,1,weight,l2died==0
+p_educ3_m,Prevalence of educ3: Sample= male,educ3,mean,1,weight,l2died==0& male == 1
+p_educ3_f,Prevalence of educ3: Sample= female,educ3,mean,1,weight,l2died==0& male == 0
+p_educ3_educ1,Prevalence of educ3: Sample= Educlvl = 1,educ3,mean,1,weight,l2died==0& educ1 == 1
+p_educ3_educ2,Prevalence of educ3: Sample= Educlvl = 2,educ3,mean,1,weight,l2died==0& educ2 == 1
+p_educ3_educ3,Prevalence of educ3: Sample= Educlvl = 3,educ3,mean,1,weight,l2died==0& educ3 == 1
+p_educ3_educ4,Prevalence of educ3: Sample= Educlvl = 4,educ3,mean,1,weight,l2died==0& educ4 == 1
+p_educ3_ft,Prevalence of educ3: Sample= Full-time,educ3,mean,1,weight,l2died==0& workcat == 4
+p_educ3_pt,Prevalence of educ3: Sample= Part-time,educ3,mean,1,weight,l2died==0& workcat == 3
+p_educ4_all,Prevalence of educ4: Sample= all,educ4,mean,1,weight,l2died==0
+p_educ4_m,Prevalence of educ4: Sample= male,educ4,mean,1,weight,l2died==0& male == 1
+p_educ4_f,Prevalence of educ4: Sample= female,educ4,mean,1,weight,l2died==0& male == 0
+p_educ4_educ1,Prevalence of educ4: Sample= Educlvl = 1,educ4,mean,1,weight,l2died==0& educ1 == 1
+p_educ4_educ2,Prevalence of educ4: Sample= Educlvl = 2,educ4,mean,1,weight,l2died==0& educ2 == 1
+p_educ4_educ3,Prevalence of educ4: Sample= Educlvl = 3,educ4,mean,1,weight,l2died==0& educ3 == 1
+p_educ4_educ4,Prevalence of educ4: Sample= Educlvl = 4,educ4,mean,1,weight,l2died==0& educ4 == 1
+p_educ4_ft,Prevalence of educ4: Sample= Full-time,educ4,mean,1,weight,l2died==0& workcat == 4
+p_educ4_pt,Prevalence of educ4: Sample= Part-time,educ4,mean,1,weight,l2died==0& workcat == 3
+p_overwt_all,Prevalence of overwt: Sample= all,overwt,mean,1,weight,l2died==0
+p_overwt_m,Prevalence of overwt: Sample= male,overwt,mean,1,weight,l2died==0& male == 1
+p_overwt_f,Prevalence of overwt: Sample= female,overwt,mean,1,weight,l2died==0& male == 0
+p_overwt_educ1,Prevalence of overwt: Sample= Educlvl = 1,overwt,mean,1,weight,l2died==0& educ1 == 1
+p_overwt_educ2,Prevalence of overwt: Sample= Educlvl = 2,overwt,mean,1,weight,l2died==0& educ2 == 1
+p_overwt_educ3,Prevalence of overwt: Sample= Educlvl = 3,overwt,mean,1,weight,l2died==0& educ3 == 1
+p_overwt_educ4,Prevalence of overwt: Sample= Educlvl = 4,overwt,mean,1,weight,l2died==0& educ4 == 1
+p_overwt_ft,Prevalence of overwt: Sample= Full-time,overwt,mean,1,weight,l2died==0& workcat == 4
+p_overwt_pt,Prevalence of overwt: Sample= Part-time,overwt,mean,1,weight,l2died==0& workcat == 3
+p_obese_1_all,Prevalence of obese_1: Sample= all,obese_1,mean,1,weight,l2died==0
+p_obese_1_m,Prevalence of obese_1: Sample= male,obese_1,mean,1,weight,l2died==0& male == 1
+p_obese_1_f,Prevalence of obese_1: Sample= female,obese_1,mean,1,weight,l2died==0& male == 0
+p_obese_1_educ1,Prevalence of obese_1: Sample= Educlvl = 1,obese_1,mean,1,weight,l2died==0& educ1 == 1
+p_obese_1_educ2,Prevalence of obese_1: Sample= Educlvl = 2,obese_1,mean,1,weight,l2died==0& educ2 == 1
+p_obese_1_educ3,Prevalence of obese_1: Sample= Educlvl = 3,obese_1,mean,1,weight,l2died==0& educ3 == 1
+p_obese_1_educ4,Prevalence of obese_1: Sample= Educlvl = 4,obese_1,mean,1,weight,l2died==0& educ4 == 1
+p_obese_1_ft,Prevalence of obese_1: Sample= Full-time,obese_1,mean,1,weight,l2died==0& workcat == 4
+p_obese_1_pt,Prevalence of obese_1: Sample= Part-time,obese_1,mean,1,weight,l2died==0& workcat == 3
+p_obese_2_all,Prevalence of obese_2: Sample= all,obese_2,mean,1,weight,l2died==0
+p_obese_2_m,Prevalence of obese_2: Sample= male,obese_2,mean,1,weight,l2died==0& male == 1
+p_obese_2_f,Prevalence of obese_2: Sample= female,obese_2,mean,1,weight,l2died==0& male == 0
+p_obese_2_educ1,Prevalence of obese_2: Sample= Educlvl = 1,obese_2,mean,1,weight,l2died==0& educ1 == 1
+p_obese_2_educ2,Prevalence of obese_2: Sample= Educlvl = 2,obese_2,mean,1,weight,l2died==0& educ2 == 1
+p_obese_2_educ3,Prevalence of obese_2: Sample= Educlvl = 3,obese_2,mean,1,weight,l2died==0& educ3 == 1
+p_obese_2_educ4,Prevalence of obese_2: Sample= Educlvl = 4,obese_2,mean,1,weight,l2died==0& educ4 == 1
+p_obese_2_ft,Prevalence of obese_2: Sample= Full-time,obese_2,mean,1,weight,l2died==0& workcat == 4
+p_obese_2_pt,Prevalence of obese_2: Sample= Part-time,obese_2,mean,1,weight,l2died==0& workcat == 3
+p_obese_3_all,Prevalence of obese_3: Sample= all,obese_3,mean,1,weight,l2died==0
+p_obese_3_m,Prevalence of obese_3: Sample= male,obese_3,mean,1,weight,l2died==0& male == 1
+p_obese_3_f,Prevalence of obese_3: Sample= female,obese_3,mean,1,weight,l2died==0& male == 0
+p_obese_3_educ1,Prevalence of obese_3: Sample= Educlvl = 1,obese_3,mean,1,weight,l2died==0& educ1 == 1
+p_obese_3_educ2,Prevalence of obese_3: Sample= Educlvl = 2,obese_3,mean,1,weight,l2died==0& educ2 == 1
+p_obese_3_educ3,Prevalence of obese_3: Sample= Educlvl = 3,obese_3,mean,1,weight,l2died==0& educ3 == 1
+p_obese_3_educ4,Prevalence of obese_3: Sample= Educlvl = 4,obese_3,mean,1,weight,l2died==0& educ4 == 1
+p_obese_3_ft,Prevalence of obese_3: Sample= Full-time,obese_3,mean,1,weight,l2died==0& workcat == 4
+p_obese_3_pt,Prevalence of obese_3: Sample= Part-time,obese_3,mean,1,weight,l2died==0& workcat == 3
+p_adl1_all,Prevalence of adl1: Sample= all,adl1,mean,1,weight,l2died==0
+p_adl1_m,Prevalence of adl1: Sample= male,adl1,mean,1,weight,l2died==0& male == 1
+p_adl1_f,Prevalence of adl1: Sample= female,adl1,mean,1,weight,l2died==0& male == 0
+p_adl1_educ1,Prevalence of adl1: Sample= Educlvl = 1,adl1,mean,1,weight,l2died==0& educ1 == 1
+p_adl1_educ2,Prevalence of adl1: Sample= Educlvl = 2,adl1,mean,1,weight,l2died==0& educ2 == 1
+p_adl1_educ3,Prevalence of adl1: Sample= Educlvl = 3,adl1,mean,1,weight,l2died==0& educ3 == 1
+p_adl1_educ4,Prevalence of adl1: Sample= Educlvl = 4,adl1,mean,1,weight,l2died==0& educ4 == 1
+p_adl1_ft,Prevalence of adl1: Sample= Full-time,adl1,mean,1,weight,l2died==0& workcat == 4
+p_adl1_pt,Prevalence of adl1: Sample= Part-time,adl1,mean,1,weight,l2died==0& workcat == 3
+p_adl2_all,Prevalence of adl2: Sample= all,adl2,mean,1,weight,l2died==0
+p_adl2_m,Prevalence of adl2: Sample= male,adl2,mean,1,weight,l2died==0& male == 1
+p_adl2_f,Prevalence of adl2: Sample= female,adl2,mean,1,weight,l2died==0& male == 0
+p_adl2_educ1,Prevalence of adl2: Sample= Educlvl = 1,adl2,mean,1,weight,l2died==0& educ1 == 1
+p_adl2_educ2,Prevalence of adl2: Sample= Educlvl = 2,adl2,mean,1,weight,l2died==0& educ2 == 1
+p_adl2_educ3,Prevalence of adl2: Sample= Educlvl = 3,adl2,mean,1,weight,l2died==0& educ3 == 1
+p_adl2_educ4,Prevalence of adl2: Sample= Educlvl = 4,adl2,mean,1,weight,l2died==0& educ4 == 1
+p_adl2_ft,Prevalence of adl2: Sample= Full-time,adl2,mean,1,weight,l2died==0& workcat == 4
+p_adl2_pt,Prevalence of adl2: Sample= Part-time,adl2,mean,1,weight,l2died==0& workcat == 3
+p_adl3p_all,Prevalence of adl3p: Sample= all,adl3p,mean,1,weight,l2died==0
+p_adl3p_m,Prevalence of adl3p: Sample= male,adl3p,mean,1,weight,l2died==0& male == 1
+p_adl3p_f,Prevalence of adl3p: Sample= female,adl3p,mean,1,weight,l2died==0& male == 0
+p_adl3p_educ1,Prevalence of adl3p: Sample= Educlvl = 1,adl3p,mean,1,weight,l2died==0& educ1 == 1
+p_adl3p_educ2,Prevalence of adl3p: Sample= Educlvl = 2,adl3p,mean,1,weight,l2died==0& educ2 == 1
+p_adl3p_educ3,Prevalence of adl3p: Sample= Educlvl = 3,adl3p,mean,1,weight,l2died==0& educ3 == 1
+p_adl3p_educ4,Prevalence of adl3p: Sample= Educlvl = 4,adl3p,mean,1,weight,l2died==0& educ4 == 1
+p_adl3p_ft,Prevalence of adl3p: Sample= Full-time,adl3p,mean,1,weight,l2died==0& workcat == 4
+p_adl3p_pt,Prevalence of adl3p: Sample= Part-time,adl3p,mean,1,weight,l2died==0& workcat == 3
+p_iadl1_all,Prevalence of iadl1: Sample= all,iadl1,mean,1,weight,l2died==0
+p_iadl1_m,Prevalence of iadl1: Sample= male,iadl1,mean,1,weight,l2died==0& male == 1
+p_iadl1_f,Prevalence of iadl1: Sample= female,iadl1,mean,1,weight,l2died==0& male == 0
+p_iadl1_educ1,Prevalence of iadl1: Sample= Educlvl = 1,iadl1,mean,1,weight,l2died==0& educ1 == 1
+p_iadl1_educ2,Prevalence of iadl1: Sample= Educlvl = 2,iadl1,mean,1,weight,l2died==0& educ2 == 1
+p_iadl1_educ3,Prevalence of iadl1: Sample= Educlvl = 3,iadl1,mean,1,weight,l2died==0& educ3 == 1
+p_iadl1_educ4,Prevalence of iadl1: Sample= Educlvl = 4,iadl1,mean,1,weight,l2died==0& educ4 == 1
+p_iadl1_ft,Prevalence of iadl1: Sample= Full-time,iadl1,mean,1,weight,l2died==0& workcat == 4
+p_iadl1_pt,Prevalence of iadl1: Sample= Part-time,iadl1,mean,1,weight,l2died==0& workcat == 3
+p_iadl2p_all,Prevalence of iadl2p: Sample= all,iadl2p,mean,1,weight,l2died==0
+p_iadl2p_m,Prevalence of iadl2p: Sample= male,iadl2p,mean,1,weight,l2died==0& male == 1
+p_iadl2p_f,Prevalence of iadl2p: Sample= female,iadl2p,mean,1,weight,l2died==0& male == 0
+p_iadl2p_educ1,Prevalence of iadl2p: Sample= Educlvl = 1,iadl2p,mean,1,weight,l2died==0& educ1 == 1
+p_iadl2p_educ2,Prevalence of iadl2p: Sample= Educlvl = 2,iadl2p,mean,1,weight,l2died==0& educ2 == 1
+p_iadl2p_educ3,Prevalence of iadl2p: Sample= Educlvl = 3,iadl2p,mean,1,weight,l2died==0& educ3 == 1
+p_iadl2p_educ4,Prevalence of iadl2p: Sample= Educlvl = 4,iadl2p,mean,1,weight,l2died==0& educ4 == 1
+p_iadl2p_ft,Prevalence of iadl2p: Sample= Full-time,iadl2p,mean,1,weight,l2died==0& workcat == 4
+p_iadl2p_pt,Prevalence of iadl2p: Sample= Part-time,iadl2p,mean,1,weight,l2died==0& workcat == 3
+p_ssclaim_all,Prevalence of ssclaim: Sample= all,ssclaim,mean,1,weight,l2died==0
+p_ssclaim_m,Prevalence of ssclaim: Sample= male,ssclaim,mean,1,weight,l2died==0& male == 1
+p_ssclaim_f,Prevalence of ssclaim: Sample= female,ssclaim,mean,1,weight,l2died==0& male == 0
+p_ssclaim_educ1,Prevalence of ssclaim: Sample= Educlvl = 1,ssclaim,mean,1,weight,l2died==0& educ1 == 1
+p_ssclaim_educ2,Prevalence of ssclaim: Sample= Educlvl = 2,ssclaim,mean,1,weight,l2died==0& educ2 == 1
+p_ssclaim_educ3,Prevalence of ssclaim: Sample= Educlvl = 3,ssclaim,mean,1,weight,l2died==0& educ3 == 1
+p_ssclaim_educ4,Prevalence of ssclaim: Sample= Educlvl = 4,ssclaim,mean,1,weight,l2died==0& educ4 == 1
+p_ssclaim_ft,Prevalence of ssclaim: Sample= Full-time,ssclaim,mean,1,weight,l2died==0& workcat == 4
+p_ssclaim_pt,Prevalence of ssclaim: Sample= Part-time,ssclaim,mean,1,weight,l2died==0& workcat == 3
+p_ssiclaim_all,Prevalence of ssiclaim: Sample= all,ssiclaim,mean,1,weight,l2died==0
+p_ssiclaim_m,Prevalence of ssiclaim: Sample= male,ssiclaim,mean,1,weight,l2died==0& male == 1
+p_ssiclaim_f,Prevalence of ssiclaim: Sample= female,ssiclaim,mean,1,weight,l2died==0& male == 0
+p_ssiclaim_educ1,Prevalence of ssiclaim: Sample= Educlvl = 1,ssiclaim,mean,1,weight,l2died==0& educ1 == 1
+p_ssiclaim_educ2,Prevalence of ssiclaim: Sample= Educlvl = 2,ssiclaim,mean,1,weight,l2died==0& educ2 == 1
+p_ssiclaim_educ3,Prevalence of ssiclaim: Sample= Educlvl = 3,ssiclaim,mean,1,weight,l2died==0& educ3 == 1
+p_ssiclaim_educ4,Prevalence of ssiclaim: Sample= Educlvl = 4,ssiclaim,mean,1,weight,l2died==0& educ4 == 1
+p_ssiclaim_ft,Prevalence of ssiclaim: Sample= Full-time,ssiclaim,mean,1,weight,l2died==0& workcat == 4
+p_ssiclaim_pt,Prevalence of ssiclaim: Sample= Part-time,ssiclaim,mean,1,weight,l2died==0& workcat == 3
+p_diclaim_all,Prevalence of diclaim: Sample= all,diclaim,mean,1,weight,l2died==0
+p_diclaim_m,Prevalence of diclaim: Sample= male,diclaim,mean,1,weight,l2died==0& male == 1
+p_diclaim_f,Prevalence of diclaim: Sample= female,diclaim,mean,1,weight,l2died==0& male == 0
+p_diclaim_educ1,Prevalence of diclaim: Sample= Educlvl = 1,diclaim,mean,1,weight,l2died==0& educ1 == 1
+p_diclaim_educ2,Prevalence of diclaim: Sample= Educlvl = 2,diclaim,mean,1,weight,l2died==0& educ2 == 1
+p_diclaim_educ3,Prevalence of diclaim: Sample= Educlvl = 3,diclaim,mean,1,weight,l2died==0& educ3 == 1
+p_diclaim_educ4,Prevalence of diclaim: Sample= Educlvl = 4,diclaim,mean,1,weight,l2died==0& educ4 == 1
+p_diclaim_ft,Prevalence of diclaim: Sample= Full-time,diclaim,mean,1,weight,l2died==0& workcat == 4
+p_diclaim_pt,Prevalence of diclaim: Sample= Part-time,diclaim,mean,1,weight,l2died==0& workcat == 3
+p_anyhi_all,Prevalence of anyhi: Sample= all,anyhi,mean,1,weight,l2died==0
+p_anyhi_m,Prevalence of anyhi: Sample= male,anyhi,mean,1,weight,l2died==0& male == 1
+p_anyhi_f,Prevalence of anyhi: Sample= female,anyhi,mean,1,weight,l2died==0& male == 0
+p_anyhi_educ1,Prevalence of anyhi: Sample= Educlvl = 1,anyhi,mean,1,weight,l2died==0& educ1 == 1
+p_anyhi_educ2,Prevalence of anyhi: Sample= Educlvl = 2,anyhi,mean,1,weight,l2died==0& educ2 == 1
+p_anyhi_educ3,Prevalence of anyhi: Sample= Educlvl = 3,anyhi,mean,1,weight,l2died==0& educ3 == 1
+p_anyhi_educ4,Prevalence of anyhi: Sample= Educlvl = 4,anyhi,mean,1,weight,l2died==0& educ4 == 1
+p_anyhi_ft,Prevalence of anyhi: Sample= Full-time,anyhi,mean,1,weight,l2died==0& workcat == 4
+p_anyhi_pt,Prevalence of anyhi: Sample= Part-time,anyhi,mean,1,weight,l2died==0& workcat == 3
+t_totmd_all,Sum of totmd: Sample= all,totmd,sum,1,weight,l2died==0
+t_totmd_m,Sum of totmd: Sample= male,totmd,sum,1,weight,l2died==0& male == 1
+t_totmd_f,Sum of totmd: Sample= female,totmd,sum,1,weight,l2died==0& male == 0
+t_totmd_educ1,Sum of totmd: Sample= Educlvl = 1,totmd,sum,1,weight,l2died==0& educ1 == 1
+t_totmd_educ2,Sum of totmd: Sample= Educlvl = 2,totmd,sum,1,weight,l2died==0& educ2 == 1
+t_totmd_educ3,Sum of totmd: Sample= Educlvl = 3,totmd,sum,1,weight,l2died==0& educ3 == 1
+t_totmd_educ4,Sum of totmd: Sample= Educlvl = 4,totmd,sum,1,weight,l2died==0& educ4 == 1
+t_totmd_ft,Sum of totmd: Sample= Full-time,totmd,sum,1,weight,l2died==0& workcat == 4
+t_totmd_pt,Sum of totmd: Sample= Part-time,totmd,sum,1,weight,l2died==0& workcat == 3
+t_mcare_all,Sum of mcare: Sample= all,mcare,sum,1,weight,l2died==0
+t_mcare_m,Sum of mcare: Sample= male,mcare,sum,1,weight,l2died==0& male == 1
+t_mcare_f,Sum of mcare: Sample= female,mcare,sum,1,weight,l2died==0& male == 0
+t_mcare_educ1,Sum of mcare: Sample= Educlvl = 1,mcare,sum,1,weight,l2died==0& educ1 == 1
+t_mcare_educ2,Sum of mcare: Sample= Educlvl = 2,mcare,sum,1,weight,l2died==0& educ2 == 1
+t_mcare_educ3,Sum of mcare: Sample= Educlvl = 3,mcare,sum,1,weight,l2died==0& educ3 == 1
+t_mcare_educ4,Sum of mcare: Sample= Educlvl = 4,mcare,sum,1,weight,l2died==0& educ4 == 1
+t_mcare_ft,Sum of mcare: Sample= Full-time,mcare,sum,1,weight,l2died==0& workcat == 4
+t_mcare_pt,Sum of mcare: Sample= Part-time,mcare,sum,1,weight,l2died==0& workcat == 3
+t_caidmd_all,Sum of caidmd: Sample= all,caidmd,sum,1,weight,l2died==0
+t_caidmd_m,Sum of caidmd: Sample= male,caidmd,sum,1,weight,l2died==0& male == 1
+t_caidmd_f,Sum of caidmd: Sample= female,caidmd,sum,1,weight,l2died==0& male == 0
+t_caidmd_educ1,Sum of caidmd: Sample= Educlvl = 1,caidmd,sum,1,weight,l2died==0& educ1 == 1
+t_caidmd_educ2,Sum of caidmd: Sample= Educlvl = 2,caidmd,sum,1,weight,l2died==0& educ2 == 1
+t_caidmd_educ3,Sum of caidmd: Sample= Educlvl = 3,caidmd,sum,1,weight,l2died==0& educ3 == 1
+t_caidmd_educ4,Sum of caidmd: Sample= Educlvl = 4,caidmd,sum,1,weight,l2died==0& educ4 == 1
+t_caidmd_ft,Sum of caidmd: Sample= Full-time,caidmd,sum,1,weight,l2died==0& workcat == 4
+t_caidmd_pt,Sum of caidmd: Sample= Part-time,caidmd,sum,1,weight,l2died==0& workcat == 3
+a_totmd_all,Average of totmd: Sample= all,totmd,mean,1,weight,l2died==0
+a_totmd_m,Average of totmd: Sample= male,totmd,mean,1,weight,l2died==0& male == 1
+a_totmd_f,Average of totmd: Sample= female,totmd,mean,1,weight,l2died==0& male == 0
+a_totmd_educ1,Average of totmd: Sample= Educlvl = 1,totmd,mean,1,weight,l2died==0& educ1 == 1
+a_totmd_educ2,Average of totmd: Sample= Educlvl = 2,totmd,mean,1,weight,l2died==0& educ2 == 1
+a_totmd_educ3,Average of totmd: Sample= Educlvl = 3,totmd,mean,1,weight,l2died==0& educ3 == 1
+a_totmd_educ4,Average of totmd: Sample= Educlvl = 4,totmd,mean,1,weight,l2died==0& educ4 == 1
+a_totmd_ft,Average of totmd: Sample= Full-time,totmd,mean,1,weight,l2died==0& workcat == 4
+a_totmd_pt,Average of totmd: Sample= Part-time,totmd,mean,1,weight,l2died==0& workcat == 3
+a_mcare_all,Average of mcare: Sample= all,mcare,mean,1,weight,l2died==0
+a_mcare_m,Average of mcare: Sample= male,mcare,mean,1,weight,l2died==0& male == 1
+a_mcare_f,Average of mcare: Sample= female,mcare,mean,1,weight,l2died==0& male == 0
+a_mcare_educ1,Average of mcare: Sample= Educlvl = 1,mcare,mean,1,weight,l2died==0& educ1 == 1
+a_mcare_educ2,Average of mcare: Sample= Educlvl = 2,mcare,mean,1,weight,l2died==0& educ2 == 1
+a_mcare_educ3,Average of mcare: Sample= Educlvl = 3,mcare,mean,1,weight,l2died==0& educ3 == 1
+a_mcare_educ4,Average of mcare: Sample= Educlvl = 4,mcare,mean,1,weight,l2died==0& educ4 == 1
+a_mcare_ft,Average of mcare: Sample= Full-time,mcare,mean,1,weight,l2died==0& workcat == 4
+a_mcare_pt,Average of mcare: Sample= Part-time,mcare,mean,1,weight,l2died==0& workcat == 3
+a_caidmd_all,Average of caidmd: Sample= all,caidmd,mean,1,weight,l2died==0
+a_caidmd_m,Average of caidmd: Sample= male,caidmd,mean,1,weight,l2died==0& male == 1
+a_caidmd_f,Average of caidmd: Sample= female,caidmd,mean,1,weight,l2died==0& male == 0
+a_caidmd_educ1,Average of caidmd: Sample= Educlvl = 1,caidmd,mean,1,weight,l2died==0& educ1 == 1
+a_caidmd_educ2,Average of caidmd: Sample= Educlvl = 2,caidmd,mean,1,weight,l2died==0& educ2 == 1
+a_caidmd_educ3,Average of caidmd: Sample= Educlvl = 3,caidmd,mean,1,weight,l2died==0& educ3 == 1
+a_caidmd_educ4,Average of caidmd: Sample= Educlvl = 4,caidmd,mean,1,weight,l2died==0& educ4 == 1
+a_caidmd_ft,Average of caidmd: Sample= Full-time,caidmd,mean,1,weight,l2died==0& workcat == 4
+a_caidmd_pt,Average of caidmd: Sample= Part-time,caidmd,mean,1,weight,l2died==0& workcat == 3
+p_medicaid_elig_all,Prevalence of medicaid_elig: Sample= all,medicaid_elig,mean,1,weight,l2died==0
+p_medicaid_elig_m,Prevalence of medicaid_elig: Sample= male,medicaid_elig,mean,1,weight,l2died==0& male == 1
+p_medicaid_elig_f,Prevalence of medicaid_elig: Sample= female,medicaid_elig,mean,1,weight,l2died==0& male == 0
+p_medicaid_elig_educ1,Prevalence of medicaid_elig: Sample= Educlvl = 1,medicaid_elig,mean,1,weight,l2died==0& educ1 == 1
+p_medicaid_elig_educ2,Prevalence of medicaid_elig: Sample= Educlvl = 2,medicaid_elig,mean,1,weight,l2died==0& educ2 == 1
+p_medicaid_elig_educ3,Prevalence of medicaid_elig: Sample= Educlvl = 3,medicaid_elig,mean,1,weight,l2died==0& educ3 == 1
+p_medicaid_elig_educ4,Prevalence of medicaid_elig: Sample= Educlvl = 4,medicaid_elig,mean,1,weight,l2died==0& educ4 == 1
+p_medicaid_elig_ft,Prevalence of medicaid_elig: Sample= Full-time,medicaid_elig,mean,1,weight,l2died==0& workcat == 4
+p_medicaid_elig_pt,Prevalence of medicaid_elig: Sample= Part-time,medicaid_elig,mean,1,weight,l2died==0& workcat == 3
+p_mcare_pta_enroll_all,Prevalence of mcare_pta_enroll: Sample= all,mcare_pta_enroll,mean,1,weight,l2died==0
+p_mcare_pta_enroll_m,Prevalence of mcare_pta_enroll: Sample= male,mcare_pta_enroll,mean,1,weight,l2died==0& male == 1
+p_mcare_pta_enroll_f,Prevalence of mcare_pta_enroll: Sample= female,mcare_pta_enroll,mean,1,weight,l2died==0& male == 0
+p_mcare_pta_enroll_educ1,Prevalence of mcare_pta_enroll: Sample= Educlvl = 1,mcare_pta_enroll,mean,1,weight,l2died==0& educ1 == 1
+p_mcare_pta_enroll_educ2,Prevalence of mcare_pta_enroll: Sample= Educlvl = 2,mcare_pta_enroll,mean,1,weight,l2died==0& educ2 == 1
+p_mcare_pta_enroll_educ3,Prevalence of mcare_pta_enroll: Sample= Educlvl = 3,mcare_pta_enroll,mean,1,weight,l2died==0& educ3 == 1
+p_mcare_pta_enroll_educ4,Prevalence of mcare_pta_enroll: Sample= Educlvl = 4,mcare_pta_enroll,mean,1,weight,l2died==0& educ4 == 1
+p_mcare_pta_enroll_ft,Prevalence of mcare_pta_enroll: Sample= Full-time,mcare_pta_enroll,mean,1,weight,l2died==0& workcat == 4
+p_mcare_pta_enroll_pt,Prevalence of mcare_pta_enroll: Sample= Part-time,mcare_pta_enroll,mean,1,weight,l2died==0& workcat == 3
+p_mcare_ptb_enroll_all,Prevalence of mcare_ptb_enroll: Sample= all,mcare_ptb_enroll,mean,1,weight,l2died==0
+p_mcare_ptb_enroll_m,Prevalence of mcare_ptb_enroll: Sample= male,mcare_ptb_enroll,mean,1,weight,l2died==0& male == 1
+p_mcare_ptb_enroll_f,Prevalence of mcare_ptb_enroll: Sample= female,mcare_ptb_enroll,mean,1,weight,l2died==0& male == 0
+p_mcare_ptb_enroll_educ1,Prevalence of mcare_ptb_enroll: Sample= Educlvl = 1,mcare_ptb_enroll,mean,1,weight,l2died==0& educ1 == 1
+p_mcare_ptb_enroll_educ2,Prevalence of mcare_ptb_enroll: Sample= Educlvl = 2,mcare_ptb_enroll,mean,1,weight,l2died==0& educ2 == 1
+p_mcare_ptb_enroll_educ3,Prevalence of mcare_ptb_enroll: Sample= Educlvl = 3,mcare_ptb_enroll,mean,1,weight,l2died==0& educ3 == 1
+p_mcare_ptb_enroll_educ4,Prevalence of mcare_ptb_enroll: Sample= Educlvl = 4,mcare_ptb_enroll,mean,1,weight,l2died==0& educ4 == 1
+p_mcare_ptb_enroll_ft,Prevalence of mcare_ptb_enroll: Sample= Full-time,mcare_ptb_enroll,mean,1,weight,l2died==0& workcat == 4
+p_mcare_ptb_enroll_pt,Prevalence of mcare_ptb_enroll: Sample= Part-time,mcare_ptb_enroll,mean,1,weight,l2died==0& workcat == 3
+p_mcare_ptd_enroll_all,Prevalence of mcare_ptd_enroll: Sample= all,mcare_ptd_enroll,mean,1,weight,l2died==0
+p_mcare_ptd_enroll_m,Prevalence of mcare_ptd_enroll: Sample= male,mcare_ptd_enroll,mean,1,weight,l2died==0& male == 1
+p_mcare_ptd_enroll_f,Prevalence of mcare_ptd_enroll: Sample= female,mcare_ptd_enroll,mean,1,weight,l2died==0& male == 0
+p_mcare_ptd_enroll_educ1,Prevalence of mcare_ptd_enroll: Sample= Educlvl = 1,mcare_ptd_enroll,mean,1,weight,l2died==0& educ1 == 1
+p_mcare_ptd_enroll_educ2,Prevalence of mcare_ptd_enroll: Sample= Educlvl = 2,mcare_ptd_enroll,mean,1,weight,l2died==0& educ2 == 1
+p_mcare_ptd_enroll_educ3,Prevalence of mcare_ptd_enroll: Sample= Educlvl = 3,mcare_ptd_enroll,mean,1,weight,l2died==0& educ3 == 1
+p_mcare_ptd_enroll_educ4,Prevalence of mcare_ptd_enroll: Sample= Educlvl = 4,mcare_ptd_enroll,mean,1,weight,l2died==0& educ4 == 1
+p_mcare_ptd_enroll_ft,Prevalence of mcare_ptd_enroll: Sample= Full-time,mcare_ptd_enroll,mean,1,weight,l2died==0& workcat == 4
+p_mcare_ptd_enroll_pt,Prevalence of mcare_ptd_enroll: Sample= Part-time,mcare_ptd_enroll,mean,1,weight,l2died==0& workcat == 3
+p_inscat1_all,Prevalence of inscat1: Sample= all,inscat1,mean,1,weight,l2died==0
+p_inscat1_m,Prevalence of inscat1: Sample= male,inscat1,mean,1,weight,l2died==0& male == 1
+p_inscat1_f,Prevalence of inscat1: Sample= female,inscat1,mean,1,weight,l2died==0& male == 0
+p_inscat1_educ1,Prevalence of inscat1: Sample= Educlvl = 1,inscat1,mean,1,weight,l2died==0& educ1 == 1
+p_inscat1_educ2,Prevalence of inscat1: Sample= Educlvl = 2,inscat1,mean,1,weight,l2died==0& educ2 == 1
+p_inscat1_educ3,Prevalence of inscat1: Sample= Educlvl = 3,inscat1,mean,1,weight,l2died==0& educ3 == 1
+p_inscat1_educ4,Prevalence of inscat1: Sample= Educlvl = 4,inscat1,mean,1,weight,l2died==0& educ4 == 1
+p_inscat1_ft,Prevalence of inscat1: Sample= Full-time,inscat1,mean,1,weight,l2died==0& workcat == 4
+p_inscat1_pt,Prevalence of inscat1: Sample= Part-time,inscat1,mean,1,weight,l2died==0& workcat == 3
+p_inscat2_all,Prevalence of inscat2: Sample= all,inscat2,mean,1,weight,l2died==0
+p_inscat2_m,Prevalence of inscat2: Sample= male,inscat2,mean,1,weight,l2died==0& male == 1
+p_inscat2_f,Prevalence of inscat2: Sample= female,inscat2,mean,1,weight,l2died==0& male == 0
+p_inscat2_educ1,Prevalence of inscat2: Sample= Educlvl = 1,inscat2,mean,1,weight,l2died==0& educ1 == 1
+p_inscat2_educ2,Prevalence of inscat2: Sample= Educlvl = 2,inscat2,mean,1,weight,l2died==0& educ2 == 1
+p_inscat2_educ3,Prevalence of inscat2: Sample= Educlvl = 3,inscat2,mean,1,weight,l2died==0& educ3 == 1
+p_inscat2_educ4,Prevalence of inscat2: Sample= Educlvl = 4,inscat2,mean,1,weight,l2died==0& educ4 == 1
+p_inscat2_ft,Prevalence of inscat2: Sample= Full-time,inscat2,mean,1,weight,l2died==0& workcat == 4
+p_inscat2_pt,Prevalence of inscat2: Sample= Part-time,inscat2,mean,1,weight,l2died==0& workcat == 3
+p_inscat3_all,Prevalence of inscat3: Sample= all,inscat3,mean,1,weight,l2died==0
+p_inscat3_m,Prevalence of inscat3: Sample= male,inscat3,mean,1,weight,l2died==0& male == 1
+p_inscat3_f,Prevalence of inscat3: Sample= female,inscat3,mean,1,weight,l2died==0& male == 0
+p_inscat3_educ1,Prevalence of inscat3: Sample= Educlvl = 1,inscat3,mean,1,weight,l2died==0& educ1 == 1
+p_inscat3_educ2,Prevalence of inscat3: Sample= Educlvl = 2,inscat3,mean,1,weight,l2died==0& educ2 == 1
+p_inscat3_educ3,Prevalence of inscat3: Sample= Educlvl = 3,inscat3,mean,1,weight,l2died==0& educ3 == 1
+p_inscat3_educ4,Prevalence of inscat3: Sample= Educlvl = 4,inscat3,mean,1,weight,l2died==0& educ4 == 1
+p_inscat3_ft,Prevalence of inscat3: Sample= Full-time,inscat3,mean,1,weight,l2died==0& workcat == 4
+p_inscat3_pt,Prevalence of inscat3: Sample= Part-time,inscat3,mean,1,weight,l2died==0& workcat == 3
+i_cancre_all,Incidence of cancre: Sample= all,cancre,mean,1,weight,l2died==0&l2cancre==0
+i_cancre_m,Incidence of cancre: Sample= male,cancre,mean,1,weight,l2died==0&l2cancre==0& male == 1
+i_cancre_f,Incidence of cancre: Sample= female,cancre,mean,1,weight,l2died==0&l2cancre==0& male == 0
+i_cancre_educ1,Incidence of cancre: Sample= Educlvl = 1,cancre,mean,1,weight,l2died==0&l2cancre==0& educ1 == 1
+i_cancre_educ2,Incidence of cancre: Sample= Educlvl = 2,cancre,mean,1,weight,l2died==0&l2cancre==0& educ2 == 1
+i_cancre_educ3,Incidence of cancre: Sample= Educlvl = 3,cancre,mean,1,weight,l2died==0&l2cancre==0& educ3 == 1
+i_cancre_educ4,Incidence of cancre: Sample= Educlvl = 4,cancre,mean,1,weight,l2died==0&l2cancre==0& educ4 == 1
+i_cancre_ft,Incidence of cancre: Sample= Full-time,cancre,mean,1,weight,l2died==0&l2cancre==0& workcat == 4
+i_cancre_pt,Incidence of cancre: Sample= Part-time,cancre,mean,1,weight,l2died==0&l2cancre==0& workcat == 3
+i_diabe_all,Incidence of diabe: Sample= all,diabe,mean,1,weight,l2died==0&l2diabe==0
+i_diabe_m,Incidence of diabe: Sample= male,diabe,mean,1,weight,l2died==0&l2diabe==0& male == 1
+i_diabe_f,Incidence of diabe: Sample= female,diabe,mean,1,weight,l2died==0&l2diabe==0& male == 0
+i_diabe_educ1,Incidence of diabe: Sample= Educlvl = 1,diabe,mean,1,weight,l2died==0&l2diabe==0& educ1 == 1
+i_diabe_educ2,Incidence of diabe: Sample= Educlvl = 2,diabe,mean,1,weight,l2died==0&l2diabe==0& educ2 == 1
+i_diabe_educ3,Incidence of diabe: Sample= Educlvl = 3,diabe,mean,1,weight,l2died==0&l2diabe==0& educ3 == 1
+i_diabe_educ4,Incidence of diabe: Sample= Educlvl = 4,diabe,mean,1,weight,l2died==0&l2diabe==0& educ4 == 1
+i_diabe_ft,Incidence of diabe: Sample= Full-time,diabe,mean,1,weight,l2died==0&l2diabe==0& workcat == 4
+i_diabe_pt,Incidence of diabe: Sample= Part-time,diabe,mean,1,weight,l2died==0&l2diabe==0& workcat == 3
+i_hearte_all,Incidence of hearte: Sample= all,hearte,mean,1,weight,l2died==0&l2hearte==0
+i_hearte_m,Incidence of hearte: Sample= male,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 1
+i_hearte_f,Incidence of hearte: Sample= female,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 0
+i_hearte_educ1,Incidence of hearte: Sample= Educlvl = 1,hearte,mean,1,weight,l2died==0&l2hearte==0& educ1 == 1
+i_hearte_educ2,Incidence of hearte: Sample= Educlvl = 2,hearte,mean,1,weight,l2died==0&l2hearte==0& educ2 == 1
+i_hearte_educ3,Incidence of hearte: Sample= Educlvl = 3,hearte,mean,1,weight,l2died==0&l2hearte==0& educ3 == 1
+i_hearte_educ4,Incidence of hearte: Sample= Educlvl = 4,hearte,mean,1,weight,l2died==0&l2hearte==0& educ4 == 1
+i_hearte_ft,Incidence of hearte: Sample= Full-time,hearte,mean,1,weight,l2died==0&l2hearte==0& workcat == 4
+i_hearte_pt,Incidence of hearte: Sample= Part-time,hearte,mean,1,weight,l2died==0&l2hearte==0& workcat == 3
+i_hibpe_all,Incidence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0&l2hibpe==0
+i_hibpe_m,Incidence of hibpe: Sample= male,hibpe,mean,1,weight,l2died==0&l2hibpe==0& male == 1
+i_hibpe_f,Incidence of hibpe: Sample= female,hibpe,mean,1,weight,l2died==0&l2hibpe==0& male == 0
+i_hibpe_educ1,Incidence of hibpe: Sample= Educlvl = 1,hibpe,mean,1,weight,l2died==0&l2hibpe==0& educ1 == 1
+i_hibpe_educ2,Incidence of hibpe: Sample= Educlvl = 2,hibpe,mean,1,weight,l2died==0&l2hibpe==0& educ2 == 1
+i_hibpe_educ3,Incidence of hibpe: Sample= Educlvl = 3,hibpe,mean,1,weight,l2died==0&l2hibpe==0& educ3 == 1
+i_hibpe_educ4,Incidence of hibpe: Sample= Educlvl = 4,hibpe,mean,1,weight,l2died==0&l2hibpe==0& educ4 == 1
+i_hibpe_ft,Incidence of hibpe: Sample= Full-time,hibpe,mean,1,weight,l2died==0&l2hibpe==0& workcat == 4
+i_hibpe_pt,Incidence of hibpe: Sample= Part-time,hibpe,mean,1,weight,l2died==0&l2hibpe==0& workcat == 3
+i_lunge_all,Incidence of lunge: Sample= all,lunge,mean,1,weight,l2died==0&l2lunge==0
+i_lunge_m,Incidence of lunge: Sample= male,lunge,mean,1,weight,l2died==0&l2lunge==0& male == 1
+i_lunge_f,Incidence of lunge: Sample= female,lunge,mean,1,weight,l2died==0&l2lunge==0& male == 0
+i_lunge_educ1,Incidence of lunge: Sample= Educlvl = 1,lunge,mean,1,weight,l2died==0&l2lunge==0& educ1 == 1
+i_lunge_educ2,Incidence of lunge: Sample= Educlvl = 2,lunge,mean,1,weight,l2died==0&l2lunge==0& educ2 == 1
+i_lunge_educ3,Incidence of lunge: Sample= Educlvl = 3,lunge,mean,1,weight,l2died==0&l2lunge==0& educ3 == 1
+i_lunge_educ4,Incidence of lunge: Sample= Educlvl = 4,lunge,mean,1,weight,l2died==0&l2lunge==0& educ4 == 1
+i_lunge_ft,Incidence of lunge: Sample= Full-time,lunge,mean,1,weight,l2died==0&l2lunge==0& workcat == 4
+i_lunge_pt,Incidence of lunge: Sample= Part-time,lunge,mean,1,weight,l2died==0&l2lunge==0& workcat == 3
+i_stroke_all,Incidence of stroke: Sample= all,stroke,mean,1,weight,l2died==0&l2stroke==0
+i_stroke_m,Incidence of stroke: Sample= male,stroke,mean,1,weight,l2died==0&l2stroke==0& male == 1
+i_stroke_f,Incidence of stroke: Sample= female,stroke,mean,1,weight,l2died==0&l2stroke==0& male == 0
+i_stroke_educ1,Incidence of stroke: Sample= Educlvl = 1,stroke,mean,1,weight,l2died==0&l2stroke==0& educ1 == 1
+i_stroke_educ2,Incidence of stroke: Sample= Educlvl = 2,stroke,mean,1,weight,l2died==0&l2stroke==0& educ2 == 1
+i_stroke_educ3,Incidence of stroke: Sample= Educlvl = 3,stroke,mean,1,weight,l2died==0&l2stroke==0& educ3 == 1
+i_stroke_educ4,Incidence of stroke: Sample= Educlvl = 4,stroke,mean,1,weight,l2died==0&l2stroke==0& educ4 == 1
+i_stroke_ft,Incidence of stroke: Sample= Full-time,stroke,mean,1,weight,l2died==0&l2stroke==0& workcat == 4
+i_stroke_pt,Incidence of stroke: Sample= Part-time,stroke,mean,1,weight,l2died==0&l2stroke==0& workcat == 3
+i_died_all,Incidence of died: Sample= all,died,mean,1,weight,l2died==0&l2died==0
+i_died_m,Incidence of died: Sample= male,died,mean,1,weight,l2died==0&l2died==0& male == 1
+i_died_f,Incidence of died: Sample= female,died,mean,1,weight,l2died==0&l2died==0& male == 0
+i_died_educ1,Incidence of died: Sample= Educlvl = 1,died,mean,1,weight,l2died==0&l2died==0& educ1 == 1
+i_died_educ2,Incidence of died: Sample= Educlvl = 2,died,mean,1,weight,l2died==0&l2died==0& educ2 == 1
+i_died_educ3,Incidence of died: Sample= Educlvl = 3,died,mean,1,weight,l2died==0&l2died==0& educ3 == 1
+i_died_educ4,Incidence of died: Sample= Educlvl = 4,died,mean,1,weight,l2died==0&l2died==0& educ4 == 1
+i_died_ft,Incidence of died: Sample= Full-time,died,mean,1,weight,l2died==0&l2died==0& workcat == 4
+i_died_pt,Incidence of died: Sample= Part-time,died,mean,1,weight,l2died==0&l2died==0& workcat == 3
+p_smokev_all,Prevalence of smokev: Sample= all,smokev,mean,1,weight,l2died==0
+p_smokev_m,Prevalence of smokev: Sample= male,smokev,mean,1,weight,l2died==0& male == 1
+p_smokev_f,Prevalence of smokev: Sample= female,smokev,mean,1,weight,l2died==0& male == 0
+p_smokev_educ1,Prevalence of smokev: Sample= Educlvl = 1,smokev,mean,1,weight,l2died==0& educ1 == 1
+p_smokev_educ2,Prevalence of smokev: Sample= Educlvl = 2,smokev,mean,1,weight,l2died==0& educ2 == 1
+p_smokev_educ3,Prevalence of smokev: Sample= Educlvl = 3,smokev,mean,1,weight,l2died==0& educ3 == 1
+p_smokev_educ4,Prevalence of smokev: Sample= Educlvl = 4,smokev,mean,1,weight,l2died==0& educ4 == 1
+p_smokev_ft,Prevalence of smokev: Sample= Full-time,smokev,mean,1,weight,l2died==0& workcat == 4
+p_smokev_pt,Prevalence of smokev: Sample= Part-time,smokev,mean,1,weight,l2died==0& workcat == 3
+p_smoken_all,Prevalence of smoken: Sample= all,smoken,mean,1,weight,l2died==0
+p_smoken_m,Prevalence of smoken: Sample= male,smoken,mean,1,weight,l2died==0& male == 1
+p_smoken_f,Prevalence of smoken: Sample= female,smoken,mean,1,weight,l2died==0& male == 0
+p_smoken_educ1,Prevalence of smoken: Sample= Educlvl = 1,smoken,mean,1,weight,l2died==0& educ1 == 1
+p_smoken_educ2,Prevalence of smoken: Sample= Educlvl = 2,smoken,mean,1,weight,l2died==0& educ2 == 1
+p_smoken_educ3,Prevalence of smoken: Sample= Educlvl = 3,smoken,mean,1,weight,l2died==0& educ3 == 1
+p_smoken_educ4,Prevalence of smoken: Sample= Educlvl = 4,smoken,mean,1,weight,l2died==0& educ4 == 1
+p_smoken_ft,Prevalence of smoken: Sample= Full-time,smoken,mean,1,weight,l2died==0& workcat == 4
+p_smoken_pt,Prevalence of smoken: Sample= Part-time,smoken,mean,1,weight,l2died==0& workcat == 3
+a_bmi_all,Average of bmi: Sample= all,bmi,mean,1,weight,l2died==0
+a_bmi_m,Average of bmi: Sample= male,bmi,mean,1,weight,l2died==0& male == 1
+a_bmi_f,Average of bmi: Sample= female,bmi,mean,1,weight,l2died==0& male == 0
+a_bmi_educ1,Average of bmi: Sample= Educlvl = 1,bmi,mean,1,weight,l2died==0& educ1 == 1
+a_bmi_educ2,Average of bmi: Sample= Educlvl = 2,bmi,mean,1,weight,l2died==0& educ2 == 1
+a_bmi_educ3,Average of bmi: Sample= Educlvl = 3,bmi,mean,1,weight,l2died==0& educ3 == 1
+a_bmi_educ4,Average of bmi: Sample= Educlvl = 4,bmi,mean,1,weight,l2died==0& educ4 == 1
+a_bmi_ft,Average of bmi: Sample= Full-time,bmi,mean,1,weight,l2died==0& workcat == 4
+a_bmi_pt,Average of bmi: Sample= Part-time,bmi,mean,1,weight,l2died==0& workcat == 3
+p_srh1_all,Prevalence of srh1: Sample= all,srh1,mean,1,weight,l2died==0
+p_srh1_m,Prevalence of srh1: Sample= male,srh1,mean,1,weight,l2died==0& male == 1
+p_srh1_f,Prevalence of srh1: Sample= female,srh1,mean,1,weight,l2died==0& male == 0
+p_srh1_educ1,Prevalence of srh1: Sample= Educlvl = 1,srh1,mean,1,weight,l2died==0& educ1 == 1
+p_srh1_educ2,Prevalence of srh1: Sample= Educlvl = 2,srh1,mean,1,weight,l2died==0& educ2 == 1
+p_srh1_educ3,Prevalence of srh1: Sample= Educlvl = 3,srh1,mean,1,weight,l2died==0& educ3 == 1
+p_srh1_educ4,Prevalence of srh1: Sample= Educlvl = 4,srh1,mean,1,weight,l2died==0& educ4 == 1
+p_srh1_ft,Prevalence of srh1: Sample= Full-time,srh1,mean,1,weight,l2died==0& workcat == 4
+p_srh1_pt,Prevalence of srh1: Sample= Part-time,srh1,mean,1,weight,l2died==0& workcat == 3
+p_srh2_all,Prevalence of srh2: Sample= all,srh2,mean,1,weight,l2died==0
+p_srh2_m,Prevalence of srh2: Sample= male,srh2,mean,1,weight,l2died==0& male == 1
+p_srh2_f,Prevalence of srh2: Sample= female,srh2,mean,1,weight,l2died==0& male == 0
+p_srh2_educ1,Prevalence of srh2: Sample= Educlvl = 1,srh2,mean,1,weight,l2died==0& educ1 == 1
+p_srh2_educ2,Prevalence of srh2: Sample= Educlvl = 2,srh2,mean,1,weight,l2died==0& educ2 == 1
+p_srh2_educ3,Prevalence of srh2: Sample= Educlvl = 3,srh2,mean,1,weight,l2died==0& educ3 == 1
+p_srh2_educ4,Prevalence of srh2: Sample= Educlvl = 4,srh2,mean,1,weight,l2died==0& educ4 == 1
+p_srh2_ft,Prevalence of srh2: Sample= Full-time,srh2,mean,1,weight,l2died==0& workcat == 4
+p_srh2_pt,Prevalence of srh2: Sample= Part-time,srh2,mean,1,weight,l2died==0& workcat == 3
+p_srh3_all,Prevalence of srh3: Sample= all,srh3,mean,1,weight,l2died==0
+p_srh3_m,Prevalence of srh3: Sample= male,srh3,mean,1,weight,l2died==0& male == 1
+p_srh3_f,Prevalence of srh3: Sample= female,srh3,mean,1,weight,l2died==0& male == 0
+p_srh3_educ1,Prevalence of srh3: Sample= Educlvl = 1,srh3,mean,1,weight,l2died==0& educ1 == 1
+p_srh3_educ2,Prevalence of srh3: Sample= Educlvl = 2,srh3,mean,1,weight,l2died==0& educ2 == 1
+p_srh3_educ3,Prevalence of srh3: Sample= Educlvl = 3,srh3,mean,1,weight,l2died==0& educ3 == 1
+p_srh3_educ4,Prevalence of srh3: Sample= Educlvl = 4,srh3,mean,1,weight,l2died==0& educ4 == 1
+p_srh3_ft,Prevalence of srh3: Sample= Full-time,srh3,mean,1,weight,l2died==0& workcat == 4
+p_srh3_pt,Prevalence of srh3: Sample= Part-time,srh3,mean,1,weight,l2died==0& workcat == 3
+p_srh4_all,Prevalence of srh4: Sample= all,srh4,mean,1,weight,l2died==0
+p_srh4_m,Prevalence of srh4: Sample= male,srh4,mean,1,weight,l2died==0& male == 1
+p_srh4_f,Prevalence of srh4: Sample= female,srh4,mean,1,weight,l2died==0& male == 0
+p_srh4_educ1,Prevalence of srh4: Sample= Educlvl = 1,srh4,mean,1,weight,l2died==0& educ1 == 1
+p_srh4_educ2,Prevalence of srh4: Sample= Educlvl = 2,srh4,mean,1,weight,l2died==0& educ2 == 1
+p_srh4_educ3,Prevalence of srh4: Sample= Educlvl = 3,srh4,mean,1,weight,l2died==0& educ3 == 1
+p_srh4_educ4,Prevalence of srh4: Sample= Educlvl = 4,srh4,mean,1,weight,l2died==0& educ4 == 1
+p_srh4_ft,Prevalence of srh4: Sample= Full-time,srh4,mean,1,weight,l2died==0& workcat == 4
+p_srh4_pt,Prevalence of srh4: Sample= Part-time,srh4,mean,1,weight,l2died==0& workcat == 3
+p_srh5_all,Prevalence of srh5: Sample= all,srh5,mean,1,weight,l2died==0
+p_srh5_m,Prevalence of srh5: Sample= male,srh5,mean,1,weight,l2died==0& male == 1
+p_srh5_f,Prevalence of srh5: Sample= female,srh5,mean,1,weight,l2died==0& male == 0
+p_srh5_educ1,Prevalence of srh5: Sample= Educlvl = 1,srh5,mean,1,weight,l2died==0& educ1 == 1
+p_srh5_educ2,Prevalence of srh5: Sample= Educlvl = 2,srh5,mean,1,weight,l2died==0& educ2 == 1
+p_srh5_educ3,Prevalence of srh5: Sample= Educlvl = 3,srh5,mean,1,weight,l2died==0& educ3 == 1
+p_srh5_educ4,Prevalence of srh5: Sample= Educlvl = 4,srh5,mean,1,weight,l2died==0& educ4 == 1
+p_srh5_ft,Prevalence of srh5: Sample= Full-time,srh5,mean,1,weight,l2died==0& workcat == 4
+p_srh5_pt,Prevalence of srh5: Sample= Part-time,srh5,mean,1,weight,l2died==0& workcat == 3
+p_srh3p_all,Prevalence of srh3p: Sample= all,srh3p,mean,1,weight,l2died==0
+p_srh3p_m,Prevalence of srh3p: Sample= male,srh3p,mean,1,weight,l2died==0& male == 1
+p_srh3p_f,Prevalence of srh3p: Sample= female,srh3p,mean,1,weight,l2died==0& male == 0
+p_srh3p_educ1,Prevalence of srh3p: Sample= Educlvl = 1,srh3p,mean,1,weight,l2died==0& educ1 == 1
+p_srh3p_educ2,Prevalence of srh3p: Sample= Educlvl = 2,srh3p,mean,1,weight,l2died==0& educ2 == 1
+p_srh3p_educ3,Prevalence of srh3p: Sample= Educlvl = 3,srh3p,mean,1,weight,l2died==0& educ3 == 1
+p_srh3p_educ4,Prevalence of srh3p: Sample= Educlvl = 4,srh3p,mean,1,weight,l2died==0& educ4 == 1
+p_srh3p_ft,Prevalence of srh3p: Sample= Full-time,srh3p,mean,1,weight,l2died==0& workcat == 4
+p_srh3p_pt,Prevalence of srh3p: Sample= Part-time,srh3p,mean,1,weight,l2died==0& workcat == 3
+p_srh2l_all,Prevalence of srh2l: Sample= all,srh2l,mean,1,weight,l2died==0
+p_srh2l_m,Prevalence of srh2l: Sample= male,srh2l,mean,1,weight,l2died==0& male == 1
+p_srh2l_f,Prevalence of srh2l: Sample= female,srh2l,mean,1,weight,l2died==0& male == 0
+p_srh2l_educ1,Prevalence of srh2l: Sample= Educlvl = 1,srh2l,mean,1,weight,l2died==0& educ1 == 1
+p_srh2l_educ2,Prevalence of srh2l: Sample= Educlvl = 2,srh2l,mean,1,weight,l2died==0& educ2 == 1
+p_srh2l_educ3,Prevalence of srh2l: Sample= Educlvl = 3,srh2l,mean,1,weight,l2died==0& educ3 == 1
+p_srh2l_educ4,Prevalence of srh2l: Sample= Educlvl = 4,srh2l,mean,1,weight,l2died==0& educ4 == 1
+p_srh2l_ft,Prevalence of srh2l: Sample= Full-time,srh2l,mean,1,weight,l2died==0& workcat == 4
+p_srh2l_pt,Prevalence of srh2l: Sample= Part-time,srh2l,mean,1,weight,l2died==0& workcat == 3

@@ -1,0 +1,512 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   16.0   Copyright 1985-2019 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+Single-user Stata perpetual license:
+       Serial number:  401606204723
+         Licensed to:  Nik Lomax
+                       The University of Leeds
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do "reweight_ELSA_stock.do" 
+
+. clear all
+
+. 
+. quietly include ../../../fem_env.do
+
+. 
+. * Name of the scenario
+. local file : env scen
+
+. 
+. log using reweight_ELSA_stock_`file'.log, replace
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /home/ld-archer/Documents/E_FEM/trunk/FEM_Stata/Makedata/ELSA/rewe
+> ight_ELSA_stock_smoken.log
+  log type:  text
+ opened on:  18 Nov 2019, 13:22:09
+
+. 
+. *use ../../../input_data/ELSA_stock_`file'.dta, clear
+. use $outdata/ELSA_stock_`file'.dta, clear
+
+. 
+. drop if age < 51
+(316 observations deleted)
+
+. 
+. * Merge the stock population with the projections by sex, age and year
+. *merge m:1 male age year using ../../../input_data/pop_projections.dta, keep(
+> matched)
+. merge m:1 male age year using $outdata/pop_projections.dta, keep(matched)
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             0
+    matched                            10,116  (_merge==3)
+    -----------------------------------------
+
+. 
+. keep if year == 2012
+(0 observations deleted)
+
+. 
+. * Check the merge
+. tab _merge
+
+                 _merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+            matched (3) |     10,116      100.00      100.00
+------------------------+-----------------------------------
+                  Total |     10,116      100.00
+
+. drop _merge
+
+. 
+. * Generate the weighting var from cross-sectional weight var
+. gen weight = .
+(10,116 missing values generated)
+
+. 
+. * Nested for loops to calculate the denominator and in turn the weight value
+. forvalues age = 51/90 {
+  2.         forvalues male = 0/1 {
+  3.                 sum cwtresp if age == `age' & male == `male'
+  4.                 scalar denom = r(sum)
+  5.                 replace weight = (cwtresp * v)/denom if age == `age' & mal
+> e == `male'
+  6.         }
+  7. }
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        101     1.53745     1.13894          0   5.228424
+(101 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         60    2.663719    1.357526          0   6.092765
+(60 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        116    1.406255    1.138467          0   4.510633
+(116 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         76    2.721296    1.421727          0   5.754531
+(76 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        126    1.438598    1.312923          0   4.992368
+(126 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         83    2.189494    1.428513          0   6.016502
+(83 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        144    1.398132    1.356771          0   5.526315
+(144 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         77    2.369869    1.382217          0   5.650476
+(77 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        149      1.5725    1.289018          0   6.080075
+(149 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         88    2.331692    1.340081          0   5.351623
+(88 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        191     .617394    .4377642          0   1.602003
+(191 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        123    .9132632    .4677518          0   1.971312
+(123 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        218     .761169    .3578678          0   1.742475
+(218 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        182    .8877308    .3909758          0    1.62266
+(182 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        225    .7229017     .375986          0   1.929903
+(225 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        189    .8429131    .4307624          0    2.06422
+(189 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        199    .6707064    .3835627          0   1.792402
+(199 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        177     .796395     .481685          0   1.882976
+(177 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        233    .6958262    .4144418          0   1.938768
+(233 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        176     .833325    .4607407          0   1.954325
+(176 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        191    .7685571    .3167268          0   2.003733
+(191 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        183    .7422072    .4942962          0   2.830317
+(183 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        197    .7372707    .2796735          0   1.389924
+(197 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        180     .779914    .4248483          0   1.800294
+(180 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        198    .7532203    .2696412          0   1.602763
+(198 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        178    .8740486    .4640522          0   2.525926
+(178 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        233    .7436048    .2489003          0   1.582779
+(233 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        185    .8439586     .370287          0   2.313617
+(185 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        245    .7795919    .2727781          0   1.873098
+(245 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        212    .7329614    .4059565          0   2.472534
+(212 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        210    .7491011    .2516734          0   1.859319
+(210 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        223    .7055261    .3681542          0   2.062936
+(223 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        147    .7126754    .2372171          0     1.2048
+(147 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        152    .7522378    .3445782          0   2.117519
+(152 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        185    .7055712    .2130605          0   1.364274
+(185 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        166    .7922643    .3179055          0   1.592407
+(166 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        159    .7638876    .2372099          0   1.452116
+(159 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        141    .7548817    .2556263          0   1.628202
+(141 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        141    .7630681    .2076021          0   1.426063
+(141 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        137     .731429    .2991924          0   1.625567
+(137 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        146     .750642    .2867783          0   2.363871
+(146 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        125    .7381588    .3277223          0   2.176075
+(125 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        163    .7403545    .2716771          0    1.69186
+(163 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        120    .8149427    .3056671          0   2.394449
+(120 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        123     .764548    .1800815          0   1.391729
+(123 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        120    .7623272    .3015221          0   1.574934
+(120 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        134    .7278902    .2533345          0   1.787343
+(134 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        124     .761878    .2780138          0   1.783698
+(124 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        147    .6817374    .2209945          0    1.51472
+(147 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        142      .73698    .3223431          0   2.109022
+(142 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        145    .6611083    .1847208          0   1.629432
+(145 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        116     .701905    .2460823          0   1.751524
+(116 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        153    .6777165    .2271004          0   1.608344
+(153 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        105    .6960707    .2339032          0   1.496892
+(105 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        123    .6917598    .1875919          0   1.613875
+(123 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         88    .7010031    .2008819          0   1.211483
+(88 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         93    .6840226    .2256961          0   1.315603
+(93 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         88    .6516898    .3178155          0   1.686609
+(88 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         75    .9234571    .3921765          0   1.836748
+(75 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         77    .8410046    .3837017          0   1.827971
+(77 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         80    .8794765    .3616972          0   2.264739
+(80 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         74    .7918482    .4871614          0   2.335386
+(74 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         90    .9368783    .3713125          0   2.055344
+(90 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         57    .8657644    .4620327          0   1.978326
+(57 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         73    .9082102    .3157395          0   2.076494
+(73 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         60    .8454272    .4483759          0   2.010953
+(60 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         66    .9086857    .2541291          0   1.734936
+(66 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         37    .9064466    .3315138          0   1.730278
+(37 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         58     .877518    .3326997          0   1.860812
+(58 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         37    .7511313    .3349473          0   1.453583
+(37 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         45     .988425    .4260298          0   2.070792
+(45 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         37    .9218069    .2798126          0   1.561129
+(37 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         44    1.004214    .4023251          0   2.262143
+(44 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         37    .8295912    .2548845          0   1.360842
+(37 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         27    .8827405    .4179371          0   1.941499
+(27 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         27    .8360193    .3618897          0   1.883267
+(27 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         33    1.074762    .4881315          0   2.208829
+(33 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         24    .8136228    .3563043          0   1.599531
+(24 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |        145    .9010417    .5634192          0   3.025822
+(145 real changes made)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     cwtresp |         62    .7787936    .3523606          0   1.771369
+(62 real changes made)
+
+. 
+. if "`file'" == "base" {
+.         *saveold ../../../input_data/ELSA_stock.dta, replace v(12)
+.         saveold $outdata/ELSA_stock.dta, replace v(12)
+. } 
+
+. else {
+.         *saveold ../../../input_data/ELSA_stock_`file'.dta, replace v(12)
+.         saveold $outdata/ELSA_stock_`file'.dta, replace v(12)
+(saving in Stata 12 format, which can be read by Stata 11 or 12)
+file /home/ld-archer/Documents/E_FEM/trunk/input_data/ELSA_stock_smoken.dta sav
+> ed
+. }
+
+. 
+. capture log close
+
+. 
+end of do-file

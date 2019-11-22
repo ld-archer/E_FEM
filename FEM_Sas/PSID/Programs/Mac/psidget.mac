@@ -1,0 +1,245 @@
+/* psidget.mac
+   macros used in retrieving variables from PSID individual and/or
+   family files
+
+   There are lists of variables from PSID web site that provide
+   all the raw variable names for a given survey question or measure.
+   
+   To find them go to Data Center, Cross year search, then find the 
+   variable of interest at the left and click on the small "i" at the end
+   of the variable text (following the checkbox)
+
+   This opens a window that shows the codebook entry for the measure,
+   and if it's available across years, the list of raw variable names
+   corresponding to the measure for all years available.
+
+   The list looks like:
+   [84]V10877 [85]V11991 [86]V13417 [87]V14513 [88]V15993 [89]V17390 
+   [90]V18721 [91]V20021 [92]V21321 [93]V23180 [94]ER3853 [95]ER6723 
+   [96]ER8969 [97]ER11723 [99]ER15447 [01]ER19612 [03]ER23009 [05]ER26990 
+   [07]ER38202 [09]ER44175
+   
+   The macros included here are:
+      famget: loops through all the fam files pulling variables and merging 
+              to a sample file (individual level)
+              Uses: sqlone, sqlst
+      sqlone: makes the sql command to link one years fam file to an indiv file
+      sqlst:  takes a list of vars separated by spaces and puts commas between 
+              them, as needed by sql.
+      yrmacv: makes year-specific macro variables listing raw fam file vars for
+               a particular year
+      selectv: selects the variables from the raw variable list (as above),
+               for years requested, dropping the [yy] text.
+
+************************************************************************/
+/** sqlone MACRO pulls variables from a year's family file and matches to
+	individuals by family number, adding individual ID.
+	It makes the create table statement for a PROC SQL step.
+	Multiple %sqlone's can be run within one PROC SQL which is more
+	efficient that running multiple PROC SQL steps.
+	The resulting file is called famYY and is ordered by ID.
+
+	The arguments are:
+	    yy  =        year of family file (e.g., 72 for fam72)
+	    famfn  =     name of family file, e.g., base.fam72
+	    varlist  =   list of variables to be selected for famYY file,
+			  e.g., %quote(&varl72). %quote is necessary if
+                          &varl72 contains any commas, which it will if
+			  there is more than one 72 variable
+	    sampfn  =    name of sample file, which should contain
+								   individuals as observations. It must include the
+									 famnumYY (year specific family number) and individual ID.
+			famnum = year specific family number
+	Example of use:
+	   data ind;
+	      set clean.ind1 (keep=id famnum68-famnum92);
+	   run;
+	   proc sql;
+	      %sqlone(68,base.fam68,%quote(&varl68),ind);
+	      %sqlone(69,base.fam69,%quote(&varl69),ind);
+		...
+	      %sqlone(92,base.fam92,%quote(&varl92),ind);
+
+	Alternatively you could replace &varlYY with a single variable, and
+	rename the variable at the same time:
+	      %sqlone(68,base.fam68,v439 as famwt,ind);
+
+	If doing multiple years, see the famget macro.
+************************************************************************/
+%macro sqlone(yy,famfn,varlist,sampfn,famnum=);
+
+%if .&varlist ne . %then %do;
+   create table fam&yy as
+      select samp.id,fam.*
+      from &sampfn samp, 
+           &famfn (keep=&famnum &varlist) fam 
+      where samp.famnum&yy = fam.&famnum and fam.&famnum ne .
+      order samp.id
+   ;
+%end;
+%mend sqlone;
+
+/**** famget macro
+      macro to pull family file data and merge to individuals in the FU
+      using sql.  
+      First run yrvlist to make year-specific vars[yy] macro variables that
+      list all fam file variables to be pulled. Concordant cross-year 
+      variable lists can be obtained from the PSID-website and yrvlist
+      is set up to work from these.
+
+      Parameters: 
+         famlib: libname where fam files are
+         indiv:  name of the individual file. Must have id=famnum68*1000+pn68
+                 and famnum[yy] variables with year-specific fam interview id
+         begy=:  begin year, default is 1968
+         endy=:  end year, default is &maxyr (assumed to be set to latest year)
+         famid=: list of family interview ids for each year requested.  These
+                 must be in the right order. These will be renamed to famnum[yy]
+         fname=: name of family file. default is fam[yy] before 1994 and
+                 fam[yy]er from 1994 forward
+     Produces fam[yy] file for each year, sorted by id.
+     
+     Example of use: %famget(raw,ind1,begy=1999,endy=2009,famid=&famfid);
+              where &famfid is a list of raw variable names for the year-
+              specific family ID on the family files.
+              
+************************************************************************/
+%macro famget(famlib,indiv,begy=1968,endy=&maxyr,famid=,fname=);
+    
+    %if %length(&fname)=0 %then %let defaultnm=1;
+    %else %let defaultnm=0;
+    
+    %let famct=1;  %* will count fam files sequentially;
+    %do year=&begy %to &endy;
+    
+        %if (&year ge 1968 and &year le 1997) or
+            (&year>1997 and %index(13579,%substr(&year,4,1))>0) %then %do;
+        
+            %let yr=%substr(&year,3);
+            %let yrlist=&&&vars&yr;  %* get list of raw fam file vars for yr;
+            
+            %* make family file name;
+            
+            %if &year>1993 %then %let er=er;
+            %else %let er=;
+            %if &defaultnm=1 %then %let fname=fam&year&er;
+    
+            %sqlone(&yr,&famlib..&fname,&yrlist,&indiv.,
+                    famnum=%scan(&famid,&famct));  /* get 19&yr. family vars */
+            
+            %let famct=%eval(&famct+1);
+        %end;
+     %end; %***** do year = ;
+%mend famget;
+
+/** yrmacv MACRO makes variable lists by year as macro variables:
+    vars[yy], e.g., vars99, vars01, vars03, etc.
+    from a list of variables grouped by concept, e.g., head's race
+
+    yrmacv would be run to add the valid variables to each year's list.  You'd 
+    repeat this for all the concepts you wanted to pull; yrmacv will append 
+    variables to each year's list.
+
+    The year-specific variable list will be used to pull the selected variables
+    from the PSID family files.
+    
+    yrmacv takes as arguments:
+       - the conceptual variable list, e.g., for self-reported health status of head:
+     %let hdshlthin=[84]V10877 [85]V11991 [86]V13417 [87]V14513 [88]V15993 [89]V17390 
+               [90]V18721 [91]V20021 [92]V21321 [93]V23180 [94]ER3853 [95]ER6723 
+               [96]ER8969 [97]ER11723 [99]ER15447 [01]ER19612 [03]ER23009 [05]ER26990 
+               [07]ER38202 [09]ER44175;
+
+    You provide the begin and end years you want to pull and yrmacv will only
+    make vars[yy] macro variables for those years.  THe default is all years,
+    1968 to maxyr (a macro variable for the latest year).
+    For example using hdshlthin above, %yrvlist(&hdshlthin,begy=2005,endy=2009)
+       would make &vars05=ER26990
+                  &vars07=ER38202
+                  &vars09=ER44175
+    To pull data from all years use: %yrvlist(&hdshlthin)
+************************************************************************/
+%macro yrmacv (vartxt,begy=1968,endy=&maxyr);
+
+  %do year=&begy %to &endy;
+      %let yr=%substr(&year,3);
+      %global vars&yr;
+  %end;
+  
+  %let nv=1;
+  %let nxtv=%scan(&vartxt,&nv,%str( ));
+  %do %while (%length(&nxtv)>0);
+
+      %* parse the token;
+      %let yr=%substr(&nxtv,2,2);
+      
+      %* make yr 4-digits ;
+      %if &yr<68 %then %let year=20&yr;
+      %else %let year=19&yr;
+      
+      %* select the years specified and ignore the rest;
+      %if &year ge &begy and &year le &endy %then %do;
+          %let vnm=%substr(&nxtv,5);
+          %if "%upcase(&vnm)" ne "DUMMY" %then %let vars&yr=&&vars&yr &vnm;  /* vars84=&vars84 V10877; */
+      %end;
+      
+      %let nv=%eval(&nv+1);
+      %let nxtv=%scan(&vartxt,&nv,%str( ));
+      
+  %end;
+%mend yrmacv;
+
+/*** selectv macro
+     makes a list of variables from text copied from the PSID website
+     that looks like:
+     %let hdshlthin=[84]V10877 [85]V11991 [86]V13417 [87]V14513 [88]V15993 [89]V17390 
+               [90]V18721 [91]V20021 [92]V21321 [93]V23180 [94]ER3853 [95]ER6723 
+               [96]ER8969 [97]ER11723 [99]ER15447 [01]ER19612 [03]ER23009 [05]ER26990 
+               [07]ER38202 [09]ER44175;
+     
+     It makes a list of variables without the [yy] text, including
+     only those for years requested by begy and endy
+     
+     Usage example: %let hdshlth=%selectv(%quote(&hdshlthin),begy=1999);
+************************************************************************/
+%macro selectv(vartxt,begy=1968,endy=&maxyr);
+
+  %let nv=1;
+  %let nxtv=%scan(&vartxt,&nv,%str( ));
+  %do %while (%length(&nxtv)>0);
+
+      %* parse the token;
+      %let yr=%substr(&nxtv,2,2);
+      
+      %* make yr 4-digits ;
+      %if &yr<68 %then %let year=20&yr;
+      %else %let year=19&yr;
+      
+      %* select the years specified and ignore the rest;
+      %if &year ge &begy and &year le &endy %then %do;
+          %let vnm=%substr(&nxtv,5);
+          &vnm 
+      %end;
+      
+      %let nv=%eval(&nv+1);
+      %let nxtv=%scan(&vartxt,&nv,%str( ));
+      
+  %end;
+
+%mend selectv;
+
+/* sqlist macro
+   puts commas in a list of variables
+*/
+%macro sqlist (vartxt);
+  %let nv=1;
+  %let avar=%scan(&vartxt,&nv);
+  %let comma=;
+  %do %while (%length(&avar)>0);
+      &comma &avar
+      %let nv=%eval(&nv+1);
+      %let avar = %scan(&vartxt,&nv);
+      %let comma=,;
+  %end;
+%mend;
+

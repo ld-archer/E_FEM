@@ -1,0 +1,133 @@
+   value hlprel
+   2="2.Sp"
+   3,6="3,6.OwnKid"
+   4,7="4,7.Step"
+   5,8="5,8.Inlaw"
+   9="9.Gkid"
+   10-14="10-14.Parents"
+   15-18="15-18.Sib"
+   19="19.othrel"
+   20-25="other/emp/prof"
+   27="27.ExSp"
+   28="28.UnlistedKid"
+   30-31="30-31.formerkid"
+   33="33.Gkid Sp"
+   90-91="AmbiguousKid";
+   
+   value reltrn
+   1,2,26="20"
+   3,6="1"
+   4,7="2"
+   5,8="6"
+   9,33="3"
+   10-14="10"
+   15,17="8"
+   16,18="9"
+   19="11"
+   20-22,27,29="12"
+   23-25="5"
+   28,90="7"
+   30,31="16"
+   32,91="97"
+   ;
+
+   value reltrnA
+   10="20" /* spouse */
+   11="1"  /* own kid */
+   12="6" /* kid in law */
+   13="7"  /* DK kid */
+   14="2"  /* step kid */
+   15="16" /* ex inlaw/step */
+   21,22="3" /* grandkid */
+   31="8"    /* sib */
+   32="9"   /* sib inlaw */
+   41="10"  /* parent */
+   51,52="11" /* oth rel */
+   61,62,71-73,97="12" /* other */
+   98,99="97" /* unknown */
+   ;
+
+   value kid_opnF
+   0="0.Rel oth HHM, oth found"
+   1="1.Related to self"
+   2="2.Other related to another"
+   3="3.another related to self"
+   4="4.related to each other"
+   5="5.another not found"
+   9="9.Other not found";
+   
+   value gkpar
+      1="1.Par OPN given,not found"
+      2="2.Par=deceased"
+      3="3.Par OPN found"
+      4="4.Par OPN ne GK Sp PAR OPN"
+      8="8.Not GK but OPN given"
+      9="9.missing Par OPN"
+      ;
+   value hrskidL
+      0="0.No related kid id/no Kidid"
+      1="1.No related kid id/has Kidid"
+      2="2.GK par-no id/has Kidid"
+      3="3.GK-Sp par-no id/has Kidid"
+      4="4.No related kid id/just H-kidid"
+      10="10.Related id found/no Kidid"
+      11="11.Related id found/has Kidid"
+      12="12.GK par-rel id/has Kidid"
+      13="13.GK-Sp par-rel id/has Kidid"
+      19="19.No Kid Link"
+      20="20.Related kid id found-not AddSP/no Kidid"
+      21="21.Related kid id found-not AddSP/has Kidid"
+      42="42.GK par-Related kidid-not AddSP/has Kidid"
+      32="32.GK par=Related kidid/has Kidid"
+      ;      
+   value relx
+      0="0.HP rel ne KRREL/kid-gk"
+      1="1.HP rel = KRREL"
+      2="2.HP rel ne KRREL/not kid-gk"
+      3="3.HP rel ne KRREL/both own-step"
+      7="7.KRREL missing"
+      8="8.No KidID"
+      9="9.HP rel missing"
+      ;
+   value hptype   
+   1="1. Gkid"
+   2="2. Gkid Sp"
+  11="11.Un-linked Kid"
+  ; 
+   value amtper
+   1="1.per month"
+   2="2.per week"
+   3="3.per day"
+   5="5.per year"
+   .D=".D: DK"
+   .R=".R: Ref"
+   .U=".U: Unmarried"
+   .M=".M: other missing"
+   ;
+   value hlpsex
+     1="1.Male"
+     2="2.Female"
+   .E=".E: employee, skip"
+   .H=".H: not helper"
+   .D=".D: DK"
+   .R=".R: Ref"
+   .U=".U: Unmarried"
+   .M=".M: other missing"
+   ;
+   
+   value sphlp
+   0="0.R spouse not a helper"
+   1="1.R spouse is one helper"
+   2="2.R spouse is only helper"
+   ;
+
+	value amtmoF
+	1="1. Continuous amount"
+	2="2. <100"
+	3="3. 100"
+	4="4. >100"
+	5="5. Missing"
+	6="6. No pay"
+	7="7. Don't know"
+	8="8. Others"
+	;

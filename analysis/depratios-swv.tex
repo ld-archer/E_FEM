@@ -1,0 +1,316 @@
+\documentclass{article}
+\usepackage{savetrees}
+\usepackage{hyperref}
+\usepackage[section]{placeins}
+\usepackage{url}
+
+\title{Dependency Ratios}
+
+\begin{document}
+\maketitle
+\listoftables
+\listoffigures
+
+\begin{Rcode}{!echo,hide}
+library(ggplot2)
+library(foreign)
+\end{Rcode}
+
+Population projections are from \url{http://www.census.gov/population/www/projections/files/nation/download/NP2008_D1.csv}
+
+\begin{Rcode}
+pop <- read.csv('NP2008_D1.csv')
+pop <- subset(pop, HISP==0 & RACE==0 & SEX==0)
+vec1864 <- paste('POP_', 18:64, sep='')
+vec1850 <- paste('POP_', 18:50, sep='')
+vec65p <- paste('POP_', 65:100, sep='')
+pop1864 <- by(pop, pop[,'YEAR'], function(x, a.names) sum(x[,a.names]), a.names=vec1864)
+pop1850 <- by(pop, pop[,'YEAR'], function(x, a.names) sum(x[,a.names]), a.names=vec1850)
+pop65p <- by(pop, pop[,'YEAR'], function(x, a.names) sum(x[,a.names]), a.names=vec65p)
+pops.df <- data.frame(pop1864=unlist(as.list(pop1864)), pop1850=unlist(as.list(pop1850)), pop65p=unlist(as.list(pop65p)))
+row.names(pops.df) <- names(as.list(pop1864))
+print(pops.df)
+\end{Rcode}
+
+\begin{Rcode}
+summ <- read.dta('../output/depratios/depratios_summary.dta')
+row.names(summ) <- summ[,'year']
+summ[,'pop1864'] <- pops.df[row.names(summ),1]/1e6
+summ[,'pop1850'] <- pops.df[row.names(summ),2]/1e6
+summ[,'pop65p'] <- pops.df[row.names(summ),3]/1e6
+summ <- subset(summ, year >= 2010 & !is.na(pop1864))
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=standard}
+ggplot(summ, aes(x=year)) + 
+geom_line(aes(y=pop_medicare_age/pop1864, colour='FEM Simulation')) + 
+geom_line(aes(y=pop65p/pop1864, colour='Census')) +
+opts(legend.position='bottom') + labs(y='OADR', colour='65+ Population Projection')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{standard}
+\caption{OADR: Age 65+ over Ages 18-64}
+\end{figure}
+
+\begin{Rcode}{savefig,label=qalystats}
+ggplot(summ, aes(x=year)) + 
+geom_line(aes(y=qaly_75Q, colour='75th Percentile')) + 
+geom_line(aes(y=qaly_50Q, colour='50th Percentile')) + 
+geom_line(aes(y=qaly, colour='Mean')) +
+geom_line(aes(y=qaly_25Q, colour='25th Percentile')) + 
+geom_line(aes(y=qaly_10Q, colour='10th Percentile')) + 
+opts(legend.position='bottom') + labs(colour='QALY Statistic', y='QALY')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{qalystats}
+\caption{QALY Over Time}
+\end{figure}
+
+\begin{Rcode}{savefig,label=qaly65}
+ggplot(summ, aes(x=year)) + 
+geom_line(aes(y=pop_medicare_age/pop1864, colour='FEM OADR')) + 
+geom_line(aes(y=ttl_qaly_under8_65/pop1864, colour='QALY <= 0.80')) + 
+geom_line(aes(y=ttl_qaly_under7_65/pop1864, colour='QALY <= 0.70')) + 
+geom_line(aes(y=ttl_qaly_under6_65/pop1864, colour='QALY <= 0.60')) + 
+geom_line(aes(y=ttl_qaly_under5_65/pop1864, colour='QALY <= 0.50')) +
+opts(legend.position='bottom') + labs(colour='Dependency Measure', y='Dependency Ratio')
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=qaly51}
+ggplot(summ, aes(x=year)) + 
+geom_line(aes(y=pop_medicare_age/pop1864, colour='FEM OADR')) + 
+geom_line(aes(y=ttl_qaly_under8_51/pop1850, colour='QALY <= 0.80')) +
+geom_line(aes(y=ttl_qaly_under7_51/pop1850, colour='QALY <= 0.70')) + 
+geom_line(aes(y=ttl_qaly_under6_51/pop1850, colour='QALY <= 0.60')) + 
+geom_line(aes(y=ttl_qaly_under5_51/pop1850, colour='QALY <= 0.50')) +
+ opts(legend.position='bottom') + labs(colour='Dependency Measure', y='Dependency Ratio')
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=qaly51nw}
+ggplot(summ, aes(x=year)) + 
+geom_line(aes(y=pop_medicare_age/pop1864, colour='FEM OADR')) + 
+geom_line(aes(y=ttl_qaly_under8_51_nw/pop1850, colour='QALY <= 0.80 and Not Working')) + 
+geom_line(aes(y=ttl_qaly_under7_51_nw/pop1850, colour='QALY <= 0.70 and Not Working')) + 
+geom_line(aes(y=ttl_qaly_under6_51_nw/pop1850, colour='QALY <= 0.60 and Not Working')) + 
+geom_line(aes(y=ttl_qaly_under5_51_nw/pop1850, colour='QALY <= 0.50 and Not Working')) +
+opts(legend.position='bottom') + labs(colour='Dependency Measure', y='Dependency Ratio')
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=disabled}
+ggplot(summ, aes(x=year)) + geom_line(aes(y=pop_medicare_age/pop1864, colour='FEM OADR')) + 
+geom_line(aes(y=pop_disability/pop1850, colour='Age 51+ and Any Disability')) + 
+geom_line(aes(y=ttl_adl3p/pop1850, colour='Age 51+ and ADL 3 or More')) + opts(legend.position='bottom') + labs(colour='Dependency Measure', y='Dependency Ratio')
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=qalyweighting}
+ggplot(summ, aes(x=year)) + geom_line(aes(y=pop_medicare_age/pop1864, colour='FEM OADR')) + 
+geom_line(aes(y=(pop_medicare_age - ttl_qaly65)/pop1864, colour='QALY-weighted FEM OADR')) + 
+opts(legend.position='bottom') + labs(colour='Dependency Measure', y='Dependency Ratio')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{qaly65}
+\caption{QALY Thresholds on Age 65+}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{qaly51}
+\caption{QALY Thresholds on Age 51+}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{qaly51nw}
+\caption{QALY Thresholds on Age 51+ and Not Working}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{disabled}
+\caption{Different Definitions of Disability}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{qalyweighting}
+\caption{QALY-weighted Population Ratios}
+\end{figure}
+
+\begin{Rcode}{savefig,label=prevelance2010a}
+s <- subset(summ, year==2010)
+xes <- seq(0.85, 0.35, -0.1)
+buckets <- seq(90,40,-10)
+
+cs <- as.numeric(s[,paste('cancre_q',buckets, sep='')])
+ds <- as.numeric(s[,paste('diabe_q', buckets, sep='')])
+hes <- as.numeric(s[,paste('hearte_q', buckets, sep='')])
+his <- as.numeric(s[,paste('hibpe_q', buckets, sep='')])
+ls <- as.numeric(s[,paste('lunge_q', buckets, sep='')])
+ss <- as.numeric(s[,paste('stroke_q', buckets, sep='')])
+is <- as.numeric(s[,paste('iadl1_q', buckets, sep='')])
+a1s <- as.numeric(s[,paste('adl1_q', buckets, sep='')])
+a3s <- as.numeric(s[,paste('adl3p_q', buckets, sep='')])
+ns <- as.numeric(s[,paste('nhmliv_q', buckets, sep='')])
+bs <- as.numeric(s[,paste('bmiGT30_q', buckets, sep='')])
+
+ggplot(s) +
+geom_line(aes(x=xes, y=cs, colour='Cancer'), na.rm=T) +
+geom_line(aes(x=xes, y=ds, colour='Diabetes'), na.rm=T) +
+geom_line(aes(x=xes, y=hes, colour='Heart Disease'), na.rm=T) +
+geom_line(aes(x=xes, y=his, colour='High Blood Pressure'), na.rm=T) +
+geom_line(aes(x=xes, y=ls, colour='Lung Disease'), na.rm=T) +
+geom_line(aes(x=xes, y=ss, colour='Stroke'), na.rm=T) +
+opts(legend.position='bottom') +
+xlab('QALY Bucket') +
+ylab('Prevelance') +
+scale_x_continuous(trans='reverse') +
+scale_y_continuous(breaks=seq(0,1,0.2)) +
+labs(colour='Health Condition')
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=prevelance2010b}
+ggplot(s) +
+geom_line(aes(x=xes, y=is, colour='IADL 1'), na.rm=T) +
+geom_line(aes(x=xes, y=a1s, colour='ADL 1'), na.rm=T) +
+geom_line(aes(x=xes, y=a3s, colour='ADL 3+'), na.rm=T) +
+geom_line(aes(x=xes, y=ns, colour='Nursing Home'), na.rm=T) +
+geom_line(aes(x=xes, y=bs, colour='BMI > 30'), na.rm=T) +
+opts(legend.position='bottom') +
+xlab('QALY Bucket') +
+ylab('Prevelance') +
+scale_x_continuous(trans='reverse') +
+scale_y_continuous(breaks=seq(0,1,0.2)) +
+labs(colour='Health Condition')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{prevelance2010a}
+\caption{Prevelance of Disease by QALY in 2010}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{prevelance2010b}
+\caption{Prevelance of Health Conditions by QALY in 2010}
+\end{figure}
+
+\begin{Rcode}{savefig,label=prevelance2050a}
+s <- subset(summ, year==2050)
+
+cs <- as.numeric(s[,paste('cancre_q',buckets, sep='')])
+ds <- as.numeric(s[,paste('diabe_q', buckets, sep='')])
+hes <- as.numeric(s[,paste('hearte_q', buckets, sep='')])
+his <- as.numeric(s[,paste('hibpe_q', buckets, sep='')])
+ls <- as.numeric(s[,paste('lunge_q', buckets, sep='')])
+ss <- as.numeric(s[,paste('stroke_q', buckets, sep='')])
+is <- as.numeric(s[,paste('iadl1_q', buckets, sep='')])
+a1s <- as.numeric(s[,paste('adl1_q', buckets, sep='')])
+a3s <- as.numeric(s[,paste('adl3p_q', buckets, sep='')])
+ns <- as.numeric(s[,paste('nhmliv_q', buckets, sep='')])
+bs <- as.numeric(s[,paste('bmiGT30_q', buckets, sep='')])
+
+ggplot(s) +
+geom_line(aes(x=xes, y=cs, colour='Cancer'), na.rm=T) +
+geom_line(aes(x=xes, y=ds, colour='Diabetes'), na.rm=T) +
+geom_line(aes(x=xes, y=hes, colour='Heart Disease'), na.rm=T) +
+geom_line(aes(x=xes, y=his, colour='High Blood Pressure'), na.rm=T) +
+geom_line(aes(x=xes, y=ls, colour='Lung Disease'), na.rm=T) +
+geom_line(aes(x=xes, y=ss, colour='Stroke'), na.rm=T) +
+opts(legend.position='bottom') +
+xlab('QALY Bucket') +
+ylab('Prevelance') +
+scale_x_continuous(trans='reverse') +
+scale_y_continuous(breaks=seq(0,1,0.2)) +
+labs(colour='Health Condition')
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=prevelance2050b}
+ggplot(s) +
+geom_line(aes(x=xes, y=is, colour='IADL 1'), na.rm=T) +
+geom_line(aes(x=xes, y=a1s, colour='ADL 1'), na.rm=T) +
+geom_line(aes(x=xes, y=a3s, colour='ADL 3+'), na.rm=T) +
+geom_line(aes(x=xes, y=ns, colour='Nursing Home'), na.rm=T) +
+geom_line(aes(x=xes, y=bs, colour='BMI > 30'), na.rm=T) +
+opts(legend.position='bottom') +
+xlab('QALY Bucket') +
+ylab('Prevelance') +
+scale_x_continuous(trans='reverse') +
+scale_y_continuous(breaks=seq(0,1,0.2)) +
+labs(colour='Health Condition')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{prevelance2050a}
+\caption{Prevelance of Disease by QALY in 2050}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{prevelance2050b}
+\caption{Prevelance of Health Conditions by QALY in 2050}
+\end{figure}
+
+\begin{Rcode}{savefig,label=prevelanceevolutionA}
+conds <- c('cancre','diabe','hearte','hibpe','lunge','stroke')
+condlist <- c(paste(conds, '_qLT60', sep=''), paste(conds, '_qLT70', sep=''), paste(conds, '_qLT80', sep=''), paste(conds, '_qLT90', sep=''))
+
+
+dat.l <- lapply(condlist, FUN=function(c, s) data.frame(year=as.numeric(s[,'year']),
+                                                        val=s[,c],
+							qaly.thresh=paste('QALY <= 0.', substr(c,nchar(c)-1, nchar(c)), sep=''),
+							condition=strsplit(c,'_')[[1]][1]), s=summ)
+dat <- do.call(rbind, dat.l)
+ggplot(dat, aes(x=year, y=val)) + 
+geom_line(aes(colour=condition)) +
+scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2)) +
+facet_wrap( ~ qaly.thresh) +
+labs(colour='Health Condition', x='Year', y='Prevelance') +
+opts(legend.position='bottom')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{prevelanceevolutionA}
+\caption{Evolution of Prevelance by QALY Upper Threshold}
+\end{figure}
+
+\begin{Rcode}{savefig,label=prevelanceevolutionB}
+conds <- c('iadl1','adl1','adl3p','nhmliv', 'bmiGT30')
+condlist <- c(paste(conds, '_qLT60', sep=''), paste(conds, '_qLT70', sep=''), paste(conds, '_qLT80', sep=''), paste(conds, '_qLT90', sep=''))
+
+
+dat.l <- lapply(condlist, FUN=function(c, s) data.frame(year=as.numeric(s[,'year']),
+                                                        val=s[,c],
+							qaly.thresh=paste('QALY <= 0.', substr(c,nchar(c)-1, nchar(c)), sep=''),
+							condition=strsplit(c,'_')[[1]][1]), s=summ)
+dat <- do.call(rbind, dat.l)
+ggplot(dat, aes(x=year, y=val)) + 
+geom_line(aes(colour=condition)) +
+scale_y_continuous(limits=c(0,1), breaks=seq(0,1,0.2)) +
+facet_wrap( ~ qaly.thresh) +
+labs(colour='Health Condition', x='Year', y='Prevelance') +
+opts(legend.position='bottom')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{prevelanceevolutionB}
+\caption{Evolution of Prevelance by QALY Upper Threshold}
+\end{figure}
+
+\begin{Statacode}{!echo,hide}
+use ../output/depratios/depratios_summary.dta
+keep year ttl_qaly_u* ttl_qaly_a*
+drop *_nw
+outsheet using depratios_survivor.csv, comma replace
+\end{Statacode}
+
+\end{document}

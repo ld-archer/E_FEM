@@ -1,0 +1,28 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+pop_medicare,Total Medicare Eligible Population (Millions),weight,sum,0.000001,1,l2died==0 & medicare_elig
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,l2died == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,l2died == 0 & mcare_ptb_enroll == 1
+m_startpop_all,startpop (millions): Sample = all,weight,sum,0.000001,1,l2died == 0
+m_startpop_5564,startpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,l2died == 0& age >= 55 & age < 64
+m_startpop_65p,startpop (millions): Sample = age 65 plus,weight,sum,0.000001,1,l2died == 0& age >= 65
+m_endpop_all,endpop (millions): Sample = all,weight,sum,0.000001,1,died == 0
+m_endpop_5564,endpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,died == 0& age >= 55 & age < 64
+m_endpop_65p,endpop (millions): Sample = age 65 plus,weight,sum,0.000001,1,died == 0& age >= 65
+t_totmd_all,Total of totmd: Sample= all,totmd,sum,1,weight,died==0
+t_totmd_5564,Total of totmd: Sample= age 55 to 64,totmd,sum,1,weight,died==0& age >= 55 & age < 64
+t_totmd_65p,Total of totmd: Sample= age 65 plus,totmd,sum,1,weight,died==0& age >= 65
+t_mcare_all,Total of mcare: Sample= all,mcare,sum,1,weight,died==0
+t_mcare_5564,Total of mcare: Sample= age 55 to 64,mcare,sum,1,weight,died==0& age >= 55 & age < 64
+t_mcare_65p,Total of mcare: Sample= age 65 plus,mcare,sum,1,weight,died==0& age >= 65
+t_caidmd_all,Total of caidmd: Sample= all,caidmd,sum,1,weight,died==0
+t_caidmd_5564,Total of caidmd: Sample= age 55 to 64,caidmd,sum,1,weight,died==0& age >= 55 & age < 64
+t_caidmd_65p,Total of caidmd: Sample= age 65 plus,caidmd,sum,1,weight,died==0& age >= 65
+dt_totmd_all,Total of totmd: Sample= all,totmd,sum,1,weight,l2died==0&died==1
+dt_totmd_5564,Total of totmd: Sample= age 55 to 64,totmd,sum,1,weight,l2died==0&died==1& age >= 55 & age < 64
+dt_totmd_65p,Total of totmd: Sample= age 65 plus,totmd,sum,1,weight,l2died==0&died==1& age >= 65
+dt_mcare_all,Total of mcare: Sample= all,mcare,sum,1,weight,l2died==0&died==1
+dt_mcare_5564,Total of mcare: Sample= age 55 to 64,mcare,sum,1,weight,l2died==0&died==1& age >= 55 & age < 64
+dt_mcare_65p,Total of mcare: Sample= age 65 plus,mcare,sum,1,weight,l2died==0&died==1& age >= 65
+dt_caidmd_all,Total of caidmd: Sample= all,caidmd,sum,1,weight,l2died==0&died==1
+dt_caidmd_5564,Total of caidmd: Sample= age 55 to 64,caidmd,sum,1,weight,l2died==0&died==1& age >= 55 & age < 64
+dt_caidmd_65p,Total of caidmd: Sample= age 65 plus,caidmd,sum,1,weight,l2died==0&died==1& age >= 65

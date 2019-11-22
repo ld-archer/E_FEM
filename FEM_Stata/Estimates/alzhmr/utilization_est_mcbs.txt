@@ -1,0 +1,183 @@
+                         	              doctim   	              hsptim   	              hspnit   
+doctim                   	                       	                       	                       
+age75p                   	             -0.0123***	                       	                       
+                         	            (0.0021)   	                       	                       
+age75l                   	              0.0574***	                       	                       
+                         	            (0.0048)   	                       	                       
+Male                     	             -0.1129***	                       	                       
+                         	            (0.0178)   	                       	                       
+Black                    	             -0.1931***	                       	                       
+                         	            (0.0387)   	                       	                       
+Hispanic                 	             -0.0881** 	                       	                       
+                         	            (0.0417)   	                       	                       
+Less than high school    	             -0.1208***	                       	                       
+                         	            (0.0211)   	                       	                       
+Some college and above   	              0.0644***	                       	                       
+                         	            (0.0198)   	                       	                       
+widowed                  	             -0.1308***	                       	                       
+                         	            (0.0183)   	                       	                       
+single                   	             -0.1041***	                       	                       
+                         	            (0.0326)   	                       	                       
+Cancer                   	              0.3091***	                       	                       
+                         	            (0.0200)   	                       	                       
+Diabetes                 	              0.3002***	                       	                       
+                         	            (0.0436)   	                       	                       
+Hypertension             	              0.2235***	                       	                       
+                         	            (0.0239)   	                       	                       
+Heart disease            	              0.5123***	                       	                       
+                         	            (0.0298)   	                       	                       
+Lung disease             	              0.2301***	                       	                       
+                         	            (0.0217)   	                       	                       
+Stroke                   	              0.0827*  	                       	                       
+                         	            (0.0472)   	                       	                       
+Living in nursing home   	             -3.5080***	                       	                       
+                         	            (0.3782)   	                       	                       
+ADL 3 or more-Not in nursing home	              0.1641***	                       	                       
+                         	            (0.0317)   	                       	                       
+SR Alzheimers            	             -0.0628   	                       	                       
+                         	            (0.0438)   	                       	                       
+adl3_alzhmr              	             -0.1163   	                       	                       
+                         	            (0.0920)   	                       	                       
+Eligable for Medicare due to disablity	              0.6551***	                       	                       
+                         	            (0.0708)   	                       	                       
+Died                     	             -0.3429***	                       	                       
+                         	            (0.0792)   	                       	                       
+diabe_hearte             	             -0.0869** 	                       	                       
+                         	            (0.0403)   	                       	                       
+diabe_hibpe              	             -0.0189   	                       	                       
+                         	            (0.0454)   	                       	                       
+hibpe_hearte             	             -0.1099***	                       	                       
+                         	            (0.0343)   	                       	                       
+hibpe_stroke             	             -0.0046   	                       	                       
+                         	            (0.0536)   	                       	                       
+diclaim_died             	             -0.5558*  	                       	                       
+                         	            (0.2924)   	                       	                       
+diclaim_nhmliv           	              0.8168   	                       	                       
+                         	            (1.0339)   	                       	                       
+died_nhmliv              	              0.1372   	                       	                       
+                         	            (0.5690)   	                       	                       
+Constant                 	             -2.4330***	                       	                       
+                         	            (0.3435)   	                       	                       
+hsptim                   	                       	                       	                       
+age75p                   	                       	              0.0024   	                       
+                         	                       	            (0.0029)   	                       
+age75l                   	                       	              0.0311***	                       
+                         	                       	            (0.0057)   	                       
+Male                     	                       	              0.0365   	                       
+                         	                       	            (0.0297)   	                       
+Black                    	                       	              0.1379***	                       
+                         	                       	            (0.0450)   	                       
+Hispanic                 	                       	             -0.1895***	                       
+                         	                       	            (0.0569)   	                       
+Less than high school    	                       	              0.1376***	                       
+                         	                       	            (0.0324)   	                       
+Some college and above   	                       	             -0.0181   	                       
+                         	                       	            (0.0350)   	                       
+widowed                  	                       	              0.0368   	                       
+                         	                       	            (0.0347)   	                       
+single                   	                       	              0.0335   	                       
+                         	                       	            (0.0451)   	                       
+Cancer                   	                       	              0.2361***	                       
+                         	                       	            (0.0314)   	                       
+Diabetes                 	                       	              0.2931***	                       
+                         	                       	            (0.0876)   	                       
+Hypertension             	                       	              0.1478***	                       
+                         	                       	            (0.0465)   	                       
+Heart disease            	                       	              0.5332***	                       
+                         	                       	            (0.0502)   	                       
+Lung disease             	                       	              0.3004***	                       
+                         	                       	            (0.0320)   	                       
+Stroke                   	                       	              0.3810***	                       
+                         	                       	            (0.0639)   	                       
+Living in nursing home   	                       	              0.5728***	                       
+                         	                       	            (0.0949)   	                       
+ADL 3 or more-Not in nursing home	                       	              0.4896***	                       
+                         	                       	            (0.0446)   	                       
+SR Alzheimers            	                       	              0.0478   	                       
+                         	                       	            (0.0693)   	                       
+adl3_alzhmr              	                       	             -0.0208   	                       
+                         	                       	            (0.1097)   	                       
+Eligable for Medicare due to disablity	                       	              0.5380***	                       
+                         	                       	            (0.0895)   	                       
+Died                     	                       	              1.1180***	                       
+                         	                       	            (0.0419)   	                       
+diabe_hearte             	                       	             -0.0351   	                       
+                         	                       	            (0.0700)   	                       
+diabe_hibpe              	                       	              0.0732   	                       
+                         	                       	            (0.0792)   	                       
+hibpe_hearte             	                       	             -0.0149   	                       
+                         	                       	            (0.0610)   	                       
+hibpe_stroke             	                       	             -0.1276*  	                       
+                         	                       	            (0.0745)   	                       
+diclaim_died             	                       	             -0.4057** 	                       
+                         	                       	            (0.1689)   	                       
+diclaim_nhmliv           	                       	              0.5390** 	                       
+                         	                       	            (0.2286)   	                       
+died_nhmliv              	                       	             -0.8192***	                       
+                         	                       	            (0.1089)   	                       
+Constant                 	                       	             -4.1542***	                       
+                         	                       	            (0.4108)   	                       
+hspnit                   	                       	                       	                       
+age75p                   	                       	                       	             -0.0012   
+                         	                       	                       	            (0.0046)   
+age75l                   	                       	                       	              0.0419***
+                         	                       	                       	            (0.0087)   
+Male                     	                       	                       	             -0.0347   
+                         	                       	                       	            (0.0489)   
+Black                    	                       	                       	              0.3164***
+                         	                       	                       	            (0.0648)   
+Hispanic                 	                       	                       	              0.0476   
+                         	                       	                       	            (0.1071)   
+Less than high school    	                       	                       	              0.0979*  
+                         	                       	                       	            (0.0516)   
+Some college and above   	                       	                       	             -0.1012*  
+                         	                       	                       	            (0.0567)   
+widowed                  	                       	                       	              0.0242   
+                         	                       	                       	            (0.0561)   
+single                   	                       	                       	              0.0054   
+                         	                       	                       	            (0.0751)   
+Cancer                   	                       	                       	              0.2611***
+                         	                       	                       	            (0.0524)   
+Diabetes                 	                       	                       	              0.1417   
+                         	                       	                       	            (0.1075)   
+Hypertension             	                       	                       	              0.0199   
+                         	                       	                       	            (0.0700)   
+Heart disease            	                       	                       	              0.4253***
+                         	                       	                       	            (0.0887)   
+Lung disease             	                       	                       	              0.2664***
+                         	                       	                       	            (0.0499)   
+Stroke                   	                       	                       	              0.3752***
+                         	                       	                       	            (0.0994)   
+Living in nursing home   	                       	                       	              0.9487***
+                         	                       	                       	            (0.1131)   
+ADL 3 or more-Not in nursing home	                       	                       	              0.6409***
+                         	                       	                       	            (0.0658)   
+SR Alzheimers            	                       	                       	             -0.1504   
+                         	                       	                       	            (0.1103)   
+adl3_alzhmr              	                       	                       	              0.1292   
+                         	                       	                       	            (0.1650)   
+Eligable for Medicare due to disablity	                       	                       	              0.5431***
+                         	                       	                       	            (0.1334)   
+Died                     	                       	                       	              1.5411***
+                         	                       	                       	            (0.0705)   
+diabe_hearte             	                       	                       	              0.0026   
+                         	                       	                       	            (0.1026)   
+diabe_hibpe              	                       	                       	              0.2713***
+                         	                       	                       	            (0.1051)   
+hibpe_hearte             	                       	                       	              0.0125   
+                         	                       	                       	            (0.0986)   
+hibpe_stroke             	                       	                       	             -0.0436   
+                         	                       	                       	            (0.1159)   
+diclaim_died             	                       	                       	             -0.2864   
+                         	                       	                       	            (0.2958)   
+diclaim_nhmliv           	                       	                       	              0.7932*  
+                         	                       	                       	            (0.4770)   
+died_nhmliv              	                       	                       	             -1.1205***
+                         	                       	                       	            (0.1721)   
+Constant                 	                       	                       	             -3.0785***
+                         	                       	                       	            (0.6318)   
+
+Adjusted R2              	                       	                       	                       
+N                        	              33,231   	              33,231   	              28,357   
+
+* p<0.10, ** p<0.05, *** p<0.01

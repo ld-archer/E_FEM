@@ -1,0 +1,52 @@
+/* macro to list variables:
+   pref    = first character of variable
+   sufxlst = list of stem characers of variables
+   
+   keyword parameters:
+   begwv = first wave to be listed, default=1
+   endwv = last wave to be listed, default=maxwv
+
+   all=N  default
+or all=Y  also adds [pref]A[sufx] variable to list.
+
+   e.g.,
+       %wvlist(R,mstat agey_b agey_e)
+   makes list:
+       R1MSTAT  R2MSTAT R3MSTAT R4MSTAT
+       R1AGEY_B  R2AGEY_B R3AGEY_B R4AGEY_B
+       R1AGEY_E  R2AGEY_E R3AGEY_E R4AGEY_E
+   and
+       %wvlist(R,hearte,all=Y)
+   makes list:
+       RAHEARTE R1HEARTE  R2HEARTE R3HEARTE R4HEARTE
+   and
+       %wvlist(R,hearts,begwv=2)
+   makes list:
+       R2HEARTS R3HEARTS R4HEARTS
+
+   This can be used to make lists of variables for freq tables, or means,
+   or keeps.
+*/
+
+%macro wvlist (pref,sufxlst,begwv=1,endwv=&maxwv,all=N);
+
+   %let ns=1;
+   %let sufx=%scan(&sufxlst,&ns);
+
+   %do %while (%length(&sufx)>0);
+
+      %if &all=Y %then %do;
+	  &pref.A&sufx
+      %end;
+
+      %do i=&begwv %to &endwv;
+	  &pref&i&sufx
+      %end;
+
+      %let ns=%eval(&ns+1);
+      %let sufx=%scan(&sufxlst,&ns);
+
+   %end;
+
+%mend;   
+

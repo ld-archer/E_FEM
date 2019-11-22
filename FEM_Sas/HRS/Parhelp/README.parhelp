@@ -1,0 +1,50 @@
+Parhelp: 
+   pull variables for hours of help given by R to own parents or inlaws
+   sum to total hours helped, all parents
+   include also:
+   - count of living parents, unmarried parents, parents living within 10 mi or cores
+   - parent age
+   - whether parents are alive H*PARLIV = count of living parents
+   - whether parent married, and whether married to each other.
+   - whether co-resident or lives within 10 mi of parent
+
+Program to run:
+
+parhelp.sas
+	Include files:
+		[root]/fem_env.sas - file to set up libnames, fmt/mac locations 
+		[root]/FEM_Sas/HRS/Mac/wvlist.mac - macro to list wave-specific vars (e.g., r*[stem])
+		[root]/FEM_Sas/HRS/Mac/wvlabel.mac - macro to label wave-specific vars (e.g., r*[stem])
+		
+	Input files:
+		/sch-stor1-a/data-library/public-data/HRS/SAS/rndhrs_k.sas7bdat
+		/sch-stor1-a/projects/public-data-projects/HRS/Datalib/Data/Parents/parents1b.sas7bdat
+		/sch-stor1-a/data-library/public-data/HRS/formats.sas7bcat [formats library]
+	
+	Output files:
+		[root]/input_data/parhelp.sas7bdat
+		[root]/input_data/parhelp.dta
+		
+	Key variables (* is the wave, 4-9; [yy] is year 98-08):
+   r*parhelphours	Total hours helped parents-own and inlaws
+   r*paralive 		Total # living parents-own and inlaws
+   r*parnotmar		Total # unmarried parents-own and inlaws
+   r*par10mi  		Total # parents living w/in 10 mi-own and inlaws
+
+   rm*alive				R mom whether alive
+   rf*alive				R dad whether alive
+   sm*alive				R mom-inlaw whether alive
+   sf*alive				R dad-inlaw whether alive
+              		
+   rm*married			R mom whether married and to whom
+   rf*married			R dad whether married and to whom
+   sm*married			R mom-inlaw whether married and to whom
+   sf*married			R dad-inlaw whether married and to whom
+            			
+   rm*liv10mi			R mom whether live within 10 mi
+   rf*liv10mi			R dad whether live within 10 mi
+   sm*liv10mi			R mom-inlaw whether live within 10 mi
+   sf*liv10mi			R dad-inlaw whether live within 10 mi
+
+Program to check things:
+	parhelpf.sas - runs some tables on parhelp variables	

@@ -1,0 +1,3 @@
+mstat1,"\multirow{6}{*}{Family} ","\multicolumn{1}{|l|}{\multirow{3}{*}{Marital status}}","single","prevalence","all"
+mstat2,"","\multicolumn{1}{|l|}{}","cohabitating","prevalence","all"
+mstat3,"","\multicolumn{1}{|l|}{}","married","prevalence","all"

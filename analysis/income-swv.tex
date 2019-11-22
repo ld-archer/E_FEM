@@ -1,0 +1,586 @@
+\documentclass{article}
+\usepackage{amsfonts}
+\usepackage{savetrees}
+\usepackage{hyperref}
+\usepackage[section]{placeins}
+\usepackage{verbatim}
+\usepackage{color}
+
+\title{Debugging FEM Economic Data}
+
+\begin{document}
+
+\begin{Rcode}{!echo,hide}
+library(foreign)
+library(ggplot2)
+stat_sum_single <- function(fun, geom='point', ...) { 
+  stat_summary(fun.y=fun, colour='red', geom=geom, size = 3, ...) 
+} 
+agegrp <- function(ages, levels=list(b60=0:60,
+f60to65=60:65, f65to70=65:70, f70to75=70:75,
+f75to80=75:80, f80to85=80:85, o85=85:200)) {
+ outvec <- 'none'
+ for(i in 1:length(levels)) {
+    outvec[min(levels[[i]]) <= ages & ages < max(levels[[i]])] <- names(levels)[i]
+  }
+  return(outvec)
+}
+\end{Rcode}
+
+\maketitle
+\listoftables
+\listoffigures
+
+\section{Variables of Interest}
+Table~\ref{tab:variables} shows the variables of interest along with quick descriptions. In addition to the variables presented, there are initial value variables (prefaced with an 'f'), lag value variables ('l'), and log-transformed variables ('log').
+\begin{table}[ht]
+\centering
+\caption{Economic Variables in the FEM}
+\begin{tabular}{|c|c|l|}\hline
+\textbf{Name} & \textbf{Range} & \textbf{Description} \\\hline
+anydb & $\{0, 1\}$ & any defined benefit from current job\\\hline
+anydc & $\{0,1\}$ & any defined contribution from current job\\\hline
+db\_tenure & $[-2, 54.5]$ & defined benefit tenure\\\hline
+dbage & $\mathbb{R}^+$ & age started claiming pension\\\hline
+dbclaim & $\{0,1\}$ & currently claiming defined benefit pension\\\hline
+dbpen & $\mathbb{R}^+$ & defined benefit pension amount\\\hline
+dcwlth & $\mathbb{R}^+$ & defined contribution wealth in thousands\\\hline
+dcwlthx & $\mathbb{R}^+$ & defined contribution wealth in thousands\\\hline
+diben & $\mathbb{R}^+$ & amount of disability insurance benefits\\\hline
+diclaim & $\{0, 1\}$& currently claiming SSDI\\\hline
+gross & $\mathbb{R}^+$ & gross income\\\hline
+hatota & $\mathbb{R}$ & household wealth in thousands\\\hline
+hatotax & $[0, 2000]$ & household wealth in thousands, capped\\\hline
+agi & $\mathbb{R}^+$ & estimated adjusted gross income\\\hline
+hhearn & $\mathbb{R}^+$ & total household earnings\\\hline
+hhttlinc & $\mathbb{R}^+$ & total household income, currently set equal to hhearn\\\hline
+hicap & $\mathbb{R}$ & estimated household capital income\\\hline
+hicap\_nonzero & $\{0, 1\}$ & hicap nonzero\\\hline
+iearn & $\mathbb{R}^+$ & individual earnings in thouseands\\\hline
+iearnx & $[0, 2000]$ & individual earnings in thousands, capped at 2000\\\hline
+isret & $\mathbb{R}^+$ & R SoCSec Retirement Income\\\hline
+net & $\mathbb{R}$ & net income\\\hline
+ry\_earn & $[0, 2000000]$ & iearnx * 1000\\\hline
+rssclyr & $\mathbb{R}^+$ & year person first claimed Social Security\\\hline
+ssben & $\mathbb{R}^+$ & SS benefits\\\hline
+ssclaim & $\{0, 1\}$ & currently claiming OASI\\\hline
+ssiben & $\mathbb{R}^+$ & SSI benefits\\\hline
+ssiclaim & $\mathbb{R}^+$ & currently claiming SSI\\\hline
+wlth\_nonzero & $\{0, 1\}$ & hatota nonzero\\\hline
+work & $\{0, 1\}$ & person currently working\\\hline
+\end{tabular}
+\label{tab:variables}
+\end{table}
+
+\section{Model Algorithm}
+
+\subsection{New Cohorts}
+\label{sec:new}
+\begin{itemize}
+\item all incoming cohorts have the same basic distribution of earnings, household wealth, and defined contribution plan wealth
+\item earnings data are inflated according to the NWI factor, which is the real growth in wages from the reference year to the year when the cohort enters the simulation
+\item household wealth data are inflated by CPI to the year when the cohort enters the simulation
+\item DC wealth is not modified
+\item household capital income is estimated via a linear regression
+\end{itemize}
+\subsubsection{Income Initialization}
+\label{sec:init}
+\begin{eqnarray}
+\rm fiearn &=& {\rm iearnx} * {\rm work}\\
+\rm fiearnx &=& \max\left(\min\left(200, {\rm fiearn}\right), 0\right)\\
+\rm flogiearn &=& {\rm arcsinh}\left(\rm fiearn\right)/100\\
+\rm flogiearnx &=& {\rm arcsinh}\left(\max\left(\min\left(200, {\rm fiearn}\right), 0\right)\right)\\
+\rm iearn &=& {\rm iearnx} * \Delta_{\rm NWI} * {\rm work}\\
+\rm iearnx &=& \max(\min(200, {\rm iearn}), 0)\\
+\rm logiearn &=& {\rm arcsinh}\left(\rm iearn\right)/100\\
+\rm logiearnx &=& {\rm arcsinh}\left(\rm iearnx\right)/100\\
+\rm gross &=& {\rm iearnx} * 1000 + {\rm iearnx}_{\rm spouse} * 1000
+\end{eqnarray}
+In addition, hicap\_nonzero and hicap are predicted by regression
+models.
+
+\subsubsection{Household Wealth Initialization}
+\begin{eqnarray}
+\rm hatotax &=& \min\left(2000, {\rm hatota}\right)\\
+\rm loghatota &=& {\rm arcsinh}\left(\rm hatota\right)/100\\
+\rm loghatatax &=& {\rm arcsinh}\left(\rm hatotax\right)/100
+\end{eqnarray}
+
+\subsubsection{Benefits Claiming Initialization}
+\begin{eqnarray}
+\rm rssclyr &=& \left\{ \begin{tabular}{ll}2100&{\rm
+      missing(rssclyr)}\\rssclyr&{\rm else}\end{tabular}\right.\\
+\rm ssclaim &=& {\rm rssclyr} \leq {\rm year}\\
+\rm rdbclyr &=& \left\{ \begin{tabular}{ll}2100&{\rm
+      missing(rdbclyr)}\\rdbclyr&{\rm else}\end{tabular}\right.\\
+\rm dbclaim &=& {\rm rdbclyr} \leq {\rm year}\\
+\rm ldiclaim &=& \rm diclaim
+\end{eqnarray}
+
+\subsection{Single Timestep Flow}
+Here are the different modules, in the order in which they are run,
+and the relevant encomic calculations done in each.
+
+\subsubsection{Health Module}
+The following regressions are run conditionally:
+\begin{tabular}{ll}
+dbclaim &if fanydb AND NOT ldbclaim\\
+ssclaim &if lage $\leq$ 68 AND NOT lssclaim AND
+    lage $\geq$ 60\\
+diclaim & if lage $<$ 63\\
+work &if lage $<$ 73\\
+\end{tabular}
+
+\subsubsection{Interventions Module}
+This module unconditionally runs the following regressions:
+\begin{tabular}{l}
+work\\
+wlth\_nonzero\\
+hicap\_nonzero\\
+\end{tabular}
+
+\subsubsection{Earnings Module}
+The following regressions are run and the derivative variables
+calculated as in \ref{sec:init}:
+\begin{tabular}{ll}
+hatota & if wlth\_nonzero\\
+hicap & if hicap\_nonzero\\
+iearn & if work\\
+\end{tabular}
+
+\subsubsection{Immigration Module}
+This module adjusts the weights of all the records according to the
+trends given in the scenario file.
+
+\subsubsection{Initialization Module}
+Here is where the calculations from Section~\ref{sec:new} actually
+take place.
+
+\subsubsection{Crossectional Module}
+In the alzheimers branch, this is where the quality adjusted life
+years cross-sectional model is run.
+
+\subsubsection{Economic Outcomes Module}
+The following are calculated for everyone:
+\begin{eqnarray}
+{\rm rssclyr} &=& \left\{\begin{tabular}{ll}year&if ssclaim\\2100&else\end{tabular}\right.\\
+{\rm ry\_earn} &=& {\rm iearnx} * 1000\\
+{\rm hhwealth} &=& {\rm hatotax} * 1000\\
+{\rm db\_tenure} &=& {\rm db\_tenure} + \Delta_T ~{\rm if work AND
+  fanydb}\\
+{\rm dbpen} &=& {\rm DbBenefit}()\\
+{\rm hhearn} &=& {\rm ry\_earn} + {\rm ry\_earn}_{\rm spouse}\\
+{\rm hhttlinc} &=& {\rm hhearn}
+\end{eqnarray}
+
+\subsubsection{Government Expenses Module}
+Government expenditures are generally benefits received by people:
+\begin{eqnarray}
+{\rm ssben} &=& \left\{\begin{tabular}{ll}12 * {\rm
+      SSCalculator.SSBenefit}&{\rm if ssclaim}\\0&{\rm
+      else}\end{tabular}\right.\\
+{\rm diben} &=& \left\{\begin{tabular}{ll}{\rm
+      GovExpModule.DiBenefit}&{\rm if diclaim}\\0&{\rm
+      else}\end{tabular}\right.\\
+{\rm ssiclaim} &=& \textbf{\color{red}POSSIBLE PROBLEM: CHECKING WITH IGOR}\\
+{\rm ssiben} &=& \left\{\begin{tabular}{ll}0&{\rm NOT
+      ssiclaim}\\450*12&{\rm age} < 65\\350*12&{\rm age} >=
+    65\end{tabular}\right.\\
+{\rm gross}&=&\\
+{\rm agi}&=&\\
+{\rm net}&=&
+\end{eqnarray}
+\textbf{\color{red} Should SSIBEN be calculated based on age or medicare
+  eligibility? Should it change via an inflating factor?}
+
+\subsubsection{Medical Costs Module}
+No economic variables are calculated here.
+
+\section{The Poverty Problem}
+
+\begin{Rcode}{!echo,savefig,label=exemptions}
+base <- read.dta('../output/ACA/summary.dta')
+base <- subset(base, year >= 2010)
+a <- base[,'ttl_mcare_pta_exempt'] / base[,'pop_medicare']
+b <- base[,'ttl_mcare_ptb_exempt'] / base[,'pop_medicare']
+dat <- data.frame(pta_exempt=a, ptb_exempt=b,
+ttl_ptb=base[,'ttl_mcare_ptb_exempt'], year=base[,'year'],
+pop=base[,'pop_medicare'])
+ggplot(dat, aes(x=year)) + 
+geom_line(aes(y=ptb_exempt, colour='Fraction')) + 
+geom_line(aes(y=ttl_ptb, colour='Total Exempt (M)')) +
+geom_line(aes(y=pop, colour='Medicare Eligible (M)')) +
+facet_grid(colour ~ ., scales='free_y') +
+opts(legend.position='bottom') + labs(colour='Series', y='')
+\end{Rcode}
+
+\begin{Rcode}{!echo,savefig,label=wlthnonzero}
+agesvec <- c('5059','6064','6569','7074','7579','80')
+wlthnames <- paste('fraction_wlth_nonzero_', agesvec, sep='')
+wlthnonzero = base[,c('year',wlthnames)]
+ggplot(wlthnonzero, aes(x=year, ymin=0, ymax=1)) +
+geom_line(aes(y=fraction_wlth_nonzero_5059, colour='50-59')) + 
+geom_line(aes(y=fraction_wlth_nonzero_6064, colour='60-64')) + 
+geom_line(aes(y=fraction_wlth_nonzero_6569, colour='65-69')) +
+geom_line(aes(y=fraction_wlth_nonzero_7074, colour='70-74')) +
+geom_line(aes(y=fraction_wlth_nonzero_7579, colour='75-79')) +
+geom_line(aes(y=fraction_wlth_nonzero_80, colour='80+')) +
+opts(legend.position='bottom') +
+labs(y='Fraction with Nonzero Wealth', colour='Age Group')
+\end{Rcode}
+
+\begin{Rcode}{!echo,savefig,label=hicapnonzero}
+agesvec <- c('5059','6064','6569','7074','7576','7677','7778','7879','7980','80')
+hicapnames <- paste('fraction_hicap_nonzero_', agesvec, sep='')
+hicapnonzero = base[,c('year',hicapnames)]
+ggplot(hicapnonzero, aes(x=year, ymin=0, ymax=1)) +
+geom_line(aes(y=fraction_hicap_nonzero_5059, colour='50-59')) + 
+geom_line(aes(y=fraction_hicap_nonzero_6064, colour='60-64')) + 
+geom_line(aes(y=fraction_hicap_nonzero_6569, colour='65-69')) +
+geom_line(aes(y=fraction_hicap_nonzero_7074, colour='70-74')) +
+geom_line(aes(y=fraction_hicap_nonzero_7576, colour='75-79')) +
+geom_line(aes(y=fraction_hicap_nonzero_7677, colour='75-79')) +
+geom_line(aes(y=fraction_hicap_nonzero_7778, colour='75-79')) +
+geom_line(aes(y=fraction_hicap_nonzero_7879, colour='75-79')) +
+geom_line(aes(y=fraction_hicap_nonzero_7980, colour='75-79')) +
+geom_line(aes(y=fraction_hicap_nonzero_80, colour='80+')) +
+opts(legend.position='bottom') +
+labs(y='Fraction with Nonzero Capital Income', colour='Age Group')
+\end{Rcode}
+
+\begin{Rcode}{!echo,savefig,label=exemptbyage}
+agesvec <- c('6569','7074','7579','80pp')
+exnames <- paste('ttl_mcare_pta_exempt', agesvec, sep='')
+popnames <- paste('ttl_mcare_pta_enroll', agesvec, sep='')
+exempt <- base[,c('year',exnames)]
+exempt[,exnames] <- exempt[,exnames] / base[,popnames]
+ggplot(exempt, aes(x=year, ymin=0, ymax=1)) +
+geom_line(aes(y=ttl_mcare_pta_exempt6569, colour='65-69')) +
+geom_line(aes(y=ttl_mcare_pta_exempt7074, colour='70-74')) +
+geom_line(aes(y=ttl_mcare_pta_exempt7579, colour='75-79')) +
+geom_line(aes(y=ttl_mcare_pta_exempt80pp, colour='80+')) +
+opts(legend.position='bottom') +
+labs(y='Fraction Exempt from Premium', colour='Age Group')
+\end{Rcode}
+
+\begin{Rcode}{!echo,savefig,label=poverty}
+y2010 <- read.dta('../output/ACA/detailed_output/y2010_rep1.dta')
+y2020 <- read.dta('../output/ACA/detailed_output/y2020_rep1.dta')
+y2030 <- read.dta('../output/ACA/detailed_output/y2030_rep1.dta')
+y2050 <- read.dta('../output/ACA/detailed_output/y2050_rep1.dta')
+pop <- rbind(y2010, y2020, y2030, y2050)
+pop <- subset(pop, ldied==0, select=c(year, age, poverty_level, weight))
+pop[,'agec'] <- agegrp(pop[,'age'])
+pop.split <- split(pop, list(pop[,'agec'], pop[,'year']))
+
+plevel <- sapply(pop.split, FUN=function(x)
+weighted.mean(x[,'poverty_level'], x[,'weight']))
+
+n <- do.call(rbind, strsplit(names(plevel), '.', fixed=T))
+f <- data.frame(poverty_level = plevel, agec=n[,1], year=n[,2])
+ggplot(f) + 
+geom_point(aes(x=agec, y=poverty_level, colour=year, ymin=0, ymax=1)) + 
+opts(legend.position='bottom')
+\end{Rcode}
+
+\begin{Rcode}{!echo,savefig,label=povertyfrac}
+pfrac <- sapply(pop.split, FUN=function(x) sum(subset(x, poverty_level
+<= 1.38)[,'weight'])/sum(x[,'weight']))
+
+g <- data.frame(poverty_fraction=pfrac, agec=n[,1], year=n[,2])
+ggplot(g) + 
+geom_point(aes(x=agec, y=poverty_fraction, colour=year, ymin=0, ymax=1)) + 
+opts(legend.position='bottom')
+\end{Rcode}
+
+\begin{Rcode}{!echo,savefig,label=oldincome}
+base <-  read.dta('../output/ACA/summary.dta')
+med.gross <- base[,c('year','gross_mcare')]
+hicap <- base[,c('year','hicap_mcare')]
+hatota <- base[,c('year','hatota')]
+lloghatotax <- base[,c('year','lloghatotax')]
+
+names(med.gross) <- c('year','Value')
+names(hicap) <- c('year','Value')
+names(hatota) <- c('year','Value')
+names(lloghatotax) <- c('year','Value')
+
+h.plus.g <- hicap
+h.plus.g[,'Value'] <- hicap[,'Value'] + med.gross[,'Value']
+
+med.gross[,'series'] <- 'Average Gross'
+hicap[,'series'] <- 'Average Capital Income'
+hatota[,'series'] <- 'Average Household Wealth'
+h.plus.g[,'series'] <- 'Average Gross plus Average Capital Income'
+lloghatotax[,'series'] <- 'Average Lag of Transformed HaToTaX'
+
+med.gross[,'scale'] <- 'small linear'
+hicap[,'scale'] <- 'small linear'
+hatota[,'scale'] <- 'large linear'
+h.plus.g[,'scale'] <- 'small linear'
+lloghatotax[,'scale'] <- 'log-ish'
+
+f <- rbind(med.gross, hicap, h.plus.g, hatota, lloghatotax)
+ggplot(f) + geom_line(aes(x=year, y=Value, colour=series)) +
+facet_grid(scale ~ ., scales='free_y') +
+opts(legend.position='bottom') + scale_colour_brewer(name='Income Source', 'Dark2')
+\end{Rcode}
+
+\begin{Rcode}{!echo,savefig,label=grossbreakdown}
+ggplot(base) + 
+geom_line(aes(x=year, y=ry_earn, colour='Yearly Earnings')) +
+geom_line(aes(x=year, y=ssben, colour='SS Benefit')) + 
+geom_line(aes(x=year, y=diben, colour='DI Benefit')) +
+geom_line(aes(x=year, y=ssiben, colour='SSI Benefit')) +
+geom_line(aes(x=year, y=dbpen, colour='DB Pension')) +
+opts(legend.position='bottom')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{exemptions}
+\caption{Fraction of Medicare Enrollees Below 138\% FPL}
+\label{fig:exemptions}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{poverty}
+\caption{Average Poverty Level by Age Group}
+\label{fig:poverty}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{povertyfrac}
+\caption{Fraction Below 138\% of Poverty Level by Age Group}
+\label{fig:povertyfrac}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{exemptbyage}
+\caption{Fraction Below 138\% of FPL by Age Group Over Time}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{oldincome}
+\caption{Means for People Eligible for Medicare}
+\label{fig:oldincome}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{grossbreakdown}
+\caption{Mean Income Components for Medicare Eligible}
+\label{fig:grossbreakdown}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{hicapnonzero}
+\caption{Fraction of Population with Nonzero Capital Income}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{Nonzero Capital Income Regression Coefficients}
+\verbatiminput{../output/ACA/FEM_CPP_settings/models/hicap_nonzero.est}
+\label{tab:hicapnonzero}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\recallfig{wlthnonzero}
+\caption{Fraction of Population with Nonzero Wealth}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{Nonzero Wealth Regression Coefficients}
+\verbatiminput{../output/ACA/FEM_CPP_settings/models/wlth_nonzero.est}
+\label{tab:wlthnonzero}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Nonzero Wealth Regression Coefficients without FRBYR}
+\verbatiminput{../output/noRBYR/FEM_CPP_settings/noRBYR/models/wlth_nonzero.est}
+\label{tab:wlthnonzero_nofrbyr}
+\end{table}
+
+\begin{Rcode}{!echo}
+covlist <- read.table('../FEM_CPP_settings/models/wlth_nonzero.est', stringsAsFactors=F, skip=2)
+covlist <- covlist[1:nrow(covlist)-1,]
+row.names(covlist) <- covlist[,1]
+varnames <- covlist[,1]
+newnames <- paste(varnames,'scaled',sep='.')
+coeffs <- covlist[,2]
+years <- seq(2010, 2050, 10)
+dat <- lapply(years, FUN=function(y, vars, cs, newvars) {
+  y <- read.dta(file.path('../output/ACA/detailed_output/', paste('y',y,'_rep1.dta', sep='')))
+  y <- subset(y, ldied==0)
+  c.mat <- matrix(cs, nrow=1)
+  y[,newvars] <- y[,vars] * c.mat[rep.int(1,nrow(y)),]
+  d <- sapply(newvars, FUN=function(v, dat) weighted.mean(dat[,v], dat[,'weight'], na.rm=T), y)
+  names(d) <- newvars
+  return(d)}, varnames, coeffs, newnames)
+names(dat) <- as.character(years)
+dat <- as.data.frame(do.call(rbind, dat))
+dat[,'year'] <- as.numeric(row.names(dat))
+dat.l <- as.list(dat)
+print(dat)
+options(warn=2)
+g <- ggplot(dat)
+for(i in names(dat)) {
+  if(i != 'year.scaled' && i != 'year')
+    g <- g + geom_line(aes_string(x='year', y=i))
+}
+g + opts(legend.position='right')
+\end{Rcode}
+
+\section{ROC Comparison on frbyr}
+
+ROC curve.
+
+\begin{Statacode}{!echo}
+set mem 500M
+global ghregdir "../FEM_Stata/Code"
+adopath ++ "../FEM_Stata/Makedata/HRS"
+adopath ++ "../FEM_Stata/Estimation"
+adopath ++ "../FEM_Stata/Code"
+
+use "/homer/c/Retire/FEM/rdata_js/hrs17r_transition.dta", clear
+* FOR hacohort = 0 & 1 in wave 2 & 3 no info on SSI claiming
+replace ssiclaim = -2 if inlist(hacohort, 0, 1) & inlist(wave,3,4)
+
+replace wlth_nonzero = hatota > 0
+
+*** CHANGE hatota, earnings VARIABLES
+drop floghatota floghatotax lloghatota lloghatotax llogiearn llogiearnx flogiearn flogiearnx
+set more off
+foreach i in hatota hatotax iearn iearnx{
+  egen flog`i' = h(f`i')
+  replace flog`i' = flog`i'/100
+  egen llog`i' = h(l`i')
+  replace llog`i' = llog`i'/100
+}
+
+
+*** DEPENDENT VARIABLES
+global bin_econ anyhi diclaim ssclaim dbclaim ssiclaim nhmliv work wlth_nonzero hicap_nonzero
+global bin_hlth died hearte stroke cancre hibpe diabe lunge memrye
+global order smkstat funcstat
+
+
+*** Create obesity splines
+foreach x in lobese_1 lobese_2 lobese_3 loverwt lnormwt fobese_1 fobese_2 fobese_3 foverwt fnormwt {
+  cap drop `x'
+}
+
+local log_30 = log(30)
+mkspline llogbmi_l30 `log_30' llogbmi_30p = llogbmi
+mkspline flogbmi_l30 `log_30' flogbmi_30p = flogbmi
+
+global bmivars llogbmi_l30 llogbmi_30p flogbmi_l30 flogbmi_30p
+
+
+*** GENERATE THE AGE SPLINE VARIABLES
+foreach x in lage6061 lage6263 lage64e lage6566 lage6770 lage65l lage6574 lage75l lage75p lage62e lage63e {
+  cap drop `x'
+}
+
+local age_var age_iwe
+
+gen lage6061 = floor(l`age_var') == 58 | floor(l`age_var') == 59 if l`age_var' < .
+gen lage6263 = inrange(floor(l`age_var'),60,61) if l`age_var' < .
+gen lage64e = floor(l`age_var') == 62 if l`age_var' < . 
+gen lage6566 = floor(l`age_var') == 63 | floor(l`age_var') == 64 if l`age_var' < .
+gen lage6770 = inrange(floor(l`age_var'),65,68) if l`age_var' < . 
+
+gen lage65l  = min(63,l`age_var') if l`age_var' < .
+gen lage6574 = min(max(0,l`age_var'-63),73-63) if l`age_var' < .
+gen lage75l = min(l`age_var', 73) if l`age_var' < . 
+gen lage75p = max(0, l`age_var'-73) if l`age_var' < . 
+
+gen lage62e = floor(l`age_var') == 60 if l`age_var' < .
+gen lage63e = floor(l`age_var') == 61 if l`age_var' < .
+
+mkspline la6 58 la7 73 la7p = l`age_var'
+
+gen logdeltaage = log(`age_var' - l`age_var')
+
+*** GENERATE WEAVE DUMMIES
+gen w3 = wave == 3
+gen w4 = wave == 4
+gen w5 = wave == 5
+gen w6 = wave == 6
+gen w7 = wave == 7
+
+*** INDEPENDENT VARIABLES
+
+*** Demographics
+global dvars black hispan hsless college male 
+*** Initial values
+#d;
+global fvars fhearte fstroke fcancre fhibpe fdiabe flunge fsmokev fsmoken fiadl1 fadl12 fadl3 
+fwidowed fsingle fwork flogiearnx fwlth_nonzero floghatotax 
+flogaime flogq fshlt fanydb frdb_na_2 frdb_na_3 frdb_na_4 fanydc flogdcwlthx ;
+#d cr
+*** values of health variables at t-1
+global lvars_hlth lhearte lstroke lcancre lhibpe ldiabe llunge liadl1 ladl12 ladl3 lsmoken lwidowed 
+*** values of econ variables at time t-1
+global lvars_econ lwork llogiearnx lwlth_nonzero lloghatotax ldiclaim lssiclaim lssclaim ldbclaim lnhmliv
+
+*** FOR MORTALITY
+global allvars_died $dvars lage65l lage6574 lage75p $lvars_hlth $fvars
+
+*** FOR CHRONIC CONDITIONS AND ORDINAL OUTCOMES
+global allvars_hlth $dvars lage65l lage6574 lage75p $lvars_hlth  $fvars $bmivars logdeltaage
+
+takestring, oldlist($allvars_hlth) newname("allvars_hearte") extlist("lhearte fhearte lstroke llunge lcancre liadl1 ladl12 ladl3")
+takestring, oldlist($allvars_hlth) newname("allvars_stroke") extlist("lstroke fstroke lstroke llunge liadl1 ladl12 ladl3")
+takestring, oldlist($allvars_hlth) newname("allvars_cancre") extlist("lhearte lstroke lcancre lhibpe ldiabe llunge fcancre liadl1 ladl12 ladl3")
+takestring, oldlist($allvars_hlth) newname("allvars_hibpe")  extlist("lhearte lstroke lcancre lhibpe llunge fhibpe liadl1 ladl12 ladl3")
+takestring, oldlist($allvars_hlth) newname("allvars_diabe")  extlist("lhearte lstroke lcancre lhibpe ldiabe llunge fdiabe liadl1 ladl12 ladl3")
+takestring, oldlist($allvars_hlth) newname("allvars_lunge")  extlist("lhearte lstroke lcancre lhibpe ldiabe llunge flunge liadl1 ladl12 ladl3")
+takestring, oldlist($allvars_hlth) newname("allvars_memrye") extlist("lhearte lstroke lcancre lhibpe ldiabe llunge flunge")
+
+global allvars_smkstat $allvars_hlth
+global allvars_funcstat $allvars_hlth
+
+global allvars_logbmi $allvars_hlth frbyr
+
+*** FOR ECONOMIC OUTCOMES
+global allvars_econ1 $dvars lage65l lage6574 lage75p $lvars_hlth $lvars_econ $fvars logdeltaage
+global allvars_econ2 $dvars lage6061 lage62e lage63e lage64e lage6566 lage6770 $lvars_hlth $lvars_econ $fvars logdeltaage
+global allvars_econ3 $dvars la6 la7 la7p $lvars_hlth $lvars_econ $fvars w3 w4 w5 w6 w7 logdeltaage
+global allvars_econ4 $dvars lage65l lage6574 lage75p $lvars_hlth $lvars_econ $fvars logdeltaage
+
+takestring, oldlist($allvars_econ1) newname("allvars_anyhi")  extlist("lage75p ldbclaim lssiclaim lnhmliv lsmoken")
+takestring, oldlist($allvars_econ1) newname("allvars_diclaim")  extlist("lage75p lssiclaim lssclaim ldbclaim lnhmliv lsmoken")
+takestring, oldlist($allvars_econ1) newname("allvars_dbclaim")  extlist("lage75p fwork fanydb lssiclaim ldbclaim lwork lnhmliv lsmoken")
+takestring, oldlist($allvars_econ1) newname("allvars_ssiclaim")  extlist("lnhmliv lsmoken")
+takestring, oldlist($allvars_econ4) newname("allvars_nhmliv")  extlist("ldiclaim lssiclaim lssclaim ldbclaim lwork llogiearnx lsmoken frdb_na_4")
+takestring, oldlist($allvars_econ1) newname("allvars_iearnx")  extlist("lssiclaim lnhmliv lsmoken lage75p")
+
+takestring, oldlist($allvars_econ2) newname("allvars_ssclaim")  extlist("lssiclaim lssclaim lnhmliv lsmoken")
+takestring, oldlist($allvars_econ2) newname("allvars_work")  extlist("lssiclaim lnhmliv lsmoken")
+
+takestring, oldlist($allvars_econ3) newname("allvars_wlth_nonzero")  extlist("lssiclaim lsmoken")
+takestring, oldlist($allvars_econ3) newname("allvars_hatotax")  extlist("lssiclaim lsmoken")
+takestring, oldlist($allvars_econ3) newname("allvars_hicap_nonzero") extlist("lssiclaim lsmoken")
+takestring, oldlist($allvars_econ3) newname("allvars_hicap") extlist("lssiclaim, lsmoken")
+
+/*********************************************************************/
+* ESTIMATE BINARY OUTCOMES
+/*********************************************************************/
+probit wlth_nonzero $allvars_wlth_nonzero if wlth_nonzero!=-2&wlth_nonzero!=9
+lroc, nograph
+probit wlth_nonzero $allvars_wlth_nonzero frbyr if wlth_nonzero!=-2&wlth_nonzero!=9
+lroc, nograph
+
+\end{Statacode}
+
+\end{document}

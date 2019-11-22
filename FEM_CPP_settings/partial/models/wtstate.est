@@ -1,0 +1,55 @@
+oprobit
+wtstate
+black	.0621116
+hispan	.0236077
+hsless	.0137633
+college	-.0502773
+male	.0128918
+lage65l	.0009309
+lage6574	-.0148872
+lage75p	-.0159335
+lhearte	-.0168659
+lstroke	-.0824557
+lcancre	.0083415
+lhibpe	.1074948
+ldiabe	.0069656
+llunge	.044229
+liadl1	-.0110573
+ladl12	.0030157
+ladl3	-.0286956
+lsmoken	-.2329628
+lwidowed	-.0357849
+lobese	3.375473
+loverwt	1.657902
+fhearte	-.0058041
+fstroke	.0435183
+fcancre	-.0374944
+fhibpe	-.041533
+fdiabe	.0233501
+flunge	-.0445389
+fsmokev	.0171956
+fsmoken	.1133061
+fiadl1	-.0592979
+fadl12	.0263371
+fadl3	.1076385
+fwidowed	.0522099
+fsingle	-.0219369
+fwork	.003362
+flogiearnx	.5558271
+fwlth_nonzero	.0877588
+floghatotax	-.3863485
+flogaime	.0379357
+flogq	.0274063
+fshlt	-.0284115
+fanydb	.0449184
+frdb_na_2	-.003995
+frdb_na_3	.0497548
+frdb_na_4	.0155558
+fanydc	.0244418
+flogdcwlthx	-1.511186
+fobese	1.448002
+foverwt	.7502491
+logdeltaage	-.0998376
+frbyr	.0098509
+_cut1	20.29393 overwt
+_cut2	22.77543 obese

@@ -1,0 +1,42 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+end_pop,Total population (million),weight,sum,0.000001,1,died == 0
+death_rate,Percent Died,died,mean,100,weight,ldied == 0
+pop_healthy,Population that is healthy (no IADLs or ADLs and not in a nursing home) (millions),weight,sum,0.000001,1,iadl1 ==0 & adl12 == 0 & adl3 == 0 & nhmliv == 0 & ldied == 0
+pop_disability,Population that is disabled (any IADLs or ADLs or Nursing Home) (millions),weight,sum,0.000001,1,not(iadl1 ==0 & adl12 == 0 & adl3 == 0 & nhmliv == 0) & ldied == 0
+pop_nhm,Population that is in a nursing home,weight,sum,0.000001,1,nhmliv == 1 & ldied == 0
+avg_bmi,Average BMI,bmi,mean,1,weight,ldied == 0
+qaly_sum,Total QALY,qaly,sum,1,weight,ldied == 0
+obese, Prevelance of Obesity (BMI >= 30),obese,mean,1,weight,ldied == 0
+obese_1, Prevelance of Obesity 1 (35 > BMI >= 30),obese_1,mean,1,weight,ldied == 0
+obese_2, Prevelance of Obesity 2 (40 > BMI >= 35),obese_2,mean,1,weight,ldied == 0
+obese_3, Prevelance of Obesity 3 (BMI >= 40),obese_3,mean,1,weight,ldied == 0
+bs_surg_elig,Population eligible for Bariatric Surgery,bar_surg_elig,sum,0.000001,weight, ldied == 0
+bs_treat_new,Population treated with Bariatric Surgery this year,bar_surg_new,sum,0.000001,weight, ldied == 0
+wlp_new,Population treated with weight loss pill this year,wlp_new,sum,0.000001,weight, ldied == 0
+anycond,Prevelance of Any Health Condition,anycond,mean,1,weight,ldied == 0
+cond3p,Prevelance of 3 or more Health Conditions,cond3p,mean,1,weight,ldied == 0
+iadl1,Prevelance of 1+ IADL,iadl1,mean,1,weight,ldied == 0
+adl12,Prevelance of 1 or 2 ADLs,adl12,mean,1,weight,ldied == 0
+adl3,Prevelance of 3+ ADLs,adl3,mean,1,weight,ldied == 0
+nhmliv,Prevelance of In a Nursing Home,nhmliv,mean,1,weight,ldied == 0
+overwt,Prevelance of Overweight,overwt,mean,1,weight,ldied == 0
+died,Mortality rate,died,mean,1,weight,ldied == 0 
+totmd,Average Total Medical Costs,totmd,mean,1,weight,ldied == 0
+caidmd,Average Medicaid Costs,caidmd,mean,1,weight,ldied == 0
+oopmd,Average Out of Pocket Medical Costs,oopmd,mean,1,weight,ldied == 0
+ttl_totmd,Total Medical Costs (billions),totmd,sum,0.000000001,weight,ldied == 0
+ttl_caidmd,Total Medicaid Costs billions),caidmd,sum,0.000000001,weight,ldied == 0
+ttl_oopmd,Total Out of Pocket Medical Costs billions),oopmd,sum,0.000000001,weight,ldied == 0
+mcare,Average Medicare Costs,mcare,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+ttl_mcare,Total Medicare Costs (billions),mcare,sum,0.000000001,weight,ldied == 0
+ttl_mcare_65p,Total Medicare Costs (billions) age 65+,mcare,sum,0.000000001,weight,ldied == 0 & age >=65
+ttl_mcare_pta,Total Medicare Part A Costs (billions),mcare_pta,sum,0.000000001,weight,ldied == 0
+ttl_mcare_ptb,Total Medicare Part B Costs (billions),mcare_ptb,sum,0.000000001,weight,ldied == 0
+mcare_pta_enroll,Population enrolled in Medicare (Millions),mcare_pta_enroll,sum,.000001,weight, ldied == 0 & mcare_pta_enroll == 1
+mcare_ptd,Average Medicare Part D Costs,mcare_ptd,mean,1,weight,ldied == 0 & mcare_ptd_enroll == 1
+ttl_mcare_ptd,Total Medicare Part D Costs (billions),mcare_ptd,sum,0.000000001,weight,ldied == 0 & mcare_ptd_enroll == 1
+mcare_ptd_enroll,Fraction enrolled in Medicare Part D,mcare_ptd_enroll,mean,1,weight, ldied == 0 & mcare_pta_enroll == 1
+ttl_mcare_ptd_enroll,Number People enrolled in Medicare Part D,mcare_ptd_enroll,sum,1,weight, ldied == 0

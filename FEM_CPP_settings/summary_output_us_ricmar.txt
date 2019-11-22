@@ -1,0 +1,90 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+pop_medicare,Total Medicare Eligible Population (Millions),weight,sum,0.000001,1,ldied==0 & medicare_elig
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+start_pop70p,Total population 70+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 70
+end_pop70p,Total population 70+ (million),weight,sum,0.000001,1,died == 0 & age >= 70
+hispop70b,Total population 70+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 70 & hispan==1
+hispop70e,Total population 70+ (million),weight,sum,0.000001,1,died == 0 & age >= 70 & hispan==1
+blkpop70b,Total population 70+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 70 & black==1
+blkpop70e,Total population 70+ (million),weight,sum,0.000001,1,died == 0 & age >= 70 & black==1
+nhmliv_pop,Count of individuals in a nursing home,nhmliv,sum,1,weight,died == 0
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+mcare_tot,Total Medicare Costs,mcare,sum,1,weight,ldied==0
+mcare_pta_tot,Total Part A costs,mcare_pta,sum,1,weight,ldied==0
+mcare_ptb_tot,Total Part B costs,mcare_ptb,sum,1,weight,ldied==0
+mcare_ptd_tot,Total Part D costs,mcare_ptd,sum,1,weight,ldied==0
+mcare_pta_tot_enroll,Total Part A costs,mcare_pta_enroll,sum,1,weight,ldied==0
+mcare_ptb_tot_enroll,Total Part B costs,mcare_ptb_enroll,sum,1,weight,ldied==0
+mcare_ptd_tot_enroll,Total Part D costs,mcare_ptd_enroll,sum,1,weight,ldied==0
+caidmd,Total Medicaid costs,caidmd,sum,1,weight,ldied==0
+caidmd_mcbs,Total Medicaid costs from MCBS,caidmd_mcbs,sum,1,weight,ldied==0
+caidmd_meps,Total Medicaid costs from MEPS,caidmd_meps,sum,1,weight,ldied==0
+totmd_mcbs,Total Medical costs from MCBS,totmd_mcbs,sum,1,weight,ldied==0
+totmd_meps,Total Medical costs from MEPS,totmd_meps,sum,1,weight,ldied==0
+oopmd_mcbs,Total OOP from MCBS,oopmd_mcbs,sum,1,weight,ldied==0
+oopmd_meps,Total OOP from MEPS,oopmd_meps,sum,1,weight,ldied==0
+obese_all,Prevalence of Obesity Subgroup: all,obese,mean,1,weight,ldied==0 
+overwt_all,Prevalence of Overweight Subgroup: all,overwt,mean,1,weight,ldied==0
+cancre_all,Prevelance of Cancer Subgroup: all,cancre,mean,1,weight,ldied==0
+diabe_all,Prevelance of Diabetes Subgroup: all,diabe,mean,1,weight,ldied==0
+hibpe_all,Prevelance of Hypertension Subgroup: all,hibpe,mean,1,weight,ldied==0
+hearte_all,Prevelance of Heart Disease Subgroup: all,hearte,mean,1,weight,ldied==0
+adl1_all,Prevalence of 1 ADL Subgroup: all,adl1,mean,1,weight,ldied==0
+adl2_all,Prevalence of 2 ADLs Subgroup: all,adl2,mean,1,weight,ldied==0 
+adl3p_all,Prevalence of 3 or more ADLs Subgroup: all,adl3p,mean,1,weight,ldied==0
+anyadl_all,Prevalence of 1 or more ALDs Subgroup: all,anyadl,mean,1,weight,ldied==0
+smoken_all,Prevalence of current smoking Subgroup: all,smoken,mean,1,weight,ldied==0
+ttl_mcare_all,Total Medicare Costs (billions) Subgroup: all,mcare,sum,0.000000001,weight,ldied==0
+ttl_caidmd_all,Total Medicaid Spending (Billions) Subgroup: all,caidmd,sum,0.000000001,weight,ldied==0
+ttl_totmd_all,Total Medical Costs (billions) Subgroup: all,totmd,sum,0.000000001,weight,ldied==0
+pop_black,Total population (million) Subgroup: black,weight,sum,0.000001,1,ldied == 0 & black==1
+pop65p_black,Total population 65+ (million) Subgroup: black,weight,sum,0.000001,1,ldied == 0 & age >= 65 & black==1
+obese_black,Prevalence of Obesity Subgroup: black,obese,mean,1,weight,ldied==0 & black==1
+overwt_black,Prevalence of Overweight Subgroup: black,overwt,mean,1,weight,ldied==0 & black==1
+cancre_black,Prevelance of Cancer Subgroup: black,cancre,mean,1,weight,ldied == 0 & black==1
+diabe_black,Prevelance of Diabetes Subgroup: black,diabe,mean,1,weight,ldied == 0 & black==1
+hibpe_black,Prevelance of Hypertension Subgroup: black,hibpe,mean,1,weight,ldied == 0 & black==1
+hearte_black,Prevelance of Heart Disease Subgroup: black,hearte,mean,1,weight,ldied == 0 & black==1
+adl1_black,Prevalence of 1 ADL Subgroup: black,adl1,mean,1,weight,ldied==0 & black==1
+adl2_black,Prevalence of 2 ADLs Subgroup: black,adl2,mean,1,weight,ldied==0 & black==1
+adl3p_black,Prevalence of 3 or more ADLs Subgroup: black,adl3p,mean,1,weight,ldied==0 & black==1
+anyadl_black,Prevalence of 1 or more ALDs Subgroup: black,anyadl,mean,1,weight,ldied==0 & black==1
+smoken_black,Prevalence of current smoking Subgroup: black,smoken,mean,1,weight,ldied==0 & black==1
+ttl_mcare_black,Total Medicare Costs (billions) Subgroup: black,mcare,sum,0.000000001,weight,ldied == 0 & black==1
+ttl_caidmd_black,Total Medicaid Spending (Billions) Subgroup: black,caidmd,sum,0.000000001,weight,ldied==0 & black==1
+ttl_totmd_black,Total Medical Costs (billions) Subgroup: black,totmd,sum,0.000000001,weight,ldied == 0 & black==1
+pop_white,Total population (million) Subgroup: white,weight,sum,0.000001,1,ldied == 0 & black==0 & hispan==0
+pop65p_white,Total population 65+ (million) Subgroup: white,weight,sum,0.000001,1,ldied == 0 & age >= 65 & black==0 & hispan==0
+obese_white,Prevalence of Obesity Subgroup: white,obese,mean,1,weight,ldied==0 & black==0 & hispan==0
+overwt_white,Prevalence of Overweight Subgroup: white,overwt,mean,1,weight,ldied==0 & black==0 & hispan==0
+cancre_white,Prevelance of Cancer Subgroup: white,cancre,mean,1,weight,ldied == 0 & black==0 & hispan==0
+diabe_white,Prevelance of Diabetes Subgroup: white,diabe,mean,1,weight,ldied == 0 & black==0 & hispan==0
+hibpe_white,Prevelance of Hypertension Subgroup: white,hibpe,mean,1,weight,ldied == 0 & black==0 & hispan==0
+hearte_white,Prevelance of Heart Disease Subgroup: white,hearte,mean,1,weight,ldied == 0 & black==0 & hispan==0
+adl1_white,Prevalence of 1 ADL Subgroup: white,adl1,mean,1,weight,ldied==0 & black==0 & hispan==0
+adl2_white,Prevalence of 2 ADLs Subgroup: white,adl2,mean,1,weight,ldied==0 & black==0 & hispan==0
+adl3p_white,Prevalence of 3 or more ADLs Subgroup: white,adl3p,mean,1,weight,ldied==0 & black==0 & hispan==0
+anyadl_white,Prevalence of 1 or more ALDs Subgroup: white,anyadl,mean,1,weight,ldied==0 & black==0 & hispan==0
+smoken_white,Prevalence of current smoking Subgroup: white,smoken,mean,1,weight,ldied==0 & black==0 & hispan==0
+ttl_mcare_white,Total Medicare Costs (billions) Subgroup: white,mcare,sum,0.000000001,weight,ldied == 0 & black==0 & hispan==0
+ttl_caidmd_white,Total Medicaid Spending (Billions) Subgroup: white,caidmd,sum,0.000000001,weight,ldied==0 & black==0 & hispan==0
+ttl_totmd_white,Total Medical Costs (billions) Subgroup: white,totmd,sum,0.000000001,weight,ldied == 0 & black==0 & hispan==0
+pop_hispan,Total population (million) Subgroup: hispan,weight,sum,0.000001,1,ldied == 0 & hispan==1
+pop65p_hispan,Total population 65+ (million) Subgroup: hispan,weight,sum,0.000001,1,ldied == 0 & age >= 65 & hispan==1
+obese_hispan,Prevalence of Obesity Subgroup: hispan,obese,mean,1,weight,ldied==0 & hispan==1
+overwt_hispan,Prevalence of Overweight Subgroup: hispan,overwt,mean,1,weight,ldied==0 & hispan==1
+cancre_hispan,Prevelance of Cancer Subgroup: hispan,cancre,mean,1,weight,ldied == 0 & hispan==1
+diabe_hispan,Prevelance of Diabetes Subgroup: hispan,diabe,mean,1,weight,ldied == 0 & hispan==1
+hibpe_hispan,Prevelance of Hypertension Subgroup: hispan,hibpe,mean,1,weight,ldied == 0 & hispan==1
+hearte_hispan,Prevelance of Heart Disease Subgroup: hispan,hearte,mean,1,weight,ldied == 0 & hispan==1
+adl1_hispan,Prevalence of 1 ADL Subgroup: hispan,adl1,mean,1,weight,ldied==0 & hispan==1
+adl2_hispan,Prevalence of 2 ADLs Subgroup: hispan,adl2,mean,1,weight,ldied==0 & hispan==1
+adl3p_hispan,Prevalence of 3 or more ADLs Subgroup: hispan,adl3p,mean,1,weight,ldied==0 & hispan==1
+anyadl_hispan,Prevalence of 1 or more ALDs Subgroup: hispan,anyadl,mean,1,weight,ldied==0 & hispan==1
+smoken_hispan,Prevalence of current smoking Subgroup: hispan,smoken,mean,1,weight,ldied==0 & hispan==1
+ttl_mcare_hispan,Total Medicare Costs (billions) Subgroup: hispan,mcare,sum,0.000000001,weight,ldied == 0 & hispan==1
+ttl_caidmd_hispan,Total Medicaid Spending (Billions) Subgroup: hispan,caidmd,sum,0.000000001,weight,ldied==0 & hispan==1
+ttl_totmd_hispan,Total Medical Costs (billions) Subgroup: hispan,totmd,sum,0.000000001,weight,ldied == 0 & hispan==1

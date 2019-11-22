@@ -1,0 +1,17 @@
+probit
+smoke_stop
+male	.0560828
+hsless	-.0938542
+college	.1352311
+l2age65l	.0175504
+l2age6574	-.0109893
+l2age75p	.0186444
+l2hearte	-.0133794
+l2stroke	-.1364151
+l2cancre	-.0540036
+l2hibpe	.0346191
+l2diabe	-.1763701
+l2logbmi	.6412846
+l2drink	.0059204
+l2drinkd_e	.0183211
+_cons	-4.136847

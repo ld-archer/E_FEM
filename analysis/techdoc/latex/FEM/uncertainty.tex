@@ -1,0 +1,50 @@
+\section{Uncertainty}
+Validation of population-based simulation models includes uncertainty analysis (Kopec 2010). Uncertainty analysis 
+is the "quantification of the differences between a model's estimates and the truth." (Citro and Hanushek 1991). Sources of 
+uncertainty common in population-based microsimulation models include sampling variability from input databases, sampling 
+variability from other inputs, model misspecification, and stochastic error (Citro and Hanushek 1991). Stochastic and sampling 
+uncertainty can be evaluated using confidence intervals around the output point estimates.  
+
+\subsection{Confidence intervals}
+The FEM produces output parameters for each repetition of the simulation. A confidence interval can be calculated from the sample 
+of output parameters when the input parameters are varied with each repetition. Confidence intervals from the deterministic simulation 
+only take into account the intrinsic error from the Monte Carlo stochastic element of the simulation. Repeating the deterministic estimation 
+for 50 to 100 replicates is considered to reduce the Monte Carlo error to nearly zero. Stochastic uncertainty alone does not adequately 
+account for uncertainty in microsimulation results.
+
+\subsection{Bootstraping}
+Sampling variability from the survey sources is considered, in the FEM, under the conditions of a resampled survey. Direct 
+bootstrapping is used as a conservative technique to account for the other sources of uncertainty. The data is randomly sampled with replacement 
+taking into account survey design (Yeo, H and Liu 1999). The HRS is sampled at the household level with 56 strata in recent waves. 
+Observations are selected for their full panel of interviews. Each input is produced for each sample of the surveys. Bootstrapping of 
+the inputs implicitly takes into account the correlation between the parameters used in the FEM, particularly from the HRS. We use dependent 
+bootstrap samples for all sources of sampling uncertainty from the HRS: input database, transition parameters, and trends.
+
+The number of bootstrap samples is started at 1000 based on what is found in the literature, but the total number used depends on the outcome 
+and models being assessed. Watching the variance of the output parameter to see where it settles down offers an estimate of the number of 
+repetitions needed. Each rep then has a mean and non-parametric distribution from which the 2.5 and 97.5 percentiles can be used as confidence 
+intervals. The mean is calculated as the mean over all observations (Dong and Nakayama 2014). The confidence intervals are calculated as the 
+mean of the upper and lower percentiles. The contributions of each source of uncertainty discussed in more detail below can be estimated by 
+independently combining deterministic and sampled inputs when running the simulation. 
+
+\subsubsection{Sample uncertainty}
+In the FEM, the major sources of input uncertainty come from sampling variability. The FEM uses a single wave from the HRS as the population that 
+starts the simulation. In order to incorporate the sampling uncertainty in the FEm, bootstrap samples are taken from the population prior to 
+population reweighting. Each bootstrap sample is reweighted to the population  before entering the simulation. 
+
+\subsubsection{Trends}
+Trends are used to alter the health and economic characteristics of future cohorts before they enter the simulation are estimated from survey data or 
+pulled from the literature. Because distributions of the trend parameters in each year are not available from all sources, we use 
+bootstrap samples of each cohort after applying the baseline trends in order to achieve variation in the trended parameters. 
+
+\subsubsection{Transition parameter uncertainty}
+Transition probabilities in the FEM are predicted for each active individual in each wave of the simulation using regression models 
+estimated from the HRS. Regression models for transition probabilities are estimated using the bootstrap samples of the HRS which 
+implicitly allow for correlation of covariates within models and between models. A set of transition regression models is estimated 
+for each bootstrap sample.
+
+\subsubsection{Models that predict policy outcomes}
+The regression models that predict cost, utilization, and other outcomes are based on MCBS and MEPS. These data are also subject to 
+sampling error and are sampled in a similar way to the HRS. The MCBS is sampled at the individual level with 100 strata. The MEPS 
+is sampled at the dwelling unit level with 165 strata in recent surveys. The MEPS and MCBS 
+bootsrap weights are used in the estimation of the medical spending and utilization regression models.

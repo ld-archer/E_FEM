@@ -1,0 +1,132 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+pop_medicare,Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & medicare_elig
+pop_medicare_age,Age Elig Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & age >= medicare_elig_age(year)
+pop_medicare_di,DI Elig Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & diclaim2yr
+any_medicare_enroll,Medicare Enrollment (Millions),weight,sum,0.000001,1,ldied == 0 & (mcare_pta_enroll==1 | mcare_ptb_enroll==1 | mcare_ptd_enroll==1)
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+end_pop,Total population (million),weight,sum,0.000001,1,died == 0
+death_rate,Percent Died,died,mean,100,weight,ldied == 0
+pop_healthy,Population that is healthy (no IADLs or ADLs and not in a nursing home) (millions),weight,sum,0.000001,1,iadl1 ==0 & adl1 == 0 & adl2==0 & adl3p == 0 & nhmliv == 0 & died == 0
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+start_pop75p,Total population 75+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 75
+end_pop75p,Total population 75+ (million),weight,sum,0.000001,1,died == 0 & age >= 75
+pop_disability,Population that is disabled (any IADLs or ADLs or Nursing Home) (millions),weight,sum,0.000001,1,not(iadl1 ==0 & adl1 == 0 & adl2==0 & adl3p == 0 & nhmliv == 0) & died == 0
+pop_nhm,Population that is in a nursing home,weight,sum,0.000001,1,nhmliv == 1 & died == 0
+nhmliv,Prevelance of In a Nursing Home,nhmliv,mean,1,weight,died == 0
+died,Mortality rate,died,mean,1,weight,ldied == 0 
+totmd,Average Total Medical Costs,totmd,mean,1,weight,ldied == 0
+ttl_totmd,Total Medical Costs (billions),totmd,sum,0.000000001,weight,ldied == 0
+ttl_totmd_6566,Total Medical Costs for Ages 65 and 66 (Billions),totmd,sum,0.000000001,weight,ldied == 0 & age >= 65 & age < 67
+ttl_totmd_mcare,Total Medical Costs for Medicare Eligible (Billions),totmd,sum,0.00000001,weight,ldied==0 & medicare_elig==1
+ttl_uncovered_upper_mcare,Upper Bound on Total Uncovered Medical Costs for Medicare Eligible (Billions),uncovered_upper,sum,0.000000001,weight,ldied==0 & medicare_elig==1
+ttl_uncovered_lower_mcare,Lower Bound on Total Uncovered Medical Costs for Medicare Eligible (Billions),uncovered_lower,sum,0.000000001,weight,ldied==0 & medicare_elig==1
+mcare_enrollee,Medicare Costs Per Enrollee,mcare,mean,1,weight,ldied==0 & (mcare_pta_enroll==1 | mcare_ptb_enroll==1 | mcare_ptd_enroll==1)
+mcare_pta_enrollee,Part A Medicare Costs Per Enrollee,mcare_pta,mean,1,weight,ldied==0 & (mcare_pta_enroll==1 | mcare_ptb_enroll==1 | mcare_ptd_enroll==1)
+mcare_ptb_enrollee,Part B Medicare Costs Per Enrollee,mcare_ptb,mean,1,weight,ldied==0 & (mcare_pta_enroll==1 | mcare_ptb_enroll==1 | mcare_ptd_enroll==1)
+mcare_ptd_enrollee,Part D Medicare Costs Per Enrollee,mcare_ptd,mean,1,weight,ldied==0 & (mcare_pta_enroll==1 | mcare_ptb_enroll==1 | mcare_ptd_enroll==1)
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+mcare_pta_enroll,Fraction enrolled in Medicare Part A,mcare_pta_enroll,mean,1,weight,ldied==0 & medicare_elig==1
+ttl_mcare_pta_enroll,Population enrolled in Medicare (Millions),mcare_pta_enroll,sum,.000001,weight, ldied == 0
+ttl_mcare_pta_enroll5564,Population in Part A Ages 55-64,mcare_pta_enroll,sum,0.000001,weight, ldied==0 & 55 <= age & age < 65
+ttl_mcare_pta_enroll6569,Population in Part A Ages 65-69,mcare_pta_enroll,sum,0.000001,weight, ldied==0 & 65 <= age & age < 70
+ttl_mcare_pta_enroll7074,Population in Part A Ages 70-74,mcare_pta_enroll,sum,0.000001,weight, ldied==0 & 70 <= age & age < 74
+ttl_mcare_pta_enroll7579,Population in Part A Ages 75-79,mcare_pta_enroll,sum,0.000001,weight, ldied==0 & 75 <= age & age < 80
+ttl_mcare_pta_enroll80pp,Population in Part A Ages 80+,  mcare_pta_enroll,sum,0.000001,weight, ldied==0 & 80 <= age
+mcare_ptb_enroll,Fraction enrolled in Medicare Part B,mcare_ptb_enroll,mean,1,weight, ldied == 0 & medicare_elig == 1
+mcare_ptb_enroll5564,Fraction enrolled in Medicare Part B Ages 55-64,mcare_ptb_enroll,mean,1,weight, ldied == 0 & medicare_elig == 1 & age < 65
+mcare_ptb_enroll6569,Fraction enrolled in Medicare Part B Ages 65-69,mcare_ptb_enroll,mean,1,weight, ldied == 0 & medicare_elig == 1 & 65 <= age & age < 70
+mcare_ptb_enroll7074,Fraction enrolled in Medicare Part B Ages 70-74,mcare_ptb_enroll,mean,1,weight, ldied == 0 & medicare_elig == 1 & 70 <= age & age < 75
+mcare_ptb_enroll7579,Fraction enrolled in Medicare Part B Ages 75-79,mcare_ptb_enroll,mean,1,weight, ldied == 0 & medicare_elig == 1 & 75 <= age & age < 80
+mcare_ptb_enroll80pp,Fraction enrolled in Medicare Part B Ages 80+,mcare_ptb_enroll,mean,1,weight, ldied == 0 & medicare_elig == 1 & 80 <= age
+ttl_mcare_ptb_enroll,Number People enrolled in Medicare Part B (Millions),mcare_ptb_enroll,sum,0.000001,weight, ldied == 0
+ttl_mcare,Total Medicare Costs (billions),mcare,sum,0.000000001,weight,ldied == 0
+ttl_mcare_65p,Total Medicare Costs (billions) age 65+,mcare,sum,0.000000001,weight,ldied == 0 & age >=65
+ttl_mcare_pta,Total Medicare Part A Costs (billions),mcare_pta,sum,0.000000001,weight,ldied == 0
+ttl_mcare_ptb,Total Medicare Part B Costs (billions),mcare_ptb,sum,0.000000001,weight,ldied == 0
+mcare_ptd,Average Medicare Part D Costs,mcare_ptd,mean,1,weight,ldied == 0 & mcare_ptd_enroll == 1
+ttl_mcare_ptd,Total Medicare Part D Costs (billions),mcare_ptd,sum,0.000000001,weight,ldied == 0 & mcare_ptd_enroll == 1
+mcare_ptd_enroll,Fraction enrolled in Medicare Part D,mcare_ptd_enroll,mean,1,weight, ldied == 0 & mcare_pta_enroll == 1
+ttl_mcare_ptd_enroll,Number People enrolled in Medicare Part D (Millions),mcare_ptd_enroll,sum,0.000001,weight, ldied == 0
+ss_tax,Social Security taxes (billion),hoasi,sum,0.000000001,weight,ldied == 0
+med_tax,Medicare Payroll Tax (billion),hmed,sum,0.000000001,weight,ldied == 0
+agi,Average Individual AGI,agi,mean,1,weight,died==0
+mcare_pta_premium_paid,Average Medicare Part A premium paid,mcare_pta_premium,mean,1,weight,ldied==0 & mcare_pta_enroll==1
+mcare_ptb_premium_paid,Average Medicare Part B premium paid,mcare_ptb_premium,mean,1,weight,ldied==0 & mcare_ptb_enroll == 1
+ttl_mcare_pta_premium,Total Medicare Part A premium collected (billions),mcare_pta_premium,sum,0.000000001,weight,ldied==0 & mcare_pta_enroll==1
+ttl_mcare_ptb_premium,Total Medicare Part B premium collected (billions),mcare_ptb_premium,sum,0.000000001,weight,ldied==0 & mcare_ptb_enroll==1
+ttl_mcare_pta_eligible,Total Eligible for Medicare Part A (Millions),medicare_elig,sum,0.000001,weight, ldied==0
+ttl_mcare_pta_exempt,Number of Part A Enrollees Exempt (Millions),weight,sum,1,0.000001, ldied==0 & mcare_pta_enroll==1 & poverty_level <= premium_exemption(year)
+ttl_mcare_pta_exempt5564,Population in Part A Ages 55-64,weight,sum,0.000001,1, ldied==0 & 55 <= age & age < 65 & mcare_pta_enroll==1 & poverty_level <= premium_exemption(year)
+ttl_mcare_pta_exempt6569,Population in Part A Ages 65-69,weight,sum,0.000001,1, ldied==0 & 65 <= age & age < 70 & mcare_pta_enroll==1 & poverty_level <= premium_exemption(year)
+ttl_mcare_pta_exempt7074,Population in Part A Ages 70-74,weight,sum,0.000001,1, ldied==0 & 70 <= age & age < 74 & mcare_pta_enroll==1 & poverty_level <= premium_exemption(year)
+ttl_mcare_pta_exempt7579,Population in Part A Ages 75-79,weight,sum,0.000001,1, ldied==0 & 75 <= age & age < 80 & mcare_pta_enroll==1 & poverty_level <= premium_exemption(year)
+ttl_mcare_pta_exempt80pp,Population in Part A Ages 80+,  weight,sum,0.000001,1, ldied==0 & 80 <= age            & mcare_pta_enroll==1 & poverty_level <= premium_exemption(year)
+ttl_mcare_ptb_exempt,Number of Part B Enrollees Exempt (Millions),weight,sum,1,0.000001,ldied==0 & mcare_ptb_enroll==1 & poverty_level <= premium_exemption(year)
+magi,Mean MAGI,magi,mean,1,weight,ldied==0 & medicare_elig==1
+ry_earn,Mean Yearly Earnings,ry_earn,mean,1,weight,ldied==0
+ssben,Mean SS Benefit,ssben,mean,1,weight,ldied==0
+diben,Mean DI Benefit,diben,mean,1,weight,ldied==0
+ssiben,Mean SSI Benefit,ssiben,mean,1,weight,ldied==0
+dbpen,Mean DB Pension,dbpen,mean,1,weight,ldied==0
+hicap,Mean Capital Income,hicap,mean,1,weight,ldied==0
+gross,Mean Gross Income,gross,mean,1,weight,ldied==0
+net,Mean Net Income,net,mean,1,weight,ldied==0 & medicare_elig==1
+hatota,Mean Household Wealth,hatota,mean,1000,weight,ldied==0
+ttl_caidmd,Total Medicaid Spending (Billions),caidmd,sum,0.000000001,weight,ldied==0
+ttl_ssben,Total SS Benefits Paid (Billions),ssben,sum,0.000000001,weight,ldied==0
+ttl_ssiben,Total SSI Benefits Paid (Billions),ssiben,sum,0.000000001,weight,ldied==0
+ttl_diben,Total SSDI Benefits Paid (Billions),diben,sum,0.000000001,weight,ldied==0
+lloghatotax,Mean Lag of Transformed HaToTaX,lloghatotax,mean,1,weight,ldied==0
+ry_earn_mcare,Mean Yearly Earnings for Medicare Eligible,ry_earn,mean,1,weight,ldied==0 & medicare_elig==1
+ssben_mcare,Mean SS Benefit for Medicare Eligible,ssben,mean,1,weight,ldied==0 & medicare_elig==1
+diben_mcare,Mean DI Benefit for Medicare Eligible,diben,mean,1,weight,ldied==0 & medicare_elig==1
+ssiben_mcare,Mean SSI Benefit for Medicare Eligible,ssiben,mean,1,weight,ldied==0 & medicare_elig==1
+dbpen_mcare,Mean DB Pension for Medicare Eligible,dbpen,mean,1,weight,ldied==0 & medicare_elig==1
+gross_mcare,Mean Gross Income for Medicare Eligible,gross,mean,1,weight,ldied==0 & medicare_elig==1
+hicap_mcare,Mean Capital Income for Medicare Eligible,hicap,mean,1,weight,ldied==0 & medicare_elig==1
+hatota_mcare,Mean Household Wealth for Medicare Eligible,hatota,mean,1000,weight,ldied==0 & medicare_elig==1
+lloghatotax_mcare,Mean Lag of Transformed HaToTaX for Medicare Eligible,lloghatotax,mean,1,weight,ldied==0 & medicare_elig==1
+quantile_010_magi_6569,Quantile-0.10 Income Ages 65-69,magi,quantile-0.10,1,weight,ldied==0 & 65 <= age & age < 70
+quantile_010_magi_7074,Quantile-0.10 Income Ages 70-74,magi,quantile-0.10,1,weight,ldied==0 & 70 <= age & age < 75
+quantile_010_magi_7579,Quantile-0.10 Income Ages 75-79,magi,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+quantile_010_magi_8084,Quantile-0.10 Income Ages 80-84,magi,quantile-0.10,1,weight,ldied==0 & 80 <= age & age < 85
+quantile_010_magi_85,quantile-0.10 Income Ages 85+,magi,quantile-0.10,1,weight,ldied==0 & 85 <= age
+quantile_010_ry_earn_7579,quantile-0.10 Yearly Earning Ages 75-79,ry_earn,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+quantile_010_ssben_7579,quantile-0.10 SS Benefit Ages 75-79,ssben,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+quantile_010_diben_7579,quantile-0.10 Disability Benefit Ages 75-79,diben,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+quantile_010_dbpen_7579,quantile-0.10 Defined Benefit Pension Ages 75-79,dbpen,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+quantile_010_ssiben_7579,quantile-0.10 SSI Benefit Ages 75-79,ssiben,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+quantile_010_hicap_7579,quantile-0.10 Capital Income Ages 75-79,hicap,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+fraction_hicap_nonzero_7579,Fraction with HiCap Nonzero Ages 75-79,hicap_nonzero,mean,1,weight,ldied==0 & 75 <= age & age < 80
+mean_hicap_7579,Mean HiCap Ages 75-79,hicap,mean,1,weight,ldied==0 & 75 <= age < 80
+quantile_010_gross_7579,quantile-0.10 Gross Income Ages 75-79,gross,quantile-0.10,1,weight,ldied==0 & 75 <= age & age < 80
+quantile_010_hatota_7579,quantile-0.10 Household Wealth Ages 75-79,hatota,quantile-0.10,1000,weight,ldied==0 & 75 <= age & age < 80
+quantile_025_gross,quantile-0.25 Gross Income,gross,quantile-0.25,1,weight,ldied==0 & medicare_elig==1
+quantile_025_hicap,quantile-0.25 Capital Income,hicap,quantile-0.25,1,weight,ldied==0 & medicare_elig==1
+fraction_wlth_nonzero_5059,Fraction with HaToTa Nonzero Ages 50-59,wlth_nonzero,mean,1,weight,ldied==0 & 50 <= age & age < 60
+fraction_wlth_nonzero_6064,Fraction with HaToTa Nonzero Ages 60-64,wlth_nonzero,mean,1,weight,ldied==0 & 60 <= age & age < 65
+fraction_wlth_nonzero_6569,Fraction with HaToTa Nonzero Ages 65-69,wlth_nonzero,mean,1,weight,ldied==0 & 65 <= age & age < 70
+fraction_wlth_nonzero_7074,Fraction with HaToTa Nonzero Ages 70-74,wlth_nonzero,mean,1,weight,ldied==0 & 70 <= age & age < 75
+fraction_wlth_nonzero_7579,Fraction with HaToTa Nonzero Ages 75-79,wlth_nonzero,mean,1,weight,ldied==0 & 75 <= age & age < 80
+fraction_wlth_nonzero_80,Fraction with HaToTa Nonzero Ages 80 plus,wlth_nonzero,mean,1,weight,ldied==0 & 80 <= age
+ptb_premium_25,Part B Premium Paid First Quartile,mcare_ptb_premium,quantile-0.25,1,weight, ldied==0 & mcare_ptb_enroll==1
+income_band0,Eligible for Medicaid,weight,sum,1,0.000001, ldied==0 & income_band==0 & age >= 65
+income_band1,Income Above Medicaid below $87k,weight,sum,1,0.000001,ldied==0 & income_band==1 & age >= 65
+income_band2,Income from $87k to $107k,weight,sum,1,0.000001,ldied==0 & income_band==2 & age >= 65
+income_band3,Income from $107k to $160k,weight,sum,1,0.000001,ldied==0 & income_band==3 & age >= 65
+income_band4,Income from $160k to $214k,weight,sum,1,0.000001,ldied==0 & income_band==4 & age >= 65
+income_band5,Income above $214k,weight,sum,1,0.000001,ldied==0 & income_band==5 & age >= 65
+fraction_hicap_nonzero_5059,Fraction with Hicap Nonzero Ages 50-59,hicap_nonzero,mean,1,weight,ldied==0 & 50 <= age & age < 60
+fraction_hicap_nonzero_6064,Fraction with Hicap Nonzero Ages 60-64,hicap_nonzero,mean,1,weight,ldied==0 & 60 <= age & age < 65
+fraction_hicap_nonzero_6569,Fraction with Hicap Nonzero Ages 65-69,hicap_nonzero,mean,1,weight,ldied==0 & 65 <= age & age < 70
+fraction_hicap_nonzero_7074,Fraction with Hicap Nonzero Ages 70-74,hicap_nonzero,mean,1,weight,ldied==0 & 70 <= age & age < 75
+fraction_hicap_nonzero_7576,Fraction with Hicap Nonzero Ages 75-79,hicap_nonzero,mean,1,weight,ldied==0 & 75 <= age & age < 76
+fraction_hicap_nonzero_7677,Fraction with Hicap Nonzero Ages 75-79,hicap_nonzero,mean,1,weight,ldied==0 & 76 <= age & age < 77
+fraction_hicap_nonzero_7778,Fraction with Hicap Nonzero Ages 75-79,hicap_nonzero,mean,1,weight,ldied==0 & 77 <= age & age < 78
+fraction_hicap_nonzero_7879,Fraction with Hicap Nonzero Ages 75-79,hicap_nonzero,mean,1,weight,ldied==0 & 78 <= age & age < 79
+fraction_hicap_nonzero_7980,Fraction with Hicap Nonzero Ages 75-79,hicap_nonzero,mean,1,weight,ldied==0 & 79 <= age & age < 80
+fraction_hicap_nonzero_80,Fraction with Hicap Nonzero Ages 80 plus,hicap_nonzero,mean,1,weight,ldied==0 & 80 <= age
+ttl_mcare_pta_subsidy,Total Medicare Part A Subsidy (Billions),mcare_pta_subsidy,sum,0.000000001,weight,ldied==0
+ttl_mcare_ptb_subsidy,Total Medicare Part B Subsidy (Billions),mcare_ptb_subsidy,sum,0.000000001,weight,ldied==0

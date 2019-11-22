@@ -1,0 +1,2 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+m_pdied,Incidence of death,pdied,mean,1,weight,ldied==0 & year > 2010

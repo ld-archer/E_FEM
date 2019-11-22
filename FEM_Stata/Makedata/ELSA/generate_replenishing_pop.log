@@ -1,0 +1,809 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   16.0   Copyright 1985-2019 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+Single-user Stata perpetual license:
+       Serial number:  401606204723
+         Licensed to:  Nik Lomax
+                       The University of Leeds
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do "generate_replenishing_pop.do" 
+
+. /* Generate the replenishing population */
+. clear all
+
+. quietly include ../../../fem_env.do
+
+. 
+. * This sets the scenario for use in naming files, trending variables, etc.
+. local scr : env SCENARIO
+
+. 
+. local goal : env GOAL
+
+. 
+. local expansion 1
+
+. 
+. local goal_yr : env GOAL_YR
+
+. 
+. * Suffix for filenames
+. if "`scr'" == "no_trend" {
+.     local fnamesuf
+. }
+
+. if "`scr'" == "smoke_reduce" {
+.     local fnamesuf "_`goal'_by_`goal_yr'"
+. }
+
+. if "`scr'" == "no_smokev" {
+.     local fnamesuf "_no_smokev"
+. }
+
+. 
+. clear all
+
+. 
+. *use ../../../input_data/ELSA_stock.dta, replace
+. use $outdata/ELSA_stock_base.dta, replace
+
+. 
+. * Keep respondents in wave 4
+. keep if year == 2012
+(0 observations deleted)
+
+. keep if inlist(age, 51, 52)
+(10,079 observations deleted)
+
+. 
+. * Drop people who have never smoked if that is the scenario we want
+. if "`scr'" == "no_smokev" {
+.     keep if l2smokev == 0
+. }
+
+. 
+. *** Kludge section - fix these when we get the chance
+. 
+. *do kludge.do
+. foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
+  2.     replace `var' = 0 if missing(`var')
+  3.     replace l2`var' = 0 if missing(l2`var')
+  4. }
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+
+. 
+. * Drop because created when adjusting stock population?
+. *drop unadj_weight
+. 
+. * Expand the sample based on expansion factor
+. *multiply_persons `expansion'
+. 
+. tempfile base_cohort
+
+. save `base_cohort'
+file /tmp/St12060.000001 saved
+
+. 
+. 
+. * Generate cohorts for each year
+. 
+. forvalues yy = 2012 (2) 2060 {
+  2.     di "Year is `yy'"
+  3.     use `base_cohort', replace
+  4. 
+.     replace year = `yy'
+  5.     capture drop entry
+  6.     gen entry = `yy'
+  7. 
+.     * Deal with birth year, as that is how we derive age
+.     replace rbyr = rbyr + (`yy'-2012)
+  8. 
+.     * Need unique IDs for each person-year
+.     quietly {
+  9.         recast long hhid
+ 10.         desc hhid*
+ 11.         tostring hhid, gen(hhidstr) usedisplayformat
+ 12.         tostring hhidpn, gen(hhidpnstr) usedisplayformat
+ 13.                 drop hhid hhidpn
+ 14.                 gen hhid = "-`yy'" + hhidstr
+ 15.                 gen hhidpn = "-`yy'" + hhidpnstr
+ 16.                 destring hhid hhidpn, replace
+ 17.     }
+ 18. 
+.     * Save the temporary files
+.     tempfile cohort_`yy'
+ 19.     di "Tempfile is `cohort_`yy''"
+ 20.     save "`cohort_`yy''"
+ 21. }
+Year is 2012
+(0 real changes made)
+(0 real changes made)
+Tempfile is /tmp/St12060.000002
+file /tmp/St12060.000002 saved
+Year is 2014
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.000003
+file /tmp/St12060.000003 saved
+Year is 2016
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.000004
+file /tmp/St12060.000004 saved
+Year is 2018
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.000005
+file /tmp/St12060.000005 saved
+Year is 2020
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.000006
+file /tmp/St12060.000006 saved
+Year is 2022
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.000007
+file /tmp/St12060.000007 saved
+Year is 2024
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.000008
+file /tmp/St12060.000008 saved
+Year is 2026
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.000009
+file /tmp/St12060.000009 saved
+Year is 2028
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000a
+file /tmp/St12060.00000a saved
+Year is 2030
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000b
+file /tmp/St12060.00000b saved
+Year is 2032
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000c
+file /tmp/St12060.00000c saved
+Year is 2034
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000d
+file /tmp/St12060.00000d saved
+Year is 2036
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000e
+file /tmp/St12060.00000e saved
+Year is 2038
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000f
+file /tmp/St12060.00000f saved
+Year is 2040
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000g
+file /tmp/St12060.00000g saved
+Year is 2042
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000h
+file /tmp/St12060.00000h saved
+Year is 2044
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000i
+file /tmp/St12060.00000i saved
+Year is 2046
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000j
+file /tmp/St12060.00000j saved
+Year is 2048
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000k
+file /tmp/St12060.00000k saved
+Year is 2050
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000l
+file /tmp/St12060.00000l saved
+Year is 2052
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000m
+file /tmp/St12060.00000m saved
+Year is 2054
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000n
+file /tmp/St12060.00000n saved
+Year is 2056
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000o
+file /tmp/St12060.00000o saved
+Year is 2058
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000p
+file /tmp/St12060.00000p saved
+Year is 2060
+(353 real changes made)
+(353 real changes made)
+Tempfile is /tmp/St12060.00000q
+file /tmp/St12060.00000q saved
+
+. 
+. clear
+
+. 
+. * Append the temporary files
+. forvalues yy = 2012 (2) 2060 {
+  2.     append using `cohort_`yy''
+  3. }
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+(label wstat already defined)
+(label fagey already defined)
+(label gender already defined)
+(label educcats already defined)
+(label limitwork already defined)
+(label diff already defined)
+(label activity already defined)
+(label ever_drink already defined)
+(label smokes already defined)
+(label health_problems already defined)
+(label rwork already defined)
+(label retire already defined)
+(label educ already defined)
+(label adlstat already defined)
+(label anyadl already defined)
+(label iadlstat already defined)
+(label anyiadl already defined)
+(label smkstat already defined)
+
+. 
+. replace l2age = age - 2 if missing(l2age)
+(0 real changes made)
+
+. 
+. * Save the stacked new cohorts file
+. *saveold ../../../input_data/ELSA_repl_base.dta, replace v(12)
+. saveold $outdata/ELSA_repl_base.dta, replace v(12)
+(saving in Stata 12 format, which can be read by Stata 11 or 12)
+file /home/ld-archer/Documents/E_FEM/trunk/input_data/ELSA_repl_base.dta saved
+
+. 
+. 
+. ** Now prepare different repl files for different scenarios
+. 
+. * Increase number of people doing moderate exercise
+. * More full explanation of whats happening in generate_stock_pop.do
+. *gen rand_ex = runiform() if inrange(mdactx_e, 3, 5)
+. * Reduce mdactx_e by 1 in 30% of people 
+. replace mdactx_e = mdactx_e - 1 if mdactx_e > 2
+(2,725 real changes made)
+
+. *drop rand_ex
+. * Save the file
+. saveold $outdata/ELSA_repl_exercise1.dta, replace v(12)
+(saving in Stata 12 format, which can be read by Stata 11 or 12)
+file /home/ld-archer/Documents/E_FEM/trunk/input_data/ELSA_repl_exercise1.dta s
+> aved
+
+. *saveold ../../../input_data/ELSA_repl_exercise1.dta, replace v(12)
+. 
+. 
+. use $outdata/ELSA_repl_base.dta, clear
+
+. *use ../../../input_data/ELSA_repl_base.dta, clear
+. * Decrease number of people who drink alcohol
+. * var is drink, binary
+. * Convert 20% of drinkers to non-drinkers
+. gen rand_drink = runiform() if drink==1
+(2,450 missing values generated)
+
+. * Switch to non-drinkers in 20% of cases
+. replace drink = 0 if rand_drink < 0.4
+(2,515 real changes made)
+
+. drop rand_drink
+
+. * Save
+. saveold $outdata/ELSA_repl_drink.dta, replace v(12)
+(saving in Stata 12 format, which can be read by Stata 11 or 12)
+file /home/ld-archer/Documents/E_FEM/trunk/input_data/ELSA_repl_drink.dta saved
+
+. *saveold ../../../input_data/ELSA_repl_drink.dta, replace v(12)
+. 
+. 
+. use $outdata/ELSA_repl_base.dta, clear
+
+. *use ../../../input_data/ELSA_repl_base.dta, clear
+. * Decrease number of days/week people drink alcohol
+. * var is drinkd_e, has 8 levels
+. * Ranges from 0-7, for number of days/week
+. * Reduce every person by 1 (except 0 for obvious reasons)
+. replace drinkd_e = drinkd_e - 1 if drinkd_e > 0
+(5,950 real changes made)
+
+. saveold $outdata/ELSA_repl_drinkd_e.dta, replace v(12)
+(saving in Stata 12 format, which can be read by Stata 11 or 12)
+file /home/ld-archer/Documents/E_FEM/trunk/input_data/ELSA_repl_drinkd_e.dta sa
+> ved
+
+. *saveold ../../../input_data/ELSA_repl_drinkd_e.dta, replace v(12)
+. 
+. 
+. use $outdata/ELSA_repl_base.dta, clear
+
+. *use ../../../input_data/ELSA_repl_base.dta, clear
+. * Decrease number of people who smoke at start of sim by 30%
+. gen rand_smoken = runiform() if smoken==1
+(7,225 missing values generated)
+
+. replace smoken=0 if rand_smoken < 0.3
+(489 real changes made)
+
+. drop rand_smoken
+
+. saveold $outdata/ELSA_repl_smoken.dta, replace v(12)
+(saving in Stata 12 format, which can be read by Stata 11 or 12)
+file /home/ld-archer/Documents/E_FEM/trunk/input_data/ELSA_repl_smoken.dta save
+> d
+
+. *saveold ../../../input_data/ELSA_repl_smoken.dta, replace v(12)
+. 
+. capture log close
+
+. 
+. 
+end of do-file

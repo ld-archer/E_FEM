@@ -1,0 +1,16 @@
+/* listyrv macro
+   lists variables for requested years, taking into
+   account years where no PSID interviews were done
+   
+   From 1968 to 1997 interviews were every year.
+   From 1999 to 2009 interviews are odd years.
+*/
+%macro listyrv(vname,begy=1968,endy=&maxyr);
+    %do year=&begy %to &endy;
+        %let yr=%substr(&year,3,2);
+        %if (&year ge 1968 and &year le 1997) or
+            (&year>1997 and %index(13579,%substr(&year,4,1))>0) %then %do;
+            &vname&yr
+        %end;   
+    %end;
+%mend;

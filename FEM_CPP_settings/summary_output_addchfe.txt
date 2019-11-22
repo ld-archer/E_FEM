@@ -1,0 +1,151 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+m_startpop_all,startpop (millions): Sample = all,weight,sum,0.000001,1,l2died == 0
+m_startpop_wht,startpop (millions): Sample = white,weight,sum,0.000001,1,l2died == 0& black == 0 & hispan == 0
+m_startpop_blk,startpop (millions): Sample = black,weight,sum,0.000001,1,l2died == 0& black == 1
+m_startpop_his,startpop (millions): Sample = hispanic,weight,sum,0.000001,1,l2died == 0& hispan == 1
+m_startpop_m,startpop (millions): Sample = male,weight,sum,0.000001,1,l2died == 0& male == 1
+m_startpop_f,startpop (millions): Sample = female,weight,sum,0.000001,1,l2died == 0& male == 0
+m_startpop_5564,startpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,l2died == 0& age >= 55 & age < 64
+m_startpop_6574,startpop (millions): Sample = age 65 to 74,weight,sum,0.000001,1,l2died == 0& age >= 65 & age < 74
+m_startpop_7584,startpop (millions): Sample = age 75 to 84,weight,sum,0.000001,1,l2died == 0& age >= 75 & age < 84
+m_startpop_85p,startpop (millions): Sample = age 85 plus,weight,sum,0.000001,1,l2died == 0& age >= 85
+m_startpop_hearte,startpop (millions): Sample = has heart disease,weight,sum,0.000001,1,l2died == 0& hearte == 1
+m_startpop_hearte_5564,startpop (millions): Sample = has heart disease - age 55 to 64,weight,sum,0.000001,1,l2died == 0& hearte == 1 & age >= 55 & age < 64
+m_startpop_hearte_6574,startpop (millions): Sample = has heart disease - age 65 to 74,weight,sum,0.000001,1,l2died == 0& hearte == 1 & age >= 65 & age < 74
+m_startpop_hearte_7584,startpop (millions): Sample = has heart disease - age 75 to 84,weight,sum,0.000001,1,l2died == 0& hearte == 1 & age >= 75 & age < 84
+m_startpop_hearte_85p,startpop (millions): Sample = has heart disease - age 85 plus,weight,sum,0.000001,1,l2died == 0& hearte == 1 & age >= 85
+m_endpop_all,endpop (millions): Sample = all,weight,sum,0.000001,1,died == 0
+m_endpop_wht,endpop (millions): Sample = white,weight,sum,0.000001,1,died == 0& black == 0 & hispan == 0
+m_endpop_blk,endpop (millions): Sample = black,weight,sum,0.000001,1,died == 0& black == 1
+m_endpop_his,endpop (millions): Sample = hispanic,weight,sum,0.000001,1,died == 0& hispan == 1
+m_endpop_m,endpop (millions): Sample = male,weight,sum,0.000001,1,died == 0& male == 1
+m_endpop_f,endpop (millions): Sample = female,weight,sum,0.000001,1,died == 0& male == 0
+m_endpop_5564,endpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,died == 0& age >= 55 & age < 64
+m_endpop_6574,endpop (millions): Sample = age 65 to 74,weight,sum,0.000001,1,died == 0& age >= 65 & age < 74
+m_endpop_7584,endpop (millions): Sample = age 75 to 84,weight,sum,0.000001,1,died == 0& age >= 75 & age < 84
+m_endpop_85p,endpop (millions): Sample = age 85 plus,weight,sum,0.000001,1,died == 0& age >= 85
+m_endpop_hearte,endpop (millions): Sample = has heart disease,weight,sum,0.000001,1,died == 0& hearte == 1
+m_endpop_hearte_5564,endpop (millions): Sample = has heart disease - age 55 to 64,weight,sum,0.000001,1,died == 0& hearte == 1 & age >= 55 & age < 64
+m_endpop_hearte_6574,endpop (millions): Sample = has heart disease - age 65 to 74,weight,sum,0.000001,1,died == 0& hearte == 1 & age >= 65 & age < 74
+m_endpop_hearte_7584,endpop (millions): Sample = has heart disease - age 75 to 84,weight,sum,0.000001,1,died == 0& hearte == 1 & age >= 75 & age < 84
+m_endpop_hearte_85p,endpop (millions): Sample = has heart disease - age 85 plus,weight,sum,0.000001,1,died == 0& hearte == 1 & age >= 85
+p_hearte_all,Prevalence of hearte: Sample= all,hearte,mean,1,weight,l2died==0
+p_hearte_wht,Prevalence of hearte: Sample= white,hearte,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_hearte_blk,Prevalence of hearte: Sample= black,hearte,mean,1,weight,l2died==0& black == 1
+p_hearte_his,Prevalence of hearte: Sample= hispanic,hearte,mean,1,weight,l2died==0& hispan == 1
+p_hearte_m,Prevalence of hearte: Sample= male,hearte,mean,1,weight,l2died==0& male == 1
+p_hearte_f,Prevalence of hearte: Sample= female,hearte,mean,1,weight,l2died==0& male == 0
+p_hearte_5564,Prevalence of hearte: Sample= age 55 to 64,hearte,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_hearte_6574,Prevalence of hearte: Sample= age 65 to 74,hearte,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_hearte_7584,Prevalence of hearte: Sample= age 75 to 84,hearte,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_hearte_85p,Prevalence of hearte: Sample= age 85 plus,hearte,mean,1,weight,l2died==0& age >= 85
+p_hearte_hearte,Prevalence of hearte: Sample= has heart disease,hearte,mean,1,weight,l2died==0& hearte == 1
+p_hearte_hearte_5564,Prevalence of hearte: Sample= has heart disease - age 55 to 64,hearte,mean,1,weight,l2died==0& hearte == 1 & age >= 55 & age < 64
+p_hearte_hearte_6574,Prevalence of hearte: Sample= has heart disease - age 65 to 74,hearte,mean,1,weight,l2died==0& hearte == 1 & age >= 65 & age < 74
+p_hearte_hearte_7584,Prevalence of hearte: Sample= has heart disease - age 75 to 84,hearte,mean,1,weight,l2died==0& hearte == 1 & age >= 75 & age < 84
+p_hearte_hearte_85p,Prevalence of hearte: Sample= has heart disease - age 85 plus,hearte,mean,1,weight,l2died==0& hearte == 1 & age >= 85
+i_hearte_all,Incidence of hearte: Sample= all,hearte,mean,1,weight,l2died==0&l2hearte==0
+i_hearte_wht,Incidence of hearte: Sample= white,hearte,mean,1,weight,l2died==0&l2hearte==0& black == 0 & hispan == 0
+i_hearte_blk,Incidence of hearte: Sample= black,hearte,mean,1,weight,l2died==0&l2hearte==0& black == 1
+i_hearte_his,Incidence of hearte: Sample= hispanic,hearte,mean,1,weight,l2died==0&l2hearte==0& hispan == 1
+i_hearte_m,Incidence of hearte: Sample= male,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 1
+i_hearte_f,Incidence of hearte: Sample= female,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 0
+i_hearte_5564,Incidence of hearte: Sample= age 55 to 64,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 55 & age < 64
+i_hearte_6574,Incidence of hearte: Sample= age 65 to 74,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 65 & age < 74
+i_hearte_7584,Incidence of hearte: Sample= age 75 to 84,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 75 & age < 84
+i_hearte_85p,Incidence of hearte: Sample= age 85 plus,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 85
+i_hearte_hearte,Incidence of hearte: Sample= has heart disease,hearte,mean,1,weight,l2died==0&l2hearte==0& hearte == 1
+i_hearte_hearte_5564,Incidence of hearte: Sample= has heart disease - age 55 to 64,hearte,mean,1,weight,l2died==0&l2hearte==0& hearte == 1 & age >= 55 & age < 64
+i_hearte_hearte_6574,Incidence of hearte: Sample= has heart disease - age 65 to 74,hearte,mean,1,weight,l2died==0&l2hearte==0& hearte == 1 & age >= 65 & age < 74
+i_hearte_hearte_7584,Incidence of hearte: Sample= has heart disease - age 75 to 84,hearte,mean,1,weight,l2died==0&l2hearte==0& hearte == 1 & age >= 75 & age < 84
+i_hearte_hearte_85p,Incidence of hearte: Sample= has heart disease - age 85 plus,hearte,mean,1,weight,l2died==0&l2hearte==0& hearte == 1 & age >= 85
+n_hearte_all,Sum of hearte: Sample= all,hearte,sum,1,weight,l2died==0
+n_hearte_wht,Sum of hearte: Sample= white,hearte,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_hearte_blk,Sum of hearte: Sample= black,hearte,sum,1,weight,l2died==0& black == 1
+n_hearte_his,Sum of hearte: Sample= hispanic,hearte,sum,1,weight,l2died==0& hispan == 1
+n_hearte_m,Sum of hearte: Sample= male,hearte,sum,1,weight,l2died==0& male == 1
+n_hearte_f,Sum of hearte: Sample= female,hearte,sum,1,weight,l2died==0& male == 0
+n_hearte_5564,Sum of hearte: Sample= age 55 to 64,hearte,sum,1,weight,l2died==0& age >= 55 & age < 64
+n_hearte_6574,Sum of hearte: Sample= age 65 to 74,hearte,sum,1,weight,l2died==0& age >= 65 & age < 74
+n_hearte_7584,Sum of hearte: Sample= age 75 to 84,hearte,sum,1,weight,l2died==0& age >= 75 & age < 84
+n_hearte_85p,Sum of hearte: Sample= age 85 plus,hearte,sum,1,weight,l2died==0& age >= 85
+n_hearte_hearte,Sum of hearte: Sample= has heart disease,hearte,sum,1,weight,l2died==0& hearte == 1
+n_hearte_hearte_5564,Sum of hearte: Sample= has heart disease - age 55 to 64,hearte,sum,1,weight,l2died==0& hearte == 1 & age >= 55 & age < 64
+n_hearte_hearte_6574,Sum of hearte: Sample= has heart disease - age 65 to 74,hearte,sum,1,weight,l2died==0& hearte == 1 & age >= 65 & age < 74
+n_hearte_hearte_7584,Sum of hearte: Sample= has heart disease - age 75 to 84,hearte,sum,1,weight,l2died==0& hearte == 1 & age >= 75 & age < 84
+n_hearte_hearte_85p,Sum of hearte: Sample= has heart disease - age 85 plus,hearte,sum,1,weight,l2died==0& hearte == 1 & age >= 85
+p_chfe_all,Prevalence of chfe: Sample= all,chfe,mean,1,weight,l2died==0
+p_chfe_wht,Prevalence of chfe: Sample= white,chfe,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_chfe_blk,Prevalence of chfe: Sample= black,chfe,mean,1,weight,l2died==0& black == 1
+p_chfe_his,Prevalence of chfe: Sample= hispanic,chfe,mean,1,weight,l2died==0& hispan == 1
+p_chfe_m,Prevalence of chfe: Sample= male,chfe,mean,1,weight,l2died==0& male == 1
+p_chfe_f,Prevalence of chfe: Sample= female,chfe,mean,1,weight,l2died==0& male == 0
+p_chfe_5564,Prevalence of chfe: Sample= age 55 to 64,chfe,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_chfe_6574,Prevalence of chfe: Sample= age 65 to 74,chfe,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_chfe_7584,Prevalence of chfe: Sample= age 75 to 84,chfe,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_chfe_85p,Prevalence of chfe: Sample= age 85 plus,chfe,mean,1,weight,l2died==0& age >= 85
+p_chfe_hearte,Prevalence of chfe: Sample= has heart disease,chfe,mean,1,weight,l2died==0& hearte == 1
+p_chfe_hearte_5564,Prevalence of chfe: Sample= has heart disease - age 55 to 64,chfe,mean,1,weight,l2died==0& hearte == 1 & age >= 55 & age < 64
+p_chfe_hearte_6574,Prevalence of chfe: Sample= has heart disease - age 65 to 74,chfe,mean,1,weight,l2died==0& hearte == 1 & age >= 65 & age < 74
+p_chfe_hearte_7584,Prevalence of chfe: Sample= has heart disease - age 75 to 84,chfe,mean,1,weight,l2died==0& hearte == 1 & age >= 75 & age < 84
+p_chfe_hearte_85p,Prevalence of chfe: Sample= has heart disease - age 85 plus,chfe,mean,1,weight,l2died==0& hearte == 1 & age >= 85
+i_chfe_all,Incidence of chfe: Sample= all,chfe,mean,1,weight,l2died==0&l2chfe==0
+i_chfe_wht,Incidence of chfe: Sample= white,chfe,mean,1,weight,l2died==0&l2chfe==0& black == 0 & hispan == 0
+i_chfe_blk,Incidence of chfe: Sample= black,chfe,mean,1,weight,l2died==0&l2chfe==0& black == 1
+i_chfe_his,Incidence of chfe: Sample= hispanic,chfe,mean,1,weight,l2died==0&l2chfe==0& hispan == 1
+i_chfe_m,Incidence of chfe: Sample= male,chfe,mean,1,weight,l2died==0&l2chfe==0& male == 1
+i_chfe_f,Incidence of chfe: Sample= female,chfe,mean,1,weight,l2died==0&l2chfe==0& male == 0
+i_chfe_5564,Incidence of chfe: Sample= age 55 to 64,chfe,mean,1,weight,l2died==0&l2chfe==0& age >= 55 & age < 64
+i_chfe_6574,Incidence of chfe: Sample= age 65 to 74,chfe,mean,1,weight,l2died==0&l2chfe==0& age >= 65 & age < 74
+i_chfe_7584,Incidence of chfe: Sample= age 75 to 84,chfe,mean,1,weight,l2died==0&l2chfe==0& age >= 75 & age < 84
+i_chfe_85p,Incidence of chfe: Sample= age 85 plus,chfe,mean,1,weight,l2died==0&l2chfe==0& age >= 85
+i_chfe_hearte,Incidence of chfe: Sample= has heart disease,chfe,mean,1,weight,l2died==0&l2chfe==0& hearte == 1
+i_chfe_hearte_5564,Incidence of chfe: Sample= has heart disease - age 55 to 64,chfe,mean,1,weight,l2died==0&l2chfe==0& hearte == 1 & age >= 55 & age < 64
+i_chfe_hearte_6574,Incidence of chfe: Sample= has heart disease - age 65 to 74,chfe,mean,1,weight,l2died==0&l2chfe==0& hearte == 1 & age >= 65 & age < 74
+i_chfe_hearte_7584,Incidence of chfe: Sample= has heart disease - age 75 to 84,chfe,mean,1,weight,l2died==0&l2chfe==0& hearte == 1 & age >= 75 & age < 84
+i_chfe_hearte_85p,Incidence of chfe: Sample= has heart disease - age 85 plus,chfe,mean,1,weight,l2died==0&l2chfe==0& hearte == 1 & age >= 85
+n_chfe_all,Sum of chfe: Sample= all,chfe,sum,1,weight,l2died==0
+n_chfe_wht,Sum of chfe: Sample= white,chfe,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_chfe_blk,Sum of chfe: Sample= black,chfe,sum,1,weight,l2died==0& black == 1
+n_chfe_his,Sum of chfe: Sample= hispanic,chfe,sum,1,weight,l2died==0& hispan == 1
+n_chfe_m,Sum of chfe: Sample= male,chfe,sum,1,weight,l2died==0& male == 1
+n_chfe_f,Sum of chfe: Sample= female,chfe,sum,1,weight,l2died==0& male == 0
+n_chfe_5564,Sum of chfe: Sample= age 55 to 64,chfe,sum,1,weight,l2died==0& age >= 55 & age < 64
+n_chfe_6574,Sum of chfe: Sample= age 65 to 74,chfe,sum,1,weight,l2died==0& age >= 65 & age < 74
+n_chfe_7584,Sum of chfe: Sample= age 75 to 84,chfe,sum,1,weight,l2died==0& age >= 75 & age < 84
+n_chfe_85p,Sum of chfe: Sample= age 85 plus,chfe,sum,1,weight,l2died==0& age >= 85
+n_chfe_hearte,Sum of chfe: Sample= has heart disease,chfe,sum,1,weight,l2died==0& hearte == 1
+n_chfe_hearte_5564,Sum of chfe: Sample= has heart disease - age 55 to 64,chfe,sum,1,weight,l2died==0& hearte == 1 & age >= 55 & age < 64
+n_chfe_hearte_6574,Sum of chfe: Sample= has heart disease - age 65 to 74,chfe,sum,1,weight,l2died==0& hearte == 1 & age >= 65 & age < 74
+n_chfe_hearte_7584,Sum of chfe: Sample= has heart disease - age 75 to 84,chfe,sum,1,weight,l2died==0& hearte == 1 & age >= 75 & age < 84
+n_chfe_hearte_85p,Sum of chfe: Sample= has heart disease - age 85 plus,chfe,sum,1,weight,l2died==0& hearte == 1 & age >= 85
+i_died_all,Incidence of died: Sample= all,died,mean,1,weight,l2died==0&l2died==0
+i_died_wht,Incidence of died: Sample= white,died,mean,1,weight,l2died==0&l2died==0& black == 0 & hispan == 0
+i_died_blk,Incidence of died: Sample= black,died,mean,1,weight,l2died==0&l2died==0& black == 1
+i_died_his,Incidence of died: Sample= hispanic,died,mean,1,weight,l2died==0&l2died==0& hispan == 1
+i_died_m,Incidence of died: Sample= male,died,mean,1,weight,l2died==0&l2died==0& male == 1
+i_died_f,Incidence of died: Sample= female,died,mean,1,weight,l2died==0&l2died==0& male == 0
+i_died_5564,Incidence of died: Sample= age 55 to 64,died,mean,1,weight,l2died==0&l2died==0& age >= 55 & age < 64
+i_died_6574,Incidence of died: Sample= age 65 to 74,died,mean,1,weight,l2died==0&l2died==0& age >= 65 & age < 74
+i_died_7584,Incidence of died: Sample= age 75 to 84,died,mean,1,weight,l2died==0&l2died==0& age >= 75 & age < 84
+i_died_85p,Incidence of died: Sample= age 85 plus,died,mean,1,weight,l2died==0&l2died==0& age >= 85
+i_died_hearte,Incidence of died: Sample= has heart disease,died,mean,1,weight,l2died==0&l2died==0& hearte == 1
+i_died_hearte_5564,Incidence of died: Sample= has heart disease - age 55 to 64,died,mean,1,weight,l2died==0&l2died==0& hearte == 1 & age >= 55 & age < 64
+i_died_hearte_6574,Incidence of died: Sample= has heart disease - age 65 to 74,died,mean,1,weight,l2died==0&l2died==0& hearte == 1 & age >= 65 & age < 74
+i_died_hearte_7584,Incidence of died: Sample= has heart disease - age 75 to 84,died,mean,1,weight,l2died==0&l2died==0& hearte == 1 & age >= 75 & age < 84
+i_died_hearte_85p,Incidence of died: Sample= has heart disease - age 85 plus,died,mean,1,weight,l2died==0&l2died==0& hearte == 1 & age >= 85
+n_died_all,Sum of died: Sample= all,died,sum,1,weight,l2died==0
+n_died_wht,Sum of died: Sample= white,died,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_died_blk,Sum of died: Sample= black,died,sum,1,weight,l2died==0& black == 1
+n_died_his,Sum of died: Sample= hispanic,died,sum,1,weight,l2died==0& hispan == 1
+n_died_m,Sum of died: Sample= male,died,sum,1,weight,l2died==0& male == 1
+n_died_f,Sum of died: Sample= female,died,sum,1,weight,l2died==0& male == 0
+n_died_5564,Sum of died: Sample= age 55 to 64,died,sum,1,weight,l2died==0& age >= 55 & age < 64
+n_died_6574,Sum of died: Sample= age 65 to 74,died,sum,1,weight,l2died==0& age >= 65 & age < 74
+n_died_7584,Sum of died: Sample= age 75 to 84,died,sum,1,weight,l2died==0& age >= 75 & age < 84
+n_died_85p,Sum of died: Sample= age 85 plus,died,sum,1,weight,l2died==0& age >= 85
+n_died_hearte,Sum of died: Sample= has heart disease,died,sum,1,weight,l2died==0& hearte == 1
+n_died_hearte_5564,Sum of died: Sample= has heart disease - age 55 to 64,died,sum,1,weight,l2died==0& hearte == 1 & age >= 55 & age < 64
+n_died_hearte_6574,Sum of died: Sample= has heart disease - age 65 to 74,died,sum,1,weight,l2died==0& hearte == 1 & age >= 65 & age < 74
+n_died_hearte_7584,Sum of died: Sample= has heart disease - age 75 to 84,died,sum,1,weight,l2died==0& hearte == 1 & age >= 75 & age < 84
+n_died_hearte_85p,Sum of died: Sample= has heart disease - age 85 plus,died,sum,1,weight,l2died==0& hearte == 1 & age >= 85

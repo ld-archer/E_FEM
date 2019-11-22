@@ -1,0 +1,19 @@
+regress
+admin_ssi
+ssiclaim    1.925965
+black   .31873043
+hispan   .84367738
+hsless   .49353416
+college  -.25522418
+male  -.18803787
+single   .63195567
+widowed   .12370877
+lunge   .13534216
+cancre  -.24219711
+stroke   .12175933
+hearte   .01956768
+diabe   .13941645
+loghatotax  -11.935436
+wlth_nonzero  -.49875544
+age    .0193125
+_cons   -2.828223

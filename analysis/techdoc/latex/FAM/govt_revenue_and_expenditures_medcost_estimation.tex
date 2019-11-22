@@ -1,0 +1,59 @@
+\subsection{Medical costs estimation}
+\label{sec:govt_revenue_and_expenditures_medcost_estimation}
+In the FAM, a cost module links a person's current state--demographics, economic status, current health, risk factors, and functional status 
+to 4 types of individual medical spending. The FAM models: total medical spending (medical spending from all payment sources), Medicare 
+spending\footnote{We estimate annual medical spending paid by specific parts of 
+Medicare (Parts A, B, and D) and sum to get the total Medicare expenditures.}, 
+Medicaid spending (medical spending paid by Medicaid), and out of pocket spending 
+(medical spending by the respondent). These estimates are based on pooled weighted 
+least squares regressions of each type of spending on risk factors, self-reported 
+conditions, and functional status, with spending inflated to constant dollars 
+using the medical component of the consumer price index.  We use the 2007-2010 
+Medical Expenditure Panel Survey 
+% \todo : Change the text to be something like "roughly X respondents per panel, with a new panel starting entering every Y months and lasting Z months between YYYY and YYYY." That way, it is always correct and all we do is change the years of data we're looking at. 
+for these regressions for persons 
+not Medicare eligible, and the 2007-2010 Medicare Current Beneficiary Survey 
+% \todo : Change the text to be something like "roughly X respondents per panel, with a new panel starting entering every Y months and lasting Z months between YYYY and YYYY." That way, it is always correct and all we do is change the years of data we're looking at. 
+for spending for those that are eligible for Medicare. Those eligible for 
+Medicare include people eligible due to age (65+) or due to disability status. Comparisons of prevalences and question wording across these different sources are provided in Tables \ref{tab:svy_disease_prevalence} and \ref{tab:svy_disease_questions}, respectively.
+
+In the baseline scenario, this spending estimate can be interpreted as the resources consumed by the individual given the manner in which 
+medicine is practiced in the United States during the post-part D era (2006-2010). 
+Models are estimated for total, Medicaid, out of pocket spending, and for the Medicare spending. 
+
+Since Medicare spending has numerous components (Parts A and B are considered here), models are needed to predict enrollment. In 2004, 
+98.4\% of all Medicare enrollees, and 99\%+ of aged enrollees, were in Medicare Part A, and thus we assume that all persons eligible for 
+Medicare take Part A. We use the 2007-2010 MCBS to model take up of Medicare Part B for both new enrollees into Medicare, as well as 
+current enrollees without Part B. Estimates are based on weighted probit regression on various risk factors, demographic, and economic 
+conditions. The PSID starting population for the FAM does not contain information on Medicare enrollment. Therefore another model of Part B 
+enrollment for all persons eligible for Medicare is estimated via a probit, and used in the first year of simulation to assign initial Part 
+B enrollment status. Estimation results are shown in estimates table. The MCBS data over represents the portion enrolled in Part B, having a 97\% 
+enrollment rate in 2004 instead of the 93.5\% rate given by Medicare Trustee's Report. In addition to this baseline enrollment probit, we 
+apply an elasticity to premiums of -0.10, based on the literature and simulation 
+calibration for actual uptake through 2009 \citep{atherly2004effect,buchmueller2006price}. 
+The premiums are computed using average Part B costs from the previous time step 
+and the means-testing thresholds established by the ACA.
+
+%Since both the MEPS and MCBS are known to under-predict medical spending (see, e.g., \citeauthor{selden2008aligning}, \citeyear{selden2008aligning}, and references therein), we applied adjustment factors to the predicted three types of 
+%individual medical spending so that the predicted per-capita spending in FAM equal the corresponding spending in National 
+%Health Expenditure Accounts (NHEA) for age group 55-64 in year 2004 and ages 65 and over in year 2010, respectively. Table 
+%\ref{tab:NHEA_adjustment} shows how these adjustment factors were determined by using the ratio of expenditures in the NHEA to 
+%expenditures predicted in the FAM.  
+
+Since 2006, the Medicare Current Beneficiaries Survey (MCBS) contains data on Medicare Part D. The data gives the capitated Part D payment and 
+enrollment. When compared to the summary data presented in the CMS 2007 Trustee Report, the 2006 per capita cost is comparable between the MCBS 
+and the CMS. However, the enrollment is underestimated in the MCBS, 53\% compared to 64.6\% according to CMS. 
+
+% \todo : add the tables or plots of Part D enrollment, payment, etc.
+
+A cross-sectional probit model is estimated using years 2007-2010 to link demographics, economic status, current health, and 
+functional status to Part D enrollment - see the estimates table. To account for both the initial under reporting of Part D 
+enrollment in the MCBS, as well as the CMS prediction that Part D enrollment will rise to 75\% by 2012, the constant in the probit model is 
+increased by 0.22 in 2006, to 0.56 in 2012 and beyond.  The per capita Part D cost in the MCBS matches well with the cost reported from 
+CMS. An OLS regression using demographic, current health, and functional status is estimated for Part D costs based on capitated payment amounts.
+
+The Part D enrollment and cost models are implemented in the Medical Cost module. The Part D enrollment model is executed conditional on 
+the person being eligible for Medicare, and the cost model is executed conditional on the enrollment model leading a true result, after the 
+Monte Carlo decision. Otherwise the person has zero Part D cost. The estimated Part D costs are added with Part A and B costs to obtain 
+total Medicare cost, and any medical cost growth assumptions are then applied.
+

@@ -1,0 +1,4 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+caidmd,Average Medicaid Costs,caidmd,mean,1,weight,ldied == 0

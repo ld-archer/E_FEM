@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lipsum}
+
+
+
+\title{The Future America Model: Technical Documentation }
+\author{Bryan Tysinger
+\and
+Duncan Leaf}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\listoffigures
+\listoftables
+
+\newpage
+
+\section{Functioning of the Dynamic Model}
+\subsection{Background}
+History of the FEM, funding sources.
+
+\subsection{Overview}
+The defining characteristic of the model is the modeling of real rather than synthetic cohorts, all of whom 
+are followed at the individual level. This allows for more heterogeneity in behavior than would be allowed 
+by a cell-based approach. Also, since the PSID interviews both respondent and spouse, we can link records to 
+calculate household-level outcomes, which depend on the outcomes of both spouses. 
+
+The model has three core components: 
+
+\begin{itemize}
+\item The initial cohort module predicts the economic and health outcomes of new cohorts of 25/26 year-olds. This 
+module takes in data from the Panel Survey of Income Dynamics (PSID) and trends calculated from other sources. It 
+allows us to “generate” cohorts as the simulation proceeds, so that we can measure outcomes for the age 25+ 
+population in any given year. 
+\item The transition module calculates the probabilities of transiting across various health states and financial 
+outcomes. The module takes as inputs risk factors such as smoking, weight, age and education, along with lagged 
+health and financial states. This allows for a great deal of heterogeneity and fairly general feedback effects. 
+The transition probabilities are estimated from the longitudinal data in the PSID. 
+\item The policy outcomes module aggregates projections of individual-level outcomes into policy outcomes such as 
+taxes, medical care costs, and disability benefits. This component takes account of public 
+and private program rules to the extent allowed by the available outcomes.  
+\end{itemize}
+
+Figure 1 provides a schematic overview of the model. We start in 2009 with an initial population aged 25+ taken 
+from the PSID. We then predict outcomes using our estimated transition probabilities (see section \ref{transition}). Those who 
+survive make it to the end of that year, at which point we calculate policy outcomes for the year. We then move 
+to the following time period (two years later), when a new cohort of 25 and 26 year-olds enters (see section \ref{newcohorts}). 
+This entrance forms the new age 25+ population, which then proceeds through the transition model as before. This 
+process is repeated until we reach the final year of the simulation. 
+
+\subsection{Comparison with other prominent microsimulation models}
+The precursor to the FAM, the FEM, was unique among models that make health expenditure projections.  It was the only 
+model that projected health trends rather than health expenditures.  It was also unique in generating mortality projections
+based on assumptions about health trends rather than historical time series.
+
+FAM extends FEM to younger ages, adding additional dimensions to the simulation.  Events over the life course, such as marital status
+and childbearing are simulated.  Labor force participation is modeled in greater detail, as is education.
+
+\section{Data Sources for Estimation}
+The Panel Survey of Income Dynamics is the main data source for the model.
+\subsection{Panel Survey of Income Dynamics}
+The 1999-2011 waves of the Panel Survey of Income Dynamics (PSID) are used to estimate the transition models.  PSID interviews
+occur every two years.  We use all individuals twenty-five or older who have formed their own households in the analysis, all heads, wives, and
+"wives" in PSID terms.  When appropriately weighted, this PSID is representative of the U.S. population 25+ and older.
+
+\subsection{Medical Expenditure Panel Survey}
+The MEPS, beginning in 1996, is a set of large-scale surveys of families and individuals, their medical providers (doctors, 
+hospitals, pharmacies, etc.), and employers across the United States. The Household Component (HC) of the MEPS provides 
+data from individual households and their members, which is supplemented by data from their medical providers. The Household 
+Component collects data from a representative sub sample of households drawn from the previous year's National Health Interview 
+Survey (NHIS). Since NHIS does not include the institutionalized population, neither does MEPS: this implies that we can only 
+use the MEPS to estimate medical costs for the non-elderly population. Information collected during household interviews 
+include: demographic characteristics, health conditions, health status, use of medical services, sources of medical payments, 
+and body weight and height. Each year the household survey includes approximately 12,000 households or 34,000 individuals. 
+Sample size for those aged 25-64 is about ???.  MEPS has comparable measures of social-economic (SES) variables as those in 
+PSID, including age, race/ethnicity, educational level, census region, and marital status. 
+
+\subsection{Medicare Current Beneficiary Survey}
+The MCBS is a nationally representative sample of aged, disabled and institutionalized Medicare beneficiaries.  The MCBS 
+attempts to interview each respondent twelve times over three years, regardless of whether he or she resides in the community, 
+a facility, or transitions between community and facility settings. The disabled (under 65 years of age) and oldest-old (85 
+years of age or older) are over-sampled. The first round of interviewing was conducted in 1991. Originally, the survey was a 
+longitudinal sample with periodic supplements and indefinite periods of participation. In 1994, the MCBS switched to a rotating 
+panel design with limited periods of participation. Each fall a new panel is introduced, with a target sample size of 12,000 
+respondents and each summer a panel is retired. Institutionalized respondents are interviewed by proxy.  The MCBS contains 
+comprehensive self-reported information on the health status, health care use and expenditures, health insurance coverage, 
+and socioeconomic and demographic characteristics of the entire spectrum of Medicare beneficiaries.  Medicare claims data for 
+beneficiaries enrolled in fee-for-service plans are also used to provide more accurate information on health care use and 
+expenditures.  
+
+We estimate cost and utilization in the "part D era," using data from 2006 to 2010.   
+
+\subsection{Health and Retirement Study}
+The Health and Retirement Study (HRS), waves 1998-2010 are pooled with the PSID population to estimate the mortality models. Interviews 
+in the HRS occur every two years.  We use the dataset created by RAND (RAND HRS, version M) for the analysis. When appropriately weighted, 
+the HRS is representative of U.S. households where at least one member is at least 51. 
+
+\section{Data Sources for Trends and Baseline Scenario}
+\subsection{Data for Trends in Replenishing Cohorts}
+\subsubsection{American Community Survey}
+\subsubsection{National Health and Nutrition Examination Survey}
+
+\subsection{Data for Other Projections}
+\subsubsection{Wage growth, medical cost growth}
+\subsubsection{Mortality reduction}
+
+\subsection{Demographic Adjustments}
+\subsubsection{Census for adjusting new cohort weights and for simulating immigration}
+
+\section{Estimation}
+\subsection{Transition Models}
+\label{transition}
+
+\section{Model for New Cohorts}
+\label{newcohorts}
+\subsection{Information available and empirical strategy}
+\subsection{Model and Estimation}
+
+\section{Government Revenue and Expenditures}
+\subsection{Medical Costs Estimation}
+\subsection{Approach to SS, DI, SSI}
+\subsection{Taxes}
+
+\section{Implementation of the Future America Model}
+\subsection{Description of the Simulation}
+\subsection{Assumptions}
+\subsubsection{Wage Growth}
+\subsubsection{Medical Cost Growth}
+\subsubsection{Mortality Reduction}
+\subsection{Adjustments to calibrate health costs (NHEA)}
+
+\section{Internal Validation}
+\subsection{Cross-validation}
+
+\section{External Validation}
+\subsection{Population Projections}
+\subsection{Health Forecasts}
+\subsection{Medical Costs and Participation}
+\subsubsection{Medicare A/B/D and Medicaid enrollment and spending}
+\subsubsection{Private health insurance enrollment}
+\subsection{Fertility and Marriage Rates}
+
+
+
+
+\end{document}
+

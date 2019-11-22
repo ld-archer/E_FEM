@@ -1,0 +1,242 @@
+/* macro to clean hlper variables in interview years 2000
+   1995-2000
+   pre = prefix for hlper variables (e.g., hpk/hps)
+   marv = whether married flag, if any, to be cleaned
+   relv = relation to R, if any, to be cleaned
+   rawrel=relation to R, to be used 
+   dayv= first variable in questions on # days last mo (number part only)
+   vblk= first variable in the next block of consecutive questions.
+   gkpar=If Y, one of the vars in vblk is the opn of a gkid's parent
+   payopn=If Y, on of the vars in vblk is the opn of the kid who helped R pay
+*/
+%macro cleanhlp(pre,dayv,vblk,gkpar=Y,payopn=Y,marv=,relv=,relraw=,oop9=9999,vblksg=,dieopn=037);
+   %if %length(&marv)>0 %then %let mar=&v&marv;
+   %else %let mar=;
+   
+   %if %length(&relv)>0 %then %let rel=&v&relv;
+   %else %let rel=&v&relraw;
+   
+   %*  in 1995, sex and gkid parent are not next numerically after hrs.
+       so set vblk2 to be vblksg = var num for sex if vblksg is given (1995)
+          and set vblk3 to be var num for hrs +1 (vblk +1).
+       otherwise set vblk2 to be var num for hrs + 1
+          and vblk3 to be var num for hrs + 3
+     *****;
+   %if %length(&vblksg)>0 %then %do;
+       %let vblk2=&vblksg;
+       %let vblkpay=%eval(&vblk+1);
+      %let vblkbkt=%eval(&vblk+6);
+   %end;
+   %else %do;
+      %let vblk2=%eval(&vblk+1);
+      %let vblkpay=%eval(&vblk+3);
+      %let vblkbkt=%eval(&vblk+8);
+   %end;
+   %let daymo=&v&dayv;
+   %let daywk=&v%eval(&dayv+1);
+   %let evday=&v%eval(&dayv+2);
+   
+   %let hrs=&v&vblk;
+   %let sex=&v&vblk2;
+   %if &gkpar=Y %then %let gkp=&v%eval(&vblk2+1);
+   %else %let gkp=;
+   %let pay=&v&vblkpay;
+   %let ins=&v%eval(&vblkpay+1);
+   %let oopamt=&v%eval(&vblkpay+2);
+   %let ooper=&v%eval(&vblkpay+3);
+   %let oopbk=&v%eval(&vblkbkt);
+   %let payhlp=&v%eval(&vblkbkt+1);
+   %let paykid=&v%eval(&vblkbkt+2);
+   %if &payopn=Y %then %let payop=&v%eval(&vblkbkt+3);
+   %else %let payop=;
+
+   /* array of helper vars */
+   array &pre.hlpv_[*] &pre&w.days &pre&w.hours &pre&w.tothrs &pre&w.sex
+                  &pre&w.paid &pre&w.ins 
+                  &pre&w.amt &pre&w.amtmo &pre&w.amtmoF
+                  &pre&w.payhlp;
+   
+%if %length(&relv)>0 %then %do;
+    /* for kid rel only (not for spouse helper info) */
+   /* helper relationship to R */
+   label 
+      &pre&w.relhp="%upcase(&pre)&w.RELHP: Relationship reported on HP file"
+      ;
+   length &pre&w.relhp 3;
+   if 10<=&rel<=97 then &pre&w.relhp=put(&rel,reltrnA.);
+   else if &rel=98 then &pre&w.relhp=.D;
+   else if &rel=99 then &pre&w.relhp=.R;
+   else &pre&w.relhp=.M;
+%end;   
+
+%if %length(&marv)>0 %then %do;
+   /* married */
+   label 
+      &pre&w.marr="%upcase(&pre)&w.MARR: Helper married";
+   if hpk&w.relhp=20 then &pre&w.marr=2;  /* is spouse of R */
+   else if &mar in (1,0) then &pre&w.marr=&mar;
+   else &pre&w.marr=.M;
+%end;   
+
+
+%if %length(&gkp)>0 %then %do;
+   label 
+      &pre&w.gkidp="%upcase(&pre)&w.GKIDP: Gkid Parent OPN (Kid OPN)"
+      &pre&w.gkpar="%upcase(&pre)&w.GKPAR: Gkid Parent OPN flag";
+
+   /* gkid who helps:
+      gkidp = gkid parent OPN
+      gkpar = flags whether / type of gkid parent ID info
+              1 if grandkid and have parent OPN
+              2 if grandkid's parent is deceased kid
+              8 if valid OPN but not a grandkid helper
+              9 if grandkid but no valid parent OPN
+   */
+   &pre&w.gkidp=&gkp;
+   if hpk&w.relhp=3 and &pre&w.gkidp="&dieopn" then &pre&w.gkpar=2; /* deceased child */
+   else if hpk&w.relhp=3 and 0<&pre&w.gkidp<998 then &pre&w.gkpar=1;
+   else if 0<&pre&w.gkidp<998 and hpk&w.relhp ne 3 then &pre&w.gkpar=8;
+   else if hpk&w.relhp=3 then &pre&w.gkpar=9;
+%end;
+   
+   /* days of help given last month
+      ADD FLAG FOR SOURCE */
+   &pre&w.helpr=(&daymo ne 96);
+   if &pre&w.helpr=1 then do;
+      if &daymo = 96 then &pre&w.days=.S;  /* not a helper */
+      else if 0<&daymo<=31 then &pre&w.days=&daymo;
+      else if 1<=&daywk<=7 then &pre&w.days=&daywk*4;
+      else if &evday=1 then &pre&w.days=30;
+      else if &daymo=0 then &pre&w.days=&daymo;
+      else if &daymo=98 then &pre&w.days=.D;
+      else if &daymo=99 then &pre&w.days=.R;
+      else if &daywk=8 then &pre&w.days=.D;
+      else if &daywk=9 then &pre&w.days=.R;
+      else if &evday=8 then &pre&w.days=.D;
+      else if &evday=9 then &pre&w.days=.R;
+      else if &rel=72 or opn in ("096","`998"," ") then &pre&w.days=.S;
+      else &pre&w.days=.M;
+      
+      if 1<=&hrs<=24 then &pre&w.hours=&hrs;
+      else if &hrs=98 then &pre&w.hours=.D;
+      else if &hrs=99 then &pre&w.hours=.R;
+      else if &rel=72 or opn in ("096","998"," ") then &pre&w.hours=.S;
+      else &pre&w.hours=.M;
+      
+      /* if said 0 days/week and didn't say every day but gave hours, use 1 day/mo */
+      if &daywk=0 and &pre&w.hours>0 and &pre&w.days<0 then &pre&w.days=1;
+      /* if said 0 days/week and didn't say every day and gave 0 or missing hours, 
+         then assume didn't help */
+      if &pre&w.days=0 and &pre&w.hours<=0 then &pre&w.helpr=0;
+   end;
+         
+   if &pre&w.helpr=1 then do;
+      /* calculate total hours last month, days*hours */
+      &pre&w.tothrs=&pre&w.days*&pre&w.hours;
+      if &pre&w.tothrs=. and &pre&w.days<=.Z then &pre&w.tothrs=&pre&w.days;
+      else if &pre&w.tothrs=. then &pre&w.tothrs=&pre&w.hours;
+      
+      /* helper sex */
+      if &sex in (1,2) then &pre&w.sex=&sex;
+      else if &sex=3 then &pre&w.sex=.E; /* employee of institution */
+      else &pre&w.sex=.M;
+      
+      /* did R pay for help */
+      if &pay in (1,5) then &pre&w.paid=(&pay=1);
+      else if &pay=8 then &pre&w.paid=.D;
+      else if &pay=9 then &pre&w.paid=.R;
+      else if &rel=72 or opn in ("096","998"," ") then &pre&w.paid=.S;
+      else if hpk&w.relhp=20 then &pre&w.paid=.S;
+      else &pre&w.paid=.M;
+      
+      
+      if &pre&w.paid=1 then do;
+         /* did ins help pay for help */
+         if &ins in (1,5) then &pre&w.ins=(&ins=1);
+         else if &ins=8 then &pre&w.ins=.D;
+         else if &ins=9 then &pre&w.ins=.R;
+         else if &rel=72 or opn in ("096","998"," ") then &pre&w.ins=.S;
+         else &pre&w.ins=.M;
+         
+         if 0<=&oopamt<&oop9.7 then &pre&w.amt=&oopamt;
+         else if &oopamt=&oop9.8 then &pre&w.amt=.D;
+         else if &oopamt=&oop9.9 then &pre&w.amt=.R;
+         else &pre&w.amt=.M;
+         
+         if &ooper=8 then &pre&w.amtper=.D;
+         else if &ooper=9 then &pre&w.amtper=.R;
+         else if 1<=&ooper<=5 then &pre&w.amtper=&ooper;
+         
+         select (&ooper);
+            when(1) /* Month */ &pre&w.amtmo=&pre&w.amt;
+            when(2) /* week */  &pre&w.amtmo=&pre&w.amt*4;
+            when(3) /* Day */  &pre&w.amtmo=&pre&w.amt*&pre&w.days;
+            when(5) /* Year */  &pre&w.amtmo=&pre&w.amt/12;
+            when(8) /* DK */  &pre&w.amtmo=.D;
+            when(9) /* DK */  &pre&w.amtmo=.R;
+            otherwise &pre&w.amtmo=.M;
+         end;
+         
+         if &pre&w.amtmo<=.Z and &pre&w.amt=0 then &pre&w.amtmo=0;
+         else if &pre&w.amtmo=. and &pre&w.amt<=.Z then &pre&w.amtmo=&pre&w.amt;
+         else if &pre&w.amtmo=. and &ooper=3 and &pre&w.days<=.Z then &pre&w.amtmo=&pre&w.days;
+         else if &pre&w.amtmo=. then &pre&w.amtmo=.M;
+         /* amtmoF:
+            Flag for amount pd per mo: 0=paid-amount is zero, 1=continuous, 
+            2=about 100, 3=lt 100, 4=gt 100, 5=missing amt, 6=not paid, 
+            7=paid not asked, 8=missing if paid
+         */
+         &pre&w.amtmoF=(&pre&w.amtmo>0)+ 5*(&pre&w.amtmo<=.Z);
+         
+         if &pre&w.amtmo<=.Z then do;
+            if &oopbk=3 then &pre&w.amtmo=100;
+            else if &oopbk=1 then &pre&w.amtmo=.B;  /* less than 100 */
+            else if &oopbk=5 then &pre&w.amtmo=.H;  /* higher than 100 */
+            if &oopbk in (1,3,5) 
+               then &pre&w.amtmoF=2*(&oopbk=3) + 3*(&oopbk=1) + 4*(&oopbk=5);
+         end;
+         
+         /* payhlp: any one help pay for R's help
+            0=No, 1=yes-not a kid, 2=yes-kid, no OPN, 3=yes-kid, OPN */
+         if &payhlp in (1,5) then &pre&w.payhlp=(&payhlp=1);
+         else if &payhlp=8 then &pre&w.payhlp=.D;
+         else if &payhlp=9 then &pre&w.payhlp=.R;
+         else &pre&w.payhlp=.M;
+         if &paykid=1 
+         %if &payopn=Y %then and &payop not in ("998" "999" " "); 
+            then &pre&w.payhlp=3;
+         else if &paykid=1 then &pre&w.payhlp=2;
+      end;   
+      else do;
+         &pre&w.ins=.S;
+         &pre&w.amt=.S;
+         &pre&w.amtmo=.S;
+         &pre&w.amtmoF=6*(&pre&w.paid=0) + 7*(&pre&w.paid=.S) +
+                       8*(&pre&w.paid not in (.S,0)); /* 8=missing, not skipped */
+         &pre&w.payhlp=.S;
+      end;   
+   end;   /* is a helper */
+   else do; /* not a helper */
+      /* set helper vars to .H */
+      do i=1 to dim(&pre.hlpv_);
+         &pre.hlpv_[i]=.H;
+      end;
+   end;
+
+   label &pre&w.days="%upcase(&pre)&w.DAYS: Days helped last month"
+         &pre&w.hours="%upcase(&pre)&w.HOURS: Hours/day helped"
+         &pre&w.tothrs="%upcase(&pre)&w.tothrs: Total hours helped last month"
+         &pre&w.gkidp="%upcase(&pre)&w.GKIDP: OPN of grandkid parent/NA in 96"
+         &pre&w.gkpar="%upcase(&pre)&w.GKPAR: flags if grandkid par OPN ok/NA in 96"
+         &pre&w.sex="%upcase(&pre)&w.SEX: Sex on helper file"
+         &pre&w.paid="%upcase(&pre)&w.PAID: Whether paid"
+         &pre&w.amt="%upcase(&pre)&w.AMT: Amount paid"
+         &pre&w.amtper="%upcase(&pre)&w.AMTPER: Period amount paid"
+         &pre&w.amtmo="%upcase(&pre)&w.AMTMO: Amount paid last month"
+         &pre&w.amtmof="%upcase(&pre)&w.AMTMOF: Amount pd last month flag"
+         &pre&w.ins="%upcase(&pre)&w.INS: Whether insurance paid"
+         &pre&w.payhlp="%upcase(&pre)&w.PAYHLP: Anyone help pay"
+         &pre&w.helpr="%upcase(&pre)&w.HELPR: =1 if helper"
+         ;
+%mend;
+

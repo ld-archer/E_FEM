@@ -1,0 +1,5 @@
+infile dictionary using "../../../../../FEM_CPP_settings/timeseries/medgrowth.yearly.txt" {
+	_first(3)
+	year
+	medgrowth
+}

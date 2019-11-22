@@ -1,0 +1,215 @@
+/* Function to Get Cpi index for a given year
+extrapolated for 2006 onwards using average last 20 years
+-----------------------------------------------------*/
+
+program define _gcpi
+	version 9, missing
+	gettoken type 0 : 0
+	gettoken cpi 0 : 0
+	gettoken eqs 0 : 0			/* "=" */
+	gettoken paren 0 : 0, parse("(), ")	/* "(" */
+	gettoken year 0 : 0, parse("(), ")
+	gettoken paren 0 : 0, parse("(), ")	/* "(" */
+	syntax [if] [in] [, BY(string)]
+		marksample touse
+		global result `cpi'
+		global where `year'
+		global selected `touse'
+		qui gen $result = . if $selected
+		getcpi
+end
+
+program define cpifor
+	qui replace $result = `2' if $where==`1' & $selected
+end
+
+program define getcpi
+cpifor	1913	9.900
+cpifor	1914	10.000
+cpifor	1915	10.100
+cpifor	1916	10.900
+cpifor	1917	12.800
+cpifor	1918	15.100
+cpifor	1919	17.300
+cpifor	1920	20.000
+cpifor	1921	17.900
+cpifor	1922	16.800
+cpifor	1923	17.100
+cpifor	1924	17.100
+cpifor	1925	17.500
+cpifor	1926	17.700
+cpifor	1927	17.400
+cpifor	1928	17.100
+cpifor	1929	17.100
+cpifor	1930	16.700
+cpifor	1931	15.200
+cpifor	1932	13.700
+cpifor	1933	13.000
+cpifor	1934	13.400
+cpifor	1935	13.700
+cpifor	1936	13.900
+cpifor	1937	14.400
+cpifor	1938	14.100
+cpifor	1939	13.900
+cpifor	1940	14.000
+cpifor	1941	14.700
+cpifor	1942	16.300
+cpifor	1943	17.300
+cpifor	1944	17.600
+cpifor	1945	18.000
+cpifor	1946	19.500
+cpifor	1947	22.300
+cpifor	1948	24.100
+cpifor	1949	23.800
+cpifor	1950	24.100
+cpifor	1951	26.000
+cpifor	1952	26.500
+cpifor	1953	26.700
+cpifor	1954	26.900
+cpifor	1955	26.800
+cpifor	1956	27.200
+cpifor	1957	28.100
+cpifor	1958	28.900
+cpifor	1959	29.100
+cpifor	1960	29.600
+cpifor	1961	29.900
+cpifor	1962	30.200
+cpifor	1963	30.600
+cpifor	1964	31.000
+cpifor	1965	31.500
+cpifor	1966	32.400
+cpifor	1967	33.400
+cpifor	1968	34.800
+cpifor	1969	36.700
+cpifor	1970	38.800
+cpifor	1971	40.500
+cpifor	1972	41.800
+cpifor	1973	44.400
+cpifor	1974	49.300
+cpifor	1975	53.800
+cpifor	1976	56.900
+cpifor	1977	60.600
+cpifor	1978	65.200
+cpifor	1979	72.600
+cpifor	1980	82.400
+cpifor	1981	90.900
+cpifor	1982	96.500
+cpifor	1983	99.600
+cpifor	1984	103.900
+cpifor	1985	107.600
+cpifor	1986	109.600
+cpifor	1987	113.600
+cpifor	1988	118.300
+cpifor	1989	124.000
+cpifor	1990	130.700
+cpifor	1991	136.200
+cpifor	1992	140.300
+cpifor	1993	144.500
+cpifor	1994	148.200
+cpifor	1995	152.400
+cpifor	1996	156.900
+cpifor	1997	160.500
+cpifor	1998	163.000
+cpifor	1999	166.600
+cpifor	2000	172.200
+cpifor	2001	177.100
+cpifor	2002	179.900
+cpifor	2003	184.000
+cpifor	2004	189.336
+cpifor	2005	194.827
+cpifor	2006	200.477
+cpifor	2007	206.291
+cpifor	2008	212.273
+cpifor	2009	218.429
+cpifor	2010	224.763
+cpifor	2011	231.281
+cpifor	2012	237.989
+cpifor	2013	244.890
+cpifor	2014	251.992
+cpifor	2015	259.300
+cpifor	2016	266.820
+cpifor	2017	274.557
+cpifor	2018	282.520
+cpifor	2019	290.713
+cpifor	2020	299.143
+cpifor	2021	307.818
+cpifor	2022	316.745
+cpifor	2023	325.931
+cpifor	2024	335.383
+cpifor	2025	345.109
+cpifor	2026	355.117
+cpifor	2027	365.415
+cpifor	2028	376.012
+cpifor	2029	386.917
+cpifor	2030	398.137
+cpifor	2031	409.683
+cpifor	2032	421.564
+cpifor	2033	433.790
+cpifor	2034	446.369
+cpifor	2035	459.314
+cpifor	2036	472.634
+cpifor	2037	486.341
+cpifor	2038	500.445
+cpifor	2039	514.957
+cpifor	2040	529.891
+cpifor	2041	545.258
+cpifor	2042	561.071
+cpifor	2043	577.342
+cpifor	2044	594.084
+cpifor	2045	611.313
+cpifor	2046	629.041
+cpifor	2047	647.283
+cpifor	2048	666.054
+cpifor	2049	685.370
+cpifor	2050	705.246
+cpifor	2051	725.698
+cpifor	2052	746.743
+cpifor	2053	768.399
+cpifor	2054	790.682
+cpifor	2055	813.612
+cpifor	2056	837.207
+cpifor	2057	861.486
+cpifor	2058	886.469
+cpifor	2059	912.176
+cpifor	2060	938.629
+cpifor	2061	965.850
+cpifor	2062	993.859
+cpifor	2063	1022.681
+cpifor	2064	1052.339
+cpifor	2065	1082.857
+cpifor	2066	1114.260
+cpifor	2067	1146.573
+cpifor	2068	1179.824
+cpifor	2069	1214.039
+cpifor	2070	1249.246
+cpifor	2071	1285.474
+cpifor	2072	1322.753
+cpifor	2073	1361.113
+cpifor	2074	1400.585
+cpifor	2075	1441.202
+cpifor	2076	1482.997
+cpifor	2077	1526.004
+cpifor	2078	1570.258
+cpifor	2079	1615.795
+cpifor	2080	1662.653
+cpifor	2081	1710.870
+cpifor	2082	1760.485
+cpifor	2083	1811.539
+cpifor	2084	1864.074
+cpifor	2085	1918.132
+cpifor	2086	1973.758
+cpifor	2087	2030.997
+cpifor	2088	2089.896
+cpifor	2089	2150.503
+cpifor	2090	2212.868
+cpifor	2091	2277.041
+cpifor	2092	2343.075
+cpifor	2093	2411.024
+cpifor	2094	2480.944
+cpifor	2095	2552.891
+cpifor	2096	2626.925
+cpifor	2097	2703.106
+cpifor	2098	2781.496
+cpifor	2099	2862.159
+cpifor	2100	2945.162
+end

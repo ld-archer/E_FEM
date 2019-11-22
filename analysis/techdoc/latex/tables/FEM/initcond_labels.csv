@@ -1,0 +1,21 @@
+name,varlab
+fhibpe,Hypertension
+fhearte,Heart Disease
+fdiabe,Diabetes
+fanyhi,Any health insurance
+fshlt,Self-repoted health
+fwtstate,Weight status
+fsmkstat,Smoking status
+fanyadl,Functional status (ADL)
+fanyiadl,Functional status (IADL)
+fwork,Working
+fwlth_nonzero,Nonzero wealth
+fraime,AIME
+frq,Quarters worked
+hatotax,IHT(HH wealth)
+iearnx,IHT(earned income)
+dcwlthx,Log(DC wealth)
+fanydc,Any DC plan
+fanydb,Any DB plan
+frdb_ea_c,Early retirement age
+frdb_na_c,Normal retirement age

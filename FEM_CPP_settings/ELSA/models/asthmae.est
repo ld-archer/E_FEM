@@ -1,0 +1,13 @@
+probit
+asthmae
+male	.0102843
+hsless	.0723571
+college	.0955811
+l2age65l	-.0040869
+l2age6574	-.00507
+l2age75p	.0051112
+l2lunge	.4271688
+l2logbmi	.4411414
+l2smokev	.0780069
+l2smoken	.1767036
+_cons	-3.73618

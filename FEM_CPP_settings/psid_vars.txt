@@ -1,0 +1,796 @@
+| Sample variable definitions file
+_cons = 1.0 : Constant
+
+| Some simple boolean variables
+true = 1 : Boolean True
+false = 0 : Boolean False
+
+| age = (year - rbyr) + (7-rbmonth)/12 : Exact age on July 1st
+| lage = age - yr_step :  Lag of age
+age_yrs = floor(age) : Age in years on July 1st 
+agesq = age*age : Age squared
+l2agesq = l2age*l2age : Lag Age squared
+
+logdeltaage = log(yr_step)
+
+| Timeseries for unemployment. For now, we'll assume a constant trend moving forward, which is easier to deal with
+unemployment = if(year < 2014, seas_adj_unemployment(year), seas_adj_unemployment(2013))
+
+| BMI
+bmi = exp(logbmi)
+l2bmi = exp(l2logbmi)
+bmiGT30 = bmi > 30
+
+overwt = inrange(bmi, 25, 30) :: boolean
+obese_1 = inrange(bmi, 30, 35) :: boolean
+obese_2 = inrange(bmi, 35, 40) :: boolean
+obese_3 = bmi >= 40 :: boolean
+
+obese =  logbmi >= 3.401197382
+l2obese = l2logbmi >= 3.401197382
+
+l2logbmi_l30 = min(l2logbmi, 3.401197)
+l2logbmi_30p = max(l2logbmi - 3.401197, 0)
+
+l2bmi_l30 = min(l2bmi, 30)
+l2bmi_30p = max(l2bmi - 30, 0)
+
+hibp_stroke = max(hibpe,stroke)    : for alzhmr and cogstate models
+l2hibp_stroke = max(l2hibpe,l2stroke) : for alzhmr and cogstate models
+
+| Bariatric surgery tracking
+bar_surg_elig = l2age >= 50 & l2age < 61 & l2bs_treated == 0 & year != entry & l2died == 0 & (l2bmi >= bs_elig_bmi2 | (l2bmi >= bs_elig_bmi1 & (l2adl1 | l2adl2 | l2adl3p | l2diabe | l2hibpe | l2hearte | l2cancre | l2stroke | l2lunge))) : Eligable for Bariatric Surgery
+bar_surg_new = l2bs_treated == 0 & bs_treated == 1 : New receipient of bariatric surgery
+
+| Weight loss pill tracking
+wlp_new = l2wlp_treated == 0 & wlp_treated == 1
+
+| Health interactions
+diabe_hearte = diabe*hearte
+diabe_hibpe = diabe*hibpe
+diabe_obese = diabe*obese
+diclaim_adl3p = diclaim*adl3p
+hearte_diclaim = hearte*diclaim
+hearte_smokev = hearte*smokev
+hibpe_hearte = hibpe*hearte
+hibpe_obese = hibpe*obese
+hibpe_stroke = hibpe*stroke
+lunge_diclaim = lunge*diclaim
+work_adl3p = work*adl3p
+work_diclaim = work*diclaim
+work_hearte = work*hearte
+work_iadl1 = work*iadl1
+died_nhmliv = died*nhmliv
+diclaim_nhmliv = nhmliv * diclaim : Interaction of nursing home and disabled
+diclaim_died = died * diclaim : Interaction of died and disabled
+adl3p_alzhmr = adl3p*alzhmr : Interaction of alzheimers and adl3p
+died_cancre = died*cancre
+died_lunge = died*lunge
+died_hibpe = died*hibpe
+died_stroke = died*stroke
+died_diabe = died*diabe
+died_hearte = died*hearte
+
+male_hsless = male*hsless
+male_black = male*black
+male_hispan = male*hispan
+
+l2age62e = floor(l2age) == 60
+l2age63e = floor(l2age) == 61
+l2age64e = floor(l2age) == 62
+l2age6061 = floor(l2age) == 58 | floor(l2age) == 59 
+l2age6263 = floor(l2age) == 60 | floor(l2age) == 61 
+l2age6566 = floor(l2age) == 63 | floor(l2age) == 64 
+l2age6770 = floor(l2age) >= 65 & floor(l2age) <= 68
+l2age65l = min(l2age, 63.0) : Min(63,l2age) : float
+l2age6574 = min(max(0.0, l2age - 63.0), 73.0 - 63.0) : Min(Max(0,l2age-63),73-63) : float
+age70l = min(age, 70.0) :: float
+l2age70l = min(l2age, 70.0) :: float
+age75l = min(age, 75.0) 
+l2age7074 = min(max(0.0, l2age - 68.0), 73.0 - 68.0) :: float
+l2age7579 = min(max(0.0, l2age - 73.0), 78.0 - 73.0) :: float
+l2age80p = max(0.0, l2age-78.0) :: float
+l2age75l = min(l2age, 73.0) 
+age65l =  max(age, 65)
+age6575 = min(max(0.0, age - 65.0), 75.0 - 65.0) 
+age75p = max(0.0, age-75.0) 
+l2age75p = max(0.0, l2age-73.0) : Max(0,l2age-73) : float
+age2529 = inrange(age_yrs, 25, 29) :: boolean
+age3034 = inrange(age_yrs, 30, 34) :: boolean
+age3539 = inrange(age_yrs, 35, 39) :: boolean
+age4044 = inrange(age_yrs, 40, 44) :: boolean
+age4549 = inrange(age_yrs, 45, 49) :: boolean
+age5054 = inrange(age_yrs, 50, 54) :: boolean
+age5559 = inrange(age_yrs, 55, 59) :: boolean
+age6064 = inrange(age_yrs, 60, 64) :: boolean
+age6569 = inrange(age_yrs, 65, 69) :: boolean
+age7074 = inrange(age_yrs, 70, 74) :: boolean
+age7579 = inrange(age_yrs, 75, 79) :: boolean
+age8084 = inrange(age_yrs, 80, 84) :: boolean
+age6574 = inrange(age_yrs,65,74) :: boolean
+age7584 = inrange(age_yrs,75,84)
+age85 = age_yrs > 84 :: boolean
+
+age2534 = inrange(age_yrs, 25, 34) :: boolean
+age3544 = inrange(age_yrs, 35, 44) :: boolean
+age4554 = inrange(age_yrs, 45, 54) :: boolean
+age5564 = inrange(age_yrs, 55, 64) :: boolean
+
+
+died_age2534 = died * age2534
+died_age3544 = died * age3544
+died_age4554 = died * age4554
+died_age5564 = died * age5564
+
+died_age6569 = died * age6569
+died_age7074 = died * age7074
+died_age7579 = died * age7579
+died_age8084 = died * age8084
+died_age85 = died * age85
+
+male_l2age65l = male*l2age65l :: float
+male_l2age6574 = male*l2age6574 :: float
+male_l2age75p = male*l2age75p :: float
+
+l2age65l_male = male*l2age65l :: float
+l2age6574_male = male*l2age6574 :: float
+l2age75p_male = male*l2age75p :: float
+
+
+| Bryan's addition to try to improve work transition model
+l2age70p = floor(l2age) >= 68
+l2age5253 = floor(l2age) == 50 | floor(l2age) == 51
+l2age5455 = floor(l2age) == 52 | floor(l2age) == 53
+l2age5657 = floor(l2age) == 54 | floor(l2age) == 55
+l2age5859 = floor(l2age) == 56 | floor(l2age) == 57
+l2age6465 = floor(l2age) == 62 | floor(l2age) == 63
+l2age6667 = floor(l2age) == 64 | floor(l2age) == 65 
+l2age6869 = floor(l2age) == 66 | floor(l2age) == 67  
+
+
+| Age dummies for work model starting with odd year
+l2agelt51 = floor(l2age) < 49 :: boolean
+l2age5152 = floor(l2age) == 49 | floor(l2age) == 50 :: boolean
+l2age5354 = floor(l2age) == 51 | floor(l2age) == 52 :: boolean
+l2age5556 = floor(l2age) == 53 | floor(l2age) == 54 :: boolean
+l2age5758 = floor(l2age) == 55 | floor(l2age) == 56 :: boolean
+l2age5960 = floor(l2age) == 57 | floor(l2age) == 58 :: boolean
+l2age6162 = floor(l2age) == 59 | floor(l2age) == 60 :: boolean
+l2age6364 = floor(l2age) == 61 | floor(l2age) == 62 :: boolean
+l2age6768 = floor(l2age) == 65 | floor(l2age) == 66 :: boolean
+l2age6970 = floor(l2age) == 67 | floor(l2age) == 68 :: boolean
+l2age71p = floor(l2age) >= 69 :: boolean
+
+age1 = min(age,65.0) : spline age: (.,65)
+age2 = min(max(age-65.0,0.0),75.0-65.0) : spline age: (65,75)
+age3 = max(age-75.0,0.0) : spline age: (75,.)
+
+l2age1 = min(l2age,63.0) : spline l2age: (.,63)
+l2age2 = min(max(l2age-63.0,0.0),73.0-63.0) : spline l2age: (63,73)
+l2age3 = max(l2age-73.0,0.0) : spline l2age: (73,.)
+
+male_age1 = male*age1 : male * age1
+male_age2 = male*age2 : male * age2
+male_age3 = male*age3 : male * age3
+
+male_l2age1 = male*l2age1 : male * l2age1
+male_l2age2 = male*l2age2 : male * l2age2
+male_l2age3 = male*l2age3 : male * l2age3 
+
+a6 = min(age,60.0) : spline age: (.,60)
+l2a6 = min(l2age,58.0) : spline l2age: (.,58)
+a7 = min(max(age-60.0,0.0),75.0-60.0) : spline age: (60, 75)
+l2a7 = min(max(l2age-58.0,0.0),73.0-58.0) : spline l2age: (58,73)
+a7p = max(age-75.0,0.0) : spline age: (75,.)
+l2a7p = max(l2age-73.0,0.0) : spline l2age: (73,.)
+
+w3 = year == 1996 : Indicator for year 1996
+w4 = year == 1998 : Indicator for year 1998
+w5 = year == 2000 : Indicator for year 2000
+w6 = year == 2002 : Indicator for year 2002
+w7 = year == 2004 : Indicator for year 2004
+w8 = year == 2006 : Indicator for year 2006
+w9 = year >= 2008 : Indicator for year 2008+
+
+anycond = (cancre+diabe+hearte+hibpe+lunge+stroke) >= 1 : Any Health Condition
+cond3p = (cancre+diabe+hearte+hibpe+lunge+stroke) >= 3 : 3 or more Health Conditions
+
+diclaim2yr = l2diclaim & diclaim : claiming di for at least 2 years
+medicare_eligibility = age >= medicare_elig_age(year) | diclaim2yr : If the person is eligable for Medicare on July 1st
+frac_medicare_elig = max(min(max(age - medicare_elig_age(year), 0), 1), diclaim2yr) : Fraction of year covered by Medicare. Fully covered if DI for 2+ years.
+
+adl1p = adl1 | adl2 | adl3p : An indicator for any number of ADL limitations
+
+| hatotax = min(2000, hatota)*wlth_nonzero
+| loghatota = arcsinh(hatota)/100*wlth_nonzero
+| loghatotax = arcsinh(hatotax)/100*wlth_nonzero
+
+| iearnx = max(min(200, iearn), 0)*work
+| logiearn = arcsinh(iearn)/100
+| logiearnx = (arcsinh(iearnx)/100)*work
+
+
+| These next variables are defined for the transfers project
+l2hicap_cpl = if(married==1, l2hicap/2, l2hicap)
+l2ihs_hicap_cpl = log(l2hicap_cpl + (l2hicap_cpl*l2hicap_cpl + 1)^.5)
+l2hwealth_cpl = if(married==1, l2hatota*1000/2, l2hatota*1000)
+l2ihs_hwealth_cpl = log(l2hwealth_cpl+(l2hwealth_cpl*l2hwealth_cpl + 1)^.5)
+l2adl1p = l2adl1 | l2adl2 | l2adl3p
+l2iadl1p = l2iadl1 | l2iadl2p
+
+mcare_pta_premium_share = 0.0 : Share of Average Part A Costs Paid as Premium
+
+poverty_threshold = if(married==1, poverty_base(year) + poverty_additional(year), poverty_base(year))
+poverty_level =  (hicap + gross)/poverty_threshold
+magi = hicap + agi
+mcare_pta_drop_percent = 0.03
+mcare_ptb_drop_percent = 0.03
+mcare_pta_elasticity = 0-0.1
+mcare_ptb_elasticity = 0-0.1
+mcare_ptB_premium_share = if(magi <= mcare_ptb_thresh1(year), mcare_ptb_base(year), if(magi <= mcare_ptb_thresh2(year), mcare_ptb_bracket2(year), if(magi <= mcare_ptb_thresh3(year), mcare_ptb_bracket3(year), if(magi <= mcare_ptb_thresh4(year), mcare_ptb_bracket4(year), mcare_ptb_bracket5(year)) ) ) )
+income_band =  if(poverty_level <= 1.38, 0, if(magi <= mcare_ptb_thresh1(year), 1, if(magi <= mcare_ptb_thresh2(year), 2, if(magi <= mcare_ptb_thresh3(year), 3, if(magi <= mcare_ptb_thresh4(year), 4, 5) ) ) ) )
+mcare_pta_premium_baseline = 700
+
+qaly_nhmliv_reduction = 0.9 : Multiplier for QALY when person lives in a nursing home
+
+anyadl = adl1 | adl2 | adl3p
+anydisease = cancre | diabe | hearte | hibpe | lunge | stroke
+numdisease = hearte + lunge + stroke + hibpe + diabe + cancre : Total number of major health conditions ever diagnosed with
+l2numdisease = l2hearte + l2lunge + l2stroke + l2hibpe + l2diabe + l2cancre : Lag of Total number of major health conditions ever diagnosed with : short
+
+| Eligibility for various health interventions
+elig_telomerase = cancre * 0.25 * 0.5 : Telomerase effects 1/4 of cancer patients, half of whom get cured and half get reductions in variables
+elig_cancer_vaccine = cancre * 0.80 : Cancer Vaccine effects 80 percent of cancer patients
+elig_prevent_diabetes = obese * 0.30 : Insulin sensitivity drugs effect 30 percent of obese elderly
+elig_icd = hearte * 0.5 : ICDs effect half of heart disease patients
+elig_lvad = hearte * 0.10 : LVADs effect 10 percent of patients with heart failure
+elig_pacemaker = hearte : All heart disease patients are eligible for pacemakers
+elig_icd_or_vaccine = 1 - (1 - elig_icd) * (1 - elig_cancer_vaccine) : Eligible for either intervention for prob of death
+
+mult_pdied_icd_or_vaccine = (1 - 0.1) * (1 - 0.25)
+
+elig_cancer_mort = l2cancre : Eligible for the reduction in mortality for cancer patients
+elig_hearte_mort = l2hearte : Eligible for the reduction in mortality for heart disease patients
+
+| kid_mnagesq = kid_mnage*kid_mnage : Square of children's average age
+
+| For revised work and ssclaim models that use age relative to Social Security Normal Retirement Age
+nradist = (nra(rbyr)/12)-age
+nraplus9 = (nradist >= 9 & nradist < 10)
+nraplus8 = (nradist >= 8 & nradist < 9) 
+nraplus7 = (nradist >= 7 & nradist < 8) 
+nraplus6 = (nradist >= 6 & nradist < 7) 
+nraplus5 = (nradist >= 5 & nradist < 6) 
+nraplus4 = (nradist >= 4 & nradist < 5) 
+nraplus3 = (nradist >= 3 & nradist < 4) 
+nraplus2 = (nradist >= 2 & nradist < 3) 
+nraplus1 = (nradist >= 1 & nradist < 2) 
+nraplus0 = (nradist >= 0 & nradist < 1) 
+nramin0 = (nradist >= (0-1) & nradist < 0) 
+nramin1 = (nradist >= (0-2) & nradist < (0-1)) 
+nramin2 = (nradist >= (0-3) & nradist < (0-2)) 
+nramin3 = (nradist >= (0-4) & nradist < (0-3)) 
+nramin4 = (nradist >= (0-5) & nradist < (0-4)) 
+nramin5 = (nradist >= (0-6) & nradist < (0-5)) 
+nramin6 = (nradist >= (0-7) & nradist < (0-6)) 
+nramin7 = (nradist >= (0-8) & nradist < (0-7)) 
+nramin8 = (nradist >= (0-9) & nradist < (0-8)) 
+nramin9 = (nradist >= (0-10) & nradist < (0-9))
+nramin10 = (nradist < (0-10))
+
+| PSID Age spline variables - need variables for younger ages than HRS
+l2age24l = min(l2age, 22.0) : Min(22,l2age) : float
+l2age2529 = min(max(0.0, l2age - 23.0), 28.0 - 23.0) : Min(Max(0,l2age-23),28-23) : float
+l2age3034 = min(max(0.0, l2age - 28.0), 33.0 - 28.0) : Min(Max(0,l2age-28),33-28) : float
+l2age35l = min(l2age, 33.0) : Min(33,l2age) : float
+l2age3544 = min(max(0.0, l2age - 33.0), 43.0 - 33.0) : Min(Max(0,l2age-33),43-33) : float
+l2age4554 = min(max(0.0, l2age - 43.0), 53.0 - 43.0) : Min(Max(0,l2age-43),53-43) : float
+l2age5564 = min(max(0.0, l2age - 53.0), 63.0 - 53.0) : Min(Max(0,l2age-53),63-53) : float
+l2age55p = max(0.0, l2age - 53.0) : Max(0,l2age-53) : float
+l2age65p = max(0.0, l2age - 63.0) : Max(0,l2age-63) : float
+
+| PSID Age dummy variables
+l2age2529d = 23 <= l2age & l2age < 28 : I(23 <= l2age < 28) : bool
+l2age3034d = 28 <= l2age & l2age < 33 : I(28 <= l2age < 33) : bool
+l2age30pd	 = 28 <= l2age : I(28 <= l2age) : bool
+l2age3539d = 33 <= l2age & l2age < 38 : I(33 <= l2age < 38) : bool
+l2age35pd	 = 33 <= l2age : I(33 <= l2age) : bool
+l2age4049d = 38 <= l2age & l2age < 48 : I(38 <= l2age < 48) : bool
+l2age40pd  = 38 <= l2age : I(38 <= l2age) : bool
+l2age5059d = 48 <= l2age & l2age < 58 : I(48 <= l2age < 58) : bool
+l2age50pd  = 48 <= l2age : I(48 <= l2age) : bool
+l2age6064d = 58 <= l2age & l2age < 63 : I(58 <= l2age < 63) : bool
+l2age60pd	 = 58 <= l2age : I(58 <= l2age) : bool
+l2age65pd  = 63 <= l2age : I(63 <= l2age) : bool
+l2age67pd  = 65 <= l2age : I(65 <= l2age) : bool
+l2age6069d = 58 <= l2age & l2age < 68 : I(58 <= l2age < 68) : bool
+l2age70pd  = 68 <= l2age : I(68 <= l2age) : bool
+male_l2age2529d = male & l2age2529d :: bool
+male_l2age3034d = male & l2age3034d :: bool
+male_l2age3539d = male & l2age3539d :: bool
+male_l2age4049d = male & l2age4049d :: bool
+male_l2age5059d = male & l2age5059d :: bool
+male_l2age6064d = male & l2age6064d :: bool
+male_l2age65pd  = male & l2age65pd  :: bool
+male_l2age6069d = male & l2age6069d :: bool
+male_l2age70pd  = male & l2age70pd  :: bool
+black_l2age2529d  = black & l2age2529d :: bool
+black_l2age3034d  = black & l2age3034d :: bool
+black_l2age3539d  = black & l2age3539d :: bool
+black_l2age4049d  = black & l2age4049d :: bool
+black_l2age40pd	  = black & l2age40pd :: bool
+black_l2age5059d  = black & l2age5059d :: bool
+black_l2age50pd		= black & l2age50pd :: bool
+black_l2age6064d  = black & l2age6064d :: bool
+black_l2age60pd	  = black & l2age60pd :: bool
+black_l2age65pd   = black & l2age65pd  :: bool
+black_l2age6069d  = black & l2age6069d :: bool
+black_l2age70pd   = black & l2age70pd  :: bool
+hispan_l2age2529d = hispan & l2age2529d :: bool
+hispan_l2age3034d = hispan & l2age3034d :: bool
+hispan_l2age30pd	= hispan & l2age30pd :: bool
+hispan_l2age3539d = hispan & l2age3539d :: bool
+hispan_l2age35pd	= hispan & l2age35pd :: bool
+hispan_l2age4049d = hispan & l2age4049d :: bool
+hispan_l2age40pd	= hispan & l2age40pd :: bool
+hispan_l2age5059d = hispan & l2age5059d :: bool
+hispan_l2age50pd	= hispan & l2age50pd :: bool
+hispan_l2age6064d = hispan & l2age6064d :: bool
+hispan_l2age60pd	= hispan & l2age60pd :: bool
+hispan_l2age65pd  = hispan & l2age65pd  :: bool
+hispan_l2age6069d = hispan & l2age6069d :: bool
+hispan_l2age70pd  = hispan & l2age70pd  :: bool
+black_male_l2age2529d  = male & black & l2age2529d :: bool
+black_male_l2age3034d  = male & black & l2age3034d :: bool
+black_male_l2age3539d  = male & black & l2age3539d :: bool
+black_male_l2age4049d  = male & black & l2age4049d :: bool
+black_male_l2age5059d  = male & black & l2age5059d :: bool
+black_male_l2age6064d  = male & black & l2age6064d :: bool
+black_male_l2age65pd   = male & black & l2age65pd  :: bool
+black_male_l2age6069d  = male & black & l2age6069d :: bool
+black_male_l2age70pd   = male & black & l2age70pd  :: bool
+hispan_male_l2age2529d = male & hispan & l2age2529d :: bool
+hispan_male_l2age3034d = male & hispan & l2age3034d :: bool
+hispan_male_l2age3539d = male & hispan & l2age3539d :: bool
+hispan_male_l2age4049d = male & hispan & l2age4049d :: bool
+hispan_male_l2age5059d = male & hispan & l2age5059d :: bool
+hispan_male_l2age6064d = male & hispan & l2age6064d :: bool
+hispan_male_l2age65pd  = male & hispan & l2age65pd  :: bool
+hispan_male_l2age6069d = male & hispan & l2age6069d :: bool
+hispan_male_l2age70pd  = male & hispan & l2age70pd  :: bool
+
+| Disease staging variables
+cancre_nlcancre = cancre * not(l2cancre) * not(died) : Cancer Diagnosis Stage : boolean
+cancre_lcancre = cancre * l2cancre * not(died) : Cancer Maintenance Stage : boolean
+died_cancre = died*cancre : Cancer Terminal Stage : boolean
+diabe_nldiabe = diabe * not(l2diabe) * not(died) : Diabetes Diagnosis Stage : boolean
+diabe_ldiabe = diabe * l2diabe * not(died) : Diabetes Maintenance Stage : boolean
+died_diabe = died*diabe : Diabetes Terminal Stage : boolean
+hearte_nlhearte = hearte * not(l2hearte) * not(died) : Heart Disease Diagnosis Stage : boolean
+hearte_lhearte = hearte * l2hearte * not(died) : Hearte Disease Maintenance Stage : boolean
+died_hearte = died*hearte : Heart Disease Terminal Stage : boolean
+hibpe_nlhibpe = hibpe * not(l2hibpe) * not(died) : Hypertension Diagnosis Stage : boolean
+hibpe_lhibpe = hibpe * l2hibpe * not(died) : Hypertension Maintenance Stage : boolean
+died_hibpe = died*hibpe : Hypertension Terminal Stage : boolean
+lunge_nllunge = lunge * not(l2lunge) * not(died) : Lung Disease Diagnosis Stage : boolean
+lunge_llunge = lunge * l2lunge * not(died) : Lung Disease Maintenance Stage : boolean
+died_lunge = died*lunge : Lung Disease Terminal Stage : boolean
+stroke_nlstroke = stroke * not(l2stroke) * not(died) : Stroke Diagnosis Stage : boolean
+stroke_lstroke = stroke * l2stroke * not(died) : Stroke Maintenance Stage : boolean
+died_stroke = died*stroke : Stroke Terminal Stage : boolean
+
+l2age5561 = floor(l2age) >= 53 & floor(l2age) < 59  
+l2age6264 = floor(l2age) >= 60 & floor(l2age) < 62  
+
+
+
+anyiadl = (iadlstat > 1)
+
+runcogstk = 0
+runcog = 0
+
+l2age35l_black = l2age35l*black   
+l2age3544_black = l2age3544*black  
+l2age4554_black = l2age4554*black  
+l2age5564_black = l2age5564*black  
+l2age65l_black = l2age65l*black
+l2age6574_black = l2age6574*black  
+l2age75p_black = l2age75p*black   
+l2age35l_hispan = l2age35l*hispan  
+l2age3544_hispan = l2age3544*hispan 
+l2age4554_hispan = l2age4554*hispan 
+l2age5564_hispan = l2age5564*hispan 
+l2age65l_hispan = l2age65l*hispan
+l2age6574_hispan = l2age6574*hispan 
+l2age75p_hispan = l2age75p*hispan 
+
+male_l2age65l_black = male*l2age65l*black :: float
+male_l2age6574_black = male*l2age6574*black :: float
+male_l2age75p_black = male*l2age75p*black :: float
+male_l2age65l_hispan = male*l2age65l*hispan :: float
+male_l2age6574_hispan = male*l2age6574*hispan :: float
+male_l2age75p_hispan = male*l2age75p*hispan :: float
+
+| For revised work and ssclaim models that use age relative to Social Security Normal Retirement Age
+nradist = (nra(rbyr)/12)-age :: float
+nraplus10 = (nradist >= 10) :: boolean
+nraplus9 = (nradist >= 9 & nradist < 10) :: boolean
+nraplus8 = (nradist >= 8 & nradist < 9) :: boolean
+nraplus7 = (nradist >= 7 & nradist < 8) :: boolean
+nraplus6 = (nradist >= 6 & nradist < 7) :: boolean
+nraplus5 = (nradist >= 5 & nradist < 6) :: boolean
+nraplus4 = (nradist >= 4 & nradist < 5) :: boolean
+nraplus3 = (nradist >= 3 & nradist < 4) :: boolean
+nraplus2 = (nradist >= 2 & nradist < 3) :: boolean
+nraplus1 = (nradist >= 1 & nradist < 2) :: boolean
+nraplus0 = (nradist > 0 & nradist < 1) :: boolean
+nramin0 = (nradist > (0-1) & nradist <= 0) :: boolean
+nramin1 = (nradist > (0-2) & nradist <= (0-1)) :: boolean
+nramin2 = (nradist > (0-3) & nradist <= (0-2)) :: boolean
+nramin3 = (nradist > (0-4) & nradist <= (0-3)) :: boolean
+nramin4 = (nradist > (0-5) & nradist <= (0-4)) :: boolean
+nramin5 = (nradist > (0-6) & nradist <= (0-5)) :: boolean
+nramin6 = (nradist > (0-7) & nradist <= (0-6)) :: boolean
+nramin7 = (nradist > (0-8) & nradist <= (0-7)) :: boolean
+nramin8 = (nradist > (0-9) & nradist <= (0-8)) :: boolean
+nramin9 = (nradist > (0-10) & nradist <= (0-9)) :: boolean
+nramin10 = (nradist <= (0-10)) :: boolean
+nramin5l = (nradist <= (0-5)) :: boolean
+nraplus3p = (nradist >= 3) :: boolean
+
+| For revised diclaim model use age relative to Social Security Early Entitlement Age
+eeadist = (eea(rbyr)/12)-age :: float
+eeaplus3p = (eeadist >= 3) :: boolean
+eeaplus2 = (eeadist >= 2 & eeadist < 3) :: boolean
+eeaplus1 = (eeadist >= 1 & eeadist < 2) :: boolean
+eeaplus0 = (eeadist > 0 & eeadist < 1) :: boolean
+eeamin0 = (eeadist > (0-1) & eeadist <= 0) :: boolean
+eeamin1 = (eeadist > (0-2) & eeadist <= (0-1)) :: boolean
+eeamin2l = (eeadist <= (0-2)) :: boolean
+
+at_eea =  (eeadist > (0-2) & eeadist <= 0) :: boolean
+at_nra = (nradist > (0-2) & nradist <= 0) :: boolean
+yrs_before_nra = max(nradist,0) :: float
+yrs_after_nra = max((0-1)*nradist,0) :: float
+
+| For childbearing and paternity models
+l2numbiokids1 = (l2numbiokids == 1)::boolean
+l2numbiokids2 = (l2numbiokids == 2)::boolean
+l2numbiokids3p = (l2numbiokids >= 3)::boolean
+l2yrsnclastkid2 = l2yrsnclastkid*l2yrsnclastkid::float
+
+numbiokids1 = (numbiokids == 1)::boolean
+numbiokids2 = (numbiokids == 2)::boolean
+numbiokids3p = (numbiokids >= 3)::boolean
+
+| for marriage
+singlenwid = single==1 & widowed==0 : Single, not widowed : boolean
+singlenpd = single==1 & partdied==0 : Single, not partner death : boolean
+
+l2age35l_male = male*l2age35l
+l2age3544_male = male*l2age3544
+l2age4554_male = male*l2age4554
+l2age5564_male = male*l2age5564
+l2age55p_male = male*l2age55p
+l2age6574_male = male*l2age6574
+l2age75p_male  = male*l2age75p 
+
+male_l2age35l = male*l2age35l
+male_l2age3544 = male*l2age3544
+male_l2age4554 = male*l2age4554
+male_l2age5564 = male*l2age5564
+male_l2age6574 = male*l2age6574
+male_l2age75p  = male*l2age75p 
+
+l2age35l_l2iearnx = l2age35l * l2iearnx
+l2age3544_l2iearnx = l2age3544 * l2iearnx
+l2age4554_l2iearnx = l2age4554 * l2iearnx
+l2age5564_l2iearnx = l2age5564 * l2iearnx
+l2age6574_l2iearnx = l2age6574 * l2iearnx
+l2age75p_l2iearnx = l2age75p * l2iearnx
+
+l2age35l_l2hatotax = l2age35l * l2hatotax
+l2age3544_l2hatotax = l2age3544 * l2hatotax
+l2age4554_l2hatotax = l2age4554 * l2hatotax
+l2age5564_l2hatotax = l2age5564 * l2hatotax
+l2age6574_l2hatotax = l2age6574 * l2hatotax
+l2age75p_l2hatotax = l2age75p * l2hatotax
+
+
+| Fake fvars at age 50
+flogbmi50_l30 = 0
+flogbmi50_30p = 0
+flag2006 = 0
+fheart50 = 0
+fstrok50 = 0
+fcanc50 = 0
+fhibp50 = 0
+fdiabe50 = 0
+flung50 = 0
+fsmoken50 = 0
+fwidowed50 = 0
+fsingle50 = 0
+
+| Dummies for categorical variable
+workcat1 = (workcat == 1) :: boolean
+workcat2 = (workcat == 2) :: boolean
+workcat3 = (workcat == 3) :: boolean
+workcat4 = (workcat == 4) :: boolean
+
+l2workcat1 = (l2workcat == 1) :: boolean
+l2workcat2 = (l2workcat == 2) :: boolean
+l2workcat3 = (l2workcat == 3) :: boolean
+l2workcat4 = (l2workcat == 4) :: boolean
+
+educ1 = (educlvl == 1) :: boolean
+educ2 = (educlvl == 2) :: boolean
+educ3 = (educlvl == 3) :: boolean
+educ4 = (educlvl == 4) :: boolean
+
+l2educ1 = (l2educlvl == 1) :: boolean
+l2educ2 = (l2educlvl == 2) :: boolean
+l2educ3 = (l2educlvl == 3) :: boolean
+l2educ4 = (l2educlvl == 4) :: boolean
+
+
+male_educ1 = male * educ1 :: boolean
+male_educ2 = male * educ2 :: boolean
+male_educ3 = male * educ3 :: boolean
+male_educ4 = male * educ4 :: boolean
+
+l2age_l2educ1 = l2age*l2educ1
+l2age_l2educ2 = l2age*l2educ2
+l2age_l2educ3 = l2age*l2educ3
+l2age_l2educ4 = l2age*l2educ4
+
+| Exploring age-disease effects in MEPS medcosts (under 45 vs 45+) 
+age45p = (age >= 45) :: boolean
+age45p_cancre	= age45p * cancre :: boolean
+age45p_diabe	= age45p * diabe :: boolean	
+age45p_hibpe	= age45p * hibpe :: boolean	
+age45p_hearte	= age45p * hearte :: boolean	
+age45p_lunge	= age45p * lunge :: boolean	
+age45p_stroke	= age45p * stroke :: boolean	
+
+inscat1 = (inscat == 1) :: boolean
+inscat2 = (inscat == 2) :: boolean
+inscat3 = (inscat == 3) :: boolean
+
+l2inscat1 = (l2inscat == 1) :: boolean
+l2inscat2 = (l2inscat == 2) :: boolean
+l2inscat3 = (l2inscat == 3) :: boolean
+
+l2smokev_l2smoken = l2smokev * l2smoken :: boolean
+
+over65 = (l2age >= 63) :: boolean
+
+over65_l2cancre	 = over65*l2cancre :: boolean
+over65_l2diabe	 = over65*l2diabe :: boolean
+over65_l2hearte	 = over65*l2hearte :: boolean
+over65_l2hibpe	 = over65*l2hibpe :: boolean
+over65_l2lunge	 = over65*l2lunge :: boolean
+over65_l2stroke	 = over65*l2stroke :: boolean
+
+chldsrh1 = (chldsrh == 1) :: boolean
+chldsrh2 = (chldsrh == 2) :: boolean
+chldsrh3 = (chldsrh == 3) :: boolean
+chldsrh4 = (chldsrh == 4) :: boolean
+chldsrh5 = (chldsrh == 5) :: boolean
+
+srh1 = (srh == 1) :: boolean
+srh2 = (srh == 2) :: boolean
+srh3 = (srh == 3) :: boolean
+srh4 = (srh == 4) :: boolean
+srh5 = (srh == 5) :: boolean
+
+srh3p = (srh >= 3) :: boolean
+srh2l = (srh <= 2) :: boolean
+
+| Incident indicator --- currently used for srh model
+icancre = cancre * not(l2cancre) : Cancer Incidence : boolean
+idiabe = diabe * not(l2diabe) : Diabetes Incidence : boolean
+ihearte = hearte * not(l2hearte) : Heart Disease Incidence : boolean
+ihibpe = hibpe * not(l2hibpe) : Hypertension Incidence : boolean
+ilunge = lunge * not(l2lunge) : Lung Disease Incidence : boolean
+istroke = stroke * not(l2stroke) : Stroke Incidence : boolean
+
+black_educ1 = black * educ1 :: boolean
+black_educ2 = black * educ2 :: boolean
+black_educ3 = black * educ3 :: boolean
+black_educ4 = black * educ4 :: boolean
+
+hispan_educ1 = hispan * educ1 :: boolean
+hispan_educ2 = hispan * educ2 :: boolean
+hispan_educ3 = hispan * educ3 :: boolean
+hispan_educ4 = hispan * educ4 :: boolean
+
+meduc12 = mthreduc1 + mthreduc2
+
+l2age_educ1 = l2age * educ1 
+l2age_educ2 = l2age * educ2 
+l2age_educ3 = l2age * educ3 
+l2age_educ4 = l2age * educ4 
+
+l2agesq_educ1 = l2agesq * educ1 
+l2agesq_educ2 = l2agesq * educ2 
+l2agesq_educ3 = l2agesq * educ3 
+l2agesq_educ4 = l2agesq * educ4 
+
+male_l2married = male*l2married
+male_l2cohab = male*l2cohab
+
+male_college = male * college
+male_married = male * married
+male_cohab = male * cohab
+
+l2age35l_l2married = l2age35l * l2married
+l2age3544_l2married = l2age3544 * l2married
+l2age4554_l2married = l2age4554 * l2married
+l2age5564_l2married = l2age5564 * l2married
+l2age6574_l2married = l2age6574 * l2married
+l2age75p_l2married = l2age75p * l2married
+
+l2age35l_l2cohab = l2age35l * l2cohab
+l2age3544_l2cohab = l2age3544 * l2cohab
+l2age4554_l2cohab = l2age4554 * l2cohab
+l2age5564_l2cohab = l2age5564 * l2cohab
+l2age6574_l2cohab = l2age6574 * l2cohab
+l2age75p_l2cohab = l2age75p * l2cohab
+
+l2age35l_educ1 = l2age35l * educ1
+l2age3544_educ1 = l2age3544 * educ1
+l2age4554_educ1 = l2age4554 * educ1
+l2age5564_educ1 = l2age5564 * educ1
+l2age6574_educ1 = l2age6574 * educ1
+l2age75p_educ1 = l2age75p * educ1
+l2age65p_educ1 = l2age65p * educ1
+
+
+l2age35l_educ2 = l2age35l * educ2
+l2age3544_educ2 = l2age3544 * educ2
+l2age4554_educ2 = l2age4554 * educ2
+l2age5564_educ2 = l2age5564 * educ2
+l2age6574_educ2 = l2age6574 * educ2
+l2age75p_educ2 = l2age75p * educ2
+l2age65p_educ2 = l2age65p * educ2
+
+l2age35l_educ3 = l2age35l * educ3
+l2age3544_educ3 = l2age3544 * educ3
+l2age4554_educ3 = l2age4554 * educ3
+l2age5564_educ3 = l2age5564 * educ3
+l2age6574_educ3 = l2age6574 * educ3
+l2age75p_educ3 = l2age75p * educ3
+l2age65p_educ3 = l2age65p * educ3
+
+l2age35l_educ4 = l2age35l * educ4
+l2age3544_educ4 = l2age3544 * educ4
+l2age4554_educ4 = l2age4554 * educ4
+l2age5564_educ4 = l2age5564 * educ4
+l2age6574_educ4 = l2age6574 * educ4
+l2age75p_educ4 = l2age75p * educ4
+l2age65p_educ4 = l2age65p * educ4
+
+l2logiearnx_educ1 = l2logiearnx * educ1
+l2logiearnx_educ2 = l2logiearnx * educ2
+l2logiearnx_educ3 = l2logiearnx * educ3
+l2logiearnx_educ4 = l2logiearnx * educ4
+
+educ1_l2age2529d = educ1 & l2age2529d :: bool
+educ1_l2age3034d = educ1 & l2age3034d :: bool
+educ1_l2age3539d = educ1 & l2age3539d :: bool
+educ1_l2age4049d = educ1 & l2age4049d :: bool
+educ1_l2age5059d = educ1 & l2age5059d :: bool
+educ1_l2age6064d = educ1 & l2age6064d :: bool
+educ1_l2age65pd  = educ1 & l2age65pd  :: bool
+educ1_l2age6069d = educ1 & l2age6069d :: bool
+educ1_l2age70pd  = educ1 & l2age70pd  :: bool
+
+educ2_l2age2529d = educ2 & l2age2529d :: bool
+educ2_l2age3034d = educ2 & l2age3034d :: bool
+educ2_l2age3539d = educ2 & l2age3539d :: bool
+educ2_l2age4049d = educ2 & l2age4049d :: bool
+educ2_l2age5059d = educ2 & l2age5059d :: bool
+educ2_l2age6064d = educ2 & l2age6064d :: bool
+educ2_l2age65pd  = educ2 & l2age65pd  :: bool
+educ2_l2age6069d = educ2 & l2age6069d :: bool
+educ2_l2age70pd  = educ2 & l2age70pd  :: bool
+
+educ3_l2age2529d = educ3 & l2age2529d :: bool
+educ3_l2age3034d = educ3 & l2age3034d :: bool
+educ3_l2age3539d = educ3 & l2age3539d :: bool
+educ3_l2age4049d = educ3 & l2age4049d :: bool
+educ3_l2age5059d = educ3 & l2age5059d :: bool
+educ3_l2age6064d = educ3 & l2age6064d :: bool
+educ3_l2age65pd  = educ3 & l2age65pd  :: bool
+educ3_l2age6069d = educ3 & l2age6069d :: bool
+educ3_l2age70pd  = educ3 & l2age70pd  :: bool
+
+educ4_l2age2529d = educ4 & l2age2529d :: bool
+educ4_l2age3034d = educ4 & l2age3034d :: bool
+educ4_l2age3539d = educ4 & l2age3539d :: bool
+educ4_l2age4049d = educ4 & l2age4049d :: bool
+educ4_l2age5059d = educ4 & l2age5059d :: bool
+educ4_l2age6064d = educ4 & l2age6064d :: bool
+educ4_l2age65pd  = educ4 & l2age65pd  :: bool
+educ4_l2age6069d = educ4 & l2age6069d :: bool
+educ4_l2age70pd  = educ4 & l2age70pd  :: bool
+
+l2logiearnx_l2workcat1 = l2logiearnx*l2workcat1 
+l2logiearnx_l2workcat2 = l2logiearnx*l2workcat2 
+l2logiearnx_l2workcat3 = l2logiearnx*l2workcat3 
+l2logiearnx_l2workcat4 = l2logiearnx*l2workcat4 
+
+| Used as predictors in the log earnings models for full-time, part-time, unemployed, and out of labor force in PSID
+l2ihsiearn = log(l2iearn + (l2iearn*l2iearn + 1)^.5)
+l2ihsiearn_l2workcat1 = l2ihsiearn*l2workcat1
+l2ihsiearn_l2workcat2 = l2ihsiearn*l2workcat2
+l2ihsiearn_l2workcat3 = l2ihsiearn*l2workcat3
+l2ihsiearn_l2workcat4 = l2ihsiearn*l2workcat4
+
+male_l2k6 = male*l2k6score   
+black_l2k6 = black*l2k6score
+hisp_l2k6 = hispan*l2k6score
+
+l2age65p_male = male*l2age65p :: float 
+
+
+
+
+
+
+
+
+
+
+
+
+
+| Placeholders for heart attack variables developed for FEM.  The hearta model (not used in FAM, but read in with the models directory) looks for these
+l2heartae = 0 
+black_l2heartae = 0
+hispan_l2heartae = 0
+hsless_l2heartae = 0
+college_l2heartae = 0
+male_l2heartae = 0
+male_hsless_l2heartae = 0
+male_black_l2heartae = 0
+male_hispan_l2heartae = 0
+l2age65l_l2heartae = 0
+l2age6574_l2heartae = 0
+l2age75p_l2heartae = 0
+l2hibpe_l2heartae = 0
+l2diabe_l2heartae = 0
+l2smoken_l2heartae = 0
+l2widowed_l2heartae = 0
+fstrok50_l2heartae = 0
+fcanc50_l2heartae = 0
+fhibp50_l2heartae = 0
+fdiabe50_l2heartae = 0
+flung50_l2heartae = 0
+fheart50_l2heartae = 0
+fsmokev_l2heartae = 0
+fsmoken50_l2heartae = 0
+l2logbmi_l30_l2heartae = 0
+l2logbmi_30p_l2heartae = 0
+logdeltaage_l2heartae = 0
+
+alzhe_nlalzhe = alzhe * not(l2alzhe) * not(died) : Alzhe Diagnosis Stage : boolean
+alzhe_lalzhe = alzhe * l2alzhe * not(died) : Alzhe Maintenance Stage : boolean
+died_alzhe = died*alzhe : Alzhe Terminal Stage : boolean
+
+heartae_nlheartae = heartae * not(l2heartae) * not(died) : heartae Diagnosis Stage : boolean
+heartae_lheartae = heartae * l2heartae * not(died) : hearta Maintenance Stage : boolean
+died_heartae = died*heartae : heartae Terminal Stage : boolean
+nhmliv_heartae  = nhmliv * heartae :: boolean
+
+y1999 = year == 1999 : Indicator for year 1999
+y2001 = year == 2001 : Indicator for year 2001
+y2003 = year == 2003 : Indicator for year 2003
+y2005 = year == 2005 : Indicator for year 2005
+y2007 = year == 2007 : Indicator for year 2007
+y2009 = year == 2009 : Indicator for year 2009
+y2011 = year == 2011 : Indicator for year 2011
+y2013 = year == 2013 : Indicator for year 2013
+y2015 = year >= 2015 : Indicator for year 2015 and later
+
+

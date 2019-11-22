@@ -1,0 +1,451 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+m_startpop_all,startpop (millions): Sample = all,weight,sum,0.000001,1,l2died == 0
+m_startpop_wht,startpop (millions): Sample = white,weight,sum,0.000001,1,l2died == 0& black == 0 & hispan == 0
+m_startpop_blk,startpop (millions): Sample = black,weight,sum,0.000001,1,l2died == 0& black == 1
+m_startpop_his,startpop (millions): Sample = hispanic,weight,sum,0.000001,1,l2died == 0& hispan == 1
+m_startpop_m,startpop (millions): Sample = male,weight,sum,0.000001,1,l2died == 0& male == 1
+m_startpop_f,startpop (millions): Sample = female,weight,sum,0.000001,1,l2died == 0& male == 0
+m_startpop_5564,startpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,l2died == 0& age >= 55 & age < 65
+m_startpop_6574,startpop (millions): Sample = age 65 to 74,weight,sum,0.000001,1,l2died == 0& age >= 65 & age < 75
+m_startpop_7584,startpop (millions): Sample = age 75 to 84,weight,sum,0.000001,1,l2died == 0& age >= 75 & age < 85
+m_startpop_85p,startpop (millions): Sample = age 85 plus,weight,sum,0.000001,1,l2died == 0& age >= 85
+m_endpop_all,endpop (millions): Sample = all,weight,sum,0.000001,1,died == 0
+m_endpop_wht,endpop (millions): Sample = white,weight,sum,0.000001,1,died == 0& black == 0 & hispan == 0
+m_endpop_blk,endpop (millions): Sample = black,weight,sum,0.000001,1,died == 0& black == 1
+m_endpop_his,endpop (millions): Sample = hispanic,weight,sum,0.000001,1,died == 0& hispan == 1
+m_endpop_m,endpop (millions): Sample = male,weight,sum,0.000001,1,died == 0& male == 1
+m_endpop_f,endpop (millions): Sample = female,weight,sum,0.000001,1,died == 0& male == 0
+m_endpop_5564,endpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,died == 0& age >= 55 & age < 65
+m_endpop_6574,endpop (millions): Sample = age 65 to 74,weight,sum,0.000001,1,died == 0& age >= 65 & age < 75
+m_endpop_7584,endpop (millions): Sample = age 75 to 84,weight,sum,0.000001,1,died == 0& age >= 75 & age < 85
+m_endpop_85p,endpop (millions): Sample = age 85 plus,weight,sum,0.000001,1,died == 0& age >= 85
+p_diabe_all,Prevalence of diabe: Sample= all,diabe,mean,1,weight,l2died==0
+p_diabe_wht,Prevalence of diabe: Sample= white,diabe,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_diabe_blk,Prevalence of diabe: Sample= black,diabe,mean,1,weight,l2died==0& black == 1
+p_diabe_his,Prevalence of diabe: Sample= hispanic,diabe,mean,1,weight,l2died==0& hispan == 1
+p_diabe_m,Prevalence of diabe: Sample= male,diabe,mean,1,weight,l2died==0& male == 1
+p_diabe_f,Prevalence of diabe: Sample= female,diabe,mean,1,weight,l2died==0& male == 0
+p_diabe_5564,Prevalence of diabe: Sample= age 55 to 64,diabe,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_diabe_6574,Prevalence of diabe: Sample= age 65 to 74,diabe,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_diabe_7584,Prevalence of diabe: Sample= age 75 to 84,diabe,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_diabe_85p,Prevalence of diabe: Sample= age 85 plus,diabe,mean,1,weight,l2died==0& age >= 85
+i_diabe_all,Incidence of diabe: Sample= all,diabe,mean,1,weight,l2died==0&l2diabe==0
+i_diabe_wht,Incidence of diabe: Sample= white,diabe,mean,1,weight,l2died==0&l2diabe==0& black == 0 & hispan == 0
+i_diabe_blk,Incidence of diabe: Sample= black,diabe,mean,1,weight,l2died==0&l2diabe==0& black == 1
+i_diabe_his,Incidence of diabe: Sample= hispanic,diabe,mean,1,weight,l2died==0&l2diabe==0& hispan == 1
+i_diabe_m,Incidence of diabe: Sample= male,diabe,mean,1,weight,l2died==0&l2diabe==0& male == 1
+i_diabe_f,Incidence of diabe: Sample= female,diabe,mean,1,weight,l2died==0&l2diabe==0& male == 0
+i_diabe_5564,Incidence of diabe: Sample= age 55 to 64,diabe,mean,1,weight,l2died==0&l2diabe==0& age >= 55 & age < 65
+i_diabe_6574,Incidence of diabe: Sample= age 65 to 74,diabe,mean,1,weight,l2died==0&l2diabe==0& age >= 65 & age < 75
+i_diabe_7584,Incidence of diabe: Sample= age 75 to 84,diabe,mean,1,weight,l2died==0&l2diabe==0& age >= 75 & age < 85
+i_diabe_85p,Incidence of diabe: Sample= age 85 plus,diabe,mean,1,weight,l2died==0&l2diabe==0& age >= 85
+n_diabe_all,Sum of diabe: Sample= all,diabe,sum,1,weight,l2died==0
+n_diabe_wht,Sum of diabe: Sample= white,diabe,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_diabe_blk,Sum of diabe: Sample= black,diabe,sum,1,weight,l2died==0& black == 1
+n_diabe_his,Sum of diabe: Sample= hispanic,diabe,sum,1,weight,l2died==0& hispan == 1
+n_diabe_m,Sum of diabe: Sample= male,diabe,sum,1,weight,l2died==0& male == 1
+n_diabe_f,Sum of diabe: Sample= female,diabe,sum,1,weight,l2died==0& male == 0
+n_diabe_5564,Sum of diabe: Sample= age 55 to 64,diabe,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_diabe_6574,Sum of diabe: Sample= age 65 to 74,diabe,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_diabe_7584,Sum of diabe: Sample= age 75 to 84,diabe,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_diabe_85p,Sum of diabe: Sample= age 85 plus,diabe,sum,1,weight,l2died==0& age >= 85
+p_hibpe_all,Prevalence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0
+p_hibpe_wht,Prevalence of hibpe: Sample= white,hibpe,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_hibpe_blk,Prevalence of hibpe: Sample= black,hibpe,mean,1,weight,l2died==0& black == 1
+p_hibpe_his,Prevalence of hibpe: Sample= hispanic,hibpe,mean,1,weight,l2died==0& hispan == 1
+p_hibpe_m,Prevalence of hibpe: Sample= male,hibpe,mean,1,weight,l2died==0& male == 1
+p_hibpe_f,Prevalence of hibpe: Sample= female,hibpe,mean,1,weight,l2died==0& male == 0
+p_hibpe_5564,Prevalence of hibpe: Sample= age 55 to 64,hibpe,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_hibpe_6574,Prevalence of hibpe: Sample= age 65 to 74,hibpe,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_hibpe_7584,Prevalence of hibpe: Sample= age 75 to 84,hibpe,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_hibpe_85p,Prevalence of hibpe: Sample= age 85 plus,hibpe,mean,1,weight,l2died==0& age >= 85
+i_hibpe_all,Incidence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0&l2hibpe==0
+i_hibpe_wht,Incidence of hibpe: Sample= white,hibpe,mean,1,weight,l2died==0&l2hibpe==0& black == 0 & hispan == 0
+i_hibpe_blk,Incidence of hibpe: Sample= black,hibpe,mean,1,weight,l2died==0&l2hibpe==0& black == 1
+i_hibpe_his,Incidence of hibpe: Sample= hispanic,hibpe,mean,1,weight,l2died==0&l2hibpe==0& hispan == 1
+i_hibpe_m,Incidence of hibpe: Sample= male,hibpe,mean,1,weight,l2died==0&l2hibpe==0& male == 1
+i_hibpe_f,Incidence of hibpe: Sample= female,hibpe,mean,1,weight,l2died==0&l2hibpe==0& male == 0
+i_hibpe_5564,Incidence of hibpe: Sample= age 55 to 64,hibpe,mean,1,weight,l2died==0&l2hibpe==0& age >= 55 & age < 65
+i_hibpe_6574,Incidence of hibpe: Sample= age 65 to 74,hibpe,mean,1,weight,l2died==0&l2hibpe==0& age >= 65 & age < 75
+i_hibpe_7584,Incidence of hibpe: Sample= age 75 to 84,hibpe,mean,1,weight,l2died==0&l2hibpe==0& age >= 75 & age < 85
+i_hibpe_85p,Incidence of hibpe: Sample= age 85 plus,hibpe,mean,1,weight,l2died==0&l2hibpe==0& age >= 85
+n_hibpe_all,Sum of hibpe: Sample= all,hibpe,sum,1,weight,l2died==0
+n_hibpe_wht,Sum of hibpe: Sample= white,hibpe,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_hibpe_blk,Sum of hibpe: Sample= black,hibpe,sum,1,weight,l2died==0& black == 1
+n_hibpe_his,Sum of hibpe: Sample= hispanic,hibpe,sum,1,weight,l2died==0& hispan == 1
+n_hibpe_m,Sum of hibpe: Sample= male,hibpe,sum,1,weight,l2died==0& male == 1
+n_hibpe_f,Sum of hibpe: Sample= female,hibpe,sum,1,weight,l2died==0& male == 0
+n_hibpe_5564,Sum of hibpe: Sample= age 55 to 64,hibpe,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_hibpe_6574,Sum of hibpe: Sample= age 65 to 74,hibpe,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_hibpe_7584,Sum of hibpe: Sample= age 75 to 84,hibpe,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_hibpe_85p,Sum of hibpe: Sample= age 85 plus,hibpe,sum,1,weight,l2died==0& age >= 85
+p_lunge_all,Prevalence of lunge: Sample= all,lunge,mean,1,weight,l2died==0
+p_lunge_wht,Prevalence of lunge: Sample= white,lunge,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_lunge_blk,Prevalence of lunge: Sample= black,lunge,mean,1,weight,l2died==0& black == 1
+p_lunge_his,Prevalence of lunge: Sample= hispanic,lunge,mean,1,weight,l2died==0& hispan == 1
+p_lunge_m,Prevalence of lunge: Sample= male,lunge,mean,1,weight,l2died==0& male == 1
+p_lunge_f,Prevalence of lunge: Sample= female,lunge,mean,1,weight,l2died==0& male == 0
+p_lunge_5564,Prevalence of lunge: Sample= age 55 to 64,lunge,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_lunge_6574,Prevalence of lunge: Sample= age 65 to 74,lunge,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_lunge_7584,Prevalence of lunge: Sample= age 75 to 84,lunge,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_lunge_85p,Prevalence of lunge: Sample= age 85 plus,lunge,mean,1,weight,l2died==0& age >= 85
+i_lunge_all,Incidence of lunge: Sample= all,lunge,mean,1,weight,l2died==0&l2lunge==0
+i_lunge_wht,Incidence of lunge: Sample= white,lunge,mean,1,weight,l2died==0&l2lunge==0& black == 0 & hispan == 0
+i_lunge_blk,Incidence of lunge: Sample= black,lunge,mean,1,weight,l2died==0&l2lunge==0& black == 1
+i_lunge_his,Incidence of lunge: Sample= hispanic,lunge,mean,1,weight,l2died==0&l2lunge==0& hispan == 1
+i_lunge_m,Incidence of lunge: Sample= male,lunge,mean,1,weight,l2died==0&l2lunge==0& male == 1
+i_lunge_f,Incidence of lunge: Sample= female,lunge,mean,1,weight,l2died==0&l2lunge==0& male == 0
+i_lunge_5564,Incidence of lunge: Sample= age 55 to 64,lunge,mean,1,weight,l2died==0&l2lunge==0& age >= 55 & age < 65
+i_lunge_6574,Incidence of lunge: Sample= age 65 to 74,lunge,mean,1,weight,l2died==0&l2lunge==0& age >= 65 & age < 75
+i_lunge_7584,Incidence of lunge: Sample= age 75 to 84,lunge,mean,1,weight,l2died==0&l2lunge==0& age >= 75 & age < 85
+i_lunge_85p,Incidence of lunge: Sample= age 85 plus,lunge,mean,1,weight,l2died==0&l2lunge==0& age >= 85
+n_lunge_all,Sum of lunge: Sample= all,lunge,sum,1,weight,l2died==0
+n_lunge_wht,Sum of lunge: Sample= white,lunge,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_lunge_blk,Sum of lunge: Sample= black,lunge,sum,1,weight,l2died==0& black == 1
+n_lunge_his,Sum of lunge: Sample= hispanic,lunge,sum,1,weight,l2died==0& hispan == 1
+n_lunge_m,Sum of lunge: Sample= male,lunge,sum,1,weight,l2died==0& male == 1
+n_lunge_f,Sum of lunge: Sample= female,lunge,sum,1,weight,l2died==0& male == 0
+n_lunge_5564,Sum of lunge: Sample= age 55 to 64,lunge,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_lunge_6574,Sum of lunge: Sample= age 65 to 74,lunge,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_lunge_7584,Sum of lunge: Sample= age 75 to 84,lunge,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_lunge_85p,Sum of lunge: Sample= age 85 plus,lunge,sum,1,weight,l2died==0& age >= 85
+p_stroke_all,Prevalence of stroke: Sample= all,stroke,mean,1,weight,l2died==0
+p_stroke_wht,Prevalence of stroke: Sample= white,stroke,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_stroke_blk,Prevalence of stroke: Sample= black,stroke,mean,1,weight,l2died==0& black == 1
+p_stroke_his,Prevalence of stroke: Sample= hispanic,stroke,mean,1,weight,l2died==0& hispan == 1
+p_stroke_m,Prevalence of stroke: Sample= male,stroke,mean,1,weight,l2died==0& male == 1
+p_stroke_f,Prevalence of stroke: Sample= female,stroke,mean,1,weight,l2died==0& male == 0
+p_stroke_5564,Prevalence of stroke: Sample= age 55 to 64,stroke,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_stroke_6574,Prevalence of stroke: Sample= age 65 to 74,stroke,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_stroke_7584,Prevalence of stroke: Sample= age 75 to 84,stroke,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_stroke_85p,Prevalence of stroke: Sample= age 85 plus,stroke,mean,1,weight,l2died==0& age >= 85
+i_stroke_all,Incidence of stroke: Sample= all,stroke,mean,1,weight,l2died==0&l2stroke==0
+i_stroke_wht,Incidence of stroke: Sample= white,stroke,mean,1,weight,l2died==0&l2stroke==0& black == 0 & hispan == 0
+i_stroke_blk,Incidence of stroke: Sample= black,stroke,mean,1,weight,l2died==0&l2stroke==0& black == 1
+i_stroke_his,Incidence of stroke: Sample= hispanic,stroke,mean,1,weight,l2died==0&l2stroke==0& hispan == 1
+i_stroke_m,Incidence of stroke: Sample= male,stroke,mean,1,weight,l2died==0&l2stroke==0& male == 1
+i_stroke_f,Incidence of stroke: Sample= female,stroke,mean,1,weight,l2died==0&l2stroke==0& male == 0
+i_stroke_5564,Incidence of stroke: Sample= age 55 to 64,stroke,mean,1,weight,l2died==0&l2stroke==0& age >= 55 & age < 65
+i_stroke_6574,Incidence of stroke: Sample= age 65 to 74,stroke,mean,1,weight,l2died==0&l2stroke==0& age >= 65 & age < 75
+i_stroke_7584,Incidence of stroke: Sample= age 75 to 84,stroke,mean,1,weight,l2died==0&l2stroke==0& age >= 75 & age < 85
+i_stroke_85p,Incidence of stroke: Sample= age 85 plus,stroke,mean,1,weight,l2died==0&l2stroke==0& age >= 85
+n_stroke_all,Sum of stroke: Sample= all,stroke,sum,1,weight,l2died==0
+n_stroke_wht,Sum of stroke: Sample= white,stroke,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_stroke_blk,Sum of stroke: Sample= black,stroke,sum,1,weight,l2died==0& black == 1
+n_stroke_his,Sum of stroke: Sample= hispanic,stroke,sum,1,weight,l2died==0& hispan == 1
+n_stroke_m,Sum of stroke: Sample= male,stroke,sum,1,weight,l2died==0& male == 1
+n_stroke_f,Sum of stroke: Sample= female,stroke,sum,1,weight,l2died==0& male == 0
+n_stroke_5564,Sum of stroke: Sample= age 55 to 64,stroke,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_stroke_6574,Sum of stroke: Sample= age 65 to 74,stroke,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_stroke_7584,Sum of stroke: Sample= age 75 to 84,stroke,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_stroke_85p,Sum of stroke: Sample= age 85 plus,stroke,sum,1,weight,l2died==0& age >= 85
+p_hearte_all,Prevalence of hearte: Sample= all,hearte,mean,1,weight,l2died==0
+p_hearte_wht,Prevalence of hearte: Sample= white,hearte,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_hearte_blk,Prevalence of hearte: Sample= black,hearte,mean,1,weight,l2died==0& black == 1
+p_hearte_his,Prevalence of hearte: Sample= hispanic,hearte,mean,1,weight,l2died==0& hispan == 1
+p_hearte_m,Prevalence of hearte: Sample= male,hearte,mean,1,weight,l2died==0& male == 1
+p_hearte_f,Prevalence of hearte: Sample= female,hearte,mean,1,weight,l2died==0& male == 0
+p_hearte_5564,Prevalence of hearte: Sample= age 55 to 64,hearte,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_hearte_6574,Prevalence of hearte: Sample= age 65 to 74,hearte,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_hearte_7584,Prevalence of hearte: Sample= age 75 to 84,hearte,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_hearte_85p,Prevalence of hearte: Sample= age 85 plus,hearte,mean,1,weight,l2died==0& age >= 85
+i_hearte_all,Incidence of hearte: Sample= all,hearte,mean,1,weight,l2died==0&l2hearte==0
+i_hearte_wht,Incidence of hearte: Sample= white,hearte,mean,1,weight,l2died==0&l2hearte==0& black == 0 & hispan == 0
+i_hearte_blk,Incidence of hearte: Sample= black,hearte,mean,1,weight,l2died==0&l2hearte==0& black == 1
+i_hearte_his,Incidence of hearte: Sample= hispanic,hearte,mean,1,weight,l2died==0&l2hearte==0& hispan == 1
+i_hearte_m,Incidence of hearte: Sample= male,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 1
+i_hearte_f,Incidence of hearte: Sample= female,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 0
+i_hearte_5564,Incidence of hearte: Sample= age 55 to 64,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 55 & age < 65
+i_hearte_6574,Incidence of hearte: Sample= age 65 to 74,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 65 & age < 75
+i_hearte_7584,Incidence of hearte: Sample= age 75 to 84,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 75 & age < 85
+i_hearte_85p,Incidence of hearte: Sample= age 85 plus,hearte,mean,1,weight,l2died==0&l2hearte==0& age >= 85
+n_hearte_all,Sum of hearte: Sample= all,hearte,sum,1,weight,l2died==0
+n_hearte_wht,Sum of hearte: Sample= white,hearte,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_hearte_blk,Sum of hearte: Sample= black,hearte,sum,1,weight,l2died==0& black == 1
+n_hearte_his,Sum of hearte: Sample= hispanic,hearte,sum,1,weight,l2died==0& hispan == 1
+n_hearte_m,Sum of hearte: Sample= male,hearte,sum,1,weight,l2died==0& male == 1
+n_hearte_f,Sum of hearte: Sample= female,hearte,sum,1,weight,l2died==0& male == 0
+n_hearte_5564,Sum of hearte: Sample= age 55 to 64,hearte,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_hearte_6574,Sum of hearte: Sample= age 65 to 74,hearte,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_hearte_7584,Sum of hearte: Sample= age 75 to 84,hearte,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_hearte_85p,Sum of hearte: Sample= age 85 plus,hearte,sum,1,weight,l2died==0& age >= 85
+p_cancre_all,Prevalence of cancre: Sample= all,cancre,mean,1,weight,l2died==0
+p_cancre_wht,Prevalence of cancre: Sample= white,cancre,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_cancre_blk,Prevalence of cancre: Sample= black,cancre,mean,1,weight,l2died==0& black == 1
+p_cancre_his,Prevalence of cancre: Sample= hispanic,cancre,mean,1,weight,l2died==0& hispan == 1
+p_cancre_m,Prevalence of cancre: Sample= male,cancre,mean,1,weight,l2died==0& male == 1
+p_cancre_f,Prevalence of cancre: Sample= female,cancre,mean,1,weight,l2died==0& male == 0
+p_cancre_5564,Prevalence of cancre: Sample= age 55 to 64,cancre,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_cancre_6574,Prevalence of cancre: Sample= age 65 to 74,cancre,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_cancre_7584,Prevalence of cancre: Sample= age 75 to 84,cancre,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_cancre_85p,Prevalence of cancre: Sample= age 85 plus,cancre,mean,1,weight,l2died==0& age >= 85
+i_cancre_all,Incidence of cancre: Sample= all,cancre,mean,1,weight,l2died==0&l2cancre==0
+i_cancre_wht,Incidence of cancre: Sample= white,cancre,mean,1,weight,l2died==0&l2cancre==0& black == 0 & hispan == 0
+i_cancre_blk,Incidence of cancre: Sample= black,cancre,mean,1,weight,l2died==0&l2cancre==0& black == 1
+i_cancre_his,Incidence of cancre: Sample= hispanic,cancre,mean,1,weight,l2died==0&l2cancre==0& hispan == 1
+i_cancre_m,Incidence of cancre: Sample= male,cancre,mean,1,weight,l2died==0&l2cancre==0& male == 1
+i_cancre_f,Incidence of cancre: Sample= female,cancre,mean,1,weight,l2died==0&l2cancre==0& male == 0
+i_cancre_5564,Incidence of cancre: Sample= age 55 to 64,cancre,mean,1,weight,l2died==0&l2cancre==0& age >= 55 & age < 65
+i_cancre_6574,Incidence of cancre: Sample= age 65 to 74,cancre,mean,1,weight,l2died==0&l2cancre==0& age >= 65 & age < 75
+i_cancre_7584,Incidence of cancre: Sample= age 75 to 84,cancre,mean,1,weight,l2died==0&l2cancre==0& age >= 75 & age < 85
+i_cancre_85p,Incidence of cancre: Sample= age 85 plus,cancre,mean,1,weight,l2died==0&l2cancre==0& age >= 85
+n_cancre_all,Sum of cancre: Sample= all,cancre,sum,1,weight,l2died==0
+n_cancre_wht,Sum of cancre: Sample= white,cancre,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_cancre_blk,Sum of cancre: Sample= black,cancre,sum,1,weight,l2died==0& black == 1
+n_cancre_his,Sum of cancre: Sample= hispanic,cancre,sum,1,weight,l2died==0& hispan == 1
+n_cancre_m,Sum of cancre: Sample= male,cancre,sum,1,weight,l2died==0& male == 1
+n_cancre_f,Sum of cancre: Sample= female,cancre,sum,1,weight,l2died==0& male == 0
+n_cancre_5564,Sum of cancre: Sample= age 55 to 64,cancre,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_cancre_6574,Sum of cancre: Sample= age 65 to 74,cancre,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_cancre_7584,Sum of cancre: Sample= age 75 to 84,cancre,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_cancre_85p,Sum of cancre: Sample= age 85 plus,cancre,sum,1,weight,l2died==0& age >= 85
+i_died_all,Incidence of died: Sample= all,died,mean,1,weight,l2died==0&l2died==0
+i_died_wht,Incidence of died: Sample= white,died,mean,1,weight,l2died==0&l2died==0& black == 0 & hispan == 0
+i_died_blk,Incidence of died: Sample= black,died,mean,1,weight,l2died==0&l2died==0& black == 1
+i_died_his,Incidence of died: Sample= hispanic,died,mean,1,weight,l2died==0&l2died==0& hispan == 1
+i_died_m,Incidence of died: Sample= male,died,mean,1,weight,l2died==0&l2died==0& male == 1
+i_died_f,Incidence of died: Sample= female,died,mean,1,weight,l2died==0&l2died==0& male == 0
+i_died_5564,Incidence of died: Sample= age 55 to 64,died,mean,1,weight,l2died==0&l2died==0& age >= 55 & age < 65
+i_died_6574,Incidence of died: Sample= age 65 to 74,died,mean,1,weight,l2died==0&l2died==0& age >= 65 & age < 75
+i_died_7584,Incidence of died: Sample= age 75 to 84,died,mean,1,weight,l2died==0&l2died==0& age >= 75 & age < 85
+i_died_85p,Incidence of died: Sample= age 85 plus,died,mean,1,weight,l2died==0&l2died==0& age >= 85
+n_died_all,Sum of died: Sample= all,died,sum,1,weight,l2died==0
+n_died_wht,Sum of died: Sample= white,died,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_died_blk,Sum of died: Sample= black,died,sum,1,weight,l2died==0& black == 1
+n_died_his,Sum of died: Sample= hispanic,died,sum,1,weight,l2died==0& hispan == 1
+n_died_m,Sum of died: Sample= male,died,sum,1,weight,l2died==0& male == 1
+n_died_f,Sum of died: Sample= female,died,sum,1,weight,l2died==0& male == 0
+n_died_5564,Sum of died: Sample= age 55 to 64,died,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_died_6574,Sum of died: Sample= age 65 to 74,died,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_died_7584,Sum of died: Sample= age 75 to 84,died,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_died_85p,Sum of died: Sample= age 85 plus,died,sum,1,weight,l2died==0& age >= 85
+t_totmd_all,Sum of totmd: Sample= all,totmd,sum,1,weight,l2died==0
+t_totmd_wht,Sum of totmd: Sample= white,totmd,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_totmd_blk,Sum of totmd: Sample= black,totmd,sum,1,weight,l2died==0& black == 1
+t_totmd_his,Sum of totmd: Sample= hispanic,totmd,sum,1,weight,l2died==0& hispan == 1
+t_totmd_m,Sum of totmd: Sample= male,totmd,sum,1,weight,l2died==0& male == 1
+t_totmd_f,Sum of totmd: Sample= female,totmd,sum,1,weight,l2died==0& male == 0
+t_totmd_5564,Sum of totmd: Sample= age 55 to 64,totmd,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_totmd_6574,Sum of totmd: Sample= age 65 to 74,totmd,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_totmd_7584,Sum of totmd: Sample= age 75 to 84,totmd,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_totmd_85p,Sum of totmd: Sample= age 85 plus,totmd,sum,1,weight,l2died==0& age >= 85
+a_totmd_all,Average of totmd: Sample= all,totmd,mean,1,weight,l2died==0
+a_totmd_wht,Average of totmd: Sample= white,totmd,mean,1,weight,l2died==0& black == 0 & hispan == 0
+a_totmd_blk,Average of totmd: Sample= black,totmd,mean,1,weight,l2died==0& black == 1
+a_totmd_his,Average of totmd: Sample= hispanic,totmd,mean,1,weight,l2died==0& hispan == 1
+a_totmd_m,Average of totmd: Sample= male,totmd,mean,1,weight,l2died==0& male == 1
+a_totmd_f,Average of totmd: Sample= female,totmd,mean,1,weight,l2died==0& male == 0
+a_totmd_5564,Average of totmd: Sample= age 55 to 64,totmd,mean,1,weight,l2died==0& age >= 55 & age < 65
+a_totmd_6574,Average of totmd: Sample= age 65 to 74,totmd,mean,1,weight,l2died==0& age >= 65 & age < 75
+a_totmd_7584,Average of totmd: Sample= age 75 to 84,totmd,mean,1,weight,l2died==0& age >= 75 & age < 85
+a_totmd_85p,Average of totmd: Sample= age 85 plus,totmd,mean,1,weight,l2died==0& age >= 85
+q50_totmd_all,50 percentile of totmd: Sample = all,totmd,quantile-.50,1,weight,l2died==0
+q50_totmd_wht,50 percentile of totmd: Sample = white,totmd,quantile-.50,1,weight,l2died==0& black == 0 & hispan == 0
+q50_totmd_blk,50 percentile of totmd: Sample = black,totmd,quantile-.50,1,weight,l2died==0& black == 1
+q50_totmd_his,50 percentile of totmd: Sample = hispanic,totmd,quantile-.50,1,weight,l2died==0& hispan == 1
+q50_totmd_m,50 percentile of totmd: Sample = male,totmd,quantile-.50,1,weight,l2died==0& male == 1
+q50_totmd_f,50 percentile of totmd: Sample = female,totmd,quantile-.50,1,weight,l2died==0& male == 0
+q50_totmd_5564,50 percentile of totmd: Sample = age 55 to 64,totmd,quantile-.50,1,weight,l2died==0& age >= 55 & age < 65
+q50_totmd_6574,50 percentile of totmd: Sample = age 65 to 74,totmd,quantile-.50,1,weight,l2died==0& age >= 65 & age < 75
+q50_totmd_7584,50 percentile of totmd: Sample = age 75 to 84,totmd,quantile-.50,1,weight,l2died==0& age >= 75 & age < 85
+q50_totmd_85p,50 percentile of totmd: Sample = age 85 plus,totmd,quantile-.50,1,weight,l2died==0& age >= 85
+t_mcare_all,Sum of mcare: Sample= all,mcare,sum,1,weight,l2died==0
+t_mcare_wht,Sum of mcare: Sample= white,mcare,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_mcare_blk,Sum of mcare: Sample= black,mcare,sum,1,weight,l2died==0& black == 1
+t_mcare_his,Sum of mcare: Sample= hispanic,mcare,sum,1,weight,l2died==0& hispan == 1
+t_mcare_m,Sum of mcare: Sample= male,mcare,sum,1,weight,l2died==0& male == 1
+t_mcare_f,Sum of mcare: Sample= female,mcare,sum,1,weight,l2died==0& male == 0
+t_mcare_5564,Sum of mcare: Sample= age 55 to 64,mcare,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_mcare_6574,Sum of mcare: Sample= age 65 to 74,mcare,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_mcare_7584,Sum of mcare: Sample= age 75 to 84,mcare,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_mcare_85p,Sum of mcare: Sample= age 85 plus,mcare,sum,1,weight,l2died==0& age >= 85
+t_mcare_pta_all,Sum of mcare_pta: Sample= all,mcare_pta,sum,1,weight,l2died==0
+t_mcare_pta_wht,Sum of mcare_pta: Sample= white,mcare_pta,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_mcare_pta_blk,Sum of mcare_pta: Sample= black,mcare_pta,sum,1,weight,l2died==0& black == 1
+t_mcare_pta_his,Sum of mcare_pta: Sample= hispanic,mcare_pta,sum,1,weight,l2died==0& hispan == 1
+t_mcare_pta_m,Sum of mcare_pta: Sample= male,mcare_pta,sum,1,weight,l2died==0& male == 1
+t_mcare_pta_f,Sum of mcare_pta: Sample= female,mcare_pta,sum,1,weight,l2died==0& male == 0
+t_mcare_pta_5564,Sum of mcare_pta: Sample= age 55 to 64,mcare_pta,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_mcare_pta_6574,Sum of mcare_pta: Sample= age 65 to 74,mcare_pta,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_mcare_pta_7584,Sum of mcare_pta: Sample= age 75 to 84,mcare_pta,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_mcare_pta_85p,Sum of mcare_pta: Sample= age 85 plus,mcare_pta,sum,1,weight,l2died==0& age >= 85
+t_mcare_ptb_all,Sum of mcare_ptb: Sample= all,mcare_ptb,sum,1,weight,l2died==0
+t_mcare_ptb_wht,Sum of mcare_ptb: Sample= white,mcare_ptb,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_mcare_ptb_blk,Sum of mcare_ptb: Sample= black,mcare_ptb,sum,1,weight,l2died==0& black == 1
+t_mcare_ptb_his,Sum of mcare_ptb: Sample= hispanic,mcare_ptb,sum,1,weight,l2died==0& hispan == 1
+t_mcare_ptb_m,Sum of mcare_ptb: Sample= male,mcare_ptb,sum,1,weight,l2died==0& male == 1
+t_mcare_ptb_f,Sum of mcare_ptb: Sample= female,mcare_ptb,sum,1,weight,l2died==0& male == 0
+t_mcare_ptb_5564,Sum of mcare_ptb: Sample= age 55 to 64,mcare_ptb,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_mcare_ptb_6574,Sum of mcare_ptb: Sample= age 65 to 74,mcare_ptb,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_mcare_ptb_7584,Sum of mcare_ptb: Sample= age 75 to 84,mcare_ptb,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_mcare_ptb_85p,Sum of mcare_ptb: Sample= age 85 plus,mcare_ptb,sum,1,weight,l2died==0& age >= 85
+t_mcare_ptd_all,Sum of mcare_ptd: Sample= all,mcare_ptd,sum,1,weight,l2died==0
+t_mcare_ptd_wht,Sum of mcare_ptd: Sample= white,mcare_ptd,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_mcare_ptd_blk,Sum of mcare_ptd: Sample= black,mcare_ptd,sum,1,weight,l2died==0& black == 1
+t_mcare_ptd_his,Sum of mcare_ptd: Sample= hispanic,mcare_ptd,sum,1,weight,l2died==0& hispan == 1
+t_mcare_ptd_m,Sum of mcare_ptd: Sample= male,mcare_ptd,sum,1,weight,l2died==0& male == 1
+t_mcare_ptd_f,Sum of mcare_ptd: Sample= female,mcare_ptd,sum,1,weight,l2died==0& male == 0
+t_mcare_ptd_5564,Sum of mcare_ptd: Sample= age 55 to 64,mcare_ptd,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_mcare_ptd_6574,Sum of mcare_ptd: Sample= age 65 to 74,mcare_ptd,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_mcare_ptd_7584,Sum of mcare_ptd: Sample= age 75 to 84,mcare_ptd,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_mcare_ptd_85p,Sum of mcare_ptd: Sample= age 85 plus,mcare_ptd,sum,1,weight,l2died==0& age >= 85
+a_mcare_all,Average of mcare: Sample= all,mcare,mean,1,weight,l2died==0
+a_mcare_wht,Average of mcare: Sample= white,mcare,mean,1,weight,l2died==0& black == 0 & hispan == 0
+a_mcare_blk,Average of mcare: Sample= black,mcare,mean,1,weight,l2died==0& black == 1
+a_mcare_his,Average of mcare: Sample= hispanic,mcare,mean,1,weight,l2died==0& hispan == 1
+a_mcare_m,Average of mcare: Sample= male,mcare,mean,1,weight,l2died==0& male == 1
+a_mcare_f,Average of mcare: Sample= female,mcare,mean,1,weight,l2died==0& male == 0
+a_mcare_5564,Average of mcare: Sample= age 55 to 64,mcare,mean,1,weight,l2died==0& age >= 55 & age < 65
+a_mcare_6574,Average of mcare: Sample= age 65 to 74,mcare,mean,1,weight,l2died==0& age >= 65 & age < 75
+a_mcare_7584,Average of mcare: Sample= age 75 to 84,mcare,mean,1,weight,l2died==0& age >= 75 & age < 85
+a_mcare_85p,Average of mcare: Sample= age 85 plus,mcare,mean,1,weight,l2died==0& age >= 85
+t_caidmd_all,Sum of caidmd: Sample= all,caidmd,sum,1,weight,l2died==0
+t_caidmd_wht,Sum of caidmd: Sample= white,caidmd,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_caidmd_blk,Sum of caidmd: Sample= black,caidmd,sum,1,weight,l2died==0& black == 1
+t_caidmd_his,Sum of caidmd: Sample= hispanic,caidmd,sum,1,weight,l2died==0& hispan == 1
+t_caidmd_m,Sum of caidmd: Sample= male,caidmd,sum,1,weight,l2died==0& male == 1
+t_caidmd_f,Sum of caidmd: Sample= female,caidmd,sum,1,weight,l2died==0& male == 0
+t_caidmd_5564,Sum of caidmd: Sample= age 55 to 64,caidmd,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_caidmd_6574,Sum of caidmd: Sample= age 65 to 74,caidmd,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_caidmd_7584,Sum of caidmd: Sample= age 75 to 84,caidmd,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_caidmd_85p,Sum of caidmd: Sample= age 85 plus,caidmd,sum,1,weight,l2died==0& age >= 85
+a_caidmd_all,Average of caidmd: Sample= all,caidmd,mean,1,weight,l2died==0
+a_caidmd_wht,Average of caidmd: Sample= white,caidmd,mean,1,weight,l2died==0& black == 0 & hispan == 0
+a_caidmd_blk,Average of caidmd: Sample= black,caidmd,mean,1,weight,l2died==0& black == 1
+a_caidmd_his,Average of caidmd: Sample= hispanic,caidmd,mean,1,weight,l2died==0& hispan == 1
+a_caidmd_m,Average of caidmd: Sample= male,caidmd,mean,1,weight,l2died==0& male == 1
+a_caidmd_f,Average of caidmd: Sample= female,caidmd,mean,1,weight,l2died==0& male == 0
+a_caidmd_5564,Average of caidmd: Sample= age 55 to 64,caidmd,mean,1,weight,l2died==0& age >= 55 & age < 65
+a_caidmd_6574,Average of caidmd: Sample= age 65 to 74,caidmd,mean,1,weight,l2died==0& age >= 65 & age < 75
+a_caidmd_7584,Average of caidmd: Sample= age 75 to 84,caidmd,mean,1,weight,l2died==0& age >= 75 & age < 85
+a_caidmd_85p,Average of caidmd: Sample= age 85 plus,caidmd,mean,1,weight,l2died==0& age >= 85
+t_oopmd_all,Sum of oopmd: Sample= all,oopmd,sum,1,weight,l2died==0
+t_oopmd_wht,Sum of oopmd: Sample= white,oopmd,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_oopmd_blk,Sum of oopmd: Sample= black,oopmd,sum,1,weight,l2died==0& black == 1
+t_oopmd_his,Sum of oopmd: Sample= hispanic,oopmd,sum,1,weight,l2died==0& hispan == 1
+t_oopmd_m,Sum of oopmd: Sample= male,oopmd,sum,1,weight,l2died==0& male == 1
+t_oopmd_f,Sum of oopmd: Sample= female,oopmd,sum,1,weight,l2died==0& male == 0
+t_oopmd_5564,Sum of oopmd: Sample= age 55 to 64,oopmd,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_oopmd_6574,Sum of oopmd: Sample= age 65 to 74,oopmd,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_oopmd_7584,Sum of oopmd: Sample= age 75 to 84,oopmd,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_oopmd_85p,Sum of oopmd: Sample= age 85 plus,oopmd,sum,1,weight,l2died==0& age >= 85
+a_oopmd_all,Average of oopmd: Sample= all,oopmd,mean,1,weight,l2died==0
+a_oopmd_wht,Average of oopmd: Sample= white,oopmd,mean,1,weight,l2died==0& black == 0 & hispan == 0
+a_oopmd_blk,Average of oopmd: Sample= black,oopmd,mean,1,weight,l2died==0& black == 1
+a_oopmd_his,Average of oopmd: Sample= hispanic,oopmd,mean,1,weight,l2died==0& hispan == 1
+a_oopmd_m,Average of oopmd: Sample= male,oopmd,mean,1,weight,l2died==0& male == 1
+a_oopmd_f,Average of oopmd: Sample= female,oopmd,mean,1,weight,l2died==0& male == 0
+a_oopmd_5564,Average of oopmd: Sample= age 55 to 64,oopmd,mean,1,weight,l2died==0& age >= 55 & age < 65
+a_oopmd_6574,Average of oopmd: Sample= age 65 to 74,oopmd,mean,1,weight,l2died==0& age >= 65 & age < 75
+a_oopmd_7584,Average of oopmd: Sample= age 75 to 84,oopmd,mean,1,weight,l2died==0& age >= 75 & age < 85
+a_oopmd_85p,Average of oopmd: Sample= age 85 plus,oopmd,mean,1,weight,l2died==0& age >= 85
+n_nhmliv_all,Sum of nhmliv: Sample= all,nhmliv,sum,1,weight,l2died==0
+n_nhmliv_wht,Sum of nhmliv: Sample= white,nhmliv,sum,1,weight,l2died==0& black == 0 & hispan == 0
+n_nhmliv_blk,Sum of nhmliv: Sample= black,nhmliv,sum,1,weight,l2died==0& black == 1
+n_nhmliv_his,Sum of nhmliv: Sample= hispanic,nhmliv,sum,1,weight,l2died==0& hispan == 1
+n_nhmliv_m,Sum of nhmliv: Sample= male,nhmliv,sum,1,weight,l2died==0& male == 1
+n_nhmliv_f,Sum of nhmliv: Sample= female,nhmliv,sum,1,weight,l2died==0& male == 0
+n_nhmliv_5564,Sum of nhmliv: Sample= age 55 to 64,nhmliv,sum,1,weight,l2died==0& age >= 55 & age < 65
+n_nhmliv_6574,Sum of nhmliv: Sample= age 65 to 74,nhmliv,sum,1,weight,l2died==0& age >= 65 & age < 75
+n_nhmliv_7584,Sum of nhmliv: Sample= age 75 to 84,nhmliv,sum,1,weight,l2died==0& age >= 75 & age < 85
+n_nhmliv_85p,Sum of nhmliv: Sample= age 85 plus,nhmliv,sum,1,weight,l2died==0& age >= 85
+d_age_all,Average age at death: Sample= all,age,mean,1,weight,l2died==0&died==1
+d_age_wht,Average age at death: Sample= white,age,mean,1,weight,l2died==0&died==1& black == 0 & hispan == 0
+d_age_blk,Average age at death: Sample= black,age,mean,1,weight,l2died==0&died==1& black == 1
+d_age_his,Average age at death: Sample= hispanic,age,mean,1,weight,l2died==0&died==1& hispan == 1
+d_age_m,Average age at death: Sample= male,age,mean,1,weight,l2died==0&died==1& male == 1
+d_age_f,Average age at death: Sample= female,age,mean,1,weight,l2died==0&died==1& male == 0
+d_age_5564,Average age at death: Sample= age 55 to 64,age,mean,1,weight,l2died==0&died==1& age >= 55 & age < 65
+d_age_6574,Average age at death: Sample= age 65 to 74,age,mean,1,weight,l2died==0&died==1& age >= 65 & age < 75
+d_age_7584,Average age at death: Sample= age 75 to 84,age,mean,1,weight,l2died==0&died==1& age >= 75 & age < 85
+d_age_85p,Average age at death: Sample= age 85 plus,age,mean,1,weight,l2died==0&died==1& age >= 85
+p_iearnx_all,Prevalence of iearnx: Sample= all,iearnx,mean,1,weight,l2died==0
+p_iearnx_wht,Prevalence of iearnx: Sample= white,iearnx,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_iearnx_blk,Prevalence of iearnx: Sample= black,iearnx,mean,1,weight,l2died==0& black == 1
+p_iearnx_his,Prevalence of iearnx: Sample= hispanic,iearnx,mean,1,weight,l2died==0& hispan == 1
+p_iearnx_m,Prevalence of iearnx: Sample= male,iearnx,mean,1,weight,l2died==0& male == 1
+p_iearnx_f,Prevalence of iearnx: Sample= female,iearnx,mean,1,weight,l2died==0& male == 0
+p_iearnx_5564,Prevalence of iearnx: Sample= age 55 to 64,iearnx,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_iearnx_6574,Prevalence of iearnx: Sample= age 65 to 74,iearnx,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_iearnx_7584,Prevalence of iearnx: Sample= age 75 to 84,iearnx,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_iearnx_85p,Prevalence of iearnx: Sample= age 85 plus,iearnx,mean,1,weight,l2died==0& age >= 85
+t_iearnx_all,Sum of iearnx: Sample= all,iearnx,sum,1,weight,l2died==0
+t_iearnx_wht,Sum of iearnx: Sample= white,iearnx,sum,1,weight,l2died==0& black == 0 & hispan == 0
+t_iearnx_blk,Sum of iearnx: Sample= black,iearnx,sum,1,weight,l2died==0& black == 1
+t_iearnx_his,Sum of iearnx: Sample= hispanic,iearnx,sum,1,weight,l2died==0& hispan == 1
+t_iearnx_m,Sum of iearnx: Sample= male,iearnx,sum,1,weight,l2died==0& male == 1
+t_iearnx_f,Sum of iearnx: Sample= female,iearnx,sum,1,weight,l2died==0& male == 0
+t_iearnx_5564,Sum of iearnx: Sample= age 55 to 64,iearnx,sum,1,weight,l2died==0& age >= 55 & age < 65
+t_iearnx_6574,Sum of iearnx: Sample= age 65 to 74,iearnx,sum,1,weight,l2died==0& age >= 65 & age < 75
+t_iearnx_7584,Sum of iearnx: Sample= age 75 to 84,iearnx,sum,1,weight,l2died==0& age >= 75 & age < 85
+t_iearnx_85p,Sum of iearnx: Sample= age 85 plus,iearnx,sum,1,weight,l2died==0& age >= 85
+p_anyhi_all,Prevalence of anyhi: Sample= all,anyhi,mean,1,weight,l2died==0
+p_anyhi_wht,Prevalence of anyhi: Sample= white,anyhi,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_anyhi_blk,Prevalence of anyhi: Sample= black,anyhi,mean,1,weight,l2died==0& black == 1
+p_anyhi_his,Prevalence of anyhi: Sample= hispanic,anyhi,mean,1,weight,l2died==0& hispan == 1
+p_anyhi_m,Prevalence of anyhi: Sample= male,anyhi,mean,1,weight,l2died==0& male == 1
+p_anyhi_f,Prevalence of anyhi: Sample= female,anyhi,mean,1,weight,l2died==0& male == 0
+p_anyhi_5564,Prevalence of anyhi: Sample= age 55 to 64,anyhi,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_anyhi_6574,Prevalence of anyhi: Sample= age 65 to 74,anyhi,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_anyhi_7584,Prevalence of anyhi: Sample= age 75 to 84,anyhi,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_anyhi_85p,Prevalence of anyhi: Sample= age 85 plus,anyhi,mean,1,weight,l2died==0& age >= 85
+p_dbclaim_all,Prevalence of dbclaim: Sample= all,dbclaim,mean,1,weight,l2died==0
+p_dbclaim_wht,Prevalence of dbclaim: Sample= white,dbclaim,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_dbclaim_blk,Prevalence of dbclaim: Sample= black,dbclaim,mean,1,weight,l2died==0& black == 1
+p_dbclaim_his,Prevalence of dbclaim: Sample= hispanic,dbclaim,mean,1,weight,l2died==0& hispan == 1
+p_dbclaim_m,Prevalence of dbclaim: Sample= male,dbclaim,mean,1,weight,l2died==0& male == 1
+p_dbclaim_f,Prevalence of dbclaim: Sample= female,dbclaim,mean,1,weight,l2died==0& male == 0
+p_dbclaim_5564,Prevalence of dbclaim: Sample= age 55 to 64,dbclaim,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_dbclaim_6574,Prevalence of dbclaim: Sample= age 65 to 74,dbclaim,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_dbclaim_7584,Prevalence of dbclaim: Sample= age 75 to 84,dbclaim,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_dbclaim_85p,Prevalence of dbclaim: Sample= age 85 plus,dbclaim,mean,1,weight,l2died==0& age >= 85
+p_diclaim_all,Prevalence of diclaim: Sample= all,diclaim,mean,1,weight,l2died==0
+p_diclaim_wht,Prevalence of diclaim: Sample= white,diclaim,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_diclaim_blk,Prevalence of diclaim: Sample= black,diclaim,mean,1,weight,l2died==0& black == 1
+p_diclaim_his,Prevalence of diclaim: Sample= hispanic,diclaim,mean,1,weight,l2died==0& hispan == 1
+p_diclaim_m,Prevalence of diclaim: Sample= male,diclaim,mean,1,weight,l2died==0& male == 1
+p_diclaim_f,Prevalence of diclaim: Sample= female,diclaim,mean,1,weight,l2died==0& male == 0
+p_diclaim_5564,Prevalence of diclaim: Sample= age 55 to 64,diclaim,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_diclaim_6574,Prevalence of diclaim: Sample= age 65 to 74,diclaim,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_diclaim_7584,Prevalence of diclaim: Sample= age 75 to 84,diclaim,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_diclaim_85p,Prevalence of diclaim: Sample= age 85 plus,diclaim,mean,1,weight,l2died==0& age >= 85
+p_hatota_all,Prevalence of hatota: Sample= all,hatota,mean,1,weight,l2died==0
+p_hatota_wht,Prevalence of hatota: Sample= white,hatota,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_hatota_blk,Prevalence of hatota: Sample= black,hatota,mean,1,weight,l2died==0& black == 1
+p_hatota_his,Prevalence of hatota: Sample= hispanic,hatota,mean,1,weight,l2died==0& hispan == 1
+p_hatota_m,Prevalence of hatota: Sample= male,hatota,mean,1,weight,l2died==0& male == 1
+p_hatota_f,Prevalence of hatota: Sample= female,hatota,mean,1,weight,l2died==0& male == 0
+p_hatota_5564,Prevalence of hatota: Sample= age 55 to 64,hatota,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_hatota_6574,Prevalence of hatota: Sample= age 65 to 74,hatota,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_hatota_7584,Prevalence of hatota: Sample= age 75 to 84,hatota,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_hatota_85p,Prevalence of hatota: Sample= age 85 plus,hatota,mean,1,weight,l2died==0& age >= 85
+p_ssclaim_all,Prevalence of ssclaim: Sample= all,ssclaim,mean,1,weight,l2died==0
+p_ssclaim_wht,Prevalence of ssclaim: Sample= white,ssclaim,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_ssclaim_blk,Prevalence of ssclaim: Sample= black,ssclaim,mean,1,weight,l2died==0& black == 1
+p_ssclaim_his,Prevalence of ssclaim: Sample= hispanic,ssclaim,mean,1,weight,l2died==0& hispan == 1
+p_ssclaim_m,Prevalence of ssclaim: Sample= male,ssclaim,mean,1,weight,l2died==0& male == 1
+p_ssclaim_f,Prevalence of ssclaim: Sample= female,ssclaim,mean,1,weight,l2died==0& male == 0
+p_ssclaim_5564,Prevalence of ssclaim: Sample= age 55 to 64,ssclaim,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_ssclaim_6574,Prevalence of ssclaim: Sample= age 65 to 74,ssclaim,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_ssclaim_7584,Prevalence of ssclaim: Sample= age 75 to 84,ssclaim,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_ssclaim_85p,Prevalence of ssclaim: Sample= age 85 plus,ssclaim,mean,1,weight,l2died==0& age >= 85
+p_ssiclaim_all,Prevalence of ssiclaim: Sample= all,ssiclaim,mean,1,weight,l2died==0
+p_ssiclaim_wht,Prevalence of ssiclaim: Sample= white,ssiclaim,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_ssiclaim_blk,Prevalence of ssiclaim: Sample= black,ssiclaim,mean,1,weight,l2died==0& black == 1
+p_ssiclaim_his,Prevalence of ssiclaim: Sample= hispanic,ssiclaim,mean,1,weight,l2died==0& hispan == 1
+p_ssiclaim_m,Prevalence of ssiclaim: Sample= male,ssiclaim,mean,1,weight,l2died==0& male == 1
+p_ssiclaim_f,Prevalence of ssiclaim: Sample= female,ssiclaim,mean,1,weight,l2died==0& male == 0
+p_ssiclaim_5564,Prevalence of ssiclaim: Sample= age 55 to 64,ssiclaim,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_ssiclaim_6574,Prevalence of ssiclaim: Sample= age 65 to 74,ssiclaim,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_ssiclaim_7584,Prevalence of ssiclaim: Sample= age 75 to 84,ssiclaim,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_ssiclaim_85p,Prevalence of ssiclaim: Sample= age 85 plus,ssiclaim,mean,1,weight,l2died==0& age >= 85
+p_work_all,Prevalence of work: Sample= all,work,mean,1,weight,l2died==0
+p_work_wht,Prevalence of work: Sample= white,work,mean,1,weight,l2died==0& black == 0 & hispan == 0
+p_work_blk,Prevalence of work: Sample= black,work,mean,1,weight,l2died==0& black == 1
+p_work_his,Prevalence of work: Sample= hispanic,work,mean,1,weight,l2died==0& hispan == 1
+p_work_m,Prevalence of work: Sample= male,work,mean,1,weight,l2died==0& male == 1
+p_work_f,Prevalence of work: Sample= female,work,mean,1,weight,l2died==0& male == 0
+p_work_5564,Prevalence of work: Sample= age 55 to 64,work,mean,1,weight,l2died==0& age >= 55 & age < 65
+p_work_6574,Prevalence of work: Sample= age 65 to 74,work,mean,1,weight,l2died==0& age >= 65 & age < 75
+p_work_7584,Prevalence of work: Sample= age 75 to 84,work,mean,1,weight,l2died==0& age >= 75 & age < 85
+p_work_85p,Prevalence of work: Sample= age 85 plus,work,mean,1,weight,l2died==0& age >= 85

@@ -1,0 +1,55 @@
+oprobit
+funcstat
+black	.0700563
+hispan	.1059348
+hsless	.0460833
+college	-.0159151
+male	.0284886
+lage65l	.0046133
+lage6574	.0078696
+lage75p	.0527319
+lhearte	.1271066
+lstroke	.3709003
+lcancre	.0179114
+lhibpe	.0340759
+ldiabe	.1522835
+llunge	.2114514
+liadl1	.7267182
+ladl12	.9723313
+ladl3	1.874537
+lsmoken	-.0011706
+lwidowed	.0205946
+lobese	.0115405
+loverwt	-.0702057
+fhearte	-.0628167
+fstroke	-.1003729
+fcancre	.010073
+fhibpe	.0410141
+fdiabe	-.0116604
+flunge	-.0357225
+fsmokev	.0328308
+fsmoken	.1037764
+fiadl1	.0675523
+fadl12	.3235838
+fadl3	.3946057
+fwidowed	-.0164737
+fsingle	.0244181
+fwork	-.0723851
+flogiearnx	-3.01783
+fwlth_nonzero	.0529396
+floghatotax	-3.101352
+flogaime	-.2945803
+flogq	.1602547
+fshlt	.3105804
+fanydb	-.0648766
+frdb_na_2	.067367
+frdb_na_3	.0669953
+frdb_na_4	.0404044
+fanydc	.051926
+flogdcwlthx	-1.913844
+fobese	.1810079
+foverwt	.0501481
+logdeltaage	.1903688
+_cut1	1.742151 iadl1
+_cut2	1.951096 adl12
+_cut3	3.00798  adl3

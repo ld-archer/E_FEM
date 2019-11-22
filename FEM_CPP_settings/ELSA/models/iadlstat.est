@@ -1,0 +1,28 @@
+oprobit
+iadlstat
+male                     -0.13199
+hsless                    0.09742
+college                  -0.09247
+l2age65l                 -0.00204
+l2age6574                 0.01528
+l2age75p                  0.04228
+l2cancre                  0.05405
+l2diabe                   0.15932
+l2hearte                  0.12222
+l2hibpe                   0.10413
+l2lunge                   0.27105
+l2stroke                  0.21715
+l2adl1                    0.33915
+l2adl2                    0.55322
+l2adl3p                   0.78020
+l2iadl1                   0.83105
+l2iadl2p                  1.36046
+l2logbmi                  0.13528
+l2psyche                  0.27788
+l2arthre                  0.26509
+l2asthmae                 0.07473
+l2parkine                 0.54096
+l2drink                  -0.13411
+l2drinkd_e               -0.02262
+cut1                      1.81424
+cut2                      2.51018

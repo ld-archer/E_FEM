@@ -1,0 +1,54 @@
+oprobit
+smkstat
+black	-.0462566
+hispan	.0348669
+hsless	-.0021413
+college	-.0731262
+male	.0780591
+lage65l	-.0206783
+lage6574	-.0148602
+lage75p	-.0167421
+lhearte	.1832027
+lstroke	.0484424
+lcancre	-.1390623
+lhibpe	-.0473251
+ldiabe	-.0515915
+llunge	-.0280637
+liadl1	-.0320055
+ladl12	.0112977
+ladl3	-.1648001
+lsmoken	2.058183
+lwidowed	.0968413
+lobese	-.3147576
+loverwt	-.170382
+fhearte	-.0703116
+fstroke	-.1942268
+fcancre	.1685852
+fhibpe	-.0868268
+fdiabe	.0868278
+flunge	.0497481
+fsmokev	5.343835
+fsmoken	.9260305
+fiadl1	-.0232492
+fadl12	.0546968
+fadl3	.1184669
+fwidowed	-.0954047
+fsingle	.0223321
+fwork	.0734541
+flogiearnx	-1.888474
+fwlth_nonzero	-.147361
+floghatotax	-.6752087
+flogaime	.120284
+flogq	-.2188569
+fshlt	.0524067
+fanydb	.0475343
+frdb_na_2	-.1520726
+frdb_na_3	-.1886549
+frdb_na_4	-.1813481
+fanydc	.0813943
+flogdcwlthx	-1.38669
+fobese	.1178587
+foverwt	.0740327
+logdeltaage	-.2012367
+_cut1	.8252354 smokev
+_cut2	5.647207 smoken

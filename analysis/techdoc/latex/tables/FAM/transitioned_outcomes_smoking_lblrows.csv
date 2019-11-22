@@ -1,0 +1,3 @@
+smoke1,"\multirow{11}{*}{Risk Factors}","\multicolumn{1}{|l|}{\multirow{3}{*}{Smoking Status}}","never smoked","ordered","all"
+smoke2,"","\multicolumn{1}{|l|}{}","ex smoker","ordered","all"
+smoke3,"","\multicolumn{1}{|l|}{}","current smoker","ordered","all"     

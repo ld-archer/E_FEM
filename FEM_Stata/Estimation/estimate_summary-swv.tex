@@ -1,0 +1,367 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathpazo,color}
+
+\StataweaveOpts{echo=false, outfmt="frame=single, fontfamily=courier, fontsize=\small"}
+
+\begin{document}
+
+\begin{Statacode}{hide}
+set more off
+include ../../fem_env.do
+
+*set up work directory
+global estdir ../Estimates
+
+*load estimates 
+**Disease
+estimates use $estdir/hearte.ster
+estimates store Heart_disease
+estimates use $estdir/stroke.ster
+estimates store Stroke
+estimates use $estdir/hibpe.ster
+estimates store HBP
+estimates use $estdir/diabe.ster
+estimates store Diabetes
+estimates use $estdir/lunge.ster
+estimates store Lung
+estimates use $estdir/memrye.ster
+estimates store Memory_disorder
+
+**Functional Status
+
+estimates use $estdir/died.ster
+estimates store Motality
+estimates use $estdir/nhmliv.ster
+estimates store Nursing_home
+estimates use $estdir/iadlstat.ster
+estimates store IADL
+estimates use $estdir/adlstat.ster
+estimates store ADL
+
+**Predicted Medical Costs
+
+estimates use $estdir/totmd_mcbs.ster
+estimates store Total_MCBS
+estimates use $estdir/totmd_meps.ster
+estimates store Total_MEPS
+estimates use $estdir/oopmd_meps.ster
+estimates store OOP_MEPS
+estimates use $estdir/mcare_pta.ster
+estimates store Medicare_A
+estimates use $estdir/mcare_ptb.ster
+estimates store Medicare_B
+
+**Program Participation
+
+estimates use $estdir/ssclaim.ster 
+estimates store SS_claim
+estimates use $estdir/ssiclaim.ster
+estimates store SSI_claim
+estimates use $estdir/diclaim.ster 
+estimates store DI_claim
+estimates use $estdir/mcareb_takeup_newenroll.ster
+estimates store MedicareB_new
+estimates use $estdir/mcareb_takeup_curenroll.ster
+estimates store MedicareB_current
+estimates use $estdir/mcare_ptd.ster
+estimates store Medicare_D
+
+**Labor Outcomes
+
+estimates use $estdir/work.ster
+estimates store Working
+estimates use $estdir/dbclaim.ster
+estimates store DB_pension_claiming
+
+\end{Statacode}
+
+\section*{\centering Type of Estimators}
+
+\begin{Statacode}
+
+estimates dir
+
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Summary Characteristics}
+
+\begin{Statacode}
+
+estimates stat _all
+
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Diseases}
+\begin{Statacode}
+estimates table Heart_disease Stroke HBP, star(.05 .01 .001) keep(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Diseases(continued)}
+\begin{Statacode}
+estimates table Diabetes Lung Memory_disorder, star(.05 .01 .001) keep(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Functional Status}
+\begin{Statacode}
+estimates table Motality Nursing_home IADL ADL, star(.05 .01 .001) keep(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Predicted Medical Costs}
+\begin{Statacode} 
+estimates table Total_MCBS Total_MEPS , star(.05 .01 .001) keep(black hispan hsless college male hearte stroke cancre hibpe diabe lunge adl3p widowed single) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Predicted Medical Costs(Continued)}
+\begin{Statacode} 
+estimates table OOP_MEPS Medicare_A Medicare_B, star(.05 .01 .001) keep(black hispan hsless college male hearte stroke cancre hibpe diabe lunge adl3p widowed single) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Program Participation}
+\begin{Statacode}
+estimates table SS_claim SSI_claim DI_claim, star(.05 .01 .001) keep(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fwidowed fsingle fwork) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Program Participation(Continued)}
+\begin{Statacode}
+estimates table MedicareB_new MedicareB_current Medicare_D, star(.05 .01 .001) keep(black hispan hsless college male hearte stroke cancre hibpe diabe lunge adl1 adl2 adl3p widowed work) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Labor Outcomes}
+\begin{Statacode}
+estimates table Working DB_pension_claiming, star(.05 .01 .001) keep(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle fwork) sty(columns)
+\end{Statacode}
+
+
+\pagebreak
+\section*{\centering Coeffient Point Estimates}
+\subsection*{\centering Labor Outcomes}
+\begin{Statacode}
+estimates table Working DB_pension_claiming, star(.05 .01 .001) keep(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle fwork) sty(columns)
+\end{Statacode}
+
+\begin{Statacode}
+qui set mem 300m
+qui use $outdata/hrs17_transition.dta
+
+*logdeltaage
+qui gen logdeltaage = log(age_iwe - lage_iwe)
+
+*llogbmi_l30 llogbmi_30p flogbmi_l30 flogbmi_30p
+qui {
+  local log_30 = log(30)
+  mkspline llogbmi_l30 `log_30' llogbmi_30p = llogbmi
+  mkspline flogbmi_l30 `log_30' flogbmi_30p = flogbmi
+}
+
+*flogq flogaime        
+
+qui gen flogq=0
+qui gen flogaime=0
+
+local age_var age_iwe
+
+gen lage62e = floor(l`age_var') == 60 if l`age_var' < .
+gen lage63e = floor(l`age_var') == 61 if l`age_var' < .
+
+mkspline la6 58 la7 73 la7p = l`age_var'
+
+*** GENERATE WEAVE DUMMIES
+gen w3 = wave == 3
+gen w4 = wave == 4
+gen w5 = wave == 5
+gen w6 = wave == 6
+gen w7 = wave == 7
+
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Marginal Effects}
+\subsection*{\centering Diseases}
+\begin{Statacode}
+**marginal effects
+*desease
+qui estimates restore Heart_disease
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fstroke fcancre fhibpe fdiabe flunge fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix heart=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\.\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16])
+matrix drop temp temp1
+
+qui estimates restore Stroke
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fcancre fhibpe fdiabe flunge fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix stroke=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\.\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16])
+matrix drop temp temp1
+
+qui estimates restore HBP
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fdiabe flunge fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix hbp=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\.\temp1[1,9]\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16])
+matrix drop temp temp1
+
+qui estimates restore Diabetes
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe flunge fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix diab=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\.\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16])
+matrix drop temp temp1
+
+qui estimates restore Lung
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix lung=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\.\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16])
+matrix drop temp temp1
+
+qui estimates restore Memory_disorder
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix mem=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\.\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16])
+matrix drop temp temp1
+
+matrix disease=(heart,stroke,hbp,diab,lung,mem)
+matrix colnames disease = "heart disease""stroke""hypertension""diabetes""lung disease""memory disorder"
+matrix rownames disease = "mean""black" "hispanic" "<high school" "college" "male" "heart disease" "stroke" "cancer" "hypertension" "diabetes" "lung disease" "smoke" "widowed" "single" "bmi<30" "bim>30" "work"
+matlist disease, lines(oneline) twidth(15)  
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Marginal Effects}
+\subsection*{\centering Functional Health}
+\begin{Statacode}
+qui estimates restore Motality
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle fwork) noesample
+matrix temp1=r(b)
+matrix mortality=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16]\temp1[1,17]\.\.\temp1[1,18])
+matrix drop temp temp1
+
+qui estimates restore Nursing_home
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle fwork) noesample
+matrix temp1=r(b)
+matrix nursingh=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16]\temp1[1,17]\.\.\temp1[1,18])
+matrix drop temp temp1
+
+qui estimates restore IADL
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix iadl=(temp,temp1)
+matrix iadl=iadl'
+*matrix iadl=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16]\temp1[1,17]\.\.\temp1[1,18])
+matrix drop temp temp1
+
+qui estimates restore ADL
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fsmoken fwidowed fsingle flogbmi_l30 flogbmi_30p fwork) noesample
+matrix temp1=r(b)
+matrix adl=(temp,temp1)
+matrix adl=adl'
+*matrix iadl=(temp\temp1[1,1]\temp1[1,2]\temp1[1,3]\temp1[1,4]\temp1[1,5]\temp1[1,6]\temp1[1,7]\temp1[1,8]\temp1[1,9]\temp1[1,10]\temp1[1,11]\temp1[1,12]\temp1[1,13]\temp1[1,14]\temp1[1,15]\temp1[1,16]\temp1[1,17]\.\.\temp1[1,18])
+matrix drop temp temp1
+
+matrix functional=(mortality, nursingh, iadl, adl)
+matrix colnames functional = "mortality""nursing home""iadl""adl"
+matrix rownames functional = "mean""black" "hispanic" "<high school" "college" "male" "heart disease" "stroke" "cancer" "hypertension" "diabetes" "lung disease" "adl=1" "adl=2" "adl>=3" "smoke" "widowed" "single" "work"
+matlist functional, lines(oneline) twidth(15)  
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Marginal Effects}
+\subsection*{\centering Predicted Medical Costs}
+\begin{Statacode} 
+estimates table Total_MCBS Total_MEPS , star(.05 .01 .001) keep(black hispan hsless college male hearte stroke cancre hibpe diabe lunge adl3p widowed single) sty(columns)
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Marginal Effects}
+\subsection*{\centering Program Participation}
+\begin{Statacode}
+
+qui estimates restore SS_claim
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fwidowed fsingle fwork) noesample
+matrix temp1=r(b)
+matrix ss=(temp,temp1)
+matrix ss=ss'
+matrix drop temp temp1
+
+qui estimates restore SSI_claim
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fwidowed fsingle fwork) noesample
+matrix temp1=r(b)
+matrix ssi=(temp,temp1)
+matrix ssi=ssi'
+
+qui estimates restore DI_claim
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fwidowed fsingle fwork) noesample
+matrix temp1=r(b)
+matrix diclaim=(temp,temp1)
+matrix diclaim=diclaim'
+matrix drop temp temp1
+
+matrix programp=(ss, ssi, diclaim)
+matrix colnames programp = "ss claim""ssi claim""di claim"
+matrix rownames programp = "mean""black" "hispanic" "<high school" "college" "male" "heart disease" "stroke" "cancer" "hypertension" "diabetes" "lung disease" "adl=1" "adl=2" "adl>=3" "widowed" "single" "work"
+matlist programp, lines(oneline) twidth(15)  
+
+\end{Statacode}
+
+\pagebreak
+\section*{\centering Marginal Effects}
+\subsection*{\centering Labor Outcomes}
+\begin{Statacode}
+
+qui estimates restore Working
+margins, noesample
+matrix temp=r(b)
+margins, dydx(black hispan hsless college male fhearte fstroke fcancre fhibpe fdiabe flunge fadl1 fadl2 fadl3p fwidowed fsingle fwork) noesample
+matrix temp1=r(b)
+matrix working=(temp,temp1)
+matrix working=working'
+
+matrix labor=(working)
+matrix colnames labor = "working"
+matrix rownames labor = "mean""black" "hispanic" "<high school" "college" "male" "heart disease" "cancer" "hypertension" "diabetes" "lung disease" "adl=1" "adl=2" "adl>=3" "smoke" "widowed" "single" "work"
+matlist labor, lines(oneline) twidth(15)  
+
+\end{Statacode}
+\end{document}
+
+

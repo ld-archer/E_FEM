@@ -1,0 +1,9 @@
+dictionary {
+	   _first(4)
+	   _lines(1)
+	   int		year	"Year of Analysis"
+	   int		age	"Age in Year"
+	   float	female	"Female-specific deathrate"
+	   float	male	"Male-specific deathrate"
+	   float	total	"Combined deathrate"
+}

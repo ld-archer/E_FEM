@@ -1,0 +1,16 @@
+time_scaled_probit
+cancre
+2
+male	.0688769
+hsless	-.0020481
+college	.1020853
+l2age65l	.0333341
+l2age6574	.0151347
+l2age75p	-.0052458
+l2logbmi	.0497726
+l2smokev	-.0463547
+l2smoken	.0549241
+l2drink	.0594058
+l2drinkd_e	-.0213591
+smokev	.0985042
+_cons	-4.392768

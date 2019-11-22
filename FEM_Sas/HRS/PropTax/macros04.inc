@@ -1,0 +1,1120 @@
+/*****************************************************
+File contains imputation macros
+DOASSET runs each asset through respective imputations steps
+IMPOWN imputes ownership
+IMPCAT imputes bracket
+IMPAMT imputes continuous value
+TOOL generates descriptive report for error and distribution checking
+
+Applicable in HRS1 income, HRS2, HRS3, HRS98, wealth & income vars
+Macro file for HRS Wave 1 wealth is in wave 1 directory
+******************************************************/
+
+** run elements of asset list in impwave*.sas through each imputation **;
+** Also set up seed generation for random number **;
+** which is unique and replicable for each wave, asset, imptype **;
+
+%let mobilin= ;
+
+** create a macro variable (that is called within impamt) for assets with special considerations **;
+
+%let special=0;
+
+%let alphanum=abcdefghijklmnopqrstuvwxyz123;
+%MACRO doasset(macname);
+  %let count=1;
+  %do %while(%length(%scan(&assets,&count))>0);
+      %let asset = %scan(&assets,&count);
+      
+      %do i=1 %to %length(&asset);
+          %if &i=1 %then %let sd&asset=1;
+          %let fig&i = %index(&alphanum,%substr(&asset,&i,1));
+
+          %let sd&asset=%eval((&&sd&asset*&&fig&i)/2);
+      %end;
+
+      %if %length(&&sd&asset)>5 %then 
+          %let sd&asset=%substr(&&sd&asset,1,5);
+          
+      %if &macname=impown and &asset=mobil %then %let mobilin=1;
+      %if &macname=impamt and &asset=ppen3 %then %let special=1;
+      
+      %&macname(&asset);
+      %let count= %eval(&count + 1);
+  %end;
+%MEND doasset;
+
+/****************************************************************
+KEY TO IMPUTATION VARIABLES
+*d_&type: indicates ownership
+ di&type: indicates need to impute ownership
+*c_&type: categorical asset value bracket
+ ci&type: indicates need to impute bracket
+ a_&type: continuous reported asset value
+ i_&type: indicates need to impute amount
+*ai&type: reported or imputed continuous value
+ inf&type: categorizes level of information reported
+
+Starred variables contain all imputations and reported values
+at end of process.  Other variables never change and can be 
+used to check pre-imputation data values.
+****************************************************************/
+
+** impute ownership **;
+%MACRO impown(type);
+
+  ** do not reimpute previous imputations **;
+  data workds;
+    set workds;
+    %if &type^=luyr %then 
+    if improces = 1 then di&type = 0;;
+
+  ***************************************
+  ** Count known asset owners	       **
+  ** if less than 50, do not fit model **
+  ***************************************;
+  data _null_;
+    set workds end=lastobs nobs=countall;
+    if d_&type then countown+1;
+    if di&type then countdk+1;
+    if lastobs then ownmean = countown/(countall-countdk);
+    call symput("ownobs",countown);
+    call symput("samprob",ownmean);
+  run;
+  
+  %if &ownobs >=50 %then %do;
+      proc logistic descending data=workds;          
+        model d_&type = prin1-prin&pcn            
+        	  /rsquare;                    
+        output out=_iown prob=pfit ;                                    
+      title2 "DEPVAR= d_&type";              
+      run;                                 
+  %end; 
+                                                                         
+  data _iown;                                                             
+    %if &ownobs >=50 %then set _iown;
+    %else		   set workds;;                                                        
+
+    _xrand = ranuni(&seed.1&&sd&type);
+    
+    ***************************************************************
+    ** for good sized samples, ownership imputed if fitted 	 **
+    ** probability is greater than or equal to random number 	 **                                                 
+    ** for tiny samples, ownership imputed if 			 **
+    ** sample probability greater than or equal to random number **
+    ***************************************************************;
+    %if &ownobs >=50 %then %do;
+        if di&type=1 then d_&type = (_xrand <= pfit);
+        drop pfit _level_;
+    %end;
+    %else if di&type=1 then d_&type = (_xrand <= &samprob);; 
+    
+    ** ownership conditional for some assets **;
+    %if %substr(&type,1,3)=ira or %substr(&type,1,2)=lu %then %do;
+        %let len=%length(&type);
+        %if &len>3 %then %do;
+            %let num=%substr(&type,&len,1);                                          
+            %let prev=%eval(&num-1);                                                 
+            %let root=%substr(&type,1,%eval(&len-1));                                
+            %if &num>1 %then %do;                                                    
+                %if &root=ira %then if d_ira&prev = 0 then d_&type=0;                
+                %if &root=lump %then if d_lump&prev = 0 and di&type=1 then d_&type=0;
+            %end;;                                                                   
+        %end;
+    %end;
+
+    ** impute homeowning-related debt if there is a home **;
+    %if %substr(&type,1,4)=mort or                                              
+    	   &type=eqlon or &type=eqcrd %then %do;                                   
+        if d_house=0 
+           %if &mobilin=1 %then and d_mobil=0;
+                      then d_&type=0;                                            
+    %end;  
+
+    ** impute second home related debt if there is a second home **;
+    %if &type=h2lon %then %do;
+        if d_hous2=0 then d_&type=0;                                            
+    %end;  
+    
+    ** impute existance of mobile home if house ownership imputed to NO **;
+    %if &type=mobil %then %do;
+        if dimobil=1 and dihouse=1 and d_house=1 then d_mobil=0;
+    %end;  
+    
+    %** code imputed owners as nonbracketed nonresponders, imputed non-owners as such **; 
+    if di&type=1 and d_&type=1 then do;                                 
+       i_&type=1;                                  
+       %if &&prp&type=0 %then cc&type=0;;          
+       %if &&prp&type>0 %then %do;  
+           cc&type = &&opn&type;               
+           ci&type=1;   
+           cl&type=1;
+           cu&type=&&prp&type;                           
+       %end;   
+                                    
+       ** adjust upper and lower bounds of continuous values **;
+       lo&type = input(put(cc&type,&type.lo.),9.);                                                             
+       up&type = input(put(cc&type,&type.up.),9.);
+       
+    end;                                           
+                                                   
+    else if di&type=1 and d_&type=0 then i_&type=0;
+    
+    %if %substr(&type,1,4)=luyr %then %do;
+        if d_lump&num=0 then do;
+           d_&type=0;
+           i_&type=0;
+        end;
+        else if d_&type=1 then do;
+           ai&type = ailump&num;
+           cc&type = cclump&num;
+           ci&type = cilump&num;
+           _lo&type=_lolump&num;
+           _up&type=_uplump&num;
+           _cc&type=_cclump&num;
+        end;   
+    %end;                                                                   
+  run;   
+  
+  proc freq;
+    table di&type*d_&type;
+    table di&type*d_&type*cc&type*lo&type*up&type
+    	/missing list;
+  run;
+
+  /* uncomment to check last steps 
+  %if &type=check %then %do;
+    proc print data=_iown;                                 
+      var di&type pfit _xrand _level_ d_&type;             
+      where di&type=1;                                     
+    title2 'Working variables during ownership imputation: CHECK/SAV';
+    run;  
+  %end;                                                 
+  */  
+
+  data workds postown;
+    set _iown (drop=_xrand); 
+  run;  
+  
+  proc datasets library=work;                                            
+    delete _iown;                                                 
+  run;   
+  
+  title2;                                                                
+
+%MEND impown;
+
+
+** impute bracket **;
+%MACRO impcat(type);
+
+  ** process only for bracketed assets **;
+  %if &&prp&type>0 %then %do;
+
+ %* ?let stop=%eval(&&brk&type+1);  
+  *** 
+  divide input data into three parts:
+  1.) those who do Not own asset or who reported continuous amount
+  2.) those with proper bracket - donor pool
+  3.) those with improper bracket (or none) who need imputation 
+  ***;
+    data _nonimp _proper _improp;
+      set workds;
+
+      ** do not reimpute previous imputations **;
+      if improces = 1 then ci&type = 0;
+
+      _refuse = (a_&type = .R);
+
+      ** recode those w/ c_&type=0 or missing to highest category **;
+   *?   if d_&type=1 and c_&type <=0 then c_&type=&stop; 
+           
+      ** output to appropriate dataset **;                               	
+      if d_&type<1 or (i_&type=0 and abt&type<1) then output _nonimp;                   	
+      else if ci&type=0 /*and cc&type>10*/ then do;               
+	   ** new var for regression missing for improper bracket **;                                
+	   cx&type = cc&type; 
+ 	   output _proper;                                                 
+      end;                                                               
+      else output _improp;                                               
+    run;
+    
+    ** if all proper bracket donors land in one bracket 
+       or if improper brackets fall out of reported proper bracket range
+       then get out of bracket imputation **;
+    proc freq data=_proper ;
+      table cc&type /out=brakrang;
+    run;
+    data _null_;                                                                            
+      if 0 then set brakrang nobs=counbrak;                                                  
+      call symput("numbrak",left(put(counbrak,8.)));                                          
+      stop;                                                                                 
+    run; 
+    
+    ** formerly minprop maxprop minimp maximp **;
+    %global mnp&type mxp&type mni&type mxi&type;
+    proc sql ;
+      select min(lo&type) format=12., max(up&type) format=12.
+      into :mnp&type, :mxp&type 
+      from _proper;
+   
+      select min(lo&type) format=12., max(up&type) format=12.
+      into :mni&type, :mxi&type 
+      from _improp
+      where cc&type^=&&opn&type;
+    quit;
+    
+    %put %str(minprop=)&&mnp&type 
+    	 %str(maxprop=)&&mxp&type
+    	 %str(minimp =)&&mni&type
+    	 %str(maximp =)&&mxi&type;
+    	 
+    %if (&numbrak<2) or (&&mni&type>&&mxp&type) or (&&mxi&type^=. and &&mxi&type<&&mnp&type) %then %do;
+        data workds;
+          set _nonimp _proper _improp(in=noimp);
+          
+          _cc&type=cc&type;
+          _lo&type=lo&type;
+          _up&type=up&type;
+
+          if noimp then cc&type=0;
+        run;
+        
+        proc freq data=workds;
+          table d_&type*cc&type
+              /missing list;
+        run;
+    %end;
+                   
+    %else %do;  
+        data brakresp;
+          set _proper
+              _improp;
+        run;
+        
+        ** if less than 50 proper bracket donors then skip modelling
+           and use sample probabilities of bracket distribution **;
+        data _null_;                                                                            
+          if 0 then set _proper nobs=counobs;                                                  
+          call symput("donors",left(put(counobs,8.)));                                          
+          stop;                                                                                 
+        run;   
+        
+	** get fitted probabilities **;
+	%if &donors >= 50 %then %do;
+	    proc logistic descending data=brakresp outest=_parmout;       
+	      model cx&type = prin1-prin&pcn _refuse                                         
+	            /rsquare;                                             
+	      output out=_icat prob=pfit;                                 
+	    title2 "all bracket model: cc&type";                                   
+	    run;                                                                                   
+	    ** output dataset should have 
+	    # of categories proper bracket Rs respond (usually prp&type+prp&type-1) -1 * input obs **;
+	                                                                                                                                
+            * print summary of model building and outcome *;                             
+	    proc tabulate data=_icat;                                              
+	      class _level_;                                                       
+	      var pfit;                                                            
+	      tables _level_,pfit*mean*f=8.4;                                      
+	    run;  
+	%end;
+	
+	%** generate similar dataset for unmodelled assets (few donors),
+	   get sample probabilities **;
+	%else %do; 
+	    proc freq data=brakresp;
+  	      table cc&type /out=freqout;
+	      where ci&type=0;
+            run;
+            
+            data _null_;                                                                            
+              if 0 then set freqout nobs=counobs;                                              
+              call symput("levels",left(put(counobs,8.)));                                      
+              stop;                                                                             
+            run;    
+            
+            %if &levels<(%eval(&&prp&type+(&&prp&type-1))) %then %do;
+                data fakeout;
+                %do clev=1 %to &&prp&type;
+                    cc&type=&clev*11;
+                    fcount=0;
+                    fpct=0;
+                    output;   
+                %end;
+                %do clev=2 %to &&prp&type;
+                    cc&type=&clev*10;
+                    fcount=0;
+                    fpct=0;
+                    output;   
+                %end;
+                run;
+                proc sort data=fakeout;
+                  by cc&type;
+                run;
+                data freqout (drop=fcount fpct);
+                  merge freqout
+                  	fakeout;
+                  by cc&type;
+                  count=sum(count,fcount);
+                  percent=sum(percent,fpct);
+                run;
+            %end;        
+                                          
+            proc sort data=freqout;
+  	      by descending cc&type;
+  	    run;
+
+  	    data prob (drop=count percent prob rename=(cc&type=_level_ cumprob=pfit));
+              set freqout;                                                           
+	      prob = percent/100;                                                
+	      cumprob+prob;                                                      
+	      if cc&type>1;                                                       
+            run; 
+            
+            proc sql;
+              create table _icat as                                                                   
+                select *
+                from prob, brakresp;
+	    quit;
+	    
+	%end;
+	
+	proc sort data=_icat;                                                      
+	  by &hhid _level_;                                                         
+	run;           
+    
+	/* delete estimates for out of range brackets */                              
+        data inrange lorange;                                                                       
+	  set _icat (where=(ci&type=1));                                                                     
+	  by &hhid _level_;  
+                                                                                  
+          /* pfit: P(true bracket value >= _level_)
+             so lowest proper bracket in range is eliminated from calculations,
+             ie, its probability estimate is always 1.00.
+             Bracket 1 is automatically eliminated from logistic output data
+             For improper brackets EXcluding bracket 1:
+                 delete proper brackets out of range and ignore lowest proper bracket in range 
+             For improper brackets INcluding bracket 1:
+                 delete proper brackets out of range except next highest one */
+               
+          if (_level_ < cl&type*11 and last.&hhid=0) or 
+                  _level_ > (cu&type+1)*10 then delete;
+	  
+	  ** determine whether conditional probabilities need calculation
+	     no recalculation for fully open bracket **;
+	  recalchi = (cl&type>1 and cu&type=&&prp&type);
+	  recalclo = (cl&type=1 and cu&type<&&prp&type);
+	  
+	  if recalclo then output lorange;
+	  else output inrange;
+	  
+	run;   
+	
+	proc sort data=lorange;
+	  by &hhid descending _level_;
+	run;
+	
+	data localc;
+	  set lorange;
+	  by &hhid descending _level_;
+	  retain lodenom compprob;
+	  ** P(c_&type=2|c_&type<=2) = P(c_&type>=2)-P(c_&type>=3) / P(c_&type<3) **;
+	  if first.&hhid then do;
+	     compprob=pfit;
+	     lodenom=1-pfit;
+	  end;
+	  locmprob=pfit-compprob;
+	  condprob=locmprob/lodenom;
+	  loprob=pfit-lag(pfit);
+	  if first.&hhid then do;
+	     loprob=.;
+	     condprob=.;
+	     locmprob=.;  /***** changed from compprob=. ****/
+	  end;
+	  *if first.&hhid then delete;  ** leave ineligible record in for checking **;
+	run;
+	
+	proc print data=localc;
+	  var &hhid _level_ PFIT Cc&type LOPROB locmprob compprob loDENOM CONDPROB;
+	run;
+	
+	proc sort data=localc;
+	  by &hhid _level_;
+	run;
+	                                                                                
+        data _impall;                                                                      
+          set inrange localc;                                                                     
+	  by &hhid _level_;  
+	  retain _xrand _categ hidenom;                                                         
+
+	  if first.&hhid then do;                                                         
+	     _xrand = ranuni(&seed.2&&sd&type);
+	     if recalchi=0 then _categ = 11; 
+	     if recalchi then hidenom=pfit;
+	     else hidenom=.;
+	  end; 
+	  
+	  * P(c_&type=5|c_&type>=4) = P(c_&type=5) / P(c_&type>=4) *;
+	  if recalchi then condprob = pfit/hidenom;
+	     
+	  if ((recalchi+recalclo=1) and (condprob>=_xrand)) or
+	     ((recalchi+recalclo=0) and (pfit >= _xrand)) then _categ = _level_;
+
+	/** uncomment and end macro to check outcome of last few steps **;
+	proc print data=_impall;                                                           
+  	  id &hhid;
+  	  var _level_ pfit cc&type cl&type cu&type loprob locmprob compprob lodenom hidenom condprob _xrand _categ ;                                  
+        title2 'Working variables during bracket imputation';                
+        run; */
+        
+          if last.&hhid;                                                 
+
+	/** to check distribution:;
+	proc freq;
+	  table cc&type*_categ
+	  	/missing list;
+	run;
+	*/
+        
+          ** save pre-imputed values of range variables for HHs w/imputed brackets **;
+          _cc&type=cc&type;
+          _lo&type=lo&type;
+          _up&type=up&type;
+	  %if &donors >= 50 %then cc&type = _categ;
+	  
+	  %else %do;
+	     if cc&type^=&&opn&type then cc&type = _categ;
+	     else cc&type = 0;
+	  %end;;
+	  
+	  ** adjust upper and lower bounds of continuous values **;
+	  lo&type = input(put(cc&type,&type.lo.),9.);                                                             
+	  up&type = input(put(cc&type,&type.up.),9.);
+	  
+	  drop _categ _level_ pfit _xrand condprob cx&type recalchi
+	  	recalclo loprob lodenom locmprob compprob hidenom;                                
+	run;   
+	/*
+      proc sql;
+        select &hhid, _level_, pfit, cc&type, cl&type, cu&type
+        from _icat
+        where ci&type and &hhid not in 
+          (select &hhid
+           from _impall);
+        */
+      data workds postcat;
+	set _nonimp _proper _impall;
+      run;
+      
+      proc freq data=workds;
+        table d_&type*i_&type*abt&type*_cc&type*cc&type 
+              /missing list;
+      run;
+      
+      proc datasets library=work;
+	delete _nonimp _proper _impall
+	       _improp _icat _parmout inrange 
+	       brak:;
+      run;
+      
+     %end;	* all assets with proper bracket variation in donors *;
+    %end; 	* all bracketed assets *;
+    title2;
+
+%mend impcat;
+	                                                            
+                                                                                         
+** impute continuous amount **;
+%MACRO impamt(type);
+
+  %*? let rawreg = %eval(&&prp&type-10); /* original number of proper brackets */                                                     
+                                                                                             
+  *** 
+  divide input data into four parts:
+  1.) those without asset
+  2.) those who reported continuous amount
+  3.) those who need imputation    
+  4.) those imputed to cutpoint values in bracket imputation        
+  ***;
+  
+  data _noasset _fitcont _impamt 
+       %if &&prp&type>0 %then _impctpt;;
+    set workds  ; 
+    
+    ** do not reimpute previous imputations **;
+    %if &improces=1 %then %do;
+        if improces = 1 then do;                   
+           i_&type = 0;                            
+           a_&type = ai&type;                      
+        end;   
+    %end;                                    
+    
+    if d_&type < 1 then output _noasset;                                                     
+    else if i_&type = 0 then do;
+       ** transform asset amount **;
+       aT&type = log(a_&type + sqrt(a_&type**2 + 1));
+       output _fitcont; 
+    end;
+    %if &&prp&type>0 %then %do;
+       else if ci&type=1 and lo&type=up&type then do;
+         ai&type=lo&type;
+         output _impctpt;
+       end;
+    %end;
+    else output _impamt;                                                                      
+  run; 
+  
+ 
+   
+  ** count imputations needed and continuous reporters **;
+  data _null_;                                                                        
+    if 0 then set _impamt nobs=count;                                              
+    call symput("impobs",left(put(count,8.)));                                      
+    if 0 then set _fitcont nobs=contcoun;                                              
+    call symput("reportrs",left(put(contcoun,8.)));                                      
+    stop;                                                                             
+  run; 
+  
+  ** if no imputations are needed, get out **;
+  %if &impobs=0 %then %do;
+      data workds;
+        set workds;
+        %if &&prp&type>0 %then %do;
+            if ci&type=1 and lo&type=up&type then ai&type=lo&type;
+            else
+        %end;
+        ai&type = a_&type;
+      run;
+  %end;
+  
+  %else %do;
+
+      %let keepvars=&hhid &selcov cc&type a_&type aT&type i_&type                                
+      		 lo&type up&type d_&type improces;                                            
+                                                                                                 
+      data allmod ;                                                                               
+        set _fitcont                                                                 
+            _impamt;                                                                             
+      run;    
+      
+      *** If good sized sample, run model with all brackets collapsed ***;                       
+      %if &reportrs >=50 %then %do;                                                              
+          proc reg data=allmod;                                                                  
+            model aT&type = prin1-prin&pcn;                                                      
+            output out=fit&type predicted=fit;                                                   
+            title2 "All &type owners";                                                           
+          run;                                                                                   
+      %end;                                                                                      
+                                                                                                 
+      ** create dataset for each bracket **;                                                     
+      data %do i=0 %to &&prp&type;                                                               
+            &type&i donor&i                                                                      
+           %end;                                                                                 
+                ;                                                                                
+        %if &reportrs >=50 %then set fit&type (keep=&keepvars fit);                              
+        %else set allmod (keep=&keepvars);;                                                      
+                                                                                                 
+        if cc&type=0 or i_&type=0 then do;                                                       
+           output &type.0;                                                                       
+           if cc&type then output donor0;                                                        
+        end;                                                                                     
+        %do icat=1 %to &&prp&type;                                                               
+            if cc&type in (&icat, %eval(&icat*11)) then do;                                                          
+               output &type&icat;                                                                
+               if i_&type=0 then output donor&icat;                                              
+            end;                                                                                 
+        %end;                                                                                    
+      run;                                                                                       
+                                                                                                 
+      ** loop through to count observations and donors in each dataset **;                                  
+      %do icat=0 %to &&prp&type;                                                                 
+          %global obs&icat donobs&icat;                                                               
+          data _null_;                                                                           
+            if 0 then set &type&icat nobs=count;                                                 
+            call symput("obs&icat",left(put(count,8.)));                                         
+            if 0 then set donor&icat nobs=doncount;                                              
+            call symput("donobs&icat",left(put(doncount,8.)));                                   
+            stop;                                                                                
+          run;                                                                                   
+      %end;     
+      
+      ** set up mac vars so non-bracketed components run through **;
+      %if &&prp&type=0 %then %do;
+          %let mxp&type=&&u0&type;
+          %let mxi&type=&&u0&type;
+      %end;                                                                                 
+                                                                                                 
+      ** find parameters from tobit distribution cutting off 25th %ile for highest bracket       
+         or non-positive values for other brackets                                               
+         to use later for non-nearest neighbor imputations                                       
+         also pick up mean for possible mean fill (not done currently) **;         
+      
+      %if &reportrs>0 %then %do;                                                              
+          proc univariate data=_fitcont;                                                               
+            var a_&type;                                                                         
+            output out=trunc q1=q1 mean=contmean;                                                
+          run;                                                                                   
+                                                                                                 
+          data tobit;                                                                            
+            if _n_=1 then set trunc;                                                             
+            set _fitcont (where=(i_&type=0));                                                      
+                                                                                                 
+            if 0< a_&type <= q1 then do;                                                         
+               lower25 = .;                                                                      
+               upper25 = q1;                                                                     
+            end;                                                                                 
+            else do;                                                                             
+               lower25 = a_&type;                                                                
+               upper25 = a_&type;                                                                
+            end;                                                                                 
+                                                                                                 
+            if .< a_&type <= 0 then do;                                                          
+               lower0 = .;                                                                       
+               upper0 = 0;                                                                       
+            end;                                                                                 
+            else do;                                                                             
+               lower0 = a_&type;                                                                 
+               upper0 = a_&type;                                                                 
+            end;                                                                                 
+                                                                                                 
+            call symput("sampmean",contmean);                                                    
+          run;                                                                                   
+                                                                                                 
+       ** if convergence is questionable, check that output data is not used **;
+          proc lifereg data=tobit outest=hiparam;                                                
+            model(lower25,upper25)=prin1-prin&pcn /d=lnormal;                                                  
+          proc lifereg data=tobit outest=regparam;                                               
+            model(lower0,upper0)=prin1-prin&pcn /d=lnormal;                                                    
+          run;                                     
+      %end;                                                                                    
+                                                                                                 
+                                                                                                 
+      *********************************************************************************          
+      ** pick up NEAREST FITTED NEIGHBOR amount for each bracket of an asset EXCEPT: **          
+      ** - assets with less than 50 continuous reporters                             **          
+      **    HOT DECK DRAW for missings with no bracket information	   	     **          
+      **                                                                             **             
+      ** - brackets containing no observations                                       **          
+      **									     **                                                                                           
+      ** - highest original proper brackets (&rawreg or &&prp&type)                  **          
+      ** - brackets containing less than 2 donors				     **
+      ** - improper brackets fall out of reported bracket range			     **          
+      **    TOBIT DRAW 								     **          
+      *********************************************************************************;         
+      %do icat=0 %to &&prp&type;                                                                 
+                                                                                                 
+          /* no empty datasets or those brackets needing no imputations enter process */         
+          %if &&obs&icat >0 and (&&donobs&icat<&&obs&icat) %then %do;                            
+ 
+            /* non-nearest neighbor imputations */                                               
+            /** HOT DECK **/                                                                     
+            %if &reportrs>0 and &reportrs<50 and &&donobs&icat>1 and 
+                (&&prp&type=0 or &icat>0 or (&&prp&type>0 and &&mxi&type<=&&mxp&type)) %then %do;                                           
+                data _byhot1;                                                                   
+                  set &type&icat; 
+                  if _n_=1 then randvar=0;                                                                  
+                  else randvar=ranuni(&seed.3&&sd&type);                                          
+                run;    
+                proc sort data=_byhot1;                                                            
+                  by randvar i_&type;                                                          
+                run;                                                                               
+                                                                                                 
+                data f&type&icat %if &&prp&type>0 %then outrang;;                                                                    
+                  set _byhot1;                                                                   
+
+                  retain ai&type;                                             
+                  if i_&type=0 then ai&type=a_&type;   
+                  %if &&prp&type>0 %then %do;
+                      if i_&type and (ai&type>up&type or ai&type<lo&type) then output outrang;
+                      else output f&type&icat;   
+                  %end;
+                run;  
+                
+                %if &&prp&type>0 %then %do;
+                    data _null_;                                                    
+                      if 0 then set outrang nobs=outrangn;                          
+                      call symput("redraw",left(put(outrangn,5.)));                               
+                      stop;                                                         
+                    run;                                                            
+                                                                                    
+                    %let drawloop=0;                                                
+                    %if &redraw>0 %then %do %until (&redraw=0);                 
+                        %let drawloop=%eval(&drawloop+1);                           
+                        data _byhot1;                                                               
+                          set &type&icat;                                           
+                          if _n_=1 then randvar=0;                                                          
+                          else randvar=ranuni(&seed.3&&sd&type + &drawloop);                                  
+                        run;                                                        
+                        proc sort data=_byhot1;                                                    
+                          by randvar i_&type;                                                  
+                        run;                                                                       
+                                                                                                 
+                        data f&type&icat outrang;                                                              
+                          set _byhot1;                                                           
+                                                                                    
+                          retain ai&type;                                           
+                          if i_&type=0 then ai&type=a_&type;                        
+                          if ai&type>up&type or ai&type<lo&type then output outrang;
+                          else output f&type&icat;                                                
+                        run;                                                        
+                                                                                    
+                	title2 "dataset=outrang";                                 
+                        proc print data=outrang;                                  
+                          var randvar lo&type up&type cc&type i_&type a_&type ai&type;
+                        run;                                                          
+                        data _null_;                                                
+                          if 0 then set outrang nobs=outrangn;                      
+                          call symput("redraw",left(put(outrangn,5.)));                           
+                          stop;                                                     
+                        run;                                                        
+                    %end;   /* drawloop */
+                %end;  /* range check for bracketed components */                                                         
+                title2 "dataset=f&type&icat";                                 
+                proc print data=f&type&icat;                                  
+                  var randvar lo&type up&type cc&type i_&type a_&type ai&type;        
+                run;                                                          
+            %end;  /* hot deck*/
+                                                             
+            %if (&icat=0 and &reportrs=0) or 
+            	(&&obs&icat>0 and &&donobs&icat=&special and &&prp&type>0 and 
+            	(&icat<&&prp&type or (&icat=&&prp&type and &reportrs<50))) %then %do;   
+
+                %put "WARNING: NO CONTINUOUS REPORTERS FROM WHICH TO IMPUTE";
+                %put "INCLUDE HOT DECK CODE WITH VARIABLE RELEVANT PARAMETERS";     
+                
+                %include  "&hotcode";                                                   
+            %end;
+                                                                                             
+            /** TOBIT **/                                                                        
+
+            %else %if (&reportrs>=50 and (&icat=&&prp&type and &&prp&type>0)) or &&donobs&icat<2 or 
+                      (&&prp&type>0 and &icat=0 and &&mxi&type>&&mxp&type) %then %do;                                                                         
+
+            proc print data=&type&icat;                                                       
+              title2 "dataset going into tobit";                                             
+            run;                                                                               
+
+            proc print data=hiparam;                                                       
+              title2 "dataset going into tobit";                                             
+            run;                                                                               
+
+            proc print data=regparam;                                                       
+              title2 "dataset going into tobit";                                             
+            run;                                                                               
+
+              data f&type&icat;                                                                  
+                if _n_=1 then                                                                    
+                  %if (&icat=&&prp&type and &&prp&type>0) %then set hiparam; 
+                  %else set regparam;;                                                           
+                set &type&icat;                                                                  
+                hit = 0;                                                                         
+                if i_&type then do until (hit=1);                                                
+                   randvar = normal(&seed.5&&sd&type);                                                          
+                   x = intercept+sqrt(_scale_)*randvar;                                           
+                   ai&type = exp(x);                                                             
+                   *hit = (&&l&icat&type <= ai&type <= &&u&icat&type);                             
+                   hit = (lo&type <= ai&type <= up&type);                             
+                end;                                                                             
+                drop _model_--_LNLIKE_ hit randvar x;                                            
+              run;   
+              
+             /* to check tobit step, uncomment this and drop statement above
+              proc print data=f&type&icat;                                                       
+                var intercept _scale_ randvar x ai&type lo&type up&type hit;                      
+                where i_&type=1;                                                                 
+              title2 "cc&type=&icat *11: tobit results";                                             
+              run;                                                                               
+             */
+            %end;	                                                          
+                                                                                                 
+            /* nearest neighbor method */                                                        
+            %else %if &reportrs >= 50 %then %do;                                                  
+                                                                                                 
+              data _byfit1 fitjunk;                                                                                              
+                set &type&icat;                                                                  
+                randvar=ranuni(&seed.4&&sd&type);                                                               
+                                                                                                 
+                if i_&type = 0 and a_&type < 0 then output fitjunk;
+                else output _byfit1;                                                             
+              run;                                                                               
+                                                                                                 
+              proc print data=fitjunk;                                                           
+                *var d_&type cc&type a_&type i_&type;                                             
+              title2 'NON-POSITIVE INPUT DATA';                                                  
+              run;                                                                               
+                                                                                                 
+              proc sort data=_byfit1;                                                            
+                by fit i_&type randvar;                                                          
+              run;                                                                               
+                                                                                                 
+              ** make sure lowest randvar is a donor **;                                         
+              data _byfit2;                                                                      
+                set _byfit1;                                                                     
+                by fit i_&type randvar;                                                          
+                if first.fit and first.i_&type and i_&type = 0 then randvar=0;                   
+              run;                                                                               
+                                                                                                 
+              proc sort data=_byfit2;                                                            
+                by fit randvar i_&type;                                                          
+              run;                                                                               
+                                                                                                 
+              data _byfit2;                                                                      
+                set _byfit2;                                                                     
+                retain abovefit aboveval abovernd;                                               
+                                                                                                 
+                if i_&type=0 then do;                                                            
+                   abovefit=fit;                                                                 
+                   aboveval=a_&type;                                                             
+                   abovernd=randvar;                                                             
+                end;                                                                             
+              run;                                                                               
+                                                                                                 
+              proc sort data=_byfit2;                                                            
+                by descending fit descending randvar i_&type;                                    
+              run;                                                                               
+                                                                                                 
+              data _byfit3;                                                                      
+                set _byfit2;                                                                     
+                retain belowfit belowval belowrnd;                                               
+                                                                                                 
+                if i_&type=0 then do;                                                            
+                   belowfit=fit;                                                                 
+                   belowval=a_&type;                                                             
+                   belowrnd=randvar;                                                             
+                end;                                                                             
+              run;                                                                               
+                                                                                                 
+              data f&type&icat(drop=belowfit belowval belowrnd abovefit aboveval abovernd        
+                		randvar );                                                           
+                set _byfit3;                                                                     
+                                                                                                 
+                if i_&type = 1 then do;                                                          
+                   if belowval <= .Z then ai&type = aboveval;                                    
+                   else if aboveval <= .Z then ai&type = belowval;                               
+                   else if abs(fit - belowfit) < abs(fit - abovefit)                             
+                           then ai&type = belowval;                                              
+                   else if abs(fit - belowfit) > abs(fit - abovefit)                             
+                           then ai&type = aboveval;                                              
+                   else if abs(fit - belowfit) = abs(fit - abovefit)                             
+                           then do;                                                              
+                	       if abs(randvar - belowrnd) < abs(randvar - abovernd)                  
+                		  then ai&type = belowval;                                           
+                	       else if abs(randvar - belowrnd) >= abs(randvar - abovernd)            
+                		  then ai&type = aboveval;                                           
+                   end;                                                                          
+                end;                                                                             
+                                                                                                 
+              run;  
+              
+            %end; 	/* nearest neighbor method */                                                
+          %end;	/* &&obs&icat>0 */                                                           
+      %end;  	/* icat=0 to &&prp&type */                                                   
+                                                                                                 
+      data ff&type;                                                                              
+        set %do i=0 %to &&prp&type;                                                              
+             %if (&&obs&i >0 and (&&donobs&i<&&obs&i)) %then f&type&i(where=(i_&type=1));        
+            %end;                                                                                
+            ;                                                                                    
+        if ai&type < 0 then ltzero=1;                                                            
+      run;                                                                                       
+                                                                                                 
+      proc sort data=_impamt;                                                                    
+        by &hhid;                                                                                
+      run;                                                                                       
+      proc sort data=ff&type;                                                                    
+        by &hhid;                                                                                
+      run;                                                                                       
+                                                                                                 
+      ** merge imputed values back to original obs **;
+      data _newimp;                                                                              
+        merge _impamt                                                                            
+              ff&type (keep=&hhid ai&type);                                                               
+        by &hhid;   
+        if inf&type=2 then _cc&type=cc&type;                               
+        cc&type=cc&type/11;                                              
+      run;                                                                                       
+                                                                                                 
+      data workds;                                                                               
+        set _noasset _fitcont _newimp(in=innew) 
+            %if &&prp&type>0 %then _impctpt(in=innew);;                                                 
+                                                                                                 
+        if innew=0 then ai&type = a_&type;                                                       
+        else if cc&type = 0 then cc&type = input(put(ai&type,&type.rng.),2.);                    
+      run;   
+      
+      title2 ' ';                                                                                
+                                                                                                 
+      proc datasets library=work;                                                                
+        delete allmod fit: _noasset _fitcont _newimp _imp: ff&type                                        
+      	   &type: f&type: trunc tobit hiparam regparam brak: donor:                          
+      	   _by: _nonimp _proper FREQOUT postown prob ;                                                     
+      run;  
+      
+      ** so order will be the same no matter how many variables are imputed **;
+      proc sort data=workds;
+        by &hhid;
+      run;                                                                                    
+  %end;  ** assets which need imputations **;    
+  
+%MEND impamt;
+
+** print descriptive tables **;
+%MACRO tool(type);
+  ** Add some pre-imputation tables                                               
+  	- asset information given in raw data                                   
+  	- univariate description of continuous amounts given                    
+  	- results of ownership imputation                                       
+     **;     
+     
+  title2 "&type: Asset information reported";                                     
+  proc freq data=workds;                                                      
+    table inf&type                                                                
+    	/missing;                                                               
+    format inf&type amt.;                                                         
+  run;                                                                            
+                                                                                  
+  title2 "&type: Continuous values reported";                                     
+  proc univariate data=workds;                                                
+    var a_&type;                                                                  
+    where inf&type = 1;                                                           
+  run;                                                                            
+                                                                                  
+  title2 "&type: Ownership imputed";                                              
+  proc freq data=workds;                                                      
+    table d_&type;                                                                
+    where di&type=1;                                                              
+  run;                                                                            
+                                                                                  
+  ** Were all missing values indeed imputed? **                                   
+     For each asset (&type) amount, the observations with missing values needing  
+     imputation fall into the following groups:                                   
+     	-complete bracket given		(inf&type=2)                            
+          -incomplete bracket given	(inf&type=3)                            
+          -no value or bracket given	(inf&type=5)                            
+          -ownership imputed		(inf&type=7,9 and d_&type=1)              
+     For these observations, the pre-imputation amount variable is missing and    
+     imputation is indicated (a_&type=. and i_&type=1).                           
+                                                                                  
+     After amount imputation, imputation is still indicated for these observations
+     and the post-imputation amount variable should have a non-missing value      
+     (i_&type=1 and ai&type^=.).                                                  
+     **;                                                                          
+                                                                                  
+  title2 "&type: Missing values needing imputation";                              
+  proc summary data=workds;                                                   
+    where 2<=inf&type<=5 or (inf&type>=7 and d_&type=1);                           
+    output out=needimp;                                                           
+  run;                                                                            
+                                                                                  
+  proc print data=needimp (drop=_type_) label;                                    
+    id _freq_;                                                                    
+    label _freq_ = 'N';                                                           
+  run;                                                                            
+                                                                                  
+  title2 "&type: Values imputed";                                                 
+  proc summary data=workds;                                                   
+    where i_&type=1 and ai&type^=.;                                               
+    output out=imputed;                                                           
+  run;                                                                            
+                                                                                  
+  proc print data=imputed (drop=_type_) label;                                    
+    id _freq_;                                                                    
+    label _freq_ = 'N';                                                           
+  run;                                                                            
+                                                                                  
+  title2 "&type: missed imputations";                                             
+  proc print data=workds;                                                     
+    where i_&type=1 and ai&type=.;                                                
+  run;                                                                            
+                                                                                  
+                                                                                  
+                                                                                  
+  ** Did imputed values end up in the bracket that was reported? **      
+     For proper brackets that were originally given or were the result of         
+     improper bracket imputation, lower and upper bound variables are             
+     generated so that the imputed amount should be between those values          
+     (lo&type<=ai&type<=up&type)                                                  
+     **;                                                                          
+                                                                                  
+  data tool;                                                                      
+    set workds;                                                               
+                                                                                  
+    %if &&prp&type>0 %then %do;                                                        
+        distlook = cc&type;                                                       
+    %end;                                                                         
+                                                                                  
+    if inf&type in (2,3) then do;                                                 
+       bracket = cc&type;   
+       if inf&type=2 then inrange = (lo&type<=ai&type<=up&type);                                                  
+       else inrange = (_lo&type<=ai&type<=_up&type);                                    
+    end;                                                                          
+                                                                                  
+    if d_&type then imputed = (i_&type=1);                                        
+  run;                                                                            
+                                                                                  
+ %if &&prp&type>0 %then %do;                                                        
+  title2 "&type: Imputed values in reported bracket";                             
+  proc freq data=tool;                                                            
+    table bracket*inrange                                                         
+    	/missing list;                                                          
+    where inf&type in (2,3,4);                                                    
+    format bracket &type.tab. inrange ynfmt.;                                     
+  run;                                                                            
+  title2 "&type: Imputed values out of reported bracket";   
+  proc print data=tool;
+    where inrange=0;
+    var inf&type d_&type di&type i_&type _cc&type cc&type ci&type lo&type a_&type ai&type up&type _lo&type _up&type improces  ;
+  run;                        
+                                                                                  
+                                                                                  
+     ** Is the distribution of imputed values in a certain range about the same as **
+     the distribution of exactly reported amounts in that range?                  
+     A bracket number is assigned to exact amounts given which corresponds to     
+     bracketed answer ranges.  In dataset tool, I assigned amounts imputed from   
+     range cards to a proper bracket in order to look at one distribution of      
+     all imputations.                                                             
+     **;                                                                          
+  
+  proc tabulate data=tool noseps;                                                     
+    class distlook imputed;                                                         
+    var ai&type;                                                                      
+    tables distlook=' ' all='TOTAL', imputed*                                         
+             ai&type=' '*(n*f=5.0 pctn<distlook all>='%'*f=6.1 mean*f=9.1 std*f=9.1)  
+             /rts=18 box=distlook;                                                    
+    format distlook &type.tab. imputed impfmt.;                                       
+    label imputed = 'Continuous Amount'                                               
+          distlook = 'Bracket';                                                       
+    title2 "&type: Comparison of Distributions";                                      
+  run;                                                                              
+
+/*
+proc sort data=tool;
+  by distlook;
+run;
+title2 "&type: Comparison of distributions";
+proc ttest data=tool;
+  class imputed;
+  var ai&type;
+  by distlook;
+  where distlook;
+  format distlook &type.tab.;
+run;
+*/
+ %end;
+                                                                                  
+  ** What are the summary statistics for all imputed values combined? **;         
+                                                                                  
+  title2 "&type: All imputed values";                                             
+  proc univariate data=tool;                                                      
+    var ai&type;                                                                  
+    where i_&type = 1;                                                            
+  run;                                                                            
+   
+%MEND tool;
+
+
+
+
+
+
+

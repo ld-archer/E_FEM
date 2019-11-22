@@ -1,0 +1,50 @@
+\subsection{Model and estimation}
+Assume the latent model for $\mathbf{y}^*_i = (y^*_{i1},\ldots,y^*_{iM})'$,
+\[
+\mathbf{y}^*_i = \mathbf{\mu} + \mathbf{\varepsilon} _i, 
+\]
+where $\varepsilon_i$ is normally distributed with mean zero and covariance matrix $\mathbf{\Omega}$. 
+It will be useful to write the model as 
+\[
+\mathbf{y}^*_i = \mathbf{\mu} + \mathbf{L}_\Omega \mathbf{\eta}_i,
+\]
+where $\mathbf{L}_\Omega$ is a lower triangular matrix such that 
+$\mathbf{L}_\Omega \mathbf{L}_\Omega' = \mathbf{\Omega}$ and $\mathbf{\eta}_i = (\eta_{i1},\ldots,\eta_{iM})'$ 
+are standard normal. We observe $y_i = \Gamma(y^*_i)$ which is a non-invertible mapping for a subset 
+of the $M$ outcomes. For example, we have binary, ordered and censored outcomes for which integration 
+is necessary.
+
+The vector $\mathbf{\mu}$ can depend on some variables which have a stable distribution over time $\mathbf{z}_i$ 
+(say race, gender and education). This way, estimation preserves the correlation with these outcomes 
+without having to estimate their correlation with other outcomes. Hence, we can write 
+\[
+\mathbf{\mu}_i = \mathbf{z}_i \beta
+\]
+and the whole analysis is done conditional on $\mathbf{z}_i$.
+
+For binary and ordered outcomes, we fix $\Omega_{m,m}=1$ which fixes the scale. Also we fix the 
+location of the ordered models by fixing thresholds as $\tau_0 = -\infty$, $\tau_1 = 0$, $\tau_K = +\infty$, 
+where $K$ denotes the number of categories for a particular outcome. 
+We also fix to zero the correlation between selected outcomes (say earnings) and 
+their selection indicator. Hence, we consider two-part models for these outcomes. Because some parameters are 
+naturally bounded, we also re-parameterize the problem to guarantee an interior solution. In particular, we parameterize 
+\begin{align*}
+&\Omega_{m,m} = \exp(\delta_m), \mbox{   } m=m_0-1,\ldots,M \\
+&\Omega_{m,n} = \tanh(\xi_{m,n})\sqrt{\Omega_{m,m}\Omega_{m,n}}, \mbox{   } m,n=1,\ldots,N \\
+&\tau_{m,k} = \exp(\gamma_{m,k}) + \tau_{k-1}, \mbox{   } k=2,\ldots,K_m-1, m \mbox{ ordered}
+\end{align*}
+and estimate the $(\delta_{m,m}, \xi_{m,n}, \gamma_k)$ instead of the original parameters. 
+The parameter values are estimated using the \emph{cmp} package in Stata \citep{statacmp2011}.
+Table \ref{tab:latent_model_mean_est} gives parameter estimates for the indices while Table \ref{tab:latent_model_vcmat_est} 
+gives parameter estimates of the covariance matrix in the outcomes.
+
+
+%To apply trends to the future cohorts, the latent model is written as
+%\[
+%\mathbf{y}^*_i = \mathbf{\mu} + \mathbf{L}_\Omega \mathbf{\eta}_i.
+%\]
+%Each marginal has a mean change equal to $\mathrm{E}(\mathbf{y} \mid \mathbf{\mu}) = (1+\tau)g(\mathbf{\mu})$, where $\tau$ is the 
+%percent change in the outcome and $g()$ is a non-linear but monotone mapping. Since 
+%it is invertible, we can find the vector $\mathbf{\mu}^*$ where $\mathbf{\mu}^* = g^{-1}(\mathrm{E}(y \mid \mu)/(1+\tau))$. We use these new intercepts to simulate new outcomes. 
+
+% \todo : add an  example here for clarification

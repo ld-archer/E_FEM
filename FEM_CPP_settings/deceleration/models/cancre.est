@@ -1,0 +1,44 @@
+time_scaled_probit
+cancre
+4
+black	-.0688774
+hispan	-.1193958
+hsless	-.0119152
+college	.0485917
+male	.1512516
+lage65l	.0262135
+lage6574	.0239321
+lage75p	-.003337
+lsmoken	.0260179
+lwidowed	.0026111
+fhearte	.0652355
+fstroke	.032223
+fhibpe	.0517935
+fdiabe	-.0564872
+flunge	.096266
+fsmokev	.0853672
+fsmoken	.0595919
+fiadl1	-.1303456
+fadl12	.0800737
+fadl3	.1719258
+fwidowed	-.0365711
+fsingle	.1040682
+fwork	.0175707
+flogiearnx	.1191551
+fwlth_nonzero	-.0062296
+floghatotax	1.588285
+flogaime	.4146487
+flogq	-.6122478
+fshlt	-.0126521
+fanydb	.063618
+frdb_na_2	-.0190345
+frdb_na_3	-.0030078
+frdb_na_4	-.0483638
+fanydc	.1260925
+flogdcwlthx	-4.301745
+llogbmi_l30	-.0678077
+llogbmi_30p	.3705489
+flogbmi_l30	-.0187627
+flogbmi_30p	-.0714203
+logdeltaage	.4858782
+_cons	-3.99493

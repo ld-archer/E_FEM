@@ -1,0 +1,21 @@
+{smcl}
+{com}{sf}{ul off}probit
+hearte
+allvars_hearte{err}invalid syntax
+{txt}{search r(198):r(198);}
+
+{com}. foreach n in $bin_hlth{c -(}
+{txt}  2{com}. capt log close
+{txt}  3{com}. quietly{c -(}
+{txt}  4{com}. log using `n'.csv, replace
+{txt}  5{com}. noi di "probit"
+{txt}  6{com}. noi di "`n'"
+{txt}  7{com}. estimates use `n'
+{txt}  8{com}. local x = "allvars_`n'"
+{txt}  9{com}. foreach j in `x'{c -(}
+{txt} 10{com}. noi disp "`j'" "," _b[`j']
+{txt} 11{com}. {c )-}
+{txt} 12{com}. {c )-}
+{txt} 13{com}. {c )-}
+{smcl}
+{com}{sf}{ul off}

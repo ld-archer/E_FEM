@@ -1,0 +1,24 @@
+\subsection{Intervention Module}
+The intervention module can adjust characteristics of individuals when they are first read into the simulation ``init\_interventions'' or alter transitions within the 
+simulation ``interventions.''  At present, init\_interventions can act on chronic diseases, ADL$/$IADL status, program participation, and some demographic characteristics.  
+Interventions within the simulation can currently act on mortality, chronic diseases, and some program participation variables.
+
+Interventions can take several forms.  The most commonly used is an adjustment to a transition probability. One can also delay the assignment of a chronic condition or cure an existing 
+chronic condition.  Additional flexibility comes from selecting who is eligible for the intervention.  Some examples might help to make the interventions concrete.
+
+\begin{itemize}
+\item Example 1: Delay the enrollment into Social Security OASI by two years.  In this scenario claiming of Social Security benefits is transitioned as normal.  However, if a person is predicted to 
+claim their benefits, then that status is not immediately assigned, but is instead assigned two years later.
+
+\item Example 2: Cure hypertension for those with no other chronic diseases.  In this scenario any individual with hypertension (including those who have had hypertension for many years) is cured 
+(hypertension status is set to 0), as long as they do not have other chronic diseases.  This example uses the individual’s chronic disease status as the eligibility criteria for the intervention.
+
+\item Example 3: Reduce the incidence of hypertension for half of men aged 55 to 65 by 10\% in the first year of the simulation, gradually increasing the reduction to 20\% after 10 years.  This 
+example begins to show the flexibility in the intervention module.  The eligibility criteria are more complex (half of men in a specific age range are eligible) and the intervention 
+changes over time.  Mathematically, the intervention works by acting on the incidence probability, $\rho$. In the first year of the simulation, the probability is replaced by 
+ $\left(1-0.5*0.1\right)\rho=0.95\rho$.  The binary outcome is then assigned based on this new probability.  Thus, at the population level, there is a 5\% reduction in incidence for men aged 55 to 65, 
+as desired.  After 10 years, the probability for this eligible population becomes $\left(1-0.5*0.2\right)\rho=0.9\rho$.
+\end{itemize}
+
+More elaborate interventions can be programmed by the user.  
+

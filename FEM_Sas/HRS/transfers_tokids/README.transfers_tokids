@@ -1,0 +1,26 @@
+transfers_tokids: 
+   collect financial transfers to kids variables from count[yy]r files.
+   the count[yy]r files are precursors to the RAND Family data, not yet released.
+   they are respondent level.
+   Amounts in R* variables are for the couple. They will be divided in half for married individuals
+   in the analysis but are the household amount here.
+
+Program to run:
+
+transfers_tokids.sas
+	Include files:
+		[root]/fem_env.sas - file to set up libnames, fmt/mac locations 
+		
+	Input files:
+		/sch-stor1-a/data-library/public-data/HRS/Unrestricted/Sas/RANDFAM/count[yy]r.sas7bdat, where [yy] is 98-08
+		/sch-stor1-a/data-library/public-data/HRS/SAS/formats.sas7bcat [formats library]
+	
+	Output files:
+		[root]/input_data/transfers_tokids.sas7bdat
+		[root]/input_data/transfers_tokids.dta
+		
+	Key variables (* is the wave, 4-9; [yy] is year 98-08):
+		r*tcany		whether gave any money to kids
+		r*tcamt		amount given to kids (total over all kids)
+		h*cpl			whether a couple household
+		in[yy]		whether present at [yy] interview

@@ -1,0 +1,31 @@
+\subsection{External Validation}
+%NOTE: THIS SECTION NEEDS TO BE VALIDATED
+
+The external validation exercise compares FEM full population simulations beginning in 2004 to external sources.  Here we focus on per capita benefits received from 
+Social Security, Disability, and Supplemental Security Income, followed by Medicare and Medicaid.
+
+\subsubsection{Benefits from Social Security Administration}
+
+Conditional on a simulant receiving benefits, the FEM algorithmically assigns benefits for Old Age and Survivors, Supplemental Security Income, and Disability. Here, 
+we compare simulation results to SSA figures.
+
+For Old Age and Survivor benefits, we compare to the Social Security Administration’s December 2012 Monthly Statistical Snapshot.  Table 2 of that document indicates 
+that the average OASI monthly benefit was \$1194.  FEM forecasts \$1182 for the average beneficiary for 2012.  
+
+For Supplemental Security Income we compare to Table 3 of the December 2012 Monthly Statistical Snapshot, focusing on the 65 and older population, as that is the 
+only category that is directly comparable.  SSA reports that the average monthly benefit for December of 2012 was \$417.  FEM assigns \$415 to those receiving SSI.
+
+SSA does not report a disability figure that is directly comparable to FEM forecasts.  However, SSA reports average Disability benefits by age, as well as the 
+number of individuals receiving benefits at each age.  This allows us to construct the average benefit for workers 51 and older.  Based on this calculation, the 
+average disabled worker 51 and older received a benefit of \$1212 in December of 2012.  Spouses of disabled workers can also receive a benefit (SSA reports a 
+benefit of \$304 for spouses of disabled workers for all ages).  The 2012 FEM forecast for the average DI beneficiary, which includes both workers and 
+their spouses, is \$1102.  
+
+\subsubsection{Benefits from Medicare and Medicaid}
+
+For medical spending, we compare FEM forecasts in 2010 to National Health Expenditure Accounts measures from 2010, the most recent year for which these data 
+are available.  NHEA reports total amounts by age range, which we then convert to per capita measures using the 2010 Census.  We focus on the 65-84 and 85 plus 
+populations, as they are directly comparable to FEM forecasts.  We also aggregate the two groups to produce a 65 plus average.  FEM is similar to NHEA for the 
+65 plus population for Medicare (\$10473 for NHEA, \$10494 for FEM) and total medical spending (\$19265 for NHEA, \$19056 for FEM).  FEM estimates are higher for 
+Medicaid spending (\$2141 for NHEA, \$2818 for FEM).
+

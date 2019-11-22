@@ -1,0 +1,31 @@
+regress
+totmd_mcbs
+age75p	46.20951
+age75l	226.3571
+male	-420.476
+black	1899.777
+hispan	325.6281
+hsless	-264.3142
+college	1001.402
+widowed	-480.6442
+single	-787.2566
+cancre	3821.663
+diabe	831.291
+hibpe	1038.177
+hearte	3218.548
+lunge	2347.488
+stroke	3529.22
+nhmliv	46610.8
+adl3	8153.812
+alzhmr	171.648
+adl3_alzhmr	1627.851
+diclaim	4033.143
+died	17353.75
+diabe_hearte	3112.122
+diabe_hibpe	2600.164
+hibpe_hearte	110.9459
+hibpe_stroke	-1019.286
+diclaim_died	2449.764
+diclaim_nhmliv	2543.914
+died_nhmliv	-39417.84
+_cons	-10224.24

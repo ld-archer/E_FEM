@@ -1,0 +1,27 @@
+time_scaled_probit
+died
+2
+male	.3114024
+hsless	.1377597
+college	.0131912
+l2age65l	.0163529
+l2age6574	.0329218
+l2age75p	.0451535
+l2cancre	.4574518
+l2diabe	.0648362
+l2hearte	.2307067
+l2hibpe	-.0011076
+l2lunge	.2623499
+l2stroke	.160097
+l2adl1	.0615238
+l2adl2	.0700039
+l2adl3p	.0128319
+l2iadl1	.2096924
+l2iadl2p	.3650527
+l2logbmi	-.2422728
+l2smokev	.0779363
+l2smoken	.2408403
+l2drink	-.1018223
+l2drinkd_e	.0049252
+l2modex_reg	-.3138298
+_cons	-2.759716

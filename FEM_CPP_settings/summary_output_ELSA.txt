@@ -1,0 +1,214 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+m_startpop_all,startpop (millions): Sample = all,weight,sum,0.000001,1,l2died == 0
+m_startpop_m,startpop (millions): Sample = male,weight,sum,0.000001,1,l2died == 0& male == 1
+m_startpop_f,startpop (millions): Sample = female,weight,sum,0.000001,1,l2died == 0& male == 0
+m_endpop_all,endpop (millions): Sample = all,weight,sum,0.000001,1,died == 0
+m_endpop_m,endpop (millions): Sample = male,weight,sum,0.000001,1,died == 0& male == 1
+m_endpop_f,endpop (millions): Sample = female,weight,sum,0.000001,1,died == 0& male == 0
+p_diabe_all,Prevalence of diabe: Sample= all,diabe,mean,1,weight,l2died==0
+p_diabe_m,Prevalence of diabe: Sample= male,diabe,mean,1,weight,l2died==0& male == 1
+p_diabe_f,Prevalence of diabe: Sample= female,diabe,mean,1,weight,l2died==0& male == 0
+i_diabe_all,Incidence of diabe: Sample= all,diabe,mean,1,weight,l2died==0&l2diabe==0
+i_diabe_m,Incidence of diabe: Sample= male,diabe,mean,1,weight,l2died==0&l2diabe==0& male == 1
+i_diabe_f,Incidence of diabe: Sample= female,diabe,mean,1,weight,l2died==0&l2diabe==0& male == 0
+n_diabe_all,Sum of diabe: Sample= all,diabe,sum,1,weight,l2died==0
+n_diabe_m,Sum of diabe: Sample= male,diabe,sum,1,weight,l2died==0& male == 1
+n_diabe_f,Sum of diabe: Sample= female,diabe,sum,1,weight,l2died==0& male == 0
+p_hibpe_all,Prevalence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0
+p_hibpe_m,Prevalence of hibpe: Sample= male,hibpe,mean,1,weight,l2died==0& male == 1
+p_hibpe_f,Prevalence of hibpe: Sample= female,hibpe,mean,1,weight,l2died==0& male == 0
+i_hibpe_all,Incidence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0&l2hibpe==0
+i_hibpe_m,Incidence of hibpe: Sample= male,hibpe,mean,1,weight,l2died==0&l2hibpe==0& male == 1
+i_hibpe_f,Incidence of hibpe: Sample= female,hibpe,mean,1,weight,l2died==0&l2hibpe==0& male == 0
+n_hibpe_all,Sum of hibpe: Sample= all,hibpe,sum,1,weight,l2died==0
+n_hibpe_m,Sum of hibpe: Sample= male,hibpe,sum,1,weight,l2died==0& male == 1
+n_hibpe_f,Sum of hibpe: Sample= female,hibpe,sum,1,weight,l2died==0& male == 0
+p_lunge_all,Prevalence of lunge: Sample= all,lunge,mean,1,weight,l2died==0
+p_lunge_m,Prevalence of lunge: Sample= male,lunge,mean,1,weight,l2died==0& male == 1
+p_lunge_f,Prevalence of lunge: Sample= female,lunge,mean,1,weight,l2died==0& male == 0
+i_lunge_all,Incidence of lunge: Sample= all,lunge,mean,1,weight,l2died==0&l2lunge==0
+i_lunge_m,Incidence of lunge: Sample= male,lunge,mean,1,weight,l2died==0&l2lunge==0& male == 1
+i_lunge_f,Incidence of lunge: Sample= female,lunge,mean,1,weight,l2died==0&l2lunge==0& male == 0
+n_lunge_all,Sum of lunge: Sample= all,lunge,sum,1,weight,l2died==0
+n_lunge_m,Sum of lunge: Sample= male,lunge,sum,1,weight,l2died==0& male == 1
+n_lunge_f,Sum of lunge: Sample= female,lunge,sum,1,weight,l2died==0& male == 0
+p_stroke_all,Prevalence of stroke: Sample= all,stroke,mean,1,weight,l2died==0
+p_stroke_m,Prevalence of stroke: Sample= male,stroke,mean,1,weight,l2died==0& male == 1
+p_stroke_f,Prevalence of stroke: Sample= female,stroke,mean,1,weight,l2died==0& male == 0
+i_stroke_all,Incidence of stroke: Sample= all,stroke,mean,1,weight,l2died==0&l2stroke==0
+i_stroke_m,Incidence of stroke: Sample= male,stroke,mean,1,weight,l2died==0&l2stroke==0& male == 1
+i_stroke_f,Incidence of stroke: Sample= female,stroke,mean,1,weight,l2died==0&l2stroke==0& male == 0
+n_stroke_all,Sum of stroke: Sample= all,stroke,sum,1,weight,l2died==0
+n_stroke_m,Sum of stroke: Sample= male,stroke,sum,1,weight,l2died==0& male == 1
+n_stroke_f,Sum of stroke: Sample= female,stroke,sum,1,weight,l2died==0& male == 0
+p_hearte_all,Prevalence of hearte: Sample= all,hearte,mean,1,weight,l2died==0
+p_hearte_m,Prevalence of hearte: Sample= male,hearte,mean,1,weight,l2died==0& male == 1
+p_hearte_f,Prevalence of hearte: Sample= female,hearte,mean,1,weight,l2died==0& male == 0
+i_hearte_all,Incidence of hearte: Sample= all,hearte,mean,1,weight,l2died==0&l2hearte==0
+i_hearte_m,Incidence of hearte: Sample= male,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 1
+i_hearte_f,Incidence of hearte: Sample= female,hearte,mean,1,weight,l2died==0&l2hearte==0& male == 0
+n_hearte_all,Sum of hearte: Sample= all,hearte,sum,1,weight,l2died==0
+n_hearte_m,Sum of hearte: Sample= male,hearte,sum,1,weight,l2died==0& male == 1
+n_hearte_f,Sum of hearte: Sample= female,hearte,sum,1,weight,l2died==0& male == 0
+p_cancre_all,Prevalence of cancre: Sample= all,cancre,mean,1,weight,l2died==0
+p_cancre_m,Prevalence of cancre: Sample= male,cancre,mean,1,weight,l2died==0& male == 1
+p_cancre_f,Prevalence of cancre: Sample= female,cancre,mean,1,weight,l2died==0& male == 0
+i_cancre_all,Incidence of cancre: Sample= all,cancre,mean,1,weight,l2died==0&l2cancre==0
+i_cancre_m,Incidence of cancre: Sample= male,cancre,mean,1,weight,l2died==0&l2cancre==0& male == 1
+i_cancre_f,Incidence of cancre: Sample= female,cancre,mean,1,weight,l2died==0&l2cancre==0& male == 0
+n_cancre_all,Sum of cancre: Sample= all,cancre,sum,1,weight,l2died==0
+n_cancre_m,Sum of cancre: Sample= male,cancre,sum,1,weight,l2died==0& male == 1
+n_cancre_f,Sum of cancre: Sample= female,cancre,sum,1,weight,l2died==0& male == 0
+p_arthre_all,Prevalence of arthre: Sample= all,arthre,mean,1,weight,l2died==0
+p_arthre_m,Prevalence of arthre: Sample= male,arthre,mean,1,weight,l2died==0& male == 1
+p_arthre_f,Prevalence of arthre: Sample= female,arthre,mean,1,weight,l2died==0& male == 0
+i_arthre_all,Incidence of arthre: Sample= all,arthre,mean,1,weight,l2died==0&l2arthre==0
+i_arthre_m,Incidence of arthre: Sample= male,arthre,mean,1,weight,l2died==0&l2arthre==0& male == 1
+i_arthre_f,Incidence of arthre: Sample= female,arthre,mean,1,weight,l2died==0&l2arthre==0& male == 0
+n_arthre_all,Sum of arthre: Sample= all,arthre,sum,1,weight,l2died==0
+n_arthre_m,Sum of arthre: Sample= male,arthre,sum,1,weight,l2died==0& male == 1
+n_arthre_f,Sum of arthre: Sample= female,arthre,sum,1,weight,l2died==0& male == 0
+p_psyche_all,Prevalence of psyche: Sample= all,psyche,mean,1,weight,l2died==0
+p_psyche_m,Prevalence of psyche: Sample= male,psyche,mean,1,weight,l2died==0& male == 1
+p_psyche_f,Prevalence of psyche: Sample= female,psyche,mean,1,weight,l2died==0& male == 0
+i_psyche_all,Incidence of psyche: Sample= all,psyche,mean,1,weight,l2died==0&l2psyche==0
+i_psyche_m,Incidence of psyche: Sample= male,psyche,mean,1,weight,l2died==0&l2psyche==0& male == 1
+i_psyche_f,Incidence of psyche: Sample= female,psyche,mean,1,weight,l2died==0&l2psyche==0& male == 0
+n_psyche_all,Sum of psyche: Sample= all,psyche,sum,1,weight,l2died==0
+n_psyche_m,Sum of psyche: Sample= male,psyche,sum,1,weight,l2died==0& male == 1
+n_psyche_f,Sum of psyche: Sample= female,psyche,sum,1,weight,l2died==0& male == 0
+p_asthmae_all,Prevalence of asthmae: Sample= all,asthmae,mean,1,weight,l2died==0
+p_asthmae_m,Prevalence of asthmae: Sample= male,asthmae,mean,1,weight,l2died==0& male == 1
+p_asthmae_f,Prevalence of asthmae: Sample= female,asthmae,mean,1,weight,l2died==0& male == 0
+i_asthmae_all,Incidence of asthmae: Sample= all,asthmae,mean,1,weight,l2died==0&l2asthmae==0
+i_asthmae_m,Incidence of asthmae: Sample= male,asthmae,mean,1,weight,l2died==0&l2asthmae==0& male == 1
+i_asthmae_f,Incidence of asthmae: Sample= female,asthmae,mean,1,weight,l2died==0&l2asthmae==0& male == 0
+n_asthmae_all,Sum of asthmae: Sample= all,asthmae,sum,1,weight,l2died==0
+n_asthmae_m,Sum of asthmae: Sample= male,asthmae,sum,1,weight,l2died==0& male == 1
+n_asthmae_f,Sum of asthmae: Sample= female,asthmae,sum,1,weight,l2died==0& male == 0
+p_parkine_all,Prevalence of parkine: Sample= all,parkine,mean,1,weight,l2died==0
+p_parkine_m,Prevalence of parkine: Sample= male,parkine,mean,1,weight,l2died==0& male == 1
+p_parkine_f,Prevalence of parkine: Sample= female,parkine,mean,1,weight,l2died==0& male == 0
+i_parkine_all,Incidence of parkine: Sample= all,parkine,mean,1,weight,l2died==0&l2parkine==0
+i_parkine_m,Incidence of parkine: Sample= male,parkine,mean,1,weight,l2died==0&l2parkine==0& male == 1
+i_parkine_f,Incidence of parkine: Sample= female,parkine,mean,1,weight,l2died==0&l2parkine==0& male == 0
+n_parkine_all,Sum of parkine: Sample= all,parkine,sum,1,weight,l2died==0
+n_parkine_m,Sum of parkine: Sample= male,parkine,sum,1,weight,l2died==0& male == 1
+n_parkine_f,Sum of parkine: Sample= female,parkine,sum,1,weight,l2died==0& male == 0
+i_died_all,Incidence of died: Sample= all,died,mean,1,weight,l2died==0&l2died==0
+i_died_m,Incidence of died: Sample= male,died,mean,1,weight,l2died==0&l2died==0& male == 1
+i_died_f,Incidence of died: Sample= female,died,mean,1,weight,l2died==0&l2died==0& male == 0
+n_died_all,Sum of died: Sample= all,died,sum,1,weight,l2died==0
+n_died_m,Sum of died: Sample= male,died,sum,1,weight,l2died==0& male == 1
+n_died_f,Sum of died: Sample= female,died,sum,1,weight,l2died==0& male == 0
+a_bmi_all,Average of bmi: Sample= all,bmi,mean,1,weight,l2died==0
+a_bmi_m,Average of bmi: Sample= male,bmi,mean,1,weight,l2died==0& male == 1
+a_bmi_f,Average of bmi: Sample= female,bmi,mean,1,weight,l2died==0& male == 0
+q05_bmi_all,05 percentile of bmi: Sample = all,bmi,quantile-.05,1,weight,l2died==0
+q05_bmi_m,05 percentile of bmi: Sample = male,bmi,quantile-.05,1,weight,l2died==0& male == 1
+q05_bmi_f,05 percentile of bmi: Sample = female,bmi,quantile-.05,1,weight,l2died==0& male == 0
+q50_bmi_all,50 percentile of bmi: Sample = all,bmi,quantile-.50,1,weight,l2died==0
+q50_bmi_m,50 percentile of bmi: Sample = male,bmi,quantile-.50,1,weight,l2died==0& male == 1
+q50_bmi_f,50 percentile of bmi: Sample = female,bmi,quantile-.50,1,weight,l2died==0& male == 0
+q95_bmi_all,95 percentile of bmi: Sample = all,bmi,quantile-.95,1,weight,l2died==0
+q95_bmi_m,95 percentile of bmi: Sample = male,bmi,quantile-.95,1,weight,l2died==0& male == 1
+q95_bmi_f,95 percentile of bmi: Sample = female,bmi,quantile-.95,1,weight,l2died==0& male == 0
+p_adl1_all,Prevalence of adl1: Sample= all,adl1,mean,1,weight,l2died==0
+p_adl1_m,Prevalence of adl1: Sample= male,adl1,mean,1,weight,l2died==0& male == 1
+p_adl1_f,Prevalence of adl1: Sample= female,adl1,mean,1,weight,l2died==0& male == 0
+p_adl2_all,Prevalence of adl2: Sample= all,adl2,mean,1,weight,l2died==0
+p_adl2_m,Prevalence of adl2: Sample= male,adl2,mean,1,weight,l2died==0& male == 1
+p_adl2_f,Prevalence of adl2: Sample= female,adl2,mean,1,weight,l2died==0& male == 0
+p_adl3p_all,Prevalence of adl3p: Sample= all,adl3p,mean,1,weight,l2died==0
+p_adl3p_m,Prevalence of adl3p: Sample= male,adl3p,mean,1,weight,l2died==0& male == 1
+p_adl3p_f,Prevalence of adl3p: Sample= female,adl3p,mean,1,weight,l2died==0& male == 0
+p_iadl1_all,Prevalence of iadl1: Sample= all,iadl1,mean,1,weight,l2died==0
+p_iadl1_m,Prevalence of iadl1: Sample= male,iadl1,mean,1,weight,l2died==0& male == 1
+p_iadl1_f,Prevalence of iadl1: Sample= female,iadl1,mean,1,weight,l2died==0& male == 0
+p_iadl2p_all,Prevalence of iadl2p: Sample= all,iadl2p,mean,1,weight,l2died==0
+p_iadl2p_m,Prevalence of iadl2p: Sample= male,iadl2p,mean,1,weight,l2died==0& male == 1
+p_iadl2p_f,Prevalence of iadl2p: Sample= female,iadl2p,mean,1,weight,l2died==0& male == 0
+a_age_all,Average of age: Sample= all,age,mean,1,weight,l2died==0
+a_age_m,Average of age: Sample= male,age,mean,1,weight,l2died==0& male == 1
+a_age_f,Average of age: Sample= female,age,mean,1,weight,l2died==0& male == 0
+d_age_all,Average age at death: Sample= all,age,mean,1,weight,l2died==0&died==1
+d_age_m,Average age at death: Sample= male,age,mean,1,weight,l2died==0&died==1& male == 1
+d_age_f,Average age at death: Sample= female,age,mean,1,weight,l2died==0&died==1& male == 0
+p_smoken_all,Prevalence of smoken: Sample= all,smoken,mean,1,weight,l2died==0
+p_smoken_m,Prevalence of smoken: Sample= male,smoken,mean,1,weight,l2died==0& male == 1
+p_smoken_f,Prevalence of smoken: Sample= female,smoken,mean,1,weight,l2died==0& male == 0
+i_smoken_all,Incidence of smoken: Sample= all,smoken,mean,1,weight,l2died==0&l2smoken==0
+i_smoken_m,Incidence of smoken: Sample= male,smoken,mean,1,weight,l2died==0&l2smoken==0& male == 1
+i_smoken_f,Incidence of smoken: Sample= female,smoken,mean,1,weight,l2died==0&l2smoken==0& male == 0
+n_smoken_all,Sum of smoken: Sample= all,smoken,sum,1,weight,l2died==0
+n_smoken_m,Sum of smoken: Sample= male,smoken,sum,1,weight,l2died==0& male == 1
+n_smoken_f,Sum of smoken: Sample= female,smoken,sum,1,weight,l2died==0& male == 0
+p_smokev_all,Prevalence of smokev: Sample= all,smokev,mean,1,weight,l2died==0
+p_smokev_m,Prevalence of smokev: Sample= male,smokev,mean,1,weight,l2died==0& male == 1
+p_smokev_f,Prevalence of smokev: Sample= female,smokev,mean,1,weight,l2died==0& male == 0
+i_smokev_all,Incidence of smokev: Sample= all,smokev,mean,1,weight,l2died==0&l2smokev==0
+i_smokev_m,Incidence of smokev: Sample= male,smokev,mean,1,weight,l2died==0&l2smokev==0& male == 1
+i_smokev_f,Incidence of smokev: Sample= female,smokev,mean,1,weight,l2died==0&l2smokev==0& male == 0
+n_smokev_all,Sum of smokev: Sample= all,smokev,sum,1,weight,l2died==0
+n_smokev_m,Sum of smokev: Sample= male,smokev,sum,1,weight,l2died==0& male == 1
+n_smokev_f,Sum of smokev: Sample= female,smokev,sum,1,weight,l2died==0& male == 0
+p_work_all,Prevalence of work: Sample= all,work,mean,1,weight,l2died==0
+p_work_m,Prevalence of work: Sample= male,work,mean,1,weight,l2died==0& male == 1
+p_work_f,Prevalence of work: Sample= female,work,mean,1,weight,l2died==0& male == 0
+n_work_all,Sum of work: Sample= all,work,sum,1,weight,l2died==0
+n_work_m,Sum of work: Sample= male,work,sum,1,weight,l2died==0& male == 1
+n_work_f,Sum of work: Sample= female,work,sum,1,weight,l2died==0& male == 0
+p_hlthlm_all,Prevalence of hlthlm: Sample= all,hlthlm,mean,1,weight,l2died==0
+p_hlthlm_m,Prevalence of hlthlm: Sample= male,hlthlm,mean,1,weight,l2died==0& male == 1
+p_hlthlm_f,Prevalence of hlthlm: Sample= female,hlthlm,mean,1,weight,l2died==0& male == 0
+n_hlthlm_all,Sum of hlthlm: Sample= all,hlthlm,sum,1,weight,l2died==0
+n_hlthlm_m,Sum of hlthlm: Sample= male,hlthlm,sum,1,weight,l2died==0& male == 1
+n_hlthlm_f,Sum of hlthlm: Sample= female,hlthlm,sum,1,weight,l2died==0& male == 0
+p_retemp_all,Prevalence of retemp: Sample= all,retemp,mean,1,weight,l2died==0
+p_retemp_m,Prevalence of retemp: Sample= male,retemp,mean,1,weight,l2died==0& male == 1
+p_retemp_f,Prevalence of retemp: Sample= female,retemp,mean,1,weight,l2died==0& male == 0
+i_retemp_all,Incidence of retemp: Sample= all,retemp,mean,1,weight,l2died==0&l2retemp==0
+i_retemp_m,Incidence of retemp: Sample= male,retemp,mean,1,weight,l2died==0&l2retemp==0& male == 1
+i_retemp_f,Incidence of retemp: Sample= female,retemp,mean,1,weight,l2died==0&l2retemp==0& male == 0
+n_retemp_all,Sum of retemp: Sample= all,retemp,sum,1,weight,l2died==0
+n_retemp_m,Sum of retemp: Sample= male,retemp,sum,1,weight,l2died==0& male == 1
+n_retemp_f,Sum of retemp: Sample= female,retemp,sum,1,weight,l2died==0& male == 0
+a_retage_all,Average of retage: Sample= all,retage,mean,1,weight,l2died==0
+a_retage_m,Average of retage: Sample= male,retage,mean,1,weight,l2died==0& male == 1
+a_retage_f,Average of retage: Sample= female,retage,mean,1,weight,l2died==0& male == 0
+t_ipubpen_all,Sum of ipubpen: Sample= all,ipubpen,sum,1,weight,l2died==0
+t_ipubpen_m,Sum of ipubpen: Sample= male,ipubpen,sum,1,weight,l2died==0& male == 1
+t_ipubpen_f,Sum of ipubpen: Sample= female,ipubpen,sum,1,weight,l2died==0& male == 0
+a_ipubpen_all,Average of ipubpen: Sample= all,ipubpen,mean,1,weight,l2died==0
+a_ipubpen_m,Average of ipubpen: Sample= male,ipubpen,mean,1,weight,l2died==0& male == 1
+a_ipubpen_f,Average of ipubpen: Sample= female,ipubpen,mean,1,weight,l2died==0& male == 0
+t_atotf_all,Sum of atotf: Sample= all,atotf,sum,1,weight,l2died==0
+t_atotf_m,Sum of atotf: Sample= male,atotf,sum,1,weight,l2died==0& male == 1
+t_atotf_f,Sum of atotf: Sample= female,atotf,sum,1,weight,l2died==0& male == 0
+a_atotf_all,Average of atotf: Sample= all,atotf,mean,1,weight,l2died==0
+a_atotf_m,Average of atotf: Sample= male,atotf,mean,1,weight,l2died==0& male == 1
+a_atotf_f,Average of atotf: Sample= female,atotf,mean,1,weight,l2died==0& male == 0
+t_itearn_all,Sum of itearn: Sample= all,itearn,sum,1,weight,l2died==0
+t_itearn_m,Sum of itearn: Sample= male,itearn,sum,1,weight,l2died==0& male == 1
+t_itearn_f,Sum of itearn: Sample= female,itearn,sum,1,weight,l2died==0& male == 0
+a_itearn_all,Average of itearn: Sample= all,itearn,mean,1,weight,l2died==0
+a_itearn_m,Average of itearn: Sample= male,itearn,mean,1,weight,l2died==0& male == 1
+a_itearn_f,Average of itearn: Sample= female,itearn,mean,1,weight,l2died==0& male == 0
+p_drink_all,Prevalence of drink: Sample= all,drink,mean,1,weight,l2died==0
+p_drink_m,Prevalence of drink: Sample= male,drink,mean,1,weight,l2died==0& male == 1
+p_drink_f,Prevalence of drink: Sample= female,drink,mean,1,weight,l2died==0& male == 0
+i_drink_all,Incidence of drink: Sample= all,drink,mean,1,weight,l2died==0&l2drink==0
+i_drink_m,Incidence of drink: Sample= male,drink,mean,1,weight,l2died==0&l2drink==0& male == 1
+i_drink_f,Incidence of drink: Sample= female,drink,mean,1,weight,l2died==0&l2drink==0& male == 0
+n_drink_all,Sum of drink: Sample= all,drink,sum,1,weight,l2died==0
+n_drink_m,Sum of drink: Sample= male,drink,sum,1,weight,l2died==0& male == 1
+n_drink_f,Sum of drink: Sample= female,drink,sum,1,weight,l2died==0& male == 0
+a_drinkd_e_all,Average of drinkd_e: Sample= all,drinkd_e,mean,1,weight,l2died==0
+a_drinkd_e_m,Average of drinkd_e: Sample= male,drinkd_e,mean,1,weight,l2died==0& male == 1
+a_drinkd_e_f,Average of drinkd_e: Sample= female,drinkd_e,mean,1,weight,l2died==0& male == 0
+p_mdactx_e_all,Prevalence of mdactx_e: Sample= all,mdactx_e,mean,1,weight,l2died==0
+p_mdactx_e_m,Prevalence of mdactx_e: Sample= male,mdactx_e,mean,1,weight,l2died==0& male == 1
+p_mdactx_e_f,Prevalence of mdactx_e: Sample= female,mdactx_e,mean,1,weight,l2died==0& male == 0
+a_mdactx_e_all,Average of mdactx_e: Sample= all,mdactx_e,mean,1,weight,l2died==0
+a_mdactx_e_m,Average of mdactx_e: Sample= male,mdactx_e,mean,1,weight,l2died==0& male == 1
+a_mdactx_e_f,Average of mdactx_e: Sample= female,mdactx_e,mean,1,weight,l2died==0& male == 0

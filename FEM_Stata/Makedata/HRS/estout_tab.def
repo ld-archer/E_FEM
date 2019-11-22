@@ -1,0 +1,107 @@
+*! estout_tab.def, version 1.07, Ben Jann, 21nov2004
+*!  -estout- default settings: tab
+
+// comment or uncomment lines and replace "[...]" with the desired 
+// option's specifications
+
+// How to specify comments in this file:
+// - empty lines and lines beginning with * will be ignored
+// - // at the beginning of the line or preceded by one or more blanks 
+//   indicates that the rest of the line be ignored
+// - /// preceded by one or more blanks indicates that the rest of the line 
+//   be ignored and the next line be joined with the current line (line break)
+// - do NOT use the usual /* and */ comment delimiters
+
+*cells        [...]       //specify the array without suboptions, e.g.: b se
+
+*b_star       star        //a similar set of suboptions may be specified for 
+*b_fmt        [...]       //all other parameter statistics
+*b_label      [...]
+*b_par        [...]
+*b_keep       [...]
+*b_drop       [...]
+*b_pattern    [...]
+
+*t_abs              abs
+
+*stats              [...] //specify the scalar list without suboptions
+*statsfmt           [...]
+*statslabels        [...]
+*statslabelsnone    none
+*statslabelsprefix  [...]
+*statslabelssuffix  [...]
+*statslabelsbegin   [...]
+*statslabelsend     [...]
+statslabelslast    last
+*statsstar          [...]
+
+*starlevels  * 0.05 ** 0.01 *** 0.001
+*stardetach  stardetach
+
+*legend      legend
+
+*equations   [...]
+*keep        [...]
+*drop        [...]
+
+*unstack     unstack
+
+*level       [...]
+
+*eform       [...]        //specify "eform" (without quotes) or a pattern of 0's and 1's
+
+*margin      [...]        //specify one of: margin, u, c, p 
+discrete    " (d)" marginals for discrete change of dummy variable from 0 to 1
+*meqs        [...]
+
+*label       label
+
+*mlabels            [...] //a similar set of suboptions may be specified 
+*mlabelsnone        none  //for mgroups, collabels and eqlabels
+*mlabelsprefix      [...]
+*mlabelssuffix      [...]
+*mlabelsspan        span
+*mlabelsbegin       [...]
+*mlabelsend         [...]
+*mlabelserepeat     [...]
+
+*mlabelsnumbers     numbers
+*mlabelsdepvars     depvars
+
+*mgroupspattern     [...]
+
+*varlabels          [...]
+*varlabelsnone      none
+*varlabelsprefix    [...]
+*varlabelssuffix    [...]
+*varlabelsbegin     [...]
+*varlabelsend       [...]
+*varlabelsblist     [...]
+*varlabelselist     [...]
+varlabelslast      last
+
+varwidth    0
+modelwidth  0
+
+*abbrev      abbrev
+
+*begin       [...]
+delimiter   _tab
+*end         [...]
+
+*dmarker     [...]
+*msign       [...]
+lz          lz
+
+*prehead     [...]
+*posthead    [...]
+*prefoot     [...]
+*postfoot    [...]
+
+*substitute  [...]
+
+type        type
+*showtabs    showtabs
+
+*replace     replace
+*append      append

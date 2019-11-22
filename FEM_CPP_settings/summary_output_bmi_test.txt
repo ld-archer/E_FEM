@@ -1,0 +1,74 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+end_pop,Total population (million),weight,sum,0.000001,1,died == 0
+death_rate,Percent Died,died,mean,100,weight,ldied == 0
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+pop_healthy,Population that is healthy (no IADLs or ADLs and not in a nursing home) (millions),weight,sum,0.000001,1,iadl1 ==0 & adl12 == 0 & adl3 == 0 & nhmliv == 0 & died == 0
+pop_iadl1,Population with 1 IADL (millions),weight,sum,0.000001,1,iadl1 ==1 & adl12 == 0 & adl3 == 0 & nhmliv == 0 & died == 0
+pop_adl12,Population with 1 or 2 ADLs (millions),weight,sum,0.000001,1,iadl1 ==0 & adl12 == 1 & adl3 == 0 & nhmliv == 0 & died == 0
+pop_adl3,Population with 3+ ADLs (millions),weight,sum,0.000001,1,iadl1 ==0 & adl12 == 0 & adl3 == 1 & nhmliv == 0 & died == 0
+pop_disability,Population that is disabled (any IADLs or ADLs or Nursing Home) (millions),weight,sum,0.000001,1,not(iadl1 ==0 & adl12 == 0 & adl3 == 0 & nhmliv == 0) & died == 0
+pop_nhm,Population that is in a nursing home,weight,sum,0.000001,1,nhmliv == 1 & ldied == 0
+pop_diclaim,Population that is claiming DI (millions),weight,sum,0.000001,1,diclaim == 1 & died == 0
+obese, Prevelance of Obesity (BMI >= 30),obese,mean,1,weight,died == 0
+obese_1, Prevelance of Obesity 1 (35 > BMI >= 30),obese_1,mean,1,weight,died == 0
+obese_2, Prevelance of Obesity 2 (40 > BMI >= 35),obese_2,mean,1,weight,died == 0
+obese_3, Prevelance of Obesity 3 (BMI >= 40),obese_3,mean,1,weight,died == 0
+obese_incoming, Prevelance of Obesity (BMI >= 30),obese,mean,1,weight,died == 0 & entry == year
+obese_1_incoming, Prevelance of Obesity 1 (35 > BMI >= 30),obese_1,mean,1,weight,died== 0 & entry == year
+obese_2_incoming, Prevelance of Obesity 2 (40 > BMI >= 35),obese_2,mean,1,weight,died== 0 & entry == year
+obese_3_incoming, Prevelance of Obesity 3 (BMI >= 40),obese_3,mean,1,weight,died == 0 & entry == year
+bs_treated_frac, Fraction Elig Treated with Lap Band,bs_treated,mean,1,weight, died == 0 & lage >= 50 & lage <= 60 & (((lhearte + ldiabe + lhibpe + lstroke + lcancre + llunge) > 0 & lobese_2) | lobese_3 | bs_treated)
+bs_treated_tot, # People Treated with Lap Band,bs_treated,sum,1,weight, died == 0
+cancre,Prevelance of Cancer,cancre,mean,1,weight,died == 0
+diabe,Prevelance of Diabetes,diabe,mean,1,weight,died == 0
+hearte,Prevelance of Heart Disease,hearte,mean,1,weight,died == 0
+hibpe,Prevelance of Hypertension,hibpe,mean,1,weight,died == 0
+lunge,Prevelance of Lung Disease,lunge,mean,1,weight,died == 0
+stroke,Prevelance of Stroke,stroke,mean,1,weight,died == 0
+anycond,Prevelance of Any Health Condition,anycond,mean,1,weight,died == 0
+cond3p,Prevelance of 3 or more Health Conditions,cond3p,mean,1,weight,died == 0
+iadl1,Prevelance of 1+ IADL,iadl1,mean,1,weight,died == 0
+adl12,Prevelance of 1 or 2 ADLs,adl12,mean,1,weight,died == 0
+adl3,Prevelance of 3+ ADLs,adl3,mean,1,weight,died == 0
+nhmliv,Prevelance of In a Nursing Home,nhmliv,mean,1,weight,died == 0
+overwt,Prevelance of Overweight,overwt,mean,1,weight,died == 0
+smokev,Prevelance of Smoke Ever,smokev,mean,1,weight,died == 0
+smoken,Prevelance of Smoke Now,smoken,mean,1,weight,died == 0
+wlth_nonzero,Prevelance of Non-zero Wealth,wlth_nonzero,mean,1,weight,died == 0
+died,Mortality rate,died,mean,1,weight,ldied == 0 
+work,Fraction working among those younger than 75,work,mean,1,weight,died == 0 & age < 75
+pop_work,Population working among those younger than 75,work,sum,0.000001,weight,died == 0 & age < 75
+ry_earn,Average earnings for those younger than 75,ry_earn,mean,1,weight,died == 0 & age < 75 & work == 1
+ttl_earn,Total earnings for those younger than 75,ry_earn,sum,0.000000001,weight,died == 0 & age < 75 & work == 1
+fed_tax,Federal Taxes (billion),ftax,sum,0.000000001,weight,died == 0
+state_tax,State Taxes (billion),stax,sum,0.000000001,weight,died == 0
+county_tax,County Taxes (billion),ctax,sum,0.000000001,weight,died == 0
+ss_tax,Social Security taxes (billion),hoasi,sum,0.000000001,weight,died == 0
+med_tax,Medicare Payroll Tax (billion),hmed,sum,0.000000001,weight,died == 0
+ss_ben,Social Security Benefits (billion),ssben,sum,0.000000001,weight,died == 0
+di_ben,Social Security DI Benefits (billion),diben,sum,0.000000001,weight,died == 0
+ssi_ben,SSI Benefits (billion) Age 65p,ssiben,sum,0.000000001,weight,died == 0 & age >= 65
+totmd,Average Total Medical Costs,totmd,mean,1,weight,ldied == 0
+caidmd,Average Medicaid Costs,caidmd,mean,1,weight,ldied == 0
+oopmd,Average Out of Pocket Medical Costs,oopmd,mean,1,weight,ldied == 0
+ttl_totmd,Total Medical Costs (billions),totmd,sum,0.000000001,weight,ldied == 0
+ttl_caidmd,Total Medicaid Costs billions),caidmd,sum,0.000000001,weight,ldied == 0
+ttl_caidmd_65p,Total Medicaid Costs billions) age 65+,caidmd,sum,0.000000001,weight,ldied == 0 & age >= 65
+ttl_oopmd,Total Out of Pocket Medical Costs billions),oopmd,sum,0.000000001,weight,ldied == 0
+mcare,Average Medicare Costs,mcare,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+ttl_mcare,Total Medicare Costs (billions),mcare,sum,0.000000001,weight,ldied == 0
+ttl_mcare_65p,Total Medicare Costs (billions) age 65+,mcare,sum,0.000000001,weight,ldied == 0 & age >=65
+ttl_mcare_pta,Total Medicare Part A Costs (billions),mcare_pta,sum,0.000000001,weight,ldied == 0
+ttl_mcare_ptb,Total Medicare Part B Costs (billions),mcare_ptb,sum,0.000000001,weight,ldied == 0
+mcare_ptb_enroll,Fraction enrolled in Medicare Part B,mcare_ptb_enroll,mean,1,weight, ldied == 0 & mcare_pta_enroll == 1
+mcare_pta_enroll,Population enrolled in Medicare (Millions),mcare_pta_enroll,sum,.000001,weight, ldied == 0 & mcare_pta_enroll == 1
+ssclaim,Fraction claiming SS age >= 60,ssclaim,mean,1,weight,died == 0 & age >= 60
+ttl_ssclaim,Population claiming SS (millions),ssclaim,sum,.000001,weight,died == 0
+mcare_ptd,Average Medicare Part D Costs,mcare_ptd,mean,1,weight,ldied == 0 & mcare_ptd_enroll == 1
+ttl_mcare_ptd,Total Medicare Part D Costs (billions),mcare_ptd,sum,0.000000001,weight,ldied == 0 & mcare_ptd_enroll == 1
+mcare_ptd_enroll,Fraction enrolled in Medicare Part D,mcare_ptd_enroll,mean,1,weight, ldied == 0 & mcare_pta_enroll == 1
+ttl_mcare_ptd_enroll,Number People enrolled in Medicare Part D,mcare_ptd_enroll,sum,1,weight, ldied == 0

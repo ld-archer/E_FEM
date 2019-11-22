@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# This file extracts the raw variables from the PSID individual and family files
+sas extract_data.sas
+wait
+
+# This file recodes the demographic variables into the categories we want
+sas recode_demographics.sas
+wait
+
+# This file recodes the health variables into the categories we want
+sas recode_health.sas
+wait
+
+# This file recodes the limitation variables (ADL and IADL) into the categories we want
+sas recode_limitations.sas
+wait
+
+# Extract education variables
+sas extract_educ.sas
+wait
+
+# Recode education variables
+sas recode_education.sas
+wait
+
+# Extract marriage history variables
+sas extract_marriage_history.sas
+wait
+
+# Extract information about children
+sas extract_children.sas
+wait
+
+# This file recodes the biological child variables into the categories we want
+sas recode_children.sas
+wait
+
+# This merges the files together
+# sas merge.sas
+sas psid_merge.sas
+wait
+
+# Stattransfer the output to Stata
+#/usr/local/bin/st ./Output/psid_merge.sas7bdat ./Output/psid_merge.dta -y
+/usr/local/bin/st ./../../../input_data/psid_merge.sas7bdat ./../../../input_data/psid_merge.dta -y

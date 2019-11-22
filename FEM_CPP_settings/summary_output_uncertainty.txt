@@ -1,0 +1,166 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+m_startpop_all,startpop (millions): Sample = all,weight,sum,0.000001,1,l2died == 0
+m_startpop_5564,startpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,l2died == 0& age >= 55 & age < 64
+m_startpop_6574,startpop (millions): Sample = age 65 to 74,weight,sum,0.000001,1,l2died == 0& age >= 65 & age < 74
+m_startpop_7584,startpop (millions): Sample = age 75 to 84,weight,sum,0.000001,1,l2died == 0& age >= 75 & age < 84
+m_startpop_85p,startpop (millions): Sample = age 85 plus,weight,sum,0.000001,1,l2died == 0& age >= 85
+m_endpop_all,endpop (millions): Sample = all,weight,sum,0.000001,1,died == 0
+m_endpop_5564,endpop (millions): Sample = age 55 to 64,weight,sum,0.000001,1,died == 0& age >= 55 & age < 64
+m_endpop_6574,endpop (millions): Sample = age 65 to 74,weight,sum,0.000001,1,died == 0& age >= 65 & age < 74
+m_endpop_7584,endpop (millions): Sample = age 75 to 84,weight,sum,0.000001,1,died == 0& age >= 75 & age < 84
+m_endpop_85p,endpop (millions): Sample = age 85 plus,weight,sum,0.000001,1,died == 0& age >= 85
+in_startpop_all,startpop (millions): Sample = all,weight,sum,0.000001,1,l2died == 0 & entry == year
+in_endpop_all,endpop (millions): Sample = all,weight,sum,0.000001,1,died == 0 & entry == year
+| Medical spending for the living
+a_totmd_all,Average of totmd: Sample= all,totmd,mean,1,weight,died==0
+a_totmd_5564,Average of totmd: Sample= age 55 to 64,totmd,mean,1,weight,died==0& age >= 55 & age < 64
+a_totmd_6574,Average of totmd: Sample= age 65 to 74,totmd,mean,1,weight,died==0& age >= 65 & age < 74
+a_totmd_7584,Average of totmd: Sample= age 75 to 84,totmd,mean,1,weight,died==0& age >= 75 & age < 84
+a_totmd_85p,Average of totmd: Sample= age 85 plus,totmd,mean,1,weight,died==0& age >= 85
+t_totmd_all,Sum of totmd: Sample= all,totmd,sum,1,weight,died==0
+t_totmd_5564,Sum of totmd: Sample= age 55 to 64,totmd,sum,1,weight,died==0& age >= 55 & age < 64
+t_totmd_6574,Sum of totmd: Sample= age 65 to 74,totmd,sum,1,weight,died==0& age >= 65 & age < 74
+t_totmd_7584,Sum of totmd: Sample= age 75 to 84,totmd,sum,1,weight,died==0& age >= 75 & age < 84
+t_totmd_85p,Sum of totmd: Sample= age 85 plus,totmd,sum,1,weight,died==0& age >= 85
+a_mcare_all,Average of mcare: Sample= all,mcare,mean,1,weight,died==0
+a_mcare_5564,Average of mcare: Sample= age 55 to 64,mcare,mean,1,weight,died==0& age >= 55 & age < 64
+a_mcare_6574,Average of mcare: Sample= age 65 to 74,mcare,mean,1,weight,died==0& age >= 65 & age < 74
+a_mcare_7584,Average of mcare: Sample= age 75 to 84,mcare,mean,1,weight,died==0& age >= 75 & age < 84
+a_mcare_85p,Average of mcare: Sample= age 85 plus,mcare,mean,1,weight,died==0& age >= 85
+t_mcare_all,Sum of mcare: Sample= all,mcare,sum,1,weight,died==0
+t_mcare_5564,Sum of mcare: Sample= age 55 to 64,mcare,sum,1,weight,died==0& age >= 55 & age < 64
+t_mcare_6574,Sum of mcare: Sample= age 65 to 74,mcare,sum,1,weight,died==0& age >= 65 & age < 74
+t_mcare_7584,Sum of mcare: Sample= age 75 to 84,mcare,sum,1,weight,died==0& age >= 75 & age < 84
+t_mcare_85p,Sum of mcare: Sample= age 85 plus,mcare,sum,1,weight,died==0& age >= 85
+a_caidmd_all,Average of caidmd: Sample= all,caidmd,mean,1,weight,died==0
+a_caidmd_5564,Average of caidmd: Sample= age 55 to 64,caidmd,mean,1,weight,died==0& age >= 55 & age < 64
+a_caidmd_6574,Average of caidmd: Sample= age 65 to 74,caidmd,mean,1,weight,died==0& age >= 65 & age < 74
+a_caidmd_7584,Average of caidmd: Sample= age 75 to 84,caidmd,mean,1,weight,died==0& age >= 75 & age < 84
+a_caidmd_85p,Average of caidmd: Sample= age 85 plus,caidmd,mean,1,weight,died==0& age >= 85
+t_caidmd_all,Sum of caidmd: Sample= all,caidmd,sum,1,weight,died==0
+t_caidmd_5564,Sum of caidmd: Sample= age 55 to 64,caidmd,sum,1,weight,died==0& age >= 55 & age < 64
+t_caidmd_6574,Sum of caidmd: Sample= age 65 to 74,caidmd,sum,1,weight,died==0& age >= 65 & age < 74
+t_caidmd_7584,Sum of caidmd: Sample= age 75 to 84,caidmd,sum,1,weight,died==0& age >= 75 & age < 84
+t_caidmd_85p,Sum of caidmd: Sample= age 85 plus,caidmd,sum,1,weight,died==0& age >= 85
+a_oopmd_all,Average of oopmd: Sample= all,oopmd,mean,1,weight,died==0
+a_oopmd_5564,Average of oopmd: Sample= age 55 to 64,oopmd,mean,1,weight,died==0& age >= 55 & age < 64
+a_oopmd_6574,Average of oopmd: Sample= age 65 to 74,oopmd,mean,1,weight,died==0& age >= 65 & age < 74
+a_oopmd_7584,Average of oopmd: Sample= age 75 to 84,oopmd,mean,1,weight,died==0& age >= 75 & age < 84
+a_oopmd_85p,Average of oopmd: Sample= age 85 plus,oopmd,mean,1,weight,died==0& age >= 85
+t_oopmd_all,Sum of oopmd: Sample= all,oopmd,sum,1,weight,died==0
+t_oopmd_5564,Sum of oopmd: Sample= age 55 to 64,oopmd,sum,1,weight,died==0& age >= 55 & age < 64
+t_oopmd_6574,Sum of oopmd: Sample= age 65 to 74,oopmd,sum,1,weight,died==0& age >= 65 & age < 74
+t_oopmd_7584,Sum of oopmd: Sample= age 75 to 84,oopmd,sum,1,weight,died==0& age >= 75 & age < 84
+t_oopmd_85p,Sum of oopmd: Sample= age 85 plus,oopmd,sum,1,weight,died==0& age >= 85
+| Prevalence of chronic conditions 
+p_cancre_all,Prevalence of cancre: Sample= all,cancre,mean,1,weight,l2died==0
+p_cancre_5564,Prevalence of cancre: Sample= age 55 to 64,cancre,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_cancre_6574,Prevalence of cancre: Sample= age 65 to 74,cancre,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_cancre_7584,Prevalence of cancre: Sample= age 75 to 84,cancre,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_cancre_85p,Prevalence of cancre: Sample= age 85 plus,cancre,mean,1,weight,l2died==0& age >= 85
+p_diabe_all,Prevalence of diabe: Sample= all,diabe,mean,1,weight,l2died==0
+p_diabe_5564,Prevalence of diabe: Sample= age 55 to 64,diabe,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_diabe_6574,Prevalence of diabe: Sample= age 65 to 74,diabe,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_diabe_7584,Prevalence of diabe: Sample= age 75 to 84,diabe,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_diabe_85p,Prevalence of diabe: Sample= age 85 plus,diabe,mean,1,weight,l2died==0& age >= 85
+p_hearte_all,Prevalence of hearte: Sample= all,hearte,mean,1,weight,l2died==0
+p_hearte_5564,Prevalence of hearte: Sample= age 55 to 64,hearte,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_hearte_6574,Prevalence of hearte: Sample= age 65 to 74,hearte,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_hearte_7584,Prevalence of hearte: Sample= age 75 to 84,hearte,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_hearte_85p,Prevalence of hearte: Sample= age 85 plus,hearte,mean,1,weight,l2died==0& age >= 85
+p_hibpe_all,Prevalence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0
+p_hibpe_5564,Prevalence of hibpe: Sample= age 55 to 64,hibpe,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_hibpe_6574,Prevalence of hibpe: Sample= age 65 to 74,hibpe,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_hibpe_7584,Prevalence of hibpe: Sample= age 75 to 84,hibpe,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_hibpe_85p,Prevalence of hibpe: Sample= age 85 plus,hibpe,mean,1,weight,l2died==0& age >= 85
+p_lunge_all,Prevalence of lunge: Sample= all,lunge,mean,1,weight,l2died==0
+p_lunge_5564,Prevalence of lunge: Sample= age 55 to 64,lunge,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_lunge_6574,Prevalence of lunge: Sample= age 65 to 74,lunge,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_lunge_7584,Prevalence of lunge: Sample= age 75 to 84,lunge,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_lunge_85p,Prevalence of lunge: Sample= age 85 plus,lunge,mean,1,weight,l2died==0& age >= 85
+p_stroke_all,Prevalence of stroke: Sample= all,stroke,mean,1,weight,l2died==0
+p_stroke_5564,Prevalence of stroke: Sample= age 55 to 64,stroke,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_stroke_6574,Prevalence of stroke: Sample= age 65 to 74,stroke,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_stroke_7584,Prevalence of stroke: Sample= age 75 to 84,stroke,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_stroke_85p,Prevalence of stroke: Sample= age 85 plus,stroke,mean,1,weight,l2died==0& age >= 85
+| Prevalence of trended variables (obesity and smoking)
+p_overwt_all,Prevalence of overwt: Sample= all,overwt,mean,1,weight,l2died==0
+p_overwt_5564,Prevalence of overwt: Sample= age 55 to 64,overwt,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_overwt_6574,Prevalence of overwt: Sample= age 65 to 74,overwt,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_overwt_7584,Prevalence of overwt: Sample= age 75 to 84,overwt,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_overwt_85p,Prevalence of overwt: Sample= age 85 plus,overwt,mean,1,weight,l2died==0& age >= 85
+p_obese_all,Prevalence of obese: Sample= all,obese,mean,1,weight,l2died==0
+p_obese_5564,Prevalence of obese: Sample= age 55 to 64,obese,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_obese_6574,Prevalence of obese: Sample= age 65 to 74,obese,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_obese_7584,Prevalence of obese: Sample= age 75 to 84,obese,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_obese_85p,Prevalence of obese: Sample= age 85 plus,obese,mean,1,weight,l2died==0& age >= 85
+p_obese_1_all,Prevalence of obese_1: Sample= all,obese_1,mean,1,weight,l2died==0
+p_obese_1_5564,Prevalence of obese_1: Sample= age 55 to 64,obese_1,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_obese_1_6574,Prevalence of obese_1: Sample= age 65 to 74,obese_1,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_obese_1_7584,Prevalence of obese_1: Sample= age 75 to 84,obese_1,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_obese_1_85p,Prevalence of obese_1: Sample= age 85 plus,obese_1,mean,1,weight,l2died==0& age >= 85
+p_obese_2_all,Prevalence of obese_2: Sample= all,obese_2,mean,1,weight,l2died==0
+p_obese_2_5564,Prevalence of obese_2: Sample= age 55 to 64,obese_2,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_obese_2_6574,Prevalence of obese_2: Sample= age 65 to 74,obese_2,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_obese_2_7584,Prevalence of obese_2: Sample= age 75 to 84,obese_2,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_obese_2_85p,Prevalence of obese_2: Sample= age 85 plus,obese_2,mean,1,weight,l2died==0& age >= 85
+p_obese_3_all,Prevalence of obese_3: Sample= all,obese_3,mean,1,weight,l2died==0
+p_obese_3_5564,Prevalence of obese_3: Sample= age 55 to 64,obese_3,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_obese_3_6574,Prevalence of obese_3: Sample= age 65 to 74,obese_3,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_obese_3_7584,Prevalence of obese_3: Sample= age 75 to 84,obese_3,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_obese_3_85p,Prevalence of obese_3: Sample= age 85 plus,obese_3,mean,1,weight,l2died==0& age >= 85
+p_smoken_all,Prevalence of smoken: Sample= all,smoken,mean,1,weight,l2died==0
+p_smoken_5564,Prevalence of smoken: Sample= age 55 to 64,smoken,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_smoken_6574,Prevalence of smoken: Sample= age 65 to 74,smoken,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_smoken_7584,Prevalence of smoken: Sample= age 75 to 84,smoken,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_smoken_85p,Prevalence of smoken: Sample= age 85 plus,smoken,mean,1,weight,l2died==0& age >= 85
+p_smokev_all,Prevalence of smokev: Sample= all,smokev,mean,1,weight,l2died==0
+p_smokev_5564,Prevalence of smokev: Sample= age 55 to 64,smokev,mean,1,weight,l2died==0& age >= 55 & age < 64
+p_smokev_6574,Prevalence of smokev: Sample= age 65 to 74,smokev,mean,1,weight,l2died==0& age >= 65 & age < 74
+p_smokev_7584,Prevalence of smokev: Sample= age 75 to 84,smokev,mean,1,weight,l2died==0& age >= 75 & age < 84
+p_smokev_85p,Prevalence of smokev: Sample= age 85 plus,smokev,mean,1,weight,l2died==0& age >= 85
+| Estimated transition probabilities for chronic conditions
+a_pcancre_all,Average of pcancre: Sample= all,pcancre,mean,1,weight,l2died==0 & l2cancre==0 & entry != year
+a_pcancre_5564,Average of pcancre: Sample= age 55 to 64,pcancre,mean,1,weight,l2died==0& age >= 55 & age < 64 & l2cancre==0 & entry != year
+a_pcancre_6574,Average of pcancre: Sample= age 65 to 74,pcancre,mean,1,weight,l2died==0& age >= 65 & age < 74 & l2cancre==0 & entry != year
+a_pcancre_7584,Average of pcancre: Sample= age 75 to 84,pcancre,mean,1,weight,l2died==0& age >= 75 & age < 84 & l2cancre==0 & entry != year
+a_pcancre_85p,Average of pcancre: Sample= age 85 plus,pcancre,mean,1,weight,l2died==0& age >= 85 & l2cancre==0 & entry != year
+a_pdiabe_all,Average of pdiabe: Sample= all,pdiabe,mean,1,weight,l2died==0 & l2diabe==0 & entry != year
+a_pdiabe_5564,Average of pdiabe: Sample= age 55 to 64,pdiabe,mean,1,weight,l2died==0& age >= 55 & age < 64 & l2diabe==0 & entry != year
+a_pdiabe_6574,Average of pdiabe: Sample= age 65 to 74,pdiabe,mean,1,weight,l2died==0& age >= 65 & age < 74 & l2diabe==0 & entry != year
+a_pdiabe_7584,Average of pdiabe: Sample= age 75 to 84,pdiabe,mean,1,weight,l2died==0& age >= 75 & age < 84 & l2diabe==0 & entry != year
+a_pdiabe_85p,Average of pdiabe: Sample= age 85 plus,pdiabe,mean,1,weight,l2died==0& age >= 85 & l2diabe==0 & entry != year
+a_phearte_all,Average of phearte: Sample= all,phearte,mean,1,weight,l2died==0 & l2hearte==0 & entry != year
+a_phearte_5564,Average of phearte: Sample= age 55 to 64,phearte,mean,1,weight,l2died==0& age >= 55 & age < 64 & l2hearte==0 & entry != year
+a_phearte_6574,Average of phearte: Sample= age 65 to 74,phearte,mean,1,weight,l2died==0& age >= 65 & age < 74 & l2hearte==0 & entry != year
+a_phearte_7584,Average of phearte: Sample= age 75 to 84,phearte,mean,1,weight,l2died==0& age >= 75 & age < 84 & l2hearte==0 & entry != year
+a_phearte_85p,Average of phearte: Sample= age 85 plus,phearte,mean,1,weight,l2died==0& age >= 85 & l2hearte==0 & entry != year
+a_phibpe_all,Average of phibpe: Sample= all,phibpe,mean,1,weight,l2died==0 & l2hibpe==0 & entry != year
+a_phibpe_5564,Average of phibpe: Sample= age 55 to 64,phibpe,mean,1,weight,l2died==0& age >= 55 & age < 64 & l2hibpe==0 & entry != year
+a_phibpe_6574,Average of phibpe: Sample= age 65 to 74,phibpe,mean,1,weight,l2died==0& age >= 65 & age < 74 & l2hibpe==0 & entry != year
+a_phibpe_7584,Average of phibpe: Sample= age 75 to 84,phibpe,mean,1,weight,l2died==0& age >= 75 & age < 84 & l2hibpe==0 & entry != year
+a_phibpe_85p,Average of phibpe: Sample= age 85 plus,phibpe,mean,1,weight,l2died==0& age >= 85 & l2hibpe==0 & entry != year
+a_plunge_all,Average of plunge: Sample= all,plunge,mean,1,weight,l2died==0 & l2lunge==0 & entry != year
+a_plunge_5564,Average of plunge: Sample= age 55 to 64,plunge,mean,1,weight,l2died==0& age >= 55 & age < 64 & l2lunge==0 & entry != year
+a_plunge_6574,Average of plunge: Sample= age 65 to 74,plunge,mean,1,weight,l2died==0& age >= 65 & age < 74 & l2lunge==0 & entry != year
+a_plunge_7584,Average of plunge: Sample= age 75 to 84,plunge,mean,1,weight,l2died==0& age >= 75 & age < 84 & l2lunge==0 & entry != year
+a_plunge_85p,Average of plunge: Sample= age 85 plus,plunge,mean,1,weight,l2died==0& age >= 85 & l2lunge==0 & entry != year
+a_pstroke_all,Average of pstroke: Sample= all,pstroke,mean,1,weight,l2died==0 & l2stroke==0 & entry != year
+a_pstroke_5564,Average of pstroke: Sample= age 55 to 64,pstroke,mean,1,weight,l2died==0& age >= 55 & age < 64 & l2stroke==0 & entry != year
+a_pstroke_6574,Average of pstroke: Sample= age 65 to 74,pstroke,mean,1,weight,l2died==0& age >= 65 & age < 74 & l2stroke==0 & entry != year
+a_pstroke_7584,Average of pstroke: Sample= age 75 to 84,pstroke,mean,1,weight,l2died==0& age >= 75 & age < 84 & l2stroke==0 & entry != year
+a_pstroke_85p,Average of pstroke: Sample= age 85 plus,pstroke,mean,1,weight,l2died==0& age >= 85 & l2stroke==0 & entry != year
+| Incoming cohort effects (chronic conditions and trended variables)
+in_cancre_all,Prevalence of cancre: Sample= all,cancre,mean,1,weight,l2died==0 & entry == year
+in_diabe_all,Prevalence of diabe: Sample= all,diabe,mean,1,weight,l2died==0 & entry == year
+in_hearte_all,Prevalence of hearte: Sample= all,hearte,mean,1,weight,l2died==0 & entry == year
+in_hibpe_all,Prevalence of hibpe: Sample= all,hibpe,mean,1,weight,l2died==0 & entry == year
+in_lunge_all,Prevalence of lunge: Sample= all,lunge,mean,1,weight,l2died==0 & entry == year
+in_stroke_all,Prevalence of stroke: Sample= all,stroke,mean,1,weight,l2died==0 & entry == year
+in_overwt_all,Prevalence of overwt: Sample= all,overwt,mean,1,weight,l2died==0 & entry == year
+in_obese_all,Prevalence of obese: Sample= all,obese,mean,1,weight,l2died==0 & entry == year
+in_obese_1_all,Prevalence of obese_1: Sample= all,obese_1,mean,1,weight,l2died==0 & entry == year
+in_obese_2_all,Prevalence of obese_2: Sample= all,obese_2,mean,1,weight,l2died==0 & entry == year
+in_obese_3_all,Prevalence of obese_3: Sample= all,obese_3,mean,1,weight,l2died==0 & entry == year
+in_smoken_all,Prevalence of smoken: Sample= all,smoken,mean,1,weight,l2died==0 & entry == year
+in_smokev_all,Prevalence of smokev: Sample= all,smokev,mean,1,weight,l2died==0 & entry == year

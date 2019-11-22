@@ -1,0 +1,5 @@
+infile dictionary using "../../../../../FEM_CPP_settings/timeseries/sga.txt" {
+	_first(2)
+	year
+	sga
+}

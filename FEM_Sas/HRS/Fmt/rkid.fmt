@@ -1,0 +1,159 @@
+   value byrc
+   1850-1939="before 1940"
+   1940-1990="1940-1990"
+   1991-2005="after 1990";
+
+   value sex
+   1="1.Male"
+   2="2.Female"
+   ;
+   value status
+   1="1.Resident"
+   2="2.Away/Institution"
+   3="3.Away/Other"
+   4="4.Died"
+   5="5.Non-resident"
+   6="6.No contact"
+   7="7.Not Kid/HHMem"
+   ;
+   value rel
+   1="1.Own kid"
+   2="2.Stepkid"
+   3="3.Grandkid"
+   5="5.Professional"
+   6="6.Kid inlaw"
+   7="7.Kid-DKtype"
+   8="8.Sib"
+   9="9.Sib inlaw"
+   10="10.Parent/inlaw"
+   11="11.Oth rel"
+   12="12.Other"
+   16="16.Ex inlaw/step kid"
+   17="17.Foster kid"
+   20="20.R/Sp/Ex"
+   21="21.Step, adopted"
+   97="97.Unknown"
+   ;
+   value relk
+   1="1.Own kid"
+   2="2.Stepkid"
+   3="3.Grandkid"
+   6="6.Kid inlaw"
+   7="7.Kid-DKtype"
+   16="16.Ex-inlaw/step kid"
+   17="17.Foster"
+   21="21.Step, adopted"
+   5,8-12,20,97="Other";
+
+   value evown
+   0="0.Never own"
+   1="1.Only ever own"
+   2="2.Own + other"
+   ;
+
+   value aptype
+   0="0.Not split"
+   1="1.Split after death"
+   2="2.Split after reuse"
+   3="3.Split after drop 93"
+   4="4.Split after non-kid rel"
+   ;
+
+   value kprob
+   0="0.No discrepancy found"
+   1="1.Byr,gender or rel problem"
+   2="2.Resp/presence inconsistency"
+   3="3.Byr/gender/rel and Resp/presence problem"
+   4="4.Missing byr/gender/rel, Resp/presence ok"
+   ;
+
+   value relflag
+   0="0.FamR/NFamR consistent"
+   1="1.Kid of FamR/not of NFamR"
+   2="2.Kid of NFamR/not of FamR"
+   8="8.Kid of one/other missing"
+   9="9.Both missing relation"
+   .S="No NFamR and no NFamR rel"
+   ;
+
+   value byrok
+   0="0.>1 yr diff"
+   1="1.Same ovr time"
+   2="2.+/- 1 yr"
+   3="3.+/- 2 yr"
+   .A=".A: All miss"
+   .B=".B: Only 1 wv, miss"
+   .C=".C: Only 1 wv, cant comp"
+   .M=".M: Other missing"
+   ;
+   value relok
+   0="0.Difference"
+   1="1.Same ovr time"
+   2="2.Inlaw=>Step, OK"
+   .A=".A: All miss"
+   .B=".B: Only 1 wv, miss"
+   .C=".C: Only 1 wv, cant comp"
+   .M=".M: Other missing"
+   ;
+   value ok
+   0="0.Difference"
+   1="1.Same ovr time"
+   .A=".A: All miss"
+   .B=".B: Only 1 wv, miss"
+   .C=".C: Only 1 wv, cant comp"
+   .M=".M: Other missing"
+   ;
+
+   value diedf
+   0="0.No discrepancy"
+   2="2.Death reported diff ivws"
+   9="9.Kid appears alive after death"
+   .S=".S: Alive"
+   ;
+
+   value ms
+   0="0.Unknown"
+   1="1.Married"
+   3="3.Partnered"
+   4="4.Sep/Div"
+   5="5.Widowed"
+   6="6.Unmarried"
+   .S=".S: Inapplicable"
+   .M=".M: Other missing"
+   ;
+
+   value okwv
+   0="0.Inap"
+   1="1.OK so far"
+   2="2.Probly OK so far"
+   3="3.OK cur Wv-prob bef"
+   4="4.Prob OK cur Wv-prob bef"
+   5="5.All missing"
+   9="9.Problem this wv"
+   .A=".A: Absent this wv"
+   .B=".B: Not born yet"
+   .X=".X: Died earlier"
+   ;
+   value respwv
+   0="0.Inap"
+   1="1.Presence OK so far"
+   2="2.K present only"
+   3="3.Presence OK cur Wv-prob bef"
+   4="4.K present only+prob bef"
+   8="8.Status prob this wv: not kid/hhmem"
+   9="9.Presence problem this wv"
+   .A=".A: Absent this wv"
+   .B=".B: Not born yet"
+   .X=".X: Died earlier"
+   .S=".S: Not a kid (KRREL)"
+   ;
+   
+   value kid
+   0="0.Not kid"
+   1="1.Kid-own/step/inlaw/DK"
+   2="2.Ex-kid-step/inlaw/foster"
+   .B=".B: not born"
+   .X=".X: died"
+   .A=".A: absent this wv"
+   .M=".M: other missing"
+   ;

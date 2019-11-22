@@ -1,0 +1,30 @@
+regress
+mcare
+age75p	2.007868
+age75l	223.8365
+male	29.01202
+black	1922.117
+hispan	647.0166
+hsless	364.0092
+college	123.6664
+widowed	-77.57132
+single	23.59415
+cancre	2247.117
+diabe	280.3456
+hibpe	271.8987
+hearte	1777.021
+lunge	1416.367
+stroke	2353.167
+nhmliv	6597.913
+adl3	5196.593
+adl3_alzhmr	574.4773
+diclaim	2241.42
+died	15026.25
+diabe_hearte	2040.598
+diabe_hibpe	1606.309
+hibpe_hearte	240.1345
+hibpe_stroke	-968.7302
+diclaim_died	-3171.408
+diclaim_nhmliv	1238.931
+died_nhmliv	-13243.6
+_cons	-13134.2

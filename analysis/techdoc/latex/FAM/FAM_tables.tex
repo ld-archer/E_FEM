@@ -1,0 +1,364 @@
+\section{Tables}
+
+% FAM initial conditions are:
+%Economic: 	Work Status, 	Earnings, 				Wealth
+%Health: 		BMI Category, Smoking Category, Hypertension 
+%Other: 		Education, 		Partnered, 				Partner Type, Health Insurance
+
+\begin{table}[h]\centering
+\begin{tabular}{l l l}
+\textbf{Economic Outcomes} & \textbf{Health Outcomes} & \textbf{Other Outcomes}\\
+Work Status & BMI Category & Education\\
+Earnings & Smoking Category & Partnered\\
+Wealth & Hypertension & Partner Type\\
+& & Health Insurance
+\end{tabular}~\\~\\
+\caption{Estimated outcomes in replenishing cohorts module}
+\label{tab:initial_conditions_model}
+\end{table}
+
+% FAM transition models are:
+%Economic: Social Security Claiming, Disability Claiming, Supplemental Security Income Claiming, Non-Zero Capital Income, Capital Income, Non-zero Government Transfers, Government Transfers, Non-zero Wealth, Wealth, Laborforce Status, Full- or Part-time, Any Earnings if Unemployed, Any Earnings if Not in Labor Force, Earnings if Full-time, Earnings if Part-time, Earnings if Unemployed, Earnings if Not in Labor Force
+%Health: Mortality, Heart Disease, Stroke, Cancer, Hypertension, Diabetes, Lung Disease, Start Smoking, Stop Smoking, ADL Status, IADL Status, Births/Paternity, Self-reported Health, BMI, Partner Death
+%Marital Status (by sex): Exit Single, Exit Cohabitation, Exit Married, Single to Married, Cohabitation to Married, Married to Cohabitation
+%Other: Insurance Type
+
+\begin{sidewaystable}
+\centering
+\begin{tabular}{l l l l}
+\textbf{Economic Outcomes} & \textbf{Health Outcomes} &  \textbf{Marital Status} & \textbf{Other Outcomes}\\
+Social Security Claiming & Mortality & Exit Single & Insurance Type\\
+Disability Claiming & Heart Disease & Exit Cohabitation &\\
+Non-Zero Capital Income & Cancer & Exit Married & \\
+Capital Income (if non-zero) & Hypertension & Single to Married &\\
+Non-zero Government Transfers & Diabetes & Cohabitation to Married & \\
+Government Transfers (if non-zero) & Lung Disease & Married to Cohabitation & \\
+Non-zero Wealth & Start Smoking & & \\
+Wealth (if non-zero) & Stop Smoking & &\\
+Labor Force Status (out, unemployed, working) & ADL Status & &\\
+Employed Full- or Part-time (if working) & IADL Status & &\\
+Any Earnings (if Unemployed) & Births/Paternity & &\\
+Any Earnings (if Not in Labor Force) & Self-reported Health & &\\
+Earnings (if Full-time) & BMI & &\\
+Earnings (if Part-time) & Partner Death & &\\
+Earnings (if Unemployed and any) & & &\\
+Earnings (if Not in Labor Force and any) & & &\\
+\end{tabular}
+\caption{Estimated outcomes in transitions module}
+\label{tab:transition_model}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}
+\centering
+\begin{tabular}[h]{l rrrrrrrr}
+\input{../tables/FAM/svy_disease_prevalence.tex}
+\end{tabular}
+\caption{Health condition prevalences in survey data}
+\label{tab:svy_disease_prevalence}
+\end{sidewaystable}
+
+
+
+\begin{sidewaystable}
+\centering
+\scalebox{0.75}{
+\begin{tabular}{l p{2.5in}p{2.5in}p{2.5in}p{2.5in}}
+& \multicolumn{4}{c}{Survey}\\
+Disease & \multicolumn{1}{c}{PSID/HRS} & \multicolumn{1}{c}{NHIS} & \multicolumn{1}{c}{MEPS} & \multicolumn{1}{c}{MCBS} \\
+\hline
+Cancer &
+Has a doctor ever told you that you have cancer or a malignant tumor, excluding minor skin cancers?&
+Have you ever been told be a doctor or other health professional that you had … cancer or a malignanacy of any kind? (WHEN RECODED, SKIN CANCERS WERE EXCLUDED)&
+List all the conditions that have bothered (the person) from (START time) to (END time) CCS codes for the conditions list are 11-21, 24-45&
+Has a doctor ever told you that you had any (other) kind of cancer malignancy, or tumor other than skin cancer?\\
+\hline
+Heart Diseases &
+Has a doctor ever told you that you had a heart attack, coronary heart disease, angina, congestive heart failure, or other heart problems?&
+Four separate questions were asked about whether ever told by a docotor or oither health professional that had: CHD, Angina, MI, other heart problems.&
+Have you ever been told by a doctor or health professional that you have … CHD; Angina; MI; other heart problems&
+Six separate questions were asked about whether ever told by a doctor that had: Angina or MI; CHD; other heart problems (included four questions)\\
+\hline
+Stroke &
+Has a doctor ever told you that you had a stroke?&
+Have you EVER been told by a doctor or other health professional that you had a stroke?&
+If Female, add: [Other than during pregnancy,] Have you ever been told by a doctor or health professional that you have a stroke or TIA (transient ischemic attack)&
+[Since (PREV$<$ SUPP. RD. INT. DATE),] has a doctor (ever) told (you/SP) that (you/he/she) had a stroke, a brain hemorrhage, or a cerebrovascular accident?\\
+\hline
+Diabetes&
+Has a doctor ever told you that you have diabetes or high blood sugar?&
+If Female, add: [Other than during pregnancy,] Have you ever been told by a doctor or health professional that you have diabetes or sugar diabetes?&
+If Female, add: [Other than during pregnancy,] Have you hever been told by a doctor or health professional that you have diabetes or sugar diabetes?&
+Has a doctor (ever) told (you/SP) that (you/he/she) had diabetes, high blood sugar, or sugar in (your/his/her) urine? [DO NOT INCLUDE BOERDERLINE PREGNANCY, OR PRE-DIABETEIC DIABETES.]\\
+\hline
+Hypertension&
+Has a doctor ver told you that you have high blood pressure or hypertension?&
+Have you EVER been told by a doctor or other health professional that you had Hypertension, also called high blood pressure?&
+Have you EVER been told by a doctor or other health professional that you had Hypertension, also called high blood pressure?&
+Has a doctor (ever) told (you/SP) that (you/he/she) (still) (had) (have/has) hypertension, sometimes called high blood pressure?\\
+\hline
+Lung Disease&
+Has a doctor ever told you that you have chronic lung disease such a schronic bronchitis or emphysema? [IWER: DO NOT INCLUDE ASTHMA]&
+Question 1: During the PAST 12 MONTHS, have you ever been told by a doctor or other health professional that you had chronic bronchitis? Question 2: Have you EVER been told by a docotor or other health professional that you had … emphysema?&
+List all the conditions that have bothered (the person) from (START time) to (END time) CCS codes for the conditions list are 127, 129-312&
+Has a doctor (ever) told (you/SP) that (you/he/she) had emphysema, asthma, or COPD? [COPD=CHRONIC OBSTRUCTIVE PULMONARY DISEASE.]\\
+\hline
+Overweight & \multicolumn{4}{c}{\multirow{2}{*}{Self-reported body weight and height}}\\
+\hhline{-~~~~}
+Obese & \multicolumn{4}{c}{} \\
+\hline
+\end{tabular}
+}
+\caption{Survey questions used to determine health conditions}
+\label{tab:svy_disease_questions}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}
+% \todo Dynamically fill in numeric results using Sweave
+\centering
+\scalebox{0.9}{
+\begin{tabular}{lllccr}
+ &  &  & Type & At risk & Mean/fraction\\
+\hline
+\input{../tables/FAM/transitioned_outcomes_disease.tex}
+\hline
+\input{../tables/FAM/transitioned_outcomes_smoking.tex}
+\hhline{~-----}
+\input{../tables/FAM/transitioned_outcomes_logbmi.tex}
+\hhline{~-----}
+\input{../tables/FAM/transitioned_outcomes_adlstat.tex}
+\hhline{~-----}
+\input{../tables/FAM/transitioned_outcomes_iadlstat.tex}
+\hline
+\input{../tables/FAM/transitioned_outcomes_work.tex}
+\hhline{~-----}
+\input{../tables/FAM/transitioned_outcomes_lfpben.tex}
+\hline
+\input{../tables/FAM/transitioned_outcomes_mstat.tex}
+\hhline{~-----}
+\input{../tables/FAM/transitioned_outcomes_birth.tex}
+\hline
+\input{../tables/FAM/transitioned_outcomes_financial.tex}
+\hline
+\end{tabular}
+}
+\caption[Outcomes in the transition model]{Outcomes in the transition model. Estimation sample is PSID 1999-2013 waves.}
+\label{tab:transitioned_outcomes}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}
+% \todo Write a script that dynamically generates this table from the .est files
+\centering
+\scalebox{0.53}{
+\begin{tabular}{l*{20}{c}}
+Value at time $T-1$ & \multicolumn{20}{c}{Outcome at time $T$}  \\
+\hline
+ & Heart  &  & & Lung  & & &  &  & Smoking  &  &  & &  &  & & Nursing & & &  Nonzero & \\
+ & disease & hypertension & stroke & disease & diabetes & cancer & disability & mortality & status & BMI & Any HI & DI Claim & SS Claim & DB Claim & SSI Claim & Home & Work & Earnings & Wealth & Wealth\\
+Heart disease &  &  & \checkmark &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Blood pressure & \checkmark &  & \checkmark &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Stroke &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Lung disease &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Diabetes & \checkmark & \checkmark & \checkmark &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Cancer &  &  & \checkmark &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Disability &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Claimed DI &  &  &  &  &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark &  & \checkmark & \checkmark & \checkmark & \checkmark\\
+Claimed SS &  &  &  &  &  &  &  &  &  &  & \checkmark &  &  & \checkmark & \checkmark &  & \checkmark & \checkmark & \checkmark & \checkmark\\
+Claimed DB &  &  &  &  &  &  &  &  &  &  &  &  & \checkmark &  & \checkmark &  & \checkmark & \checkmark & \checkmark & \checkmark\\
+Claimed SSI &  &  &  &  &  &  &  &  &  &  &  &  &  &  & \checkmark &  &  &  &  & \\
+Work &  &  &  &  &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark &  & \checkmark &  & \checkmark & \checkmark & \checkmark & \checkmark\\
+Earnings &  &  &  &  &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark &  & \checkmark & \checkmark & \checkmark & \checkmark\\
+Nonzero wealth &  &  &  &  &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Wealth &  &  &  &  &  &  &  &  &  &  & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark\\
+Nursing home stay &  &  &  &  &  &  &  &  &  &  &  &  &  &  & \checkmark & \checkmark &  &  & \checkmark & \checkmark
+\end{tabular}
+}
+\caption[Restrictions on transition model]{Restrictions on transition model. \checkmark indicates that an outcome at time $T-1$ is allowed in the transition model for an outcome at time $T$.}
+\label{tab:transition_restrictions}
+\end{sidewaystable}
+
+\begin{table}
+\centering
+\scalebox{1}{
+\input{../tables/FAM/controlvar_descs.tex}
+}
+\caption[Descriptive statistics for stock population]{Desciptive statistics for variables in 2009 PSID ages 25+ sample used as simulation stock population}
+\label{tab:controlvar_descs}
+\end{table}
+
+
+%\begin{table}
+%% \todo Dynamically fill in numeric results using Sweave and reduce the number of sig. digits after decimal
+%\centering
+%\scalebox{0.9}{
+%\begin{tabular}{ccccrr}
+% &  &  & Selection & 1992 & 2004 \\
+%\hline
+%\input{../tables/FAM/desc_init_conditions_binary.tex}
+%\hline
+%\input{../tables/FAM/desc_init_conditions_bmistat.tex}
+%\hhline{~-----}
+%\input{../tables/FAM/desc_init_conditions_smoking.tex}
+%\hhline{~-----}
+%\input{../tables/FAM/desc_init_conditions_funcstat.tex}
+%\hline
+%\input{../tables/FAM/desc_init_conditions_continuous.tex}
+%\hline
+%\input{../tables/FAM/desc_init_conditions_censcont.tex}
+%\hline
+%\input{../tables/FAM/desc_init_conditions_censdiscrete.tex}
+%\hline
+%\input{../tables/FAM/desc_init_conditions_earlyagedb.tex}
+%\hhline{~-----}
+%\input{../tables/FAM/desc_init_conditions_normalagedb.tex}
+%\hline
+%\input{../tables/FAM/desc_init_conditions_covars.tex}
+%\hline
+%\end{tabular}
+%}
+%\caption{Initial conditions used for estimation (1992) and simulation (2004)}
+%\label{tab:desc_init_conditions}
+%\end{table}
+
+
+\begin{sidewaystable}
+\centering
+\scalebox{1}{
+\input{../tables/FAM/latent_model_mean_est.tex}
+}
+\caption[Parameter estimates for latent model: conditional means and thresholds]{Parameter estimates for latent model: conditional means and thresholds. Sample is respondents age 25-30 in 2005-2011 PSID waves}
+\label{tab:latent_model_mean_est}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}
+\centering
+\scalebox{1}{
+\input{../tables/FAM/latent_model_vcmat_est.tex}
+}
+\caption[Parameter estimates for latent model: parameterized covariance matrix]{Parameter estimates for latent model: parameterized covariance matrix. Sample is respondents age 25-30 in 2005-2011 PSID waves}
+\label{tab:latent_model_vcmat_est}
+\end{sidewaystable}
+
+
+
+\begin{sidewaystable}
+\centering
+\input{../tables/FAM/new_cohort_trends_health.tex}
+\caption{Health and risk factor trends for replenishing cohorts, prevalences relative to 2009}
+\label{tab:new_cohort_trends_health}
+\end{sidewaystable}
+
+\begin{sidewaystable}
+\centering
+\input{../tables/FAM/new_cohort_trends_educ.tex}
+\caption{Education trends for replenishing cohorts, prevalences relative to 2009}
+\label{tab:new_cohort_trends_educ}
+\end{sidewaystable}
+
+\begin{sidewaystable}
+\centering
+\input{../tables/FAM/new_cohort_trends_social.tex}
+\caption{Social trends for replenishing cohorts, prevalences relative to 2009}
+\label{tab:new_cohort_trends_social}
+\end{sidewaystable}
+
+
+
+%\begin{table}
+%\centering
+%\input{../tables/FAM/NHEA_adjustment.tex}
+%\caption{Per capita medical spending by payment source, age group, and year}
+%\label{tab:NHEA_adjustment}
+%\end{table}
+
+
+
+%\begin{table}
+%\centering
+%\scalebox{0.8}{
+%\input{../tables/FAM/time_series_by_year.tex}
+%}
+%\caption{Assumptions for each calendar year}
+%\label{tab:time_series_by_year}
+%\end{table}
+
+%\begin{table}
+%\centering
+%\scalebox{0.8}{
+%\input{../tables/FAM/time_series_by_yob.tex}
+%}
+%\caption[Assumptions for each birth year]{Assumptions for each birth year. In years after 1960, all values are held constant at their 1960 levels.}
+%\label{tab:time_series_by_yob}
+%\end{table}
+
+
+\begin{table}
+\centering
+\input{../tables/FAM/crossval_unweighted.tex}
+\caption{Crossvalidation of 1999 cohort: Mortality in 2001, 2007, and 2013}
+\label{tab:crossval_unweighted}
+\end{table}
+
+
+\begin{table}
+% \todo clean up the significant digits in this table
+% \todo create a variable sort order (file that maps variable names to integers) that can be merged on and then labels can be sorted in this table
+\centering
+\input{../tables/FAM/crossval_demog.tex}
+\caption{Crossvalidation of 1999 cohort: Demographic outcomes in 2001, 2007, and 2013}
+\label{tab:crossval_demog}
+\end{table}
+
+
+\begin{table}
+% \todo clean up the significant digits in this table
+% \todo create a variable sort order (file that maps variable names to integers) that can be merged on and then labels can be sorted in this table
+\centering
+\input{../tables/FAM/crossval_binhlth.tex}
+\caption{Crossvalidation of 1999 cohort: Binary health outcomes in 2001, 2007, and 2013}
+\label{tab:crossval_binhlth}
+\end{table}
+
+\clearpage
+
+\begin{table}
+% \todo clean up the significant digits in this table
+% \todo create a variable sort order (file that maps variable names to integers) that can be merged on and then labels can be sorted in this table
+\centering
+\input{../tables/FAM/crossval_risk.tex}
+\caption{Crossvalidation of 1999 cohort: Risk factor outcomes in 2001, 2007, and 2013}
+\label{tab:crossval_risk}
+\end{table}
+
+\begin{table}
+% \todo clean up the significant digits in this table
+% \todo create a variable sort order (file that maps variable names to integers) that can be merged on and then labels can be sorted in this table
+\centering
+\input{../tables/FAM/crossval_binecon.tex}
+\caption{Crossvalidation of 1999 cohort: Binary economic outcomes in 2001, 2007, and 2013}
+\label{tab:crossval_binecon}
+\end{table}
+
+
+%\begin{table}
+%% \todo clean up the significant digits in this table
+%% \todo create a variable sort order (file that maps variable names to integers) that can be merged on and then labels can be sorted in this table
+%\centering
+%\input{../tables/FAM/crossval_cntecon.tex}
+%\caption{Crossvalidation of 1999 cohort: Simulated vs reported continuous economic outcomes in 2001, 2007, and 2013}
+%\label{tab:crossval_cntecon}
+%\end{table}
+
+
+
+
+\begin{sidewaystable}
+\centering
+\input{../tables/FAM/external_pop.tex}
+\caption{Population forecasts: Census compared to FAM}
+\label{tab:external_pop}
+\end{sidewaystable}
+

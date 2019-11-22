@@ -1,0 +1,13 @@
+%let maxwv=9;
+%let maxiw=11;
+%let rndv=J;
+%let verd=/homer/d/RANDHRS/VerJ;
+%let fmtlib=/homer/a/RANDFAM/Fmt/;
+%let lopnlib=/homer/d/HRSAHEAD/Track/FamLOPN/Sasdata;
+%let outlib=/homer/d/RANDFAM/Helper;
+%let longlib08=/homer/d/HRSAHEAD/Family/Long08;
+%let longlib06=/homer/d/HRSAHEAD/Family/Long06;
+%let corein=rndhrs_&rndv;
+%let rver=Ver&rndv;
+%let maxLopa=5;
+%let maxyear=2009;

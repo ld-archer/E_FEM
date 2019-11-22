@@ -1,0 +1,1 @@
+mcare_ptB_premium_share = mcare_ptb_base(year)

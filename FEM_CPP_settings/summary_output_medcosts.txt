@@ -1,0 +1,25 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+end_pop,Total population (million),weight,sum,0.000001,1,died == 0
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+totmd_meps,Average Medical Costs (Not Medicare Elig),totmd_meps,mean,1,weight,ldied == 0
+oopmd_meps,Average Out of Pocket Costs (Not Medicare Elig),oopmd_meps,mean,1,weight,ldied == 0
+caidmd_meps,Average Medicaid Costs (Not Medicare Elig),caidmd_meps,mean,1,weight,ldied == 0
+ttl_totmd_meps,Total Medical Costs (billions) (Not Medicare Elig),totmd_meps,sum,0.000000001,weight,ldied == 0
+ttl_oopmd_meps,Total Out of Pocket Costs (billions) (Not Medicare Elig),oopmd_meps,sum,0.000000001,weight,ldied == 0
+ttl_caidmd_meps,Total Medicaid Costs (billions) (Not Medicare Elig),caidmd_meps,sum,0.000000001,weight,ldied == 0
+totmd_mcbs,Average Medical Costs (Medicare Elig),totmd_mcbs,mean,1,weight,ldied == 0
+oopmd_mcbs,Average Out of Pocket Costs (Medicare Elig),oopmd_mcbs,mean,1,weight,ldied == 0
+caidmd_mcbs,Average Medicaid Costs (Medicare Elig),caidmd_mcbs,mean,1,weight,ldied == 0
+ttl_totmd_mcbs,Total Medical Costs (billions) (Medicare Elig),totmd_mcbs,sum,0.000000001,weight,ldied == 0
+ttl_oopmd_mcbs,Total Out of Pocket Costs (billions) (Medicare Elig),oopmd_mcbs,sum,0.000000001,weight,ldied == 0
+ttl_caidmd_mcbs,Total Medicaid Costs (billions) (Medicare Elig),caidmd_mcbs,sum,0.000000001,weight,ldied == 0
+mcare,Average Medicare Costs,mcare,mean,1,weight,ldied == 0
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0
+ttl_mcare,Total Medicare Costs (billions),mcare,sum,0.000000001,weight,ldied == 0
+ttl_mcare_pta,Total Medicare Part A Costs (billions),mcare_pta,sum,0.000000001,weight,ldied == 0
+ttl_mcare_ptb,Total Medicare Part B Costs (billions),mcare_ptb,sum,0.000000001,weight,ldied == 0
+mcare_ptb_enroll,Fraction enrolled in Medicare Part B,mcare_ptb_enroll,mean,1,weight, ldied == 0 & mcare_pta_enroll == 1
+mcare_pta_enroll,Population enrolled in Medicare (Millions),mcare_pta_enroll,sum,.000001,weight, ldied == 0 & mcare_pta_enroll == 1

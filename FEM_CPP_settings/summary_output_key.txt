@@ -1,0 +1,65 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+end_pop,Total population (million),weight,sum,0.000001,1,died == 0
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+meanage,Average age,age,mean,1,weight,ldied == 0
+pop_healthy,Population that is healthy (no IADLs or ADLs and not in a nursing home) (millions),weight,sum,0.000001,1,iadl1 ==0 & adl12 == 0 & adl3 == 0 & nhmliv == 0 & ldied == 0
+pop_iadl1,Population with 1 IADL (millions),weight,sum,0.000001,1,iadl1 ==1 & adl12 == 0 & adl3 == 0 & nhmliv == 0 & ldied == 0
+pop_adl12,Population with 1 or 2 ADLs (millions),weight,sum,0.000001,1,iadl1 ==0 & adl12 == 1 & adl3 == 0 & nhmliv == 0 & ldied == 0
+pop_adl3,Population with 3+ ADLs (millions),weight,sum,0.000001,1,iadl1 ==0 & adl12 == 0 & adl3 == 1 & nhmliv == 0 & ldied == 0
+pop_disability,Population that is disabled (any IADLs or ADLs or Nursing Home) (millions),weight,sum,0.000001,1,not(iadl1 ==0 & adl12 == 0 & adl3 == 0 & nhmliv == 0) & ldied == 0
+pop_nhm,Population that is in a nursing home,weight,sum,0.000001,1,nhmliv == 1 & ldied == 0
+cancre,Prevelance of Cancer,cancre,mean,1,weight,ldied == 0
+diabe,Prevelance of Diabetes,diabe,mean,1,weight,ldied == 0
+hearte,Prevelance of Heart Disease,hearte,mean,1,weight,ldied == 0
+hibpe,Prevelance of Hypertension,hibpe,mean,1,weight,ldied == 0
+lunge,Prevelance of Lung Disease,lunge,mean,1,weight,ldied == 0
+stroke,Prevelance of Stroke,stroke,mean,1,weight,ldied == 0
+anycond,Prevelance of Any Health Condition,anycond,mean,1,weight,ldied == 0
+cond3p,Prevelance of 3 or more Health Conditions,cond3p,mean,1,weight,ldied == 0
+iadl1,Prevelance of 1+ IADL,iadl1,mean,1,weight,ldied == 0
+adl12,Prevelance of 1 or 2 ADLs,adl12,mean,1,weight,ldied == 0
+adl3,Prevelance of 3+ ADLs,adl3,mean,1,weight,ldied == 0
+nhmliv,Prevelance of In a Nursing Home,nhmliv,mean,1,weight,ldied == 0
+obese,Prevelance of Obese,obese,mean,1,weight,ldied == 0
+overwt,Prevelance of Overweight,overwt,mean,1,weight,ldied == 0
+smokev,Prevelance of Smoke Ever,smokev,mean,1,weight,ldied == 0
+smoken,Prevelance of Smoke Now,smoken,mean,1,weight,ldied == 0
+wlth_nonzero,Prevelance of Non-zero Wealth,wlth_nonzero,mean,1,weight,ldied == 0
+died,Mortality rate,died,mean,1,weight,ldied == 0 
+ssclaim,Fraction claiming SS,ssclaim,mean,1,weight,ldied == 0
+pop_ssclaim,Population claiming SS (millions),ssclaim,sum,0.000001,weight,ldied == 0
+work,Fraction working among those younger than 75,work,mean,1,weight,ldied == 0 & age < 75
+pop_work,Population working among those younger than 75,work,sum,0.000001,weight,ldied == 0 & age < 75
+diclaim,Fraction claiming DI among those younger than 65,diclaim,mean,1,weight,ldied == 0 & age < 65
+pop_diclaim,Population claiming DI among those younger than 65,diclaim,sum,0.000001,weight,ldied == 0 & age < 65
+ssiclaim,Fraction claiming SSI among those younger than 65,ssiclaim,mean,1,weight,ldied == 0
+pop_ssiclaim,Population claiming SSI among those younger than 65,ssiclaim,sum,0.000001,weight,ldied == 0
+anyhi,Proportion with health insurance if younger than 65,anyhi,mean,1,weight,ldied == 0 & age < 65
+ry_earn,Average earnings for those younger than 75,ry_earn,mean,1,weight,ldied == 0 & age < 75 & work == 1
+ttl_earn,Total earnings for those younger than 75,ry_earn,sum,0.000000001,weight,ldied == 0 & age < 75 & work == 1
+ssben,Average SS benefits,ssben,mean,1,weight,ldied == 0 & ssclaim == 1
+ttl_ssben,Total SS benefits,ssben,sum,0.000000001,weight,ldied == 0 & ssclaim == 1
+diben,Average DI benefits,diben,mean,1,weight,ldied == 0 & diben == 1
+ttl_diben,Total DI benefits,diben,sum,0.000000001,weight,ldied == 0 & diben == 1
+ssiben,Average SSI benefits,ssiben,mean,1,weight,ldied == 0 & ssiben == 1
+ttl_ssiben,Total SSI benefits,ssiben,sum,0.000000001,weight,ldied == 0 & ssiben == 1
+raime,Average AIME,raime,mean,1,weight,ldied == 0
+ttl_raime,Total AIME (billions),raime,sum,0.000000001,weight,ldied == 0
+hhwealth,Average Household wealth,hhwealth,mean,1,weight,ldied == 0
+gross,Average Gross Income,gross,mean,1,weight,ldied == 0
+net,Average Net Income,net,mean,1,weight,ldied == 0
+ttl_hhwealth,Total Household wealth (billions),hhwealth,sum,0.000000001,weight,ldied == 0
+ttl_gross,Total Gross Income (billions),gross,sum,0.000000001,weight,ldied == 0
+ttl_net,Total Net Income (billions),net,sum,0.000000001,weight,ldied == 0
+mhhwealth,Median Household Wealth,hhwealth,median,1,weight,ldied == 0
+mry_earn,Median Earnings,ry_earn,median,1,weight,ldied == 0
+mraime,Median AIME,raime,median,1,weight,ldied == 0
+mry_earnwork,Median Earnings for Workers,ry_earn,median,1,weight,ldied == 0 & work == 1
+cancre_new,Number with new Cancer (millions),cancre,sum,0.000001,weight,ldied == 0 & lcancre==0 & cancre==1
+diabe_new,Number with new Diabetes (millions),diabe,sum,0.000001,weight,ldied == 0 & ldiabe==0 & diabe==1
+hearte_new,Number with new Heart Disease (millions),hearte,sum,0.000001,weight,ldied == 0 & lhearte==0 & hearte==1
+hibpe_new,Number with new Hypertension (millions),hibpe,sum,0.000001,weight,ldied == 0 & lhibpe==0 & hibpe==1
+lunge_new,Number with new Lung Disease (millions),lunge,sum,0.000001,weight,ldied == 0 & llunge==0 & lunge==1
+stroke_new,Number with new Stroke (millions),stroke,sum,0.000001,weight,ldied == 0 & lstroke==0 & stroke==1

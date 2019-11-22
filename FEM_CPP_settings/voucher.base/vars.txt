@@ -1,0 +1,6 @@
+mcare_pta_premium_share = if(year >= 2012, 1.0, 0.0)
+mcare_ptB_premium_share = if(year >= 2012, 1.0, 0.25)
+mcare_pta_premium_subsidy_year = 2010
+mcare_ptb_premium_subsidy_year = 2010
+mcare_pta_premium_subsidy_share = 1.0
+mcare_ptb_premium_subsidy_share = 0.75

@@ -1,0 +1,152 @@
+options ls=120 ps=58 nocenter compress=yes replace mprint;
+
+libname base v612 '/surf/b/PSID/Base';
+libname ind v612 '/surf/a/PSID/Data/Wealth';
+libname out V8 "/surf/b/PSID/House8";
+
+%include 'psidfamv.mac';   /* the file that contains the macros used here */
+%include 'erget2.mac';  /* macro to get early release data */
+
+/* these are lists of variables for years before 1994. in this example,
+   the variable list begins in 1985 and ends with 1993.
+   NOTE: you can delete these let's and sqlvarl's if you don't need any
+	 data from before 1994.
+   note2: i get these lists from the concordance file...i just copy it and
+	  clean it up a little for the variables i want.
+   note3: a "---" indicates the variable is not available in a given year.
+	  the macro recognizes "---" and skips that year.
+*/
+
+%let hdcoll=11956 13579 14626 16100 17497 18828 20128 21434 23290;
+%let wfcoll=12311 13510 14557 16031 17428 18759 20059 21365 23222;
+
+%sqlvarl(&hdcoll,85,93);
+%sqlvarl(&wfcoll,85,93);
+
+/* early release school attendance (whether student)
+
+   NAME99  NAME97  NAME96 NAME95 NAME94 LABEL
+   ======= ======= ====== ====== ====== =====
+   ER15856 ER11777 ER9010 ER6764 ER3894 K44 WTR ATTEND COLLEGE (wife)
+   ER15948 ER11865 ER9075 ER6829 ER3959 L51 WTR ATTEND COLLEGE (head)
+*/
+
+%let wfcoll=ER15856 ER11777 ER9010 ER6764 ER3894;
+%let hdcoll=ER15948 ER11865 ER9075 ER6829 ER3959;
+
+/* the following makes a macro variable varx[yy]
+   where yy=year and varx[yy] will be a list of variables for
+   year yy separated by spaces
+   Arguments are:
+      varlist = list of variables by measure across years
+      begyr = year for first in list
+      endyr = year for last in list
+
+   NOTE: if begyr > endyr then will assign backwards, e.g.,
+	    %erlst(vlist,99,94)
+	 will add first var in vlist to varx99, second to varx97,
+	 etc., last var in vlist to varx94, whereas:
+	    %erlst(vlist,94,99)
+	 will add first var in vlist to varx94, second to varx95,
+	 etc., last var in vlist to varx99.
+     Note also that erlst takes into account that after 1997, years are
+     incremented by 2 instead of 1.
+     Note2: if a variable name begins with "--" the erlst macro will skip
+	    adding a variable for the corresponding year.
+*/
+
+%erlst(&wfcoll,99,94);
+%erlst(&hdcoll,99,94);
+
+/* this just shows the year-specific variable lists in the log file */
+%put varx99 &varx99;
+%put varx97 &varx97;
+%put varx96 &varx96;
+%put varx95 &varx95;
+%put varx94 &varx94;
+
+/* the following uses the individual file to select the sample
+   to match to when processing family files. */
+
+data ind;
+   set base.er68_99i (keep=id famnum: lsamp immsamp);
+run;
+proc freq data=ind;
+   table lsamp immsamp /missing list;
+run;
+
+proc sort data=ind;  by id;
+data ind1;
+   set ind;
+   by id;
+   dup=first.id=0 or last.id=0;
+   if id ne .;
+   if lsamp=0 and immsamp=0;
+
+run;
+proc freq data=ind1;
+   table dup /missing list;
+run;
+
+proc sql;
+
+   /**** if not going back before 1994, SKIP this sqlsome ****/
+   /* gets 1968 thru 1993 variables from fam68 thru fam93 for ind1
+      sample, by looping through all the family files*/
+   %sqlsome(base,85,93,ind1);
+   
+   /* get early release data */
+   %erget(94,famnum=er2002,yrlst=&varx94,fmwt=N,fcwt=N);
+   %erget(95,famnum=famnum95,yrlst=&varx95,fmwt=N,fcwt=N);
+   %erget(96,famnum=famnum96,yrlst=&varx96,fmwt=N,fcwt=N);
+   %erget(97,famnum=famnum97,yrlst=&varx97,fmwt=N,fcwt=N);
+   %erget(99,famnum=famnum99,yrlst=&varx99,fmwt=N,fcwt=N);
+
+/* merge all the parts together.
+   NOTE: delete fam[yy] for years you're not using ***/
+
+data out.tmp;
+   merge fam85 fam86 fam87 fam88 fam89
+	 fam90 fam91 fam92 fam93 fam94 
+	 fam95 fam96 fam97 fam99 
+         ind1
+	 out.demogid (keep=id seq: relhd: );  /* source for seq and relhd */
+   by id;
+
+   if id ne .;
+   if first.id=1;
+
+   /* relhd=1 or 10 for head, 2 or 20 for wife.  2-digit relhd codes begin
+      in 1984, i think */
+
+   array relhd_{1968:1999} relhd68-relhd99;
+   array seq_{1968:1999} _seq68 seq69-seq99;
+
+   /* other arrays...remember to hold a place for 98, so things
+      line up */
+
+   drop seq98 relhd98;  /* these are just dummies */
+
+   /* everyone has a seq68>0 so set a dummy to be zero if
+      individual not there in 1968, based on relhd68. */
+
+   if relhd68<=0 then _seq68=0;
+   else _seq68=seq68;
+
+   /* change yr range to process whatever years you want */
+
+   do yr=1968 to 1997, 1999;
+
+      /* note: if seq[yy] is 50-59 then individual is in FU but living
+	       away, e.g., away at school or in jail */
+
+      if 0<seq_{yr}<50 then do;  /* only do guys who are in FU */
+
+	 /* what ever processing you want to do by year */
+
+      end;
+
+   end;
+
+run;
+proc contents data=out.tmp;

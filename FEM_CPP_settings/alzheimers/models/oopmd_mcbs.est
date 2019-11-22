@@ -1,0 +1,30 @@
+regress
+oopmd_mcbs
+age75p	62.48758
+age75l	2.048787
+male	-372.6755
+black	-478.9328
+hispan	-449.0435
+hsless	-673.8773
+college	486.3236
+widowed	79.78816
+single	-374.1264
+cancre	469.0486
+hibpe	116.7508
+hearte	317.3974
+lunge	97.30577
+stroke	509.6971
+nhmliv	16114.91
+adl3	1359.176
+alzhmr	797.6329
+adl3_alzhmr	-254.1081
+diclaim	630.9216
+died	1476.964
+diabe_hearte	550.6042
+diabe_hibpe	545.0106
+hibpe_hearte	-93.22947
+hibpe_stroke	-296.0309
+diclaim_died	-1603.171
+diclaim_nhmliv	-8921.589
+died_nhmliv	-9902.659
+_cons	1246.048

@@ -1,0 +1,164 @@
+\subsection{Transition model}
+\label{sec:estimation_transition_model} 
+We consider a large set of outcomes for which we model transitions. Table \ref{tab:transitioned_outcomes} gives the set of outcomes considered for the transition model 
+along with descriptive statistics and the population at risk when estimating the relationships. 
+
+Since we have a stock sample from the age 51+ population, each respondent goes through an individual-specific series of intervals. Hence, 
+we have an unbalanced panel over the age range starting from 51 years old. Denote by $j_{i0}$ the first age at which respondent $i$ is 
+observed and $j_{iT_i}$ the last age when he is observed. Hence we observe outcomes at ages $j_i = j_{i0},\ldots,j_{iT_i}$. 
+
+We first start with discrete outcomes which are absorbing states (e.g. disease 
+diagnostic, mortality, benefit claiming). Record as $h_{i,j_i,m}=1$ if the 
+individual outcome $m$ has occurred as of age $j_i$. We assume the 
+individual-specific component of the hazard can be decomposed in a time 
+invariant and variant part. The time invariant part is composed of the effect of 
+observed characteristics $x_i$ that are constant over the entire life course and 
+initial conditions $h_{i,j_0,-m}$ (outcomes other than the outcome 
+$m$) that are determined before the first age in which each individual is observed
+\footnote{Section \ref{sec:model_development_transition_model} explains why the $h_{i,j_0,-m}$ terms are included.}. 
+The time-varying part is the effect of previously diagnosed outcomes $h_{i,j_i-1,-m}$, 
+on the hazard for $m$.\footnote{With some abuse of notation, $j_i-1$ denotes 
+the previous age at which the respondent was observed.}  We assume an index of 
+the form  $z_{m,j_i} = x_i\beta_m + h_{i,j_i-1,-m} \gamma_m + h_{i,j_0,-m}\psi_m$. Hence, the 
+latent component of the hazard is modeled as 
+\begin{equation}
+h^*_{i,j_i,m}= x_i\beta_m + h_{i,j_i-1,-m} \gamma_m + h_{i,j_0,-m}\psi_m + a_{m,j_i} + \varepsilon_{i,j_i,m},
+\label{eqn:transition_hzd_latent}
+\end{equation}
+\[
+m = 1,\ldots,M_0 \mbox{, } j_i = j_{i0},\ldots,j_{i,T_i} \mbox{, } i=1,\ldots,N
+\]
+The term $\varepsilon_{i,j_i,m}$ is a time-varying shock specific to age $j_i$. 
+We assume that this last shock is normally distributed and uncorrelated across 
+diseases.  We approximate $a_{m,j_i}$ with an age spline. After several specification checks, 
+knots at age 65 and 75 appear to provide the best fit. This simplification is made 
+for computational reasons since the joint estimation with unrestricted age fixed 
+effects for each condition would imply a large number of parameters.  The 
+absorbing outcome, conditional on being at risk, is defined as 
+\[
+h_{i,j_i,m} = \max\{I(h^*_{i,j_i,m} > 0), h_{i,j_i-1,m}\}
+%\label{eqn:transition_outcome}
+\]
+The occurrence of mortality censors observation of other 
+outcomes in a current year. Mortality is recorded from exit interviews.
+
+A number of restrictions are placed on the way feedback is allowed in the model.  
+Table \ref{tab:transition_restrictions} documents restrictions placed on the 
+transition model. We also include a set of other controls. A list of such controls 
+is given in Table \ref{tab:controlvar_descs} along with descriptive statistics. 
+
+We have three other types of outcomes:
+\begin{enumerate}
+\item First, we have binary outcomes which are not an absorbing state, such as living in a nursing home. We specify latent 
+indices as in (\ref{eqn:transition_hzd_latent}) for these outcomes as well but where 
+the lag dependent outcome also appears as a right-hand side variable. This allows for state-dependence. 
+
+\item Second, we have ordered outcomes. These outcomes are also modeled as in (\ref{eqn:transition_hzd_latent}) recognizing the observation rule is 
+a function of unknown thresholds $\varsigma_m$. Similarly to binary outcomes, we allow for state-dependence by including the lagged outcome 
+on the right-hand side.
+
+\item The third type of outcomes we consider are censored outcomes, earnings and financial wealth. Earnings are only observed when individuals 
+work. For wealth, there are a non-negligible number of observations with zero and negative wealth. For these, we consider two part models 
+where the latent variable is specified as in (\ref{eqn:transition_hzd_latent}) but model probabilities only when censoring does not occur. In 
+total, we have $M$ outcomes.
+\end{enumerate}
+
+The parameters 
+$\mathbf{\theta}_1 = \left(\left\{\beta_m, \gamma_m, \psi_m, \varsigma_m\right\}_{m=1}^M, \right)$, 
+can be estimated by maximum likelihood. Given the normality distribution assumption on the 
+time-varying unobservable, the joint probability of all time-intervals until failure, right-censoring 
+or death conditional on the initial conditions $h_{i,j_0,-m}$ is the product of 
+normal univariate probabilities. Since these sequences, conditional on initial 
+conditions, are also independent across diseases, the joint 
+probability over all disease-specific sequences is simply the product of 
+those probabilities. 
+
+For a given respondent observed from initial age $j_{i0}$ to a last age $j_{T_i}$, the probability of the observed health history is 
+(omitting the conditioning on covariates for notational simplicity)
+\[
+	l^{-0}_i(\mathbf{\theta}; h_{i,j_{i0}}) = \left[\prod_{m=1}^{M-1} \prod_{j=j_{i1}}^{j_{T_i}} P_{ij,m}(\mathbf{\theta})^{(1-h_{ij-1,m})(1-h_{ij,M})} \right] \times \left[\prod_{j=j_{i1}}^{j_{T_i}} P_{ij,M}(\mathbf{\theta}) \right]
+\]
+We use the ${-0}$ superscript to make explicit the conditioning on $\mathbf{h}_{i,j_{i0}} = (h_{i,j_{i0},0},\ldots,h_{i,j_{i0},M})'$. We have limited information on outcomes prior to this age. 
+The likelihood is a product of $M$ terms with the $m$th term containing only 
+$(\beta_m, \gamma_m, \psi_m, \varsigma_m)$.  This allows the estimation
+to be done seperately for each outcome.
+
+\subsubsection{Inverse Hyperbolic Sine Transformation}
+One problem fitting the wealth and earnings distribution is that they have a long right tail and wealth has some negative values. We use a 
+generalization of the inverse hyperbolic sine transform (IHT) presented in \citet{mackinnon1990transforming}. First denote the variable of 
+interest $y$. The hyperbolic sine transform is 
+\begin{equation}
+y = \sinh(x) = \frac{\exp(x) - \exp(-x)}{2}
+\label{eqn:sinh_y}
+\end{equation}
+The inverse of the hyperbolic sine transform is
+\[
+x = \sinh^{-1}(y) = h(y) = \log(y + (1+y^2)^{1/2})
+\]
+Consider the inverse transformation. We can generalize such transformation, first allowing for a 
+shape parameter $\theta$,
+\begin{equation}
+r(y) = h(\theta y)/\theta
+\label{eqn:generalized_ihs_shape}
+\end{equation}
+Such that we can specify the regression model as
+\begin{equation}
+r(y) = x\beta + \varepsilon, \varepsilon \sim \mathrm{N}(0, \sigma^2)
+\label{eqn:ihs_regression_model}
+\end{equation}
+A further generalization is to introduce a location parameter $\omega$ such that the new 
+transformation becomes
+\begin{equation}
+g(y) = \frac{h(\theta(y+\omega)) - h(\theta\omega)}{\theta h'(\theta \omega)}
+\label{eqn:geralized_ihs_loc_scale}
+\end{equation}
+where $h'(a) = (1+a^2)^{-1/2}$. 
+
+We specify (\ref{eqn:ihs_regression_model}) in terms of the transformation $g$. The shape parameters 
+can be estimated from the concentrated likelihood for $\theta, \omega$. We can then 
+retrieve $\beta, \sigma$ by standard OLS. 
+
+Upon estimation, we can simulate 
+\[
+\tilde{g} = x \hat{\beta} + \sigma \tilde{\eta}
+\]
+where $\eta$ is a standard normal draw. Given this draw, we can retransform using 
+(\ref{eqn:geralized_ihs_loc_scale}) and (\ref{eqn:sinh_y})
+\begin{align*}
+&h(\theta(y+\omega)) = \theta h'(\theta\omega)\tilde{g} + h(\theta\omega)\\
+&\tilde{y} = \frac{\sinh\left[\theta h'(\theta\omega)\tilde{g} + h(\theta\omega)\right]-\theta\omega}{\theta}
+\end{align*}
+
+% \todo link to transition_estimates.xls on box -- make link unique to the version of the appendix in make process
+%The estimates table\footnote{\input{estimates_table_link.tex}} gives parameter estimates for the transition models.
+
+%\newpage
+%\input{../tables/FEM/health_transition_est.tex}
+%\caption{Coefficient estimates and $t$-statistics for mortality and chronic condition transitions}
+%\label{tab:health_transition_est}
+%\end{longtable}
+%
+%\newpage
+%\input{../tables/FEM/econ_transition_est.tex}
+%\caption{Coefficient estimates and $t$-statistics for economic outcome transitions}
+%\label{tab:econ_transition_est}
+%\end{longtable}
+%
+%\newpage
+%\input{../tables/FEM/BMI_transition_est.tex}
+%\caption{Coefficient estimates and $t$-statistics for BMI outcome transition}
+%\label{tab:BMI_transition_est}
+%\end{longtable}
+%
+%\newpage
+%\input{../tables/FEM/ordered_transition_est.tex}
+%\caption{Coefficient estimates and $t$-statistics for ordered outcome transitions}
+%\label{tab:ordered_transition_est}
+%\end{longtable}
+%
+%\newpage
+%\input{../tables/FEM/IHS_transition_est.tex}
+%\caption{Coefficient estimates and $t$-statistics for transitioning outcomes with shape-preserving Inverse Hyperbolic Sine transformation}
+%\label{tab:IHS_transition_est}
+%\end{longtable}
+

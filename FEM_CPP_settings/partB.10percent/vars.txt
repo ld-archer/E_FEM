@@ -1,0 +1,2 @@
+mcare_ptB_premium_share = if(year < 2012, mcare_ptb_historic(year), 0.10)
+

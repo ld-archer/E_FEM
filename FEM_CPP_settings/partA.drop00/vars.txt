@@ -1,0 +1,1 @@
+mcare_pta_drop_percent = 0.00

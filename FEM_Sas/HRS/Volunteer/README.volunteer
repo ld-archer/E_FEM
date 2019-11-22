@@ -1,0 +1,62 @@
+Volunteer: Clean volunteer hours variables and impute missing values
+
+All *.sas files include the following file, which sets up locations of data directories, etc.
+		[root]fem_env.sas to set up libnames, location of Fmt/ and Mac/ dirs, max waves
+
+To make property tax, including imputations, run the following programs in listed order:
+
+prep_vol.sas - prepares data for imputations. Makes a file for each year.
+	includes: 
+		ranges_9802.inc generates the formats used to get ranges for unfolding bracket codes 98 to 02
+		ranges_04f.inc generates the formats used to get ranges for unfolding bracket codes 04 forward
+	input files:
+		/sch-stor1-a/data-library/public-data/HRS/SAS/rndhrs_k.sas7bdat
+		/sch-stor1-a/data-library/public-data/HRS/SAS/hrs[yy].sas7bdat, where [yy] is 98-08
+		/sch-stor1-a/data-library/public-data/HRS/SAS/hrsxregion.sas7bdat
+	output files: 
+		[root]/input_data/prep_vol[yy].sas7bdat, where [yy] is 98-08
+
+volimp.sas - imputes volunteer hours if missing (respondent level).
+	includes: 
+		[root]/FEM_Sas/HRS/Fmt/wealth.fmt formats for imputation flags
+		ranges_9802.inc generates the formats used to get ranges for unfolding bracket codes 98 to 02
+		ranges_04f.inc generates the formats used to get ranges for unfolding bracket codes 04 forward
+		macros04.inc macros for imputations
+	input files:
+		[root]/input_data/prep_vol[yy].sas7bdat, where [yy] is 98-08
+		/sch-stor1-a/data-library/public-data/HRS/SAS/rndhrs_k.sas7bdat
+		[root]/input_data/volimp[yrd].sas7bdat, where [yrd] is 02, the last year continuous 
+						values for hours is present.  02 is used as donor pool for continuous hours from 04 forward.
+					
+	output files:
+		[root]/input_data/volimp[yy].sas7bdat, where [yy] is 98-08
+
+volhours.sas - Merge total hours helped last month across years.
+	includes: 
+		[root]/FEM_Sas/HRS/Fmt/wealth.fmt formats for imputation flags
+		[root]/FEM_Sas/HRS/Mac/wvlist.mac macro to list variables across waves
+		[root]/FEM_Sas/HRS/Mac/wvlabel.mac macro to label variables across waves
+	input files:
+		[root]/input_data/volimp[yy].sas7bdat, where [yy] is 98-08
+		/sch-stor1-a/data-library/public-data/HRS/SAS/rndhrs_k.sas7bdat
+					
+	output files:
+		[root]/input_data/volhours.sas7bdat
+		[root]/input_data/volhours.dta
+
+	Key variables (* is the wave, 4-9):
+    r*volhours		Volunteer help hours /2 yrs
+    r*volffhours	Fam/friends help help hours /2 yrs
+   	catholic			Catholic
+  	jewish				Jewish
+  	reloth				Other religion
+  	relnone				No religion
+  	rel_notimp		Religion not important
+  	rel_someimp		Religion somewhat important
+  	suburb				Lives in suburbs
+  	exurb					Lives in exurbs
+
+Programs to check things, produce tables:
+volhours_tabs.sas		Do some tables on volunteer hours last 2 years.
+chkvol.sas					check raw variables used to derive volunteer hours 
+chkimp.sas					check imputed values

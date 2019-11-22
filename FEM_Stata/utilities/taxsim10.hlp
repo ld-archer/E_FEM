@@ -1,0 +1,262 @@
+{smcl}
+{* 26 Feb 2012}{...}
+{hline}
+help for {it:{hi:taxsim8}}                                         
+{hline}
+
+{title:NBER TAXSIM model for federal and state income taxes}
+
+{title:Description}
+
+{p 8 18 2}
+{cmdab:taxsim10}[{cmdab:f:ull} 
+{cmdab:s:econdary}|{cmdab:w:ages}|{cmdab:i:nterest}|{cmdab:l:ong} 
+{cmdab:p:lan} {cmdab:planv:al}]
+
+{p 4 4 2}calculates federal and state income tax liability from 21 input 
+variables.  These variables are be defined in your current workspace 
+before calling taxsim.  The program returns values for various tax return 
+concepts, taxes, credits, and marginal tax rates as new named variables in 
+a new dataset or merged into your current workspace. 
+
+{p 4 4 2}The tax calculator itself is the same FORTRAN program that the NBER 
+has been updating annually since 1974, but with a simplified input file (no 
+married filing separate or income averaging, etc). Unless special 
+arrangements are made this .ado interface merely packages up your data and 
+sends it to Cambridge for the actual calculations, which are returned and 
+merged into your current dataset. No tax calculations are done on your 
+computer.
+
+{title:Input Variables:}
+
+{p 4 4 2} {hi:year:} 4-digit year between 1960 and 2013. Between 1977 and
+2011 if state tax is requested. The default is 1960.
+
+{p 4 4 2} {hi:state:} state identifier. These are numeric codes from 1 to
+51 (Alabama to Wyoming in alphabetical order) with  zero indicating "no
+state tax".   
+
+{p 4 4 2} {hi:mstat:} Marital status 1 for single, 2 for joint (default), 3 for 
+head of household.
+
+{p 4 4 2} {hi:depx:} Number of dependents (usually kids, but can be 
+any age) per tax form. Must not be less than depchild (below).
+
+{p 4 4 2} {hi:agex:} Number of age 65+ taxpayers. 0, 1 or 2.
+
+{p 4 4 2} {hi:pwages:} Wage income of primary taxpayer
+
+{p 4 4 2} {hi:swages:} Wage income of secondary taxpayer
+
+{p 4 4 2} {hi:dividends:} Dividend income
+
+{p 4 4 2} {hi:otherprop:} Interest and other property income. This may be 
+negative. You can put net alimony here, and subtract any adjustments such 
+as IRAs, Keoghs and self employment tax, to the extent that you may know 
+such items.
+
+{p 4 4 2} {hi:pensions:} Taxable pension income
+
+{p 4 4 2} {hi:gssi:} Gross social security benefits. Taxsim will calculate the
+portion includable in AGI.
+
+{p 4 4 2} {hi:transfers:} Non-taxable transfer income, used for
+calculating low income credits and property tax credits on state taxes.
+
+{p 4 4 2} {hi:rentpaid:} Rent paid is used in some state property tax
+credits.
+
+{p 4 4 2} {hi:proptax:} Property tax paid is an itemized deduction and is a 
+preference for the AMT.
+
+{p 4 4 2} {hi:otheritem:} Taxes paid other than state income or local 
+property. Taxsim will use its own calculated state income tax as an itemized 
+deduction. These are preferences for the AMT.
+
+{p 4 4 2} {hi:childcare:} Child care expenses are a credit in the federal
+tax.
+
+{p 4 4 2} {hi:ui:} Unemployment compensation benefits. Taxsim will calculate the 
+portion included in AGI.
+
+{p 4 4 2} {hi:depchild:} Number of dependent children under 17 (for child
+credit).
+ 
+{p 4 4 2} {hi:mortgage:} Mortgage interest paid, possibly plus charitable 
+contibutions, and some minor items that are not preferences for the AMT.
+
+{p 4 4 2} {hi:stcg:} Short term capital gain or loss (+/-).
+
+{p 4 4 2} {hi:ltcg:} Long term capital gain or loss (+/-).
+
+{title:The following variables are returned by the procedure:}
+
+{p 4 4 2} {hi:fiitax:} Federal tax liability, after regular, minimum, and
+maximum tax, and after refundable credits.
+
+{p 4 4 2} {hi:siitax:} State tax liability after refundable credits.
+
+{p 4 4 2} {hi:fica:} FICA tax liability, sum of employer and employee shares.
+
+{p 4 4 2} {hi:frate:} Marginal federal tax rate wrt primary worker wages.  
+You can change this to the weighted average of the rates on the primary and 
+secondary earners, (equal weights if both are non-workers), secondary earner, 
+property income, or long term gains with the options, 
+{cmd:Wages},{cmd:Secondary}, {cmd:Interest} or {cmd:Long}.
+
+{p 4 4 2} {hi:srate:} Marginal state tax rate. Same options apply here.
+
+{p 4 4 2} {hi:ficar:} Marginal FICA rate. The estimate of FICA tax
+includes both employer and employee portions, and ignores the favorable
+treatment of self-employment income.
+
+{title:Missing Data:} {p 4 4 2} All data items are optional and will default 
+to zero. This parallels the IRS treatment of blank cells on the tax return.  
+We arbitrarily default year to 1960 and mstat to 2. A zero for state requests 
+"no state tax" and in that case zero is returned for the state tax liability. 
+Negative values are allowed only for capital gains and {hi:otherprop}, and 
+will cause an error abort if encountered in other variables.
+
+{title:Additional Output:} 
+
+{title:Parameters}
+
+{p 4 4 2}{cmd:full:} Return many intermediate calculations (taxable income, 
+regular tax, individual credits, etc. All the returned variables have labels 
+defined by the taxsim ado command - use "describe" to get the full list or browse 
+the web page below.
+
+{p 4 4 2}{cmd:secondary:}  Calculate marginal tax rates with respect to
+the secondary wage earner. The default is with respect to the primary wage
+earner.
+
+{p 4 4 2}{cmd:wages:} Calculate marginal tax rates with respect to a
+weighted average of the primary and secondary wage earner.
+
+{p 4 4 2}{cmd:interest:}  Calculate marginal tax rates with respect to
+interest income.
+
+{p 4 4 2}{cmd:long:}  Calculate marginal tax rates with respect to
+long term gains.
+
+{p 4 4 2}{cmd:Plan:} Modify the tax calculation according to the list of 
+alternative tax laws listed at 
+"http://www.nber.org/taxsim/taxsim=calc9/plans.html".
+
+{p 4 4 2}{cmd:PLANVar:} Parameter for the {cmd:Plan:}.
+
+{p 4 4 2}{cmd:plan2:} A second option to impose on the tax calculation.
+
+{p 4 4 2}{cmd:plan2var:} Parameter for the {cmd:plan2:}.
+
+{title:Global Variables:}
+
+{title:Notes:}
+
+{p 4 4 2}Dollar amounts are rounded to the nearest penny before
+transmission to the calculator, and calculated amounts are similarly
+treated.
+
+{p 4 4 2}The maximum upload file size is vague, but use caution for files larger 
+than 100,000 cases. Start small, and test the server reaction to larger files.
+  
+{p 4 4 2}Taxsim10.ado writes out the 21 variables (plus a record id) to 
+_txpy.raw in the current directory, an argument file in _argfile and a short 
+ftp script to _ftp. Then the same script downloads _txpy.taxsim (the 
+output of the taxsim calculator which is converted to _results.dta) and 
+_message (which contains any error messages from taxsim)..
+
+{p 4 4 2}You are welcome to bypass the .ado and log onto the server 
+(taxsimftp2.nber.org) yourself with username taxsim and password 02138. Files 
+are kept in /tmp under your username, generally for 3 days. There is no 
+privacy or security for these files.
+
+{p 4 4 2}Throughput is variable but one user reports 1,500
+records/minute with an excellent connection (25 milliseconds ping time).
+If you experience time-outs, please split your dataset into pieces for
+sequential processing, if processing is reliable, you may consider larger
+pieces. I would be interested in hearing reports.
+
+{title:Example:}
+{p 4 8 2}{cmd:. input state year mstat pwages}
+
+{p 4 8 2}{cmd:. 5 2004 1 50000}
+
+{p 4 8 2}{cmd:. end}
+
+{p 4 8 2}{cmd:. taxsim10 full interest}{p_end}
+
+{p 4 4 2} The example posits a single taxpayer in California with $50,000
+of wage income, and returns the marginal tax rate with respect to interest
+income, among other values.
+
+{title:Support:}
+
+{p 4 4 2}I would like to speak with anyone using this program with the intent of 
+publishing the results. Give me a call after you have done some experimenting, but 
+before investing a lot of time. A little discussion about your plans with me can 
+often be profitable. For questions/bug reports please follow the instructions 
+here.
+
+{p 4 4 2}If the problem is getting the ado file to work at all, please take a 
+small example and run with Stata tracing on and logging in text mode. Then 
+include _txpy.raw, _results.raw, _ftp and _messages with your email. If there 
+is no _results.raw file, that probably means that ftp wasn't found or didn't 
+work. The example here is the smallest possible taxsim10 program, and should 
+be sufficient for debugging total failure to calculate anything:
+
+{inp} 
+set trace on
+set tracedepth 1
+log using foo.text
+
+{p 4 8 2}{cmd: set trace on}
+
+{p 4 8 2}{cmd: log using foo,text}
+
+{p 4 4 2}If any individual taxpayer calculation surprises you, please enter the 
+taxpayer data in the web form mentioned below. A detailed explanation of the 
+calculation will be returned, which may remind you of a tax code feature or 
+interaction you were unaware of. If you still think the calculation is wrong, 
+attach a one-taxpayer .dta file to your email message and include a statement 
+about what you think the result should have been. We are very responsive to these 
+communications - they do result in improvements to the calculator, generally 
+within a day or two. But please send us a single record demonstrating the error, 
+not a large file. Some users anticipate we need to be encouraged to respond by the 
+possibility that the error is common and submit large files to demonstrate that. 
+This is not true and we invariably respond with a request that the file be cut 
+down. Other users remark that aggregate or average tax is implausibly high or low. 
+We can't easily debug such claims, but if you can suggest a particular combination 
+of data values that is wrong we will certainly investigate that.
+
+{p 4 4 2}Be sure to provide stata test runs with the smallest possible dataset that 
+demonstrates the problem (preferably one record), run with the debug flag set, and 
+attach the debug files. But always follow the instructions below.
+
+{p 4 4 2}See {browse "http://www.nber.org/taxsim/taxsim9/"} the TAXSIM web 
+site for additional information about the tax caculator. Although that is the 
+interface for the Web version of taxsim, there is much valuable information there 
+about the operation of the program and the calculation of marginal rates which may 
+surprise you.
+
+{p 4 4 2}The taxsim10 user interface differs from taxsim9 in that the {cmd: 
+replace} option is now the default, and the {cmd: output}, {cmd: debug) 
+options are no longer allowed.  Also, the current directory must be 
+sufficient for storage of the intermediate files - they no longer go to the 
+Stata temporary directory.
+
+{p 4 4 2}A general description of Taxsim is given in 
+{browse "http://www.nber.org/taxsim/feenberg-coutts.pdf"}.
+
+{col 5}Daniel Feenberg ( tax questions )     {col 36}Jean Roth (technical)
+{col 5}feenberg@nber.org                     {col 36}jroth@nber.org 
+{col 5}617-863-0343
+
+{p 4 13 2}
+Online:  help for {help taxsim8}
+{p_end}
+
+{p 4 13 2}
+Web: {browse "http://www.nber.org/taxsim/taxsim-calc9"}
+{p_end}
+

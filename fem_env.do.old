@@ -1,0 +1,138 @@
+/** \file
+
+This file parses all of the environment variables established in the Makefile and makes them available to Stata in the appropriate macros.
+*/
+
+local local_root : env ROOT
+local hrspub : env HRSPUB
+local hrsres : env HRSRESTRICT
+local hrssens : env HRSSENSITIVE
+local mcbs : env MCBSRESTRICT
+local mcbsdir : env MCBSDIR
+local hrsdir : env HRSDIR
+local meps : env MEPS
+local meps2 : env MEPS2
+local nhis : env NHIS
+local nhanes : env NHANES
+local hmd : env HMD
+local census : env CENSUS
+local fred : env FRED
+local v : env RANDVER
+local fv : env RANDFAMV
+local psidpub : env PSIDPUB
+local acs_dir : env ACS
+local cps_dir : env CPS
+local nhea : env NHEA
+
+local hrs92 : env HRS92
+local hrs93 : env HRS93
+local hrs94 : env HRS94
+local hrs95 : env HRS95
+local hrs96 : env HRS96
+local hrs98 : env HRS98
+local hrs00 : env HRS00
+local hrs02 : env HRS02
+local hrs04 : env HRS04
+local hrs06 : env HRS06
+local hrs08 : env HRS08
+local hrs10 : env HRS10
+local hrs12 : env HRS12
+local hrs14 : env HRS14
+
+local brfss : env BRFSS
+local ca_dof : env CA_DOF
+
+* Define Local Path, where code and local changes are
+global local_path 		"`local_root'/FEM_Stata"
+global resmodels "`local_root'/FEM_Stata/Estimates/restrictedvars"
+
+* Define path to base data to create FEM cohorts
+global indata   			"`local_root'/base_data"
+
+* Define input data for FEM, such as incoming cohorts, etc
+global outdata 				"`local_root'/input_data"
+
+* Define the path for the default output and restricted output
+global output_dir `local_root'/output
+global routput_dir `local_root'/routput
+
+* Define path to HRS data
+global rand_hrs 				 "`hrspub'/RAND-HRS/rndhrs_`v'.dta"
+global randfamr           "`hrspub'/Stata/rndfamr_`fv'.dta"
+global rand_ver "`v'"
+global harmonized_hrs "`hrspub'/Harmonized_HRS_A/H_HRS_a.dta"
+
+* Define path to RAND HRS Fat files
+global hrs92 "`hrspub'/Stata/`hrs92'"
+global hrs93 "`hrspub'/Stata/`hrs93'"
+global hrs94 "`hrspub'/Stata/`hrs94'"
+global hrs95 "`hrspub'/Stata/`hrs95'"
+global hrs96 "`hrspub'/Stata/`hrs96'"
+global hrs98 "`hrspub'/Stata/`hrs98'"
+global hrs00 "`hrspub'/Stata/`hrs00'"
+global hrs02 "`hrspub'/Stata/`hrs02'"
+global hrs04 "`hrspub'/Stata/`hrs04'"
+global hrs06 "`hrspub'/Stata/`hrs06'"
+global hrs08 "`hrspub'/Stata/`hrs08'"
+global hrs10 "`hrspub'/Stata/`hrs10'"
+global hrs12 "`hrspub'/Stata/`hrs12'"
+global hrs14 "`hrspub'/Stata/`hrs14'"
+
+* Define path to HRS ExitIntws data
+global hrsexit          "`hrspub'/ExitIvws/X2010/Stata"
+
+
+* Define Path to HRS Fat Files
+global hrsfat                      "`hrspub'/8SE"
+
+* Define path to MCBS data
+global mcbs_dir 				"`mcbs'"
+
+* Define paths to store restricted data products (HRS, MCBS) - These are not used in the trunk.  If you are generating restricted data products, follow this template
+global dua_rand_hrs                 "`hrsdir'"
+global dua_mcbs_dir			 "`mcbsdir'"
+
+
+* Define path to MEPS data
+global meps_dir				  "`meps'"
+global meps_dir2				"`meps2'"
+
+* Define path to NHIS data
+global nhis_dir                         "`nhis'"
+
+* Define path to NHANES data
+global nhanes_dir	                "`nhanes'"
+
+* Define path to Humand Mortality Database data
+global hmd_dir                          "`hmd'"
+
+* Define path to Census population estimates data
+global census_dir                          "`census'"
+
+* Define the path to the FRED data (e.g. CPI)
+global fred_dir "`fred'"
+
+* Define path to restricted HRS data on Social Security and defined benefits pension data
+global hrs_restrict				"`hrsres'"
+global hrs_sensitive			"`hrssens'/Stata"
+
+* Define which waves we are interested in
+global firstwave 1
+global lastwave  12
+
+* This global is for the datasets that only go to wave 7
+global hrskeepwv 7
+
+* Define which years of the PSID we are interested in
+global firstyr 1999
+global lastyr 2015
+
+global psid_dir "`psidpub'"
+global acs_dir "`acs_dir'"
+
+global nhea_dir "`nhea'"
+
+global brfss_dir "`brfss'"
+global ca_dof_dir "`ca_dof'"
+
+adopath ++ $local_path/utilities

@@ -1,0 +1,302 @@
+options ls=120 ps =58 nocenter compress=yes replace mprint;
+
+libname raw "/sch-stor1-a/data-library/public-data/PSID/Sas/Raw";
+libname out ".";
+
+%let maxyr=2009;
+
+%include 'psidget.mac';  /* macro to get early release data */
+%include "listyrv.mac";
+%include "yrlab.mac";
+
+
+/********************************************************************************
+Goal:  Pull race (head and wife) and marital status (head) from PSID family files
+
+********************************************************************************/
+
+/******** INDIVIDUAL FILE VARIABLES ****************************************************/
+/******** Usually needed are famnum, seq, relhd ****************************************/
+%let seqin=[68]ER30002 [69]ER30021 [70]ER30044 [71]ER30068 [72]ER30092 [73]ER30118 
+           [74]ER30139 [75]ER30161 [76]ER30189 [77]ER30218 [78]ER30247 [79]ER30284 
+           [80]ER30314 [81]ER30344 [82]ER30374 [83]ER30400 [84]ER30430 [85]ER30464 
+           [86]ER30499 [87]ER30536 [88]ER30571 [89]ER30607 [90]ER30643 [91]ER30690 
+           [92]ER30734 [93]ER30807 [94]ER33102 [95]ER33202 [96]ER33302 [97]ER33402 
+           [99]ER33502 [01]ER33602 [03]ER33702 [05]ER33802 [07]ER33902 [09]ER34002;
+
+%let famnumin=[68]ER30001 [69]ER30020 [70]ER30043 [71]ER30067 [72]ER30091 
+              [73]ER30117 [74]ER30138 [75]ER30160 [76]ER30188 [77]ER30217 [78]ER30246 
+              [79]ER30283 [80]ER30313 [81]ER30343 [82]ER30373 [83]ER30399 [84]ER30429 
+              [85]ER30463 [86]ER30498 [87]ER30535 [88]ER30570 [89]ER30606 [90]ER30642 
+              [91]ER30689 [92]ER30733 [93]ER30806 [94]ER33101 [95]ER33201 [96]ER33301 
+              [97]ER33401 [99]ER33501 [01]ER33601 [03]ER33701 [05]ER33801 [07]ER33901 
+              [09]ER34001;
+/* NOTE: these were not easily listed cross-year wise. 
+   If pulling 1968 family data please verify that V2 is the correct famnum to use */
+%let famfidin=[68]V2     [69]V442   [70]V1102  [71]V1802  [72]V2402  [73]V3002  
+              [74]V3402  [75]V3802  [76]V4302  [77]V5202  [78]V5702  [79]V6302
+              [80]V6902  [81]V7502  [82]V8202  [83]V8802  [84]V10002 [85]V11102 
+              [86]V12502 [87]V13702 [88]V14802 [89]V16302 [90]V17702 [91]V19002 
+              [92]V20302 [93]V21602 [94]ER2002 [95]ER5002 [96]ER7002 [97]ER10002
+              [99]ER13002 [01]ER17002 [03]ER21002 [05]ER25002 [07]ER36002 [09]ER42002;
+
+%let relhdin=[68]ER30003 [69]ER30022 [70]ER30045 [71]ER30069 [72]ER30093 
+             [73]ER30119 [74]ER30140 [75]ER30162 [76]ER30190 [77]ER30219 [78]ER30248 
+             [79]ER30285 [80]ER30315 [81]ER30345 [82]ER30375 [83]ER30401 [84]ER30431 
+             [85]ER30465 [86]ER30500 [87]ER30537 [88]ER30572 [89]ER30608 [90]ER30644 
+             [91]ER30691 [92]ER30735 [93]ER30808 [94]ER33103 [95]ER33203 [96]ER33303 
+             [97]ER33403 [99]ER33503 [01]ER33603 [03]ER33703 [05]ER33803 [07]ER33903 
+             [09]ER34003;
+
+/******** FAMILY FILE VARIABLES *******************************************************/
+%let hdracein=[68]V181 [69]V801 [70]V1490 [71]V2202 [72]V2828 [73]V3300 [74]V3720 
+	[75]V4204 [76]V5096 [77]V5662 [78]V6209 [79]V6802 [80]V7447 [81]V8099 [82]V8723 
+	[83]V9408 [84]V11055 [85]V11938 [86]V13565 [87]V14612 [88]V16086 [89]V17483 [90]V18814 
+	[91]V20114 [92]V21420 [93]V23276 [94]ER3944 [95]ER6814 [96]ER9060 [97]ER11848 [99]ER15928 
+	[01]ER19989 [03]ER23426 [05]ER27393 [07]ER40565 [09]ER46543;
+%let wfracein= [85]V12293 [86]V13500 [87]V14547 [88]V16021 [89]V17418 [90]V18749 [91]V20049 
+	[92]V21355 [93]V23212 [94]ER3883 [95]ER6753 [96]ER8999 [97]ER11760 [99]ER15836 [01]ER19897 
+	[03]ER23334 [05]ER27297 [07]ER40472 [09]ER46449;
+%let hdmarrin=[77]V5502 [78]V6034 [79]V6659 [80]V7261 [81]V7952 [82]V8603 [83]V9276 
+	[84]V10426 [85]V11612 [86]V13017 [87]V14120 [88]V15136 [89]V16637 [90]V18055 
+	[91]V19355 [92]V20657 [93]V22412 [94]ER2014 [95]ER5013 [96]ER7013 [97]ER10016 
+	[99]ER13021 [01]ER17024 [03]ER21023 [05]ER25023 [07]ER36023 [09]ER42023;
+
+
+/* Make a list of variable names from the XXXXXin list */
+%yrvlist(&hdracein,begy=1999);
+%yrvlist(&wfracein,begy=1999);
+%yrvlist(&hdmarrin,begy=1999);
+
+/* this macro will list the vars[yy] macro variables */
+%macro chkvars(begy,endy);
+   %do year=&begy %to &endy;
+       %let yr=%substr(&year,3);
+       %if (&year ge 1968 and &year le 1997) or
+           (&year>1997 and %index(13579,%substr(&year,4,1))>0) 
+           %then %put vars&yr = &&vars&yr;
+   %end;
+%mend chkvars;
+
+/* Display the vars[yy] macro variables */
+%chkvars(1999,2009);
+
+
+/* make macro variables to list raw variables across all years */
+
+/*** individual file ***/
+%let famnum=%selectv(%quote(&famnumin),begy=1968,endy=1968);
+%let famnum=&famnum %selectv(%quote(&famnumin),begy=1999);
+%let seq=%selectv(%quote(&seqin),begy=1968,endy=1968);
+%let seq=&seq %selectv(%quote(&seqin),begy=1999);
+%let famfid=%selectv(%quote(&famfidin),begy=1999);
+%let relhd=%selectv(&relhdin,begy=1999);
+
+/*** family file variables ***/
+%let hdrace=%selectv(%quote(&hdracein),begy=1999);
+%let wfrace=%selectv(%quote(&wfracein),begy=1999);
+%let hdmarr=%selectv(%quote(&hdmarrin),begy=1999);
+
+
+/* the following uses the individual file to select the sample
+   to match to when processing family files. 
+   This is the place to pull needed variables from 
+   the individual file, but further processing should
+   be done in the data step that merges in the family file
+   data, except for famnum, seq, and relhd. */
+
+data ind;
+   set raw.ind&maxyr.er (keep=&famnum &seq &relhd);
+   
+   array famnumin_[*] &famnum;
+   array famnum_[*]   famnum68 %listyrv(famnum,begy=1999);
+   array seqin_[*]    &seq;
+   array seq_[*]      pn68 %listyrv(seq,begy=1999);
+   array relhdin_[*]  _dum &relhd;
+   array relhd_[*]    _dum %listyrv(relhd,begy=1999);
+   
+   do i=1 to dim(famnum_);
+      famnum_[i]=famnumin_[i];
+      seq_[i]=seqin_[i];
+      relhd_[i]=relhdin_[i];
+   end;
+   
+   id=famnum68*1000 + pn68;
+   drop _dum &famnum &seq &relhd;
+run;
+proc means ;
+  title2 check for missing IDs - does N match nobs on file;
+  var id;
+  run;
+title2;
+proc sort data=ind;  by id;
+data ind1 dups;
+   set ind;
+   by id;
+   dup=first.id=0 or last.id=0;
+   if id=. then output dups;
+   if dup=1 then output dups;
+   else if first.id then output ind1;
+run;
+proc freq data=dups;
+   table dup /missing list;
+proc print data=dups (obs=10);
+   title2 duplicates or missing ids - first 10 obs;
+run;
+
+proc sql;
+
+   /* gets variables for requested years and merge to ids in ind1
+      by looping through all the family files
+      Assumes vars[yy] macro vars have been set up (see yrvlist macro)
+   */
+   
+   %famget(raw,ind1,begy=1999,famid=&famfid);
+
+proc print data=fam99 (obs=10);
+  title2 fam99;
+  id id;
+run;
+
+proc print data=fam09 (obs=10);
+  title2 fam09;
+  id id;
+run;
+
+proc print data=fam99 (where=(id=4003) obs=10);
+  title2 fam99 - id 4003;
+  id id;
+run;
+
+proc print data=fam09 (where=(id=4003) obs=10);
+  title2 fam09 - id 4003;
+  id id;
+run;
+proc print data=ind1 (where=(id=4003));
+   title2 ind1 - id 4003;
+   run;
+
+
+
+
+
+/* merge all the parts together. ***/
+
+data out.bryantest probs; /* change out.tmp to desired output file name */
+   merge %listyrv(fam,begy=1999)  /* this lists all the requested fam files */
+         ind1 (in=_ini drop=dup)
+	 ;  
+   by id;
+
+   inind=_ini;  /* flags cases found on individual file - should be all */
+   if id=. then output probs;
+   dupid=(first.id=0 or last.id=0);
+   if dupid=1 then output probs;  /* dups */
+
+   /* raw variables */
+   array hdrace_[*] &hdrace;
+   array wfrace_[*] &wfrace;
+   array hrmarr_[*] &hdmarr;   
+   
+   /* relhd=1 or 10 for head, 2 or 20 for wife.  2-digit relhd codes begin
+      in 1984, i think */
+
+   array relhd_[*] %listyrv(relhd,begy=1999);
+   array seq_[*] %listyrv(seq,begy=1999);
+   array inyr_[*] %listyrv(inyr,begy=1999);
+
+ 
+
+
+
+/**** CONFUSED AFTER THIS POINT****/
+
+
+
+   /* change yr range to process whatever years you want */
+   length year yr 3;
+   
+  
+   do i=1 to dim(seq_);
+      
+      /* get year from relhd varname */
+      yr=substr(vname(relhd_[i]),7);
+      if yr>=68 then year=1900+yr;
+      else year=2000+yr;
+      
+      /* seq # of 81-89 indicates someone who died since last interview */
+      diedyr_[i]=(81<=seq_[i]<=89);
+      _died=max(_died,diedyr_[i]);
+      died_[i]=_died;
+      
+      /* note: if seq[yy] is 50-59 then individual is in FU but living
+	       away, e.g., away at school or in jail */
+
+      if 0<seq_[i]<50 then do;  /* only do guys who are in FU */
+         inyr_[i]=1;
+        	 /* what ever processing you want to do by year */
+         if relhd_[i] in (1,10) then do;  /* HEADS */
+   	      /* THIS IS WHERE WE ASSIGN VARS TO HEAD OR WIFE */
+	
+              if hdshlth_[i]=8 then shlth_[i]=.D;
+   	       else if hdshlth_[i]=9 then shlth_[i]=.R;
+   	       else if 1<=hdshlth_[i]<=5 then shlth_[i]=hdshlth_[i];
+   	       else shlth_[i]=.M;  /* dont know why missing */
+         end;
+
+         else if relhd_[i] in (2,20,22) then do;  /* WIFE */
+   	       if wfshlth_[i]=8 then shlth_[i]=.D;
+   	       else if wfshlth_[i]=9 then shlth_[i]=.R;
+   	       else if 1<=wfshlth_[i]<=5 then shlth_[i]=wfshlth_[i];
+   	       else shlth_[i]=.M;  /* dont know why missing */
+         end;
+
+         else do;  /* set not head/wife to .H */
+           shlth_[i]=.H;
+         end;
+      end; /* people in FU */
+      
+      else inyr_[i]=0;
+      
+   end;  /* do i=1 to dim(seq_) */
+   
+   any_yr=max(of inyr_[*]);
+   
+   if first.id then output out.tmp;
+   
+   label %yrlab(shlth,Self-report of health,begy=1999)
+         %yrlab(famnum,Family Number,begy=1999)
+         %yrlab(seq,Year-specific sequence num,begy=1999)
+         %yrlab(inyr,Whether present in FU,begy=1999)
+         %yrlab(relhd,Relation to head,begy=1999)
+         %yrlab(diedyr,Died since last intervw,begy=1999)
+         %yrlab(died,Died anytime bef interview,begy=1999)
+         ;
+    drop yr year i _died;
+run;
+proc print data=probs (obs=10);
+title2 problems - missing ID or duplicate ID;
+run;
+proc means data=out.tmp;
+   title2 Checking famnum ids;
+   var famnum: &famfid ;
+   run;
+proc freq data=out.tmp;
+   table dupid any_yr relhd99*shlth99 relhd09*shlth09
+         inyr: shlth: died: seq:
+      /missing list;
+run;
+proc contents data=out.tmp;
+
+
+
+
+
+
+
+
+
+
+
+
+

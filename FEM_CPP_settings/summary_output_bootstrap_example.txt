@@ -1,0 +1,28 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+pop_medicare,Total Medicare Eligible Population (Millions),weight,sum,0.000001,1,ldied==0 & medicare_elig
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+start_pop70p,Total population 70+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 70
+end_pop70p,Total population 70+ (million),weight,sum,0.000001,1,died == 0 & age >= 70
+hispop70b,Total population 70+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 70 & hispan==1
+hispop70e,Total population 70+ (million),weight,sum,0.000001,1,died == 0 & age >= 70 & hispan==1
+blkpop70b,Total population 70+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 70 & black==1
+blkpop70e,Total population 70+ (million),weight,sum,0.000001,1,died == 0 & age >= 70 & black==1
+nhmliv_pop,Count of individuals in a nursing home,nhmliv,sum,1,weight,died == 0
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+mcare_tot,Total Medicare Costs,mcare,sum,1,weight,ldied==0
+mcare_pta_tot,Total Part A costs,mcare_pta,sum,1,weight,ldied==0
+mcare_ptb_tot,Total Part B costs,mcare_ptb,sum,1,weight,ldied==0
+mcare_ptd_tot,Total Part D costs,mcare_ptd,sum,1,weight,ldied==0
+mcare_pta_tot_enroll,Total Part A costs,mcare_pta_enroll,sum,1,weight,ldied==0
+mcare_ptb_tot_enroll,Total Part B costs,mcare_ptb_enroll,sum,1,weight,ldied==0
+mcare_ptd_tot_enroll,Total Part D costs,mcare_ptd_enroll,sum,1,weight,ldied==0
+caidmd,Total Medicaid costs,caidmd,sum,1,weight,ldied==0
+caidmd_mcbs,Total Medicaid costs from MCBS,caidmd_mcbs,sum,1,weight,ldied==0
+caidmd_meps,Total Medicaid costs from MEPS,caidmd_meps,sum,1,weight,ldied==0
+totmd_mcbs,Total Medical costs from MCBS,totmd_mcbs,sum,1,weight,ldied==0
+totmd_meps,Total Medical costs from MEPS,totmd_meps,sum,1,weight,ldied==0
+oopmd_mcbs,Total OOP from MCBS,oopmd_mcbs,sum,1,weight,ldied==0
+oopmd_meps,Total OOP from MEPS,oopmd_meps,sum,1,weight,ldied==0

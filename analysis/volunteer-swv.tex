@@ -1,0 +1,240 @@
+\documentclass{article}
+\usepackage{savetrees}
+\usepackage{hyperref}
+\usepackage[section]{placeins}
+\usepackage{datatool}
+
+\title{Analysis of Volunteering in the HRS}
+
+\begin{document}
+\maketitle
+\listoftables
+\listoffigures
+
+\begin{Rcode}
+library(foreign)
+library(ggplot2)
+library(survey)
+hrs <- read.dta('../input_data/hrs_analytic_recoded.dta')
+hrs <- subset(hrs, !is.na(wtresp) & wtresp > 0 & !died & wave %in% 3:7, select=!'r8' %in% names(hrs) | !'r9' %in% names(hrs))
+hrs[,'orgnonzero'] <- hrs[,'orghours'] > 0
+hrs[,'friendnonzero'] <- hrs[,'friendhours'] > 0
+wave3.age <- weighted.mean(hrs[hrs[,'wave'] == 3, 'age'], hrs[hrs[,'wave'] == 3, 'wtresp'])
+rhs <- 'age + black + hispan + male + hsless + college + work + hearte + stroke + cancre + hibpe + diabe + adl12 + adl3 + iadl1 + widowed + diclaim + ssclaim + dbclaim + wave'
+dorgnz <- svydesign( id=~ 1, data=hrs, weights= ~ wtresp)
+dfriendnz <- svydesign( id=~ 1, data=hrs, weights= ~ wtresp)
+org.ever.glm <- svyglm(paste('orgnonzero', rhs, sep=' ~ ') , family=quasibinomial(link='logit'), design=dorgnz)
+print(summary(org.ever.glm))
+friend.ever.glm <- svyglm(paste('friendnonzero', rhs, sep=' ~ '), family=quasibinomial(link='logit'), design=dfriendnz)
+print(summary(friend.ever.glm))
+orgnz <- subset(hrs, orgnonzero)
+frdnz <- subset(hrs, friendnonzero)
+dorg <- svydesign( id=~1, data=orgnz, weights=~wtresp)
+dfrd <- svydesign( id=~1, data=frdnz, weights=~wtresp)
+org.lm <- svyglm(paste('orghours', rhs, sep='~'), design=dorg)
+print(summary(org.lm))
+frd.lm <- svyglm(paste('friendhours', rhs, sep='~'), design=dfrd)
+print(summary(frd.lm))
+hrs[,'orgnonzero.p'] <- predict.glm(org.ever.glm, newdata=hrs, type='response', na.action=na.pass)
+hrs[,'friendnonzero.p'] <- predict.glm(friend.ever.glm, newdata=hrs, type='response', na.action=na.pass)
+hrs[,'orghours.p'] <- predict.glm(org.lm, newdata=hrs, type='response', na.action=na.pass) * hrs[,'orgnonzero.p']
+hrs[,'friendhours.p'] <- predict.glm(frd.lm, newdata=hrs, type='response', na.action=na.pass) * hrs[,'friendnonzero.p']
+hrs2 <- hrs
+hrs2[,'age'] <- wave3.age
+hrs[,'orgnonzero.a'] <- predict.glm(org.ever.glm, newdata=hrs2, type='response', na.action=na.pass)
+hrs[,'friendnonzero.a'] <- predict.glm(friend.ever.glm, newdata=hrs2, type='response', na.action=na.pass)
+hrs[,'orghours.a'] <- predict.glm(org.lm, newdata=hrs2, type='response', na.action=na.pass) * hrs[,'orgnonzero.a']
+hrs[,'friendhours.a'] <- predict.glm(frd.lm, newdata=hrs2, type='response', na.action=na.pass) * hrs[,'friendnonzero.a']
+rm(hrs2)
+gc()
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=orgs}
+hrs.s <- subset(hrs, !is.na(orghours) & orghours <= 200)
+ggplot(hrs.s, aes(x=orghours, weight=wtresp/1e6)) + geom_histogram() + facet_wrap( ~ wave) + labs(y='Millions of People')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{orgs}
+\caption{Weighted Histograms of Organizational Volunteer Hours}
+\end{figure}
+
+\begin{Rcode}{savefig,label=friends}
+hrs.s <- subset(hrs, !is.na(friendhours) & friendhours <= 200)
+ggplot(hrs.s, aes(x=friendhours, weight=wtresp/1e6)) + geom_histogram() + facet_wrap( ~ wave) + labs(y='Millions of People')
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{friends}
+\caption{Weighted Histograms of Friends and Family Volunteer Hours}
+\end{figure}
+
+
+\begin{Rcode}{}
+hrs[,'orgweight'] <- ifelse(is.na(hrs[,'orghours']), NA, hrs[,'wtresp'])
+hrs[,'friendweight'] <- ifelse(is.na(hrs[,'friendhours']), NA, hrs[,'wtresp'])
+
+hrs.waves <- split(hrs, hrs[,'wave'])
+
+orgnonzero <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'orgnonzero'], x[,'orgweight'], na.rm=T))
+orgnonzero.p <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'orgnonzero.p'], x[,'wtresp'], na.rm=T))
+orgnonzero.a <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'orgnonzero.a'], x[,'wtresp'], na.rm=T))
+orgmean <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'orghours'], x[,'orgweight'], na.rm=T))
+orgmean.p <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'orghours.p'], x[,'wtresp'], na.rm=T))
+orgmean.a <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'orghours.a'], x[,'wtresp'], na.rm=T))
+orgwtfactor <- sapply(hrs.waves, FUN=function(x) sum(x[,'wtresp'], na.rm=T)/sum(x[,'orgweight'], na.rm=T))
+orgtotal <- sapply(hrs.waves, FUN=function(x) sum(x[,'orghours'] * x[,'orgweight'], na.rm=T)/1e9) * orgwtfactor
+orgtotal.p <- sapply(hrs.waves, FUN=function(x) sum(x[,'orghours.p'] * x[,'wtresp'], na.rm=T)/1e9)
+orgtotal.a <- sapply(hrs.waves, FUN=function(x) sum(x[,'orghours.a'] * x[,'wtresp'], na.rm=T)/1e9)
+
+friendnonzero <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'friendnonzero'], x[,'friendweight'], na.rm=T))
+friendnonzero.p <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'friendnonzero.p'], x[,'wtresp'], na.rm=T))
+friendnonzero.a <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'friendnonzero.a'], x[,'wtresp'], na.rm=T))
+friendmean <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'friendhours'], x[,'friendweight'], na.rm=T))
+friendmean.p <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'friendhours.p'], x[,'wtresp'], na.rm=T))
+friendmean.a <- sapply(hrs.waves, FUN=function(x) weighted.mean(x[,'friendhours.a'], x[,'wtresp'], na.rm=T))
+friendwtfactor <- sapply(hrs.waves, FUN=function(x) sum(x[,'wtresp'], na.rm=T)/sum(x[,'friendweight'], na.rm=T))
+friendtotal <- sapply(hrs.waves, FUN=function(x) sum(x[,'friendhours'] * x[,'friendweight'], na.rm=T)/1e9) * friendwtfactor
+friendtotal.p <- sapply(hrs.waves, FUN=function(x) sum(x[,'friendhours.p'] * x[,'wtresp'], na.rm=T)/1e9)
+friendtotal.a <- sapply(hrs.waves, FUN=function(x) sum(x[,'friendhours.a'] * x[,'wtresp'], na.rm=T)/1e9)
+
+iearntotal <- sapply(hrs.waves, FUN=function(x) sum(x[,'iearn'] * x[,'wtresp'], na.rm=T)/1e9)
+
+dat <- data.frame(year=c(1996, 1998, 2000, 2002, 2004), orgtotal, orgtotal.p, orgtotal.a, friendtotal, friendtotal.p, friendtotal.a, iearntotal, orgnonzero, friendnonzero, orgnonzero.p, friendnonzero.p, orgnonzero.a, friendnonzero.a)
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=value}
+
+ggplot(dat, aes(x=year)) + 
+geom_line(aes(y=orgtotal*20.85, colour='Volunteering for Organization')) + 
+geom_line(aes(y=friendtotal*11.22, colour='Volunteering for Friends')) + 
+labs(x='Year', y='Billions of 2009 Dollars', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,100))
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=valuea}
+
+ggplot(dat, aes(x=year)) + 
+geom_line(aes(y=orgtotal.a*20.85, colour='Age-Adjusted Volunteering for Organization')) + 
+geom_line(aes(y=friendtotal.a*11.22, colour='Age-Adjusted Volunteering for Friends')) + 
+labs(x='Year', y='Billions of 2009 Dollars', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,100))
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=valuep}
+
+ggplot(dat, aes(x=year)) + 
+geom_line(aes(y=orgtotal.p*20.85, colour='Predicted Volunteering for Organization')) + 
+geom_line(aes(y=friendtotal.p*11.22, colour='Predicted Volunteering for Friends')) + 
+labs(x='Year', y='Billions of 2009 Dollars', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,100))
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{value}
+\caption{Total Value of Volunteering in the 51+ Population}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{valuea}
+\caption{Total Value of Volunteering in the 51+ Population}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{valuep}
+\caption{Total Value of Volunteering in the 51+ Population}
+\end{figure}
+
+\begin{Rcode}{savefig,label=fraction}
+ggplot(dat, aes(x=year)) +
+geom_line(aes(y=orgnonzero, colour='Fraction Volunteering for Organizations')) +
+geom_line(aes(y=friendnonzero, colour='Fraction Volunteering for Friends, etc')) + 
+labs(x='Year', y='Portion of Population', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,1))
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=fractiona}
+ggplot(dat, aes(x=year)) +
+geom_line(aes(y=orgnonzero.a, colour='Age-Adjusted Volunteering for Organizations')) +
+geom_line(aes(y=friendnonzero.a, colour='Age-Adjusted Volunteering for Friends')) +
+labs(x='Year', y='Portion of Population', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,1))
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=fractionp}
+ggplot(dat, aes(x=year)) +
+geom_line(aes(y=orgnonzero.p, colour='Predicted Fraction Volunteering for Organizations')) + 
+geom_line(aes(y=friendnonzero.p, colour='Predicted Fraction Volunteering for Friends')) +
+labs(x='Year', y='Portion of Population', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,1))
+\end{Rcode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{fraction}
+\caption{Fraction of 51+ Population who Volunteered}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{fractiona}
+\caption{Fraction of 51+ Population who Volunteered}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{fractionp}
+\caption{Fraction of 51+ Population who Volunteered}
+\end{figure}
+
+\begin{Rcode}{savefig,label=means}
+ggplot(dat, aes(x=year)) +
+geom_line(aes(y=orgmean, colour='Hours Volunteered for Organizations')) +
+geom_line(aes(y=friendmean, colour='Hours Volunteered for Friends, etc')) + 
+labs(x='Year', y='Number of Hours', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,70))
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=meansa}
+ggplot(dat, aes(x=year)) +
+geom_line(aes(y=orgmean.a, colour='Age-Adjusted Hours Volunteered for Organizations')) +
+geom_line(aes(y=friendmean.a, colour='Age-Adjusted Hours Volunteered for Friends, etc')) + 
+labs(x='Year', y='Number of Hours', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,70))
+\end{Rcode}
+
+\begin{Rcode}{savefig,label=meansp}
+ggplot(dat, aes(x=year)) +
+geom_line(aes(y=orgmean.p, colour='Predicted Hours Volunteered for Organizations')) +
+geom_line(aes(y=friendmean.p, colour='Predicted Hours Volunteered for Friends, etc')) + 
+labs(x='Year', y='Number of Hours', colour='Type of Work') + opts(legend.position='bottom') +
+scale_y_continuous(limits=c(0,70))
+\end{Rcode}
+
+
+\begin{figure}[ht]
+\centering
+\recallfig{means}
+\caption{Mean number of hours}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{meansa}
+\caption{Mean number of hours}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{meansp}
+\caption{Mean number of hours}
+\end{figure}
+
+
+\end{document}
+

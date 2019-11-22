@@ -1,0 +1,29 @@
+\section{Implementation}
+The FEM is implemented in multiple parts. Estimation of the transition and cross 
+sectional models is performed in Stata.
+The incoming cohort model is estimated in Stata using the CMP package \citep{statacmp2011}.
+The simulation is implemented in C++ to increase speed.  
+
+To match the two year structure of the Health and Retirement Study (HRS) data used to estimate the transition models, the FEM simulation 
+proceeds in two year increments. The end of each two year step is designed to occur on July 1st to allow for easier matching to population 
+forecasts from Social Security. A simulation of the FEM proceeds by first loading a population representative of the age 51+ US population 
+in 2004, generated from HRS. In two year increments, the FEM applies the transition models for mortality, health, working, wealth, 
+earnings, and benefit claiming with Monte Carlo decisions to calculate the new states of the population. The population is also adjusted by 
+immigration forecasts from the US Census Department, stratified by race and age. If incoming cohorts are being used, the new 51/52 year 
+olds are added to the population. The number of new 51/52 year olds added is consistent with estimates from the Census, stratified by race. 
+Once the new states have been determined and new 51/52 year olds added, the cross sectional models for medical costs, and calculations for 
+government expenditures and revenues are performed. Summary variables are then computed. Computation of medical costs includes the persons 
+that died to account for end of life costs. Other computations, such as Social Security benefits and government tax revenues, are 
+restricted to persons alive at the end of each two year interval. To eliminate uncertainty due to the Monte Carlo decision rules, the 
+simulation is performed multiple times (typically 100), and the mean of each summary variable is calculated across repetitions. 
+
+FEM simulation takes as inputs assumptions regarding growth in the national wage index, normal retirement age, real medical cost growth, 
+interest rates, cost of living adjustments, the consumer price index, significant gainful activity, and deferred retirement credit. The 
+default assumptions are taken from the 2010 Social Security Intermediate scenario, adjusted for no price increases after 2010. Therefore 
+simulation results are in real 2009 dollars.  Table \ref{tab:time_series_by_year} shows the assumptions for each calendar year and Table 
+\ref{tab:time_series_by_yob} shows assumptions for each birth year.
+
+Different simulation scenarios are implemented by changing any of the following components: incoming cohort model, transition models, 
+interventions that adjust the probabilities of specific transition, and changes to assumptions on future economic conditions.  	
+
+\input{./implementation_interventions.tex}

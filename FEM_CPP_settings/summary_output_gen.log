@@ -1,0 +1,505 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   16.0   Copyright 1985-2019 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+Single-user Stata perpetual license:
+       Serial number:  401606204723
+         Licensed to:  Nik Lomax
+                       The University of Leeds
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do "summary_output_gen.do" 
+
+. /*
+> This file generates the summary_output text file that FEM needs to generate s
+> ummary measures.  It is designed to generate
+> prevalence, incidence, total, mean, and percentile summary statistics.  Measu
+> res can be reported for the full population ("all") or by 
+> age ranges, gender, or race.
+> 
+> The user needs to:
+>         1. Provide a name for their output file (the local is called "filenam
+> e")
+>         2. Decide which measure to include.  Knowledge of the variable names 
+> in FEM is required.  (the local is named "measures")
+>         3. Decide what subpopulations to include. (the local is named "subpop
+> ")
+> */
+. 
+. set more off
+
+. quietly include ../fem_env.do
+
+. 
+. * Name of your input and output files
+. local scen : env measures_suffix
+
+. 
+. * Summary output file name
+. local filename summary_output_`scen'.txt
+
+. 
+. * Measures and subpopulations are defined here
+. include measures_subpop_`scen'.do
+
+. /*Measures you want to include:
+> 
+> Conventions: 
+> p_var -> variable prevalence    (ex. p_diabe is the prevalence of diabetes)
+> i_var -> variable incidence     (ex. i_diabe is the incidence of diabetes) 
+> n_var -> variable total (count) (ex. n_diabe is the number of individuals wit
+> h diabetes)
+> t_var -> variable total (cost)  (ex. t_totmd is the total medical costs)
+> a_var -> average                                                             
+>    (ex. a_totmd is the average medical cost)       
+> qnum_var -> quintile                                    (ex. q05_totmd -> fif
+> th percentile of total medical costs)
+> d_age -> average death age                (ex. d_age_blk is the average age o
+> f those who died, requires ldied ==0 & ldied == 1)
+> 
+> (Startpop is different since it uses the variable "weight" not "startpop")
+> m_startpop -> count (millions)                          (ex. m_startpop -> st
+> arting population in millions
+> m_endpop -> count (millions)                                    (ex. m_endpop
+>  -> ending population in millions
+> */
+. 
+. #d ;
+delimiter now ;
+. local measures  
+>                         m_startpop
+>                         m_endpop
+>                                                                 p_diabe      
+>    i_diabe         n_diabe 
+>                                                                 p_hibpe      
+>    i_hibpe         n_hibpe
+>                                                                 p_lunge      
+>    i_lunge         n_lunge 
+>                                                                 p_stroke     
+>    i_stroke  n_stroke
+>                                                                 p_hearte  i_h
+> earte  n_hearte
+>                                                                 p_cancre  i_c
+> ancre  n_cancre
+>                                                                              
+>                            i_died          n_died
+>                                                                              
+>                            a_bmi
+>                                                                              
+>                            p_adl1  p_adl2 p_adl3p
+>                                                                              
+>                            p_iadl1 p_iadl2p
+>                                                                              
+>                            p_anyadl p_anyiadl
+>                                                                              
+>                            a_age
+>                                                                              
+>                            p_smoken p_smokev
+>                                                                              
+>                            p_work
+>                                                                              
+>                            p_hlthlm
+>                                                                              
+>                                                                    
+> ;
+
+. #d cr
+delimiter now cr
+. 
+. 
+. /* Subpopulations you wish to analyze:
+> 
+> Conventions:
+> all - full living sample (ldied == 0)
+> wht - white
+> blk - black
+> his - hispanic
+> m - male
+> f - female
+> 5564 - 55 to 64
+> 6574 - 65 to 74
+> 7584 - 75 to 84
+> 85p - 85 plus
+> 65p - 65 plus
+> */
+. 
+. local subpop all m f 55p_m_l 55p_f_l 
+
+. 
+. 
+. 
+. * Setup the file, header, and required outcomes ...
+. 
+. * Open the file
+. file open sumfile using "`filename'", write replace
+
+. * The header
+. file write sumfile "| Label,Description,Variable,Summary Type,Factor,Weight,C
+> ondition" _n
+
+. 
+. 
+. * Generate the length of the lists
+. local measures_l : word count `measures'
+
+. local subpop_l : word count `subpop'
+
+. 
+. 
+. * Now add our measures and subpopulations
+. forvalues x = 1/`measures_l' {
+  2.         local a : word `x' of `measures'
+  3.         
+.         * Deal with particulars of prefixes     
+.         if substr("`a'",1,1) == "q" {
+  4.                 local vname = substr("`a'",5,.)
+  5.         }
+  6.         else {
+  7.                 local vname = substr("`a'",3,.)
+  8.         }
+  9.         
+.         
+.         * For subpopulation
+.         forvalues y = 1/`subpop_l' {
+ 10.                 local b : word `y' of `subpop'
+ 11.                 di "b is `b'"
+ 12.                 
+.                 *Selection logic
+.                 if "`b'" == "all" {
+ 13.                         local sel
+ 14.                         local samp "all"
+ 15.                 }
+ 16.                 else if "`b'" == "wht" {
+ 17.                         local sel "& black == 0 & hispan == 0"
+ 18.                         local samp "white"
+ 19.                 }
+ 20.                 else if "`b'" == "his" {
+ 21.                         local sel "& hispan == 1"
+ 22.                         local samp "hispanic"
+ 23.                 }
+ 24.                 else if "`b'" == "blk"{
+ 25.                         local sel "& black == 1"
+ 26.                         local samp "black"
+ 27.                 }
+ 28.                 else if "`b'" == "m" {
+ 29.                         local sel "& male == 1"
+ 30.                         local samp "male"
+ 31.                 }
+ 32.                 else if "`b'" == "f" {
+ 33.                         local sel "& male == 0"
+ 34.                         local samp "female"
+ 35.                 }       
+ 36.                 else if "`b'" == "5564" {
+ 37.                         local sel "& age >= 55 & age < 65"
+ 38.                         local samp "age 55 to 64"
+ 39.                 } 
+ 40.                 else if "`b'" == "6574" {
+ 41.                         local sel "& age >= 65 & age < 75"
+ 42.                         local samp "age 65 to 74"
+ 43.                 } 
+ 44.                 else if "`b'" == "7584" {
+ 45.                         local sel "& age >= 75 & age < 85"
+ 46.                         local samp "age 75 to 84"
+ 47.                 } 
+ 48.                 else if "`b'" == "85p" {
+ 49.                         local sel "& age >= 85"
+ 50.                         local samp "age 85 plus"
+ 51.                 } 
+ 52.                 else if "`b'" == "65p" {
+ 53.                         local sel "& age >= 65"
+ 54.                         local samp "age 65 plus"
+ 55.                 }
+ 56.                 else if "`b'" == "55p_l" {
+ 57.                         local sel "& age >= 55 & died == 0"
+ 58.                         local samp "age 55 plus living"
+ 59.                 }
+ 60.                 else if "`b'" == "55p_m_l" {
+ 61.                         local sel "& age >= 55 & male == 1 & died == 0"
+ 62.                         local samp "male age 55 plus living"
+ 63.                 }
+ 64.                 else if "`b'" == "55p_f_l" {
+ 65.                         local sel "& age >= 55 & male == 0 & died == 0"
+ 66.                         local samp "female age 55 plus living"
+ 67.                 }
+ 68.                 else if "`b'" == "educ1" {
+ 69.                         local sel "& hsless == 1"
+ 70.                         local samp "Less than HS"
+ 71.                 }
+ 72.                 else if "`b'" == "educ2" {
+ 73.                         local sel "& hsless == 0 & college == 0"
+ 74.                         local samp "High school"
+ 75.                 }
+ 76.                 else if "`b'" == "educ3" {
+ 77.                         local sel "& college == 1"
+ 78.                         local samp "College"
+ 79.                 }
+ 80.                 
+.                 * Prevalence measures
+.                 if substr("`a'",1,1) == "p" {
+ 81.                         file write sumfile "`a'_`b',Prevalence of `vname':
+>  Sample= `samp',`vname',mean,1,weight,l2died==0`sel'" _n
+ 82.                 }
+ 83.                 * Incidence measures
+.                 else if substr("`a'",1,1) == "i" {
+ 84.                         file write sumfile "`a'_`b',Incidence of `vname': 
+> Sample= `samp',`vname',mean,1,weight,l2died==0&l2`vname'==0`sel'" _n
+ 85.                 }
+ 86.                 * Sum measures (counts)
+.                 else if substr("`a'",1,1) == "n" {
+ 87.                         file write sumfile "`a'_`b',Sum of `vname': Sample
+> = `samp',`vname',sum,1,weight,l2died==0`sel'" _n
+ 88.                 }
+ 89.                 * Sum measures (costs)
+.                 else if substr("`a'",1,1) == "t" {
+ 90.                         file write sumfile "`a'_`b',Sum of `vname': Sample
+> = `samp',`vname',sum,1,weight,l2died==0`sel'" _n
+ 91.                 }
+ 92.                 else if substr("`a'",1,1) == "a" {
+ 93.                         file write sumfile "`a'_`b',Average of `vname': Sa
+> mple= `samp',`vname',mean,1,weight,l2died==0`sel'" _n
+ 94.                 }
+ 95.                 * Average age at death
+.                 else if substr("`a'",1,1) == "d" {
+ 96.                         file write sumfile "`a'_`b',Average `vname' at dea
+> th: Sample= `samp',`vname',mean,1,weight,l2died==0&died==1`sel'" _n
+ 97.                 }
+ 98.                 else if substr("`a'",1,1) == "q" {
+ 99.                         local pcnt = substr("`a'",2,2)
+100.                         file write sumfile "`a'_`b',`pcnt' percentile of `
+> vname': Sample = `samp',`vname',quantile-.`pcnt',1,weight,l2died==0`sel'" _n
+101.                 }
+102.                 else if substr("`a'",1,1) == "m" {
+103.                         if "`vname'" == "startpop" {
+104.                                 file write sumfile "`a'_`b',`vname' (milli
+> ons): Sample = `samp',weight,sum,0.000001,1,l2died == 0`sel'" _n
+105.                         }
+106.                         else if "`vname'" == "endpop" {
+107.                                 file write sumfile "`a'_`b',`vname' (milli
+> ons): Sample = `samp',weight,sum,0.000001,1,died == 0`sel'" _n
+108.                         }
+109.                 }
+110.         }
+111. }
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+b is all
+b is m
+b is f
+b is 55p_m_l
+b is 55p_f_l
+
+. 
+. file close sumfile
+
+. 
+. 
+. capture log close
+
+. 
+. 
+. 
+. 
+. 
+. 
+. /* 
+> Other measures
+> 
+> file write sumfile "mcare_tot,Total Medicare Costs,mcare,sum,1,weight,ldied==
+> 0" _n
+> file write sumfile "mcare_pta_tot,Total Part A costs,mcare_pta,sum,1,weight,l
+> died==0" _n
+> file write sumfile "mcare_ptb_tot,Total Part B costs,mcare_ptb,sum,1,weight,l
+> died==0" _n
+> file write sumfile "mcare_ptd_tot,Total Part D costs,mcare_ptd,sum,1,weight,l
+> died==0" _n
+> file write sumfile "mcare_pta_tot_enroll,Total Part A costs,mcare_pta_enroll,
+> sum,1,weight,ldied==0" _n
+> file write sumfile "mcare_ptb_tot_enroll,Total Part B costs,mcare_ptb_enroll,
+> sum,1,weight,ldied==0" _n
+> file write sumfile "mcare_ptd_tot_enroll,Total Part D costs,mcare_ptd_enroll,
+> sum,1,weight,ldied==0" _n
+> 
+> 
+> */
+. 
+. 
+end of do-file

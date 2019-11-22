@@ -1,0 +1,64 @@
+Gkidcare: pull variables on taking care of grandkids from count*kr and count*r files
+	These files are the precursors to RAND Family data (not yet released).
+
+All *.sas files include the following file, which sets up locations of data directories, etc.
+		[root]fem_env.sas to set up libnames, location of Fmt/ and Mac/ dirs, max waves
+
+To make gkid care data, including imputaitions, run the following programs in listed order:
+
+prep_gkcare.sas - prepares data for imputations. Makes a file for each year.
+	includes: 
+		[root]/FEM_Sas/HRS/Mac/wvlist.mac macro to list variables across waves
+		ranges_gkidcare.inc generates the formats used to get ranges for unfolding bracket codes
+	input files:
+		/sch-data-library/public-data/HRS/Unrestricted/Sas/rndfamk_c.sas7bdat
+		/sch-data-library/public-data/HRS/Unrestricted/Sas/rndfamr_c.sas7bdat
+		/sch-data-library/public-data/HRS/Unrestricted/SAS/rndhrs_k.sas7bdat
+		/sch-data-library/public-data/HRS/Unrestricted/SAS/hrs[yy].sas7bdat, where [yy] is 98-08
+		/sch-data-library/public-data/HRS/SAS/Unrestricted/hrsxregion.sas7bdat
+		/sch-data-library/public-data/HRS/SAS/Unrestricted/formats.sas7bcat
+	output files: 
+		[root]/input_data/prep_gkcare[yy].sas7bdat, where [yy] is 98-08
+
+gkcareimp.sas - imputes gkid care hours. Makes a file for each year.
+	includes: 
+		[root]/FEM_Sas/HRS/Fmt/wealth.fmt formats for imputation flags
+		ranges_gkidcare.inc generates the formats used to get ranges for unfolding bracket codes
+		macros04.inc macros for imputations
+	input files:
+		[root]/input_data/prep_gkcare[yy].sas7bdat, where [yy] is 98-08
+	output files:
+		[root]/input_data/gkcareimp[yr].sas7bdat, where [yy] is 98-08
+				
+gkcarehours.sas - pulls in gkid care hours and renames variables.  Makes a wide file (one obs per R)
+	includes: 
+		[root]/FEM_Sas/HRS/Mac/wvlist.mac macro to list variables across waves
+		[root]/FEM_Sas/HRS/Mac/wvlabel.mac macro to label variables across waves
+	input files:
+		[root]/input_data/gkcareimp[yr].sas7bdat, where [yy] is 98-08
+		/sch-stor1-a/data-library/public-data/HRS/Unrestricted/Sas/RANDFAM/count[yy]R.sas7bdat, where [yy] is 98-08
+		/sch-stor1-a/data-library/public-data/HRS/SAS/rndhrs_k.sas7bdat
+	output files:
+		[root]/input_data/gkcarehours.sas7bdat
+		[root]/input_data/gkcarehours.dta
+
+	Key variables (* is the wave, 4-9; [yy] is year 98-08):
+		r*anygkcare 		Any grandkid care last 2 yrs (0/1)
+		r*gkcarehrs 		Grandkid care hours / last 2 yrs
+		r*gkcarehrsf 		Grandkid care hours /imputation flag
+    aigkcare[yy] 		Grandkid care hours /conditional on any
+		r*nkid_liv10mi 	# of kids who live within 10 miles
+    kid_byravg[yy] 	Average birth year of kids
+    nkids[yy] 			Number of kids
+    kid_mnage[yy] 	Mean age of kids 
+
+====================================================================================
+Programs to make tables:
+
+gkcare_tabs.sas - runs tables on gkid care
+gkcare_tabs2.sas - tables on gkid care by anykids / # kids
+
+Programs to check things:
+liv10chk.sas	check source file variables on kids living within 10 miles or co-resident.
+chkdcare.sas	check variables related to grand kid care: living near by, living within 10 miles, grandkid care (any and hours)
+chkprep.sas		check _divhr application. _divhr counts # of years for reference period (2 yrs or since last interview)

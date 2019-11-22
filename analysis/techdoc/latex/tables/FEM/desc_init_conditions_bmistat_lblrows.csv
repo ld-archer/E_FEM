@@ -1,0 +1,5 @@
+normalwt,"\multirow{8}{*}{Ordered}","\multicolumn{1}{|c|}{\multirow{5}{*}{BMI status}}","normal","all"
+overwt,"","\multicolumn{1}{|c|}{}","overweight","all"
+obese1,"","\multicolumn{1}{|c|}{}","$30\leq$ BMI $<35$","all"
+obese2,"","\multicolumn{1}{|c|}{}","$35\leq$ BMI $<40$","all"
+obese3,"","\multicolumn{1}{|c|}{}","BMI $\geq 40$","all"

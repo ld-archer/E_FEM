@@ -1,0 +1,4 @@
+scenario_name,output_dir,settings,simutype,base_cohort_name,new_cohort_model,startyr,stpyr,endyr,nreps,medicare_elig_age,init_interventions,interventions,condlist,bin_hzd,bin_trst,ordered,cenbin,cencont,xsectional,detailed_output,continuous,psid_data,hrs_data
+vBaseline,routput,hrs,3,stock_hrs_2010,status_quo,2010,2060,2060,10,65,,,cancre diabe hibpe hearte lunge stroke,dbclaim ssclaim,nhmliv diclaim ssiclaim anyhi,logbmi smkstat adlstat iadlstat,work wlth_nonzero hicap_nonzero,iearnx hatotax,qaly,1,,0,1
+vCrossvalidation,routput,hrs hrs_crossvalidation,2,stock_hrs_1998,status_quo,1998,2060,2012,10,65,,,cancre diabe hibpe hearte lunge stroke,dbclaim ssclaim,nhmliv diclaim ssiclaim anyhi,logbmi smkstat adlstat iadlstat,work wlth_nonzero hicap_nonzero igxfr_nonzero proptax_nonzero,iearnx iearnuc hatotax,qaly helphoursyr helphoursyr_sp helphoursyr_nonsp tcamt_cpl ihs_tcamt_cpl,1,,0,1
+

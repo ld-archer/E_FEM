@@ -1,0 +1,26 @@
+/* labelyrv macro
+   labels variables for requested years, taking into
+   account years where no PSID interviews were done
+   
+   From 1968 to 1997 interviews were every year.
+   From 1999 to 2009 interviews are odd years.
+   
+   vname is the stem, a 2-digit year is the suffix,
+   and the labtxt is assigned as the var label.
+   yrinlab=Y will add '/&yr' to the label. Any other value 
+   will skip it.
+*/
+%macro labelyrv(vname,labtxt,begy=1968,endy=&maxyr,yrinlab=Y);
+    %do year=&begy %to &endy;
+        %let yr=%substr(&year,3,2);
+        %if (&year ge 1968 and &year le 1997) or
+            (&year>1997 and %index(13579,%substr(&year,4,1))>0) %then %do;
+            
+            %* yrinlab is Y if want /yr put into the variable label *;
+            %if &yrinlab=Y %then %let addyr=%str(/&yr);
+            %else %let addyr=;
+            
+            &vname&yr = "&labtxt &addyr"
+        %end;   
+    %end;
+%mend;

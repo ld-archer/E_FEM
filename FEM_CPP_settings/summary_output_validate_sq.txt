@@ -1,0 +1,56 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+pop_medicare,Medicare Pop (Millions),weight,sum,0.000001,1,l2died == 0 & medicare_elig
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,l2died == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,l2died == 0 & mcare_ptb_enroll == 1
+start_pop,Starting Population (million),weight,sum,0.000001,1,l2died == 0
+end_pop,Ending Population (million),weight,sum,0.000001,1,died == 0
+start_pop65p,Starting Population 65+ (Millions),weight,sum,0.000001,1,l2died==0 & age >= 65
+end_pop65p,Ending Population 65+ (Millions),weight,sum,0.000001,1,died==0 & age >= 65
+cancre,Prevelance of Cancer,cancre,mean,1,weight,died == 0
+diabe,Prevelance of Diabetes,diabe,mean,1,weight,died == 0
+hearte,Prevelance of Heart Disease,hearte,mean,1,weight,died == 0
+hibpe,Prevelance of Hypertension,hibpe,mean,1,weight,died == 0
+lunge,Prevelance of Lung Disease,lunge,mean,1,weight,died == 0
+stroke,Prevelance of Stroke,stroke,mean,1,weight,died == 0
+anycond,Prevelance of Any Health Condition,anycond,mean,1,weight,died == 0
+cond3p,Prevelance of 3 or more Health Conditions,cond3p,mean,1,weight,died == 0
+iadl1,Prevelance of 1 IADL,iadl1,mean,1,weight,died == 0
+iadl2p,PRevalence of 2+ IADLs,iadl2p,mean,1,weight,died==0
+adl1,Prevelance of 1 ADL,adl1,mean,1,weight,died == 0
+adl2,Prevelance of 2 ADLs,adl2,mean,1,weight,died == 0
+adl3p,Prevelance of 3+ ADLs,adl3p,mean,1,weight,died == 0
+nhmliv,Prevelance of In a Nursing Home,nhmliv,mean,1,weight,died == 0
+obese,Prevelance of Obese,obese,mean,1,weight,died == 0
+overwt,Prevelance of Overweight,overwt,mean,1,weight,died == 0
+smokev,Prevelance of Smoke Ever,smokev,mean,1,weight,died == 0
+smoken,Prevelance of Smoke Now,smoken,mean,1,weight,died == 0
+med_wealth,Median Wealth,hatota,median,1,weight,died == 0
+work,Fraction working,work,mean,1,weight,died == 0
+ry_earn,Average earnings,ry_earn,mean,1,weight,died == 0 & work == 1
+mcare_pta_enroll,Population enrolled in Medicare (Millions),mcare_pta_enroll,sum,.000001,weight, l2died == 0 & mcare_pta_enroll == 1
+ssclaim,Fraction claiming SS age >= 60,ssclaim,mean,1,weight,died == 0 & age >= 60
+diclaim,Fraction claiming DI age < 65,diclaim,mean,1,weight,died == 0 & age < 65
+ssiclaim,Fraction claiming SSI,ssiclaim,mean,1,weight,died == 0
+ttl_ss_tax,Total Social Security taxes (billion),hoasi,sum,0.000000001,weight,l2died == 0
+ttl_med_tax,Total Medicare Payroll Tax (billion),hmed,sum,0.000000001,weight,l2died == 0
+ttl_ftax,Total Federal Income Taxes (billions),ftax,sum,0.000000001,weight,l2died==0
+ttl_ssben,Total OASI Payments (billions),ssben,sum,0.000000001,weight,l2died==0
+ttl_diben,Total DI Payments (billions),diben,sum,0.000000001,weight,l2died==0
+ttl_ssiben,Total SSI Payments (billions),ssiben,sum,0.000000001,weight,l2died==0
+ttl_mcare,Total Medicare Payments (billions),mcare,sum,0.000000001,weight,l2died==0
+ttl_caidmd,Total Medicaid Payments (billions),caidmd,sum,0.000000001,weight,l2died==0
+ttl_totmd,Total Medical Expenditures (billions),totmd,sum,0.000000001,weight,l2died==0
+start_pop_male,Total male starting pop,weight,sum,1,1,l2died==0 & male==1
+start_pop_female,Total female starting pop,weight,sum,1,1,l2died==0 & male==0
+cancre_male,Prevelance of Cancer among males,cancre,mean,1,weight,died == 0 & male==1
+diabe_male,Prevelance of Diabetes among males,diabe,mean,1,weight,died == 0 & male==1
+hearte_male,Prevelance of Heart Disease among males,hearte,mean,1,weight,died == 0 & male==1
+hibpe_male,Prevelance of Hypertension among males,hibpe,mean,1,weight,died == 0 & male==1
+lunge_male,Prevelance of Lung Disease among males,lunge,mean,1,weight,died == 0 & male==1
+stroke_male,Prevelance of Stroke among males,stroke,mean,1,weight,died == 0 & male==1
+cancre_female,Prevelance of Cancer among females,cancre,mean,1,weight,died == 0 & male==0
+diabe_female,Prevelance of Diabetes among females,diabe,mean,1,weight,died == 0 & male==0
+hearte_female,Prevelance of Heart Disease among females,hearte,mean,1,weight,died == 0 & male==0
+hibpe_female,Prevelance of Hypertension among females,hibpe,mean,1,weight,died == 0 & male==0
+lunge_female,Prevelance of Lung Disease among females,lunge,mean,1,weight,died == 0 & male==0
+stroke_female,Prevelance of Stroke among females,stroke,mean,1,weight,died == 0 & male==0

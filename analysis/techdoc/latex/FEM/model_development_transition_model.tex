@@ -1,0 +1,68 @@
+\subsection{Transition model}
+\label{sec:model_development_transition_model}
+
+Section \ref{sec:estimation_transition_model} describes the current FEM transition
+model with a focus on discrete absorbing outcomes. In developing this model, 
+it was previously assumed that the time invariant part of the hazard was composed 
+of the effect of observed characteristics $x_i$ and permanent unobserved characteristics 
+specific to outcome $m$, $\eta_{i,m}$.  Consequently, the index was assumed to be 
+of the form 
+$z_{m,j_i} = x_i\beta_m + h_{i,j_i-1,-m} \gamma_m + \eta_{i,m}$ 
+and the latent component of the hazard was modeled as
+\begin{equation}
+h^*_{i,j_i,m}= x_i\beta_m + h_{i,j_i-1,-m} \gamma_m + \eta_{i,m} + a_{m,j_i} + \varepsilon_{i,j_i,m},
+\label{eqn:old_transition_hzd_latent}
+\end{equation}
+\[
+m = 1,\ldots,M_0 \mbox{, } j_i = j_{i0},\ldots,j_{i,T_i} \mbox{, } i=1,\ldots,N
+\]
+This is the same as (\ref{eqn:transition_hzd_latent}), except that 
+(\ref{eqn:old_transition_hzd_latent}) uses unobserved characteristics $\eta_{i,m}$
+instead of the effects of observed initial conditions $h_{i,j_0,-m}\psi_m$. The 
+unobserved effects $\eta_{i,m}$ are persistent over time and were 
+allowed to be correlated across diseases $m=1,\ldots,M$.  We assumed that these 
+effects had a normal distribution with covariance matrix $\mathbf{\Omega}_\eta$.
+
+The parameters 
+$\mathbf{\theta}_1 = \left(\left\{\beta_m, \gamma_m, \varsigma_m\right\}_{m=1}^M, \mathrm{vech}(\mathbf{\Omega}_\eta)\right)$, 
+could be estimated by maximum simulated likelihood. The joint probability, 
+conditional on the individual frailty is the product of normal univariate 
+probabilities. Similar to the joint probability in Section 
+\ref{sec:estimation_transition_model}, these sequences, conditional on unobserved 
+heterogeneity, are also independent across diseases.  The joint probability over 
+all disease-specific sequences is simply the product of those probabilities.
+
+For a given respondent with frailty $\eta_i$, the probability of the observed 
+health history is (again, omitting the conditioning on covariates for simplicity)
+\[
+	l^{-0}_i(\mathbf{\theta}; \eta_i, h_{i,j_{i0}}) = \left[\prod_{m=1}^{M-1} \prod_{j=j_{i1}}^{j_{T_i}} P_{ij,m}(\mathbf{\theta}; \eta_i)^{(1-h_{ij-1,m})(1-h_{ij,M})} \right] \times \left[\prod_{j=j_{i1}}^{j_{T_i}} P_{ij,M}(\mathbf{\theta}; \eta_i) \right]
+\]
+
+To obtain the likelihood of the parameters given the observables, it is necessary 
+to integrate out unobserved heterogeneity. The complication is that 
+$h_{i,j_{i0},-m}$, the initial outcomes in each hazard, are not likely to be 
+independent of the common unobserved heterogeneity term which needs to be integrated 
+out.  A solution is to model the conditional probability distribution 
+$p(\eta_i \mid \mathbf{h}_{i,j_{i0}})$ \citep{wooldridge2000framework}. Implementing 
+this solution amounts to including initial outcomes at baseline (age 50) for each 
+hazard. This is equivalent to writing 
+\begin{align*}
+&\eta_i = \Gamma h_{i0} + \alpha_i \\
+&\alpha_i \sim \mathrm{N}(0, \Omega_\alpha)
+\end{align*}
+Therefore, this allows for permanent differences in outcomes due to differences in 
+baseline outcomes. The likelihood contribution for one respondent's sequence is 
+therefore given by
+\begin{equation}
+l_i(\mathbf{\theta}, \mathbf{h}_{i,j_{i0}}) = \int l_i(\mathbf{\theta}; \alpha_i, \mathbf{h}_{i,j_{i0}})dF(\alpha_i)
+\label{eqn:likelihood_contribution}
+\end{equation}
+
+This model was estimated using maximum simulated likelihood. The likelihood
+contribution (\ref{eqn:likelihood_contribution}) was replaced with a simulated 
+counterpart based on $R$ draws from the distribution of $\alpha$. The BFGS
+algorithm was then used to optimize over this simulated likelihood. Convergence of
+the joint estimator could not be obtained, so the distribution of 
+$\alpha_i$ was assumed to be degenerate. This yielded the simpler 
+estimation problem describe in Section \ref{sec:estimation_transition_model}, 
+where each equation is estimated separately.

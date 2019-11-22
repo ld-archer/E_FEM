@@ -1,0 +1,3 @@
+iearnx,"\multirow{3}{*}{Censored continuous}"," \multicolumn{2}{|c}{earnings}","if working"
+hatotax,""," \multicolumn{2}{|c}{wealth}","if non-zero"
+dcwlthx,""," \multicolumn{2}{|c}{DC wealth}","if dc plan"

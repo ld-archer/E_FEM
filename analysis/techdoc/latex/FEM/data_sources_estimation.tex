@@ -1,0 +1,48 @@
+\section{Data sources used for estimation}
+The Health and Retirement Study is the main data source for the model. We supplemented this data with 
+merged Social Security covered earnings histories and data on health trends and health care costs 
+coming from 3 major health surveys in the U.S. We describe these surveys below and the samples we 
+selected for the analysis. We first list the variables used in the analysis. We then give details on 
+the data sources.
+
+\begin{center}
+\begin{tabular}{l l}
+\multicolumn{2}{c}{\textbf{Estimated Outcomes in Initial Conditions Model}}\\
+ & \\
+\textbf{Economic Outcomes}	& \textbf{Health Outcomes}\\
+Employment & Hypertension\\
+Earnings & Heart Disease\\
+Wealth & Self-Reported Health\\
+Defined Contribution Pension Wealth	& BMI Status\\
+Pension Plan Type	& Smoking Status\\
+AIME & Functional Status\\
+Social Security Quarters of Coverage & \\
+Health Insurance & 
+\end{tabular}\end{center}~\\~\\
+
+\begin{center}
+\begin{tabular}{l l l}
+\multicolumn{3}{c}{\textbf{Estimated Outcomes in/from Transition Model}}\\
+ & & \\
+\textbf{Economic Outcomes} & \textbf{Health Outcomes} & \textbf{Other Outcomes}\\
+Employment & Death & Income Tax Revenue\\
+Earnings & Heart & Social Security Revenue\\
+Wealth & Stroke & Medicare Revenue\\
+Demographics & Cancer & Medical Expenses\\
+Health Insurance & Hypertension & Medicare Part A Expenses\\
+Disability Insurance Claim & Diabetes & Medicare Part B Expenses\\
+Defined Benefit Claim & Lung Disease & Medicare Part B Enrollment\\
+SSI Claim & Nursing Home &  Medicare Part D Enrollment\\
+Social Security Claim & BMI  & OASI Enrollment \\
+ & Smoking Status & DI enrollment\\
+ & ADL Limitations & SSI enrollment\\
+ & IADL Limitations	& Medicaid Enrollment\\
+ & & Medicaid Expenditures
+\end{tabular}
+\end{center}
+
+\input{data_sources_estimation_hrs.tex}
+\input{data_sources_estimation_ssearnings.tex}
+\input{data_sources_estimation_nhis.tex}
+\input{data_sources_estimation_meps.tex}
+\input{data_sources_estimation_mcbs.tex}

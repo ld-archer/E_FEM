@@ -1,0 +1,11 @@
+%macro rvar(vlist);
+%let nv=1;
+%let nxtv=%scan(&vlist,&nv);
+%do %while (%length(&nxtv)>0);
+	if &nxtv._[i] in (0,8,9) then &nxtv._[i] = .; 
+  else if &nxtv._[i] = 5 then &nxtv._[i] = 0; 
+  else if &nxtv._[i] = 1 then &nxtv._[i] = 1;
+  %let nv=%eval(&nv+1);
+  %let nxtv=%scan(&vlist,&nv);
+%end;
+%mend;

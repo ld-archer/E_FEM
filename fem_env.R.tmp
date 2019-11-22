@@ -1,0 +1,3 @@
+base.dir <- ## Enter base directory here
+input.data <- file.path(base.dir, "input_data")
+base.data <- file.path(base.dir, "base_data")

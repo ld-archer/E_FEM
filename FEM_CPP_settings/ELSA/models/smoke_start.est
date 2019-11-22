@@ -1,0 +1,17 @@
+probit
+smoke_start
+male	.1312412
+hsless	.1179011
+college	-.1651393
+l2age65l	-.0117795
+l2age6574	-.0188458
+l2age75p	-.0334124
+l2hearte	.0701756
+l2stroke	.0841177
+l2cancre	.0687079
+l2hibpe	.0299286
+l2diabe	.0854638
+l2logbmi	-.1902745
+l2drink	-.1379915
+l2drinkd_e	.0130732
+_cons	-.8991341

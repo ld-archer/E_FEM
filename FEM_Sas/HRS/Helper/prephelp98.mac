@@ -1,0 +1,331 @@
+** DEFINING PREPV MACRO **;
+        
+%macro prepv (type,val,outval=99999997);  
+
+  ** OWNERSHIP **;
+  
+     ** Ownership of each individual type of income has been moved outside of this macro, and into WLTHOWN7_V1.INC **;
+      
+     ** Determining whether ownership must be imputed **;
+ 
+        di&type = (d_&type=.);
+   
+  ** AMOUNTS **;
+  
+     if d_&type then do;
+     
+        if &val<&outval then a_&type = &val;               
+     
+        abt&type=0;
+        
+        i_&type = (a_&type in (.,.D,.R)); ** missing value or code **;
+   
+        ** Bracket variables **;
+  
+           if i_&type then do;
+              
+              /* for days and hours imputations there are no brackets, so
+                 set everything to 1 bracket */
+              cl&type = 0;
+              cu&type = 0;
+              cc&type = input(compress(cl&type||cu&type),2.);
+              lo&type=input(put(cl&type,&type.lo.),9.);
+              up&type=input(put(cu&type,&type.up.),9.);
+           end;
+           else do;
+              cc&type=input(put(a_&type,&type.rng.),2.);
+              lo&type=input(put(cc&type,&type.lo.),9.);
+              up&type=input(put(cc&type,&type.up.),9.);
+           end;   
+      
+     end;
+       
+     else if d_&type<1 then i_&type=0;
+     
+     ci&type = (i_&type and cl&type<cu&type);	
+       
+  ** CREATE VARIABLE INDICATING ORIGINAL INFORMATION GIVEN **;
+  
+     if d_&type then do;
+        if a_&type>=0 and abt&type ne 1 then inf&type = 1;
+        else if ci&type=0 then inf&type = 2;                                     
+        else if cl&type=1 and cu&type=&&&prp&type then inf&type = 5;
+        else inf&type = 3;
+     end; 
+     else if di&type then inf&type = 7;
+     else if d_&type = 0 then inf&type = 6; 
+       
+%mend prepv;
+
+
+/* macro to prepare helper file for a single wave */
+
+%macro prephelp(w,yr,sp=N,rawrel=,rawopn=,rawopnn=,opnsp=);
+
+/* relationship codes in 98/00 are different from 02+
+   set different formats and codes for setting relationship dummies */
+
+%if &yr eq 00 | &yr eq 98 %then  %do;  /* for 00 and 98 */
+    %let relfmt=rawrelA;
+    %let spcode=10;
+    %let exspcd=999;
+    %let kid=11 12 13 14 15;
+    %let exkid=9999;  %* no ex-kid code;
+    %let gkid=21 22;
+    %let parsib=31 32 33 34 35 36 37 38 39 40 41;
+    %let othrel=51 52;
+    %let nonrel=61 62;
+    %let emporg=71 72 73;
+%end;
+
+%else %do;  /* for 2002 onward */
+    %let relfmt=rawrelB;
+    %let spcode=2;
+    %let exspcd=26 27;
+    %let kid=3 4 5 6 7 8 28;
+    %let exkid=30 31 90 91;
+    %let gkid=9 33;
+    %let parsib=10 11 12 13 14 15 16 17 18;
+    %let othrel=19;
+    %let nonrel=20;
+    %let emporg=21 22 23 24 25;
+    %let relmale=3 4 5 10 11 15 16;
+    %let relfem= 6 7 8 12 13 17 18;
+%end;
+
+title2 prepare helper&yr ;
+
+/*** read fat file to determine whether spouse helped ***/
+data spouse nonsp;
+   set hrs.hrs&yr (keep=hhidpn s&w.hhidpn &rawopn &rawopnn );
+   
+   length opn $3;
+   
+   array opnlst_[*] &rawopn ;
+
+   opnsp=0;
+   do i=1 to dim(opnlst_);
+      if opnlst_[i]="&opnsp" then opnsp=1;
+      else if opnlst_[i] ne " " then do;
+         opn=opnlst_[i];
+         output nonsp;
+      end;
+   end;
+
+%if %length(&rawopnn)>0 %then %do;
+   /* sometimes some of the opns are numeric */
+   array opnn_[*] &rawopnn;
+   do i=1 to dim(opnn_);
+      if opnn_[i]=&opnsp then opnsp=1;
+      else if opnn_[i] ne . then do;
+         opn=put(opnn_[i],z3.);
+         output nonsp;
+      end;
+   end;    
+
+%end;
+   
+   keep hhidpn opn hpk&w: &rawrel ;
+   if opnsp=1 then do;
+      opn="&opnsp";
+      hpk&w.days=.;
+      hpk&w.hours=.;
+      hpk&w.tothrs=.;
+      hpk&w.sex=.;
+      &rawrel = &spcode;
+      output spouse;
+   end;
+   
+proc sort data=spouse nodupkey;
+   by hhidpn opn;
+   run;
+proc sort data=nonsp nodupkey;
+   by hhidpn opn;
+   run;
+proc sql;
+   title2 number of non spouse helpers;
+   select count(hhidpn) from nonsp;
+   title2 number of spouse helpers;
+   select count(hhidpn) from spouse;
+
+/* if spouse reported on same record (98/00) output a separate record for that help */
+%if &sp=Y %then %do;
+title2 separate spouses;
+data helper&yr;
+   set helper.helper&yr (in=_inh)
+       spouse (in=_ins);
+
+   hlpsp=0;
+   fromsp=_ins;
+   fromhlp=_inh;
+   output;  /* main helper */
+   
+   /* now output spouse helper
+      assign time spent and sex, but use main helper relationship */
+      
+   if hps&w.days ne .U and (&rawrel not in (&spcode &exspcd)) then do;
+      hpk&w.days=hps&w.days;
+      hpk&w.hours=hps&w.hours;
+      hpk&w.tothrs=hps&w.tothrs;
+      hpk&w.sex=hps&w.sex;
+      hlpsp=1;
+      output;
+   end;
+run;
+proc freq data=helper&yr;
+   title3 spouse check;
+   table fromsp fromhlp hlpsp
+         fromsp*fromhlp*hlpsp
+     /missing list;
+   run;
+   title3;
+%let lib=work; %* use work file as input to following steps ;
+%end;
+
+%else %let lib=helper;  %* if no spouse split out, use original file ;
+
+title2 prephelp &yr;
+proc sort data=&lib..helper&yr;
+   by hhidpn;
+proc sql;
+   create table helperct&yr as 
+      select hhidpn, sum((hpk&w.days ne 0 or hpk&w.hours ne 0)) as helperct
+      from &lib..helper&yr
+      group by hhidpn
+      order hhidpn;
+
+data out.prephelp&yr;
+   merge helperct&yr
+         &lib..helper&yr (in=_inh)
+         hrs.rndhrs_&rndv (in=_inr keep=hhidpn r&w.adla r&w.iadla ragender raracem rahispan r&w.agey_e h&w.cpl
+                                    raeduc r&w.mstat h&w.atotb h&w.atotn h&w.itot r&w.nhmliv h&w.child
+                                    s&w.nhmliv s&w.gender s&w.agey_e);
+   by hhidpn;
+   
+   /* drop employees/organizations=formal care, or unknown relationship */
+   if _inh and &rawrel not in ( . &emporg 32 97 98 99);  
+
+   /* limit # of days last month to 30 */
+   if hpk&w.days in (30 31) then days=30;
+   else if hpk&w.days>0 then days=hpk&w.days;
+   else days=.;
+
+   if hpk&w.hours>=0 then hours=hpk&w.hours;
+   else hours=.;
+
+   /* ownership: whether any days */
+   if days>0 or hours>0 then d_days=1;
+   else if hpk&w.days=.H then d_days=0;
+   else d_days=.;
+   
+   d_hours=d_days;  /* whether any hours depends on whether any days */
+   
+   /* and tothr = days x hours */
+   tothr=days*hours;
+   d_tothr=d_days; /* whether any tothr depends on whether any days */
+   
+   %prepv(days,days,outval=31) ;
+   %prepv(hours,hours,outval=25) ;
+   %prepv(tothr,tothr,outval=721) ;
+   
+   /* respondent covariates */
+
+   male=(ragender=1);
+   hispan=(rahispan=1);
+   white=(raracem=1 and hispan=0);
+   black=(raracem=2 and hispan=0);
+   othrace=(raracem=3 and hispan=0);
+   age=r&w.agey_e;
+   agesq=age*age;
+   lths=(raeduc in (1,2)); /* lt high school or GED */
+   hsgrad=(raeduc=3);
+   college=(raeduc>3);
+   
+   cpl=h&w.cpl;  /* whether married partnered */
+   spabs=(r&w.mstat=2 or s&w.nhmliv=1);  /* spouse absent or in nhm, unavailable */
+   nhmliv=(r&w.nhmliv=1);
+   nkids=max(0,h&w.child);
+   
+   if r&w.adla<.Z then adla=0;
+   else adla=r&w.adla;
+   if r&w.iadla<.Z then iadla=0;
+   else iadla=r&w.iadla;
+
+   /* logs of income and wealth with and without house(s) */
+   if h&w.itot<=1 then loginc=0; /* log income */
+   else loginc=log(h&w.itot);   
+   if h&w.atotb<=1 then logwlth=0;  /* total wealth including 2nd home */
+   else logwlth=log(h&w.atotb);
+   if h&w.atotn<=1 then logwlth_nh=0;  /* non housing wealth */
+   else logwlth_nh=log(h&w.atotn);
+
+   /* helper covariates */
+   
+   spouse=(&rawrel in (&spcode &exspcd));
+   kid=(&rawrel in (&kid &exkid));
+   gkid=(&rawrel in (&gkid));
+   parsib=(&rawrel in (&parsib));
+   othrel=(&rawrel in (&othrel));
+   nonrel=(&rawrel in (&nonrel));
+   emporg=(&rawrel in (&emporg));
+
+   if hpk&w.sex in (1,2) then hlpmale=(hpk&w.sex=1);
+
+   /* sex may be missing if spouse is helper */
+   if hlpmale=. then do;
+      if spouse=1 and s&w.gender in (1,2) then hlpmale=(s&w.gender=1);
+      else if spouse=1 then hlpmale=(1-male);
+   
+%* from 2002 forward, sex may be ascertained from the relationship code;
+%if &yr ne 00 & &yr ne 98 %then %do;
+      else if &rawrel in (&relmale) then hlpmale=1;
+      else if &rawrel in (&relfem) then hlpmale=0;
+%end;
+   end;
+
+   if hlpmale=. then do;
+         hlpmale=0;
+         hlpsexmiss=1;
+   end;
+   else hlpsexmiss=0;
+run;
+%let rcovar=male hispan white black othrace age agesq lths hsgrad college
+            cpl spabs nhmliv nkids adla iadla loginc logwlth logwlth_nh ;
+%let hlpcov=helperct hlpmale hlpsexmiss
+            spouse kid gkid parsib othrel nonrel ;
+
+proc freq data=out.prephelp&yr;
+   table ragender*male rahispan*hispan hispan*raracem*white*black*othrace
+         raeduc*lths*hsgrad*college
+         h&w.cpl*r&w.mstat*cpl
+         r&w.mstat*s&w.nhmliv*spabs
+         r&w.nhmliv*nhmliv
+         r&w.adla*adla r&w.iadla*iadla
+         hlpsexmiss*hlpmale*hpk&w.sex*spouse*ragender*s&w.gender
+         &rawrel*spouse*kid*gkid*parsib*othrel*nonrel emporg
+         days*hpk&w.days hours*hpk&w.hours tothr*hpk&w.tothrs
+         d_days didays i_days cidays infdays
+         dihours i_hours cihours infhours
+         ditothr i_tothr citothr inftothr
+         didays*d_days*days*hours d_days*tothr
+         cl: cu: cc: lodays lohours lotothr up:
+         infdays*didays*cidays*i_days
+         infhours*dihours*cihours*i_hours
+         inftothr*ditothr*citothr*i_tothr
+      /missing list;         
+format hpk&w.days days days. hpk&w.hours hours hours. 
+       hpk&w.tothrs tothr tothr. &rawrel &relfmt.. ;
+run;
+proc means data=out.prephelp&yr;
+   class &rawrel;
+   types () &rawrel;
+   var days hours tothr &rcovar &hlpcov ;
+   format &rawrel &relfmt..;
+run;
+proc corr data=out.prephelp&yr;
+   var tothr days hours;
+   with &rcovar &hlpcov;
+run;
+proc contents data=out.prephelp&yr;
+run;
+%mend prephelp;

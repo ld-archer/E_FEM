@@ -1,0 +1,36 @@
+\subsection{Quality adjusted life years}
+\label{sec:estimation_qalys}
+
+As an alternative measure of life expectancy, we compute a quality adjusted life 
+year (QALY) based on the EQ-5D instrument, a widely-used health-related 
+quality-of-life (HRQoL) measure\footnote{Section 
+\ref{sec:model_development_qalys_hrqol} gives some background on HRQoL 
+measures.}. The scoring system for EQ-5D was first developed by 
+\citet{dolan1997modeling} using a UK sample. Later, a scoring system based on 
+a US sample was generated \citep{shaw2005us}. The HRS does not ask the 
+appropriate questions for computing EQ-5D, but the MEPS does.  
+We use a crosswalk from MEPS to compute EQ-5D scores for HRS respondents not 
+living in a nursing home\footnote{Section \ref{sec:model_development_qalys_eq5d} 
+describes EQ-5D in MEPS. Details of the crosswalk model development are given 
+in \ref{sec:model_development_qalys_crosswalk}.}. 
+
+The FEM has a more limited specification of functional status than what is available in the HRS. In order to predict 
+HRQoL for the FEM simulation sample, we needed to build a bridge between the FEM-type functional status and the 
+predicted EQ-5D score in HRS.  We used ordinary least squares to model the EQ-5D score predicted for non-nursing 
+home in the 1998 HRS as a function of the six chronic conditions and the FEM-specification of functional status, 
+The results are shown in Table \ref{tab:fem_eq5d_model_est}. 
+
+The EQ-5D scoring method is based on a community population.  Following a 
+suggestion by Emmett Keeler, if a person is living in a nursing home, the QALY is 
+reduced by 10\%.  We used the parameter estimates in Table 
+\ref{tab:fem_eq5d_model_est} to predict EQ-5D scores for the entire FEM simulation sample 
+and reduced nursing home residents' score by 10\%.  The resulting scores are representative of 
+the U.S population (both in community and in nursing homes) ages 51 and over.  
+Table \ref{tab:fem_stock_predicted_eq5d} summarizes the EQ-5D score using this 
+model for the stock FEM simulation sample in 2004. 
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+probit
+arthre
+male	-.2166624
+hsless	.0607637
+college	-.024759
+l2age65l	.0139372
+l2age6574	-.0043291
+l2age75p	.0039835
+l2hearte	.1088518
+l2stroke	.0664952
+l2cancre	-.0017823
+l2hibpe	.0928637
+l2diabe	-.0438103
+l2logbmi	.6193005
+l2smokev	.0661933
+l2smoken	-.0398577
+l2work	-.0733949
+_cons	-4.403561

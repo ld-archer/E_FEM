@@ -1,0 +1,203 @@
+\documentclass{article}
+\usepackage{savetrees}
+\usepackage{hyperref}
+
+\title{Assumptions within the FEM}
+
+\begin{document}
+\maketitle
+
+\begin{Rcode}{!echo,hide}
+library(ggplot2)
+\end{Rcode}
+
+\section{Economic Factors}
+
+Inflation halts in 2010, so all growth rates afterwards are real
+growth.  The following are represented:
+\begin{itemize}
+\item Interest Rate on Wealth
+\item Earning Disregard
+\item National Wage Index (SA 2009 TR Intermediate Cost Assumptions,
+  Table VI.F6)
+\item Social Security Wage Cap
+\item Medicare Cost Growth (CMS 2009 Trustees Report, p179)
+\item Gross Domestic Product
+\begin{description}
+\item[1992-2009] Historic
+\item[2010-2019] CBO analysis of President's Budget
+\item[2020-2100] 2008 OASDI Trustees Report 2.1\%
+\item[Labor Force] 2008 OASDI Trustees Report
+\end{description}
+\item Total Medicare Cost Growth (Computed)
+\end{itemize}
+
+\subsection{Interest Rate on Wealth}
+This rate is used to increase household wealth year-over-year. It is a
+real interest rate over and above CPI.
+
+\begin{Rcode}{!echo,fig,savefig,label=interest}
+interest <- read.table('timeseries/interest_rate.txt', skip=1)
+names(interest) <- c('year','cummulative.interest')
+ggplot(interest, aes(x=year, y=cummulative.interest)) + geom_line()
+\end{Rcode}
+
+\begin{figure}[h]
+\centering
+\recallfig{interest}
+\caption{Cummulative Real Interest Rate}
+\label{fig:interest}
+\end{figure}
+
+\subsection{Earning Disregard}
+Below full retirement age, \$1 is deducted from SS benefits for every
+\$2 earned above the limit. Above full retirement age, \$1 is deducted
+for every \$3 earned above the limit.
+
+\begin{Rcode}{!echo,fig,savefig,label=earndisreg}
+disreg1 <- read.table('timeseries/eadisreg1.txt', skip=1)
+disreg2 <- read.table('timeseries/eadisreg2.txt', skip=1)
+names(disreg1) <- c('year','Earning.Disregard')
+names(disreg2) <- names(disreg1)
+disreg1$group <- 'before retirement'
+disreg2$group <- 'after retirement'
+disreg <- rbind(disreg1, disreg2)
+disreg$Earning.Disregard <- disreg$Earning.Disregard/1e3
+ggplot(disreg, aes(x=year, y=Earning.Disregard, colour=group)) +geom_line()
+\end{Rcode}
+
+\begin{figure}[h]
+\centering
+\recallfig{earndisreg}
+\caption{Earning Disregard (Thousands) Projected 1.1\% Real Growth}
+\label{fig:earndisreg}
+\end{figure}
+
+\subsection{National Wage Index}
+The National Wage Index is used to calculate or update a number of quantities year
+over year:
+\begin{itemize}
+\item AIME
+\item Earnings
+\item Principle Insurance Amount
+\item Widow's Benefit
+\end{itemize}
+
+\begin{Rcode}{!echo,fig,savefig,label=nwi}
+nwi <- read.table('timeseries/nwi.txt', skip=1)
+nwi$V2 <- nwi$V2/1e3
+names(nwi) <- c('year','NWI')
+ggplot(nwi, aes(x=year, y=NWI)) + geom_line()
+\end{Rcode}
+
+\begin{figure}[h]
+\centering
+\recallfig{nwi}
+\caption{National Wage Index in Thousands}
+\label{fig:nwi}
+\end{figure}
+
+\subsection{Social Security Wage Cap}
+This is the maximum amount of income subject to the Social Security
+payroll tax. It is only used in computing taxes.
+
+\begin{Rcode}{!echo,fig,savefig,label=sscap}
+sscap <- read.table('timeseries/sscap.txt', skip=1)
+names(sscap) <- c('year', 'SS.Cap')
+sscap$SS.Cap <- sscap$SS.Cap / 1e3
+ggplot(sscap, aes(x=year, y=SS.Cap)) + geom_line()
+\end{Rcode}
+
+\begin{figure}[h]
+\centering
+\recallfig{sscap}
+\caption{Social Security Wage Cap (Thousands)}
+\label{fig:sscap}
+\end{figure}
+
+\subsection{Total Medicare Cost Growth}
+This is the projected growth in overall Medicare costs and is used to
+inflate medicaid and medicare costs. This is added on top of
+per-laborer GDP growth and then divided by the growth in the enrollee
+pool (simulated) to figure out the per-enrollee cost growth.
+
+\begin{Rcode}{!echo,fig,savefig,label=cummulative}
+c.med <- read.table('timeseries/medgrowth.txt',skip=1)
+c.gdp <- read.table('timeseries/gdp.txt', skip=4)
+c.labor <- read.table('timeseries/labor.txt', skip=2)
+names(c.med) <- c('year','Growth')
+names(c.gdp) <- c('year','Growth')
+names(c.labor) <- c('year','Growth')
+
+c.med[,'series'] <- 'Medicare Cost above GDP'
+c.gdp[,'series'] <- 'Real GDP'
+c.labor[,'series'] <- 'Labor Force'
+
+row.names(c.med) <- c.med[,'year']
+row.names(c.gdp) <- c.gdp[,'year']
+row.names(c.labor) <- c.labor[,'year']
+
+c.percap <- c.gdp
+c.percap[,'Growth'] <- c.gdp[,'Growth']/c.labor[,'Growth'] * 100
+c.percap[,'series'] <- 'GDP Per Labor Force'
+
+c.totmed <- c.med
+c.totmed[,'series'] <- 'Total Medicare Cost'
+c.totmed[,'Growth'] <- c.percap[,'Growth'] * c.med[,'Growth'] / 100
+
+a.med <- c.med[2:nrow(c.med),]
+a.gdp <- c.gdp[2:nrow(c.gdp),]
+a.labor <- c.labor[2:nrow(c.labor),]
+a.percap <- c.percap[2:nrow(c.percap),]
+a.totmed <- c.totmed[2:nrow(c.totmed),]
+
+c.med[,'group'] <- 'Cummulative'
+c.gdp[,'group'] <- 'Cummulative'
+c.labor[,'group'] <- 'Cummulative'
+c.percap[,'group'] <- 'Cummulative'
+c.totmed[,'group'] <- 'Cummulative'
+a.med[,'group'] <- 'Annualized'
+a.gdp[,'group'] <- 'Annualized'
+a.labor[,'group'] <- 'Annualized'
+a.percap[,'group'] <- 'Annualized'
+a.totmed[,'group'] <- 'Annualized'
+
+med.num <- as.character(c.med[2:nrow(c.med),'year'])
+med.den <- as.character(c.med[1:(nrow(c.med)-1),'year'])
+gdp.num <- as.character(c.gdp[2:nrow(c.gdp),'year'])
+gdp.den <- as.character(c.gdp[1:(nrow(c.gdp)-1),'year'])
+labor.num <- as.character(c.labor[2:nrow(c.labor),'year'])
+labor.den <- as.character(c.labor[1:(nrow(c.labor)-1),'year'])
+percap.num <- as.character(c.percap[2:nrow(c.percap),'year'])
+percap.den <- as.character(c.percap[1:(nrow(c.percap)-1),'year'])
+
+a.med[,'Growth'] <- c.med[med.num,'Growth'] / c.med[med.den,'Growth']
+a.gdp[,'Growth'] <- c.gdp[gdp.num,'Growth'] / c.gdp[gdp.den,'Growth']
+a.labor[,'Growth'] <- c.labor[labor.num,'Growth'] / c.labor[labor.den,'Growth']
+a.percap[,'Growth'] <- c.percap[percap.num,'Growth'] /c.percap[percap.den,'Growth']
+a.totmed[,'Growth'] <- c.totmed[med.num,'Growth'] /c.totmed[med.den,'Growth']
+
+f <- rbind(c.gdp, c.med, c.labor, c.percap, c.totmed)
+ggplot(f) + geom_line(aes(x=year, y=Growth, color=series)) + opts(legend.position = "bottom")
+\end{Rcode}
+
+\begin{figure}[h]
+\centering
+\recallfig{cummulative}
+\caption{Cummulative Medicare Cost Growth Breakdown}
+\label{fig:cummulative}
+\end{figure}
+
+\begin{Rcode}{!echo,fig,savefig,label=annualized}
+f <- rbind(a.gdp, a.med, a.labor, a.percap, a.totmed)
+ggplot(f) + geom_line(aes(x=year, y=Growth, color=series)) + opts(legend.position = "bottom")
+\end{Rcode}
+
+\begin{figure}[h]
+\centering
+\recallfig{annualized}
+\caption{Annualized Medicare Cost Growth Breakdown}
+\label{fig:annualized}
+\end{figure}
+
+\end{document}

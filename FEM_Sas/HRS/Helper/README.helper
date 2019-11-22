@@ -1,0 +1,88 @@
+Helper: impute hours of help given to R by family members
+prephelp.sas
+prephelp98.sas
+helpimp.sas
+helpimp98.sas
+helpimpR.sas
+helphours.sas
+
+The following programs on /nfs/sch-data1/projects/public-data-projects/FEM/weihanch/update2012/FEM_Sas/HRS/Helper/Helper 
+clean the helper data for each year.
+
+helper98.sas
+helper00.sas
+helper02.sas
+helper04.sas
+helper06.sas
+helper08.sas
+helper10.sas
+helper12.sas
+
+	These programs clean helper data for each wave 1998 (w4) to 2008 (w9).
+	Include files: 	helper.fmt 
+									cleanhlp02_.inc (02-10)
+		       				cleanhlp.mac (98/00)
+	Input: helper module (_hp) from raw HRS data. 
+					In 1998 and 2000 the file name is h[yy]e_hp.sas7bdat
+					From 2002-2012 the file name is h[yy]g_hp.sas7bdat
+	Output: helper[yy]
+==================================================================
+
+All programs include the following to set up libnames, etc:
+
+	[root]fem_env.sas
+
+Run the following programs in the given order to make impute helper hours:
+
+prephelp98.sas
+prephelp.sas
+	Prepares data for imputations.  Will impute hours helped.
+	Note in 1998 spouse hours helping are not reported.
+	Include files: [root]/FEM_Sas/HRS/Fmt/helper.fmt
+	               [root]/FEM_Sas/HRS/Fmt/rkid.fmt, 
+		             helprange.inc (ranges for brackets)
+		             prephelp.mac 
+		             prephelp98.mac
+	Input: 
+		/sch-stor1-a/data-library/public-data/HRS/SAS/Helper/helper[yy].sas7bdat, where [yy] is 98-12
+		/sch-stor1-a/data-library/public-data/HRS/SAS/rndhrs_k.sas7bdat
+		/sch-stor1-a/data-library/public-data/HRS/SAS/formats.sas7bcat [formats library]
+	Output: 
+	  [root]/input_data/prephelp[yy].sas7bdat
+
+helpimp98.sas
+helpimp.sas
+	Impute helper hours.
+	Note in 1998, 2000 spouses are used as donors since no hours are available for 98
+	Include files: 
+		       helprange.inc (ranges for brackets)
+		       helpimp.mac
+	Input: 
+		[root]/prephelp[yy].sas7bdat, where [yy] is 98-12
+	Output: 
+		[root]/helpimp[yy].sas7bdat, where [yy] is 98-12
+
+helpimpR.sas
+        summarizes hours of help last month to the respondent level, 
+        from respondent-helper level.
+	Include files: 
+	Input: 
+		[root]helpimp[yy].sas7bdat, yy=98 to 12
+	Output: 
+		[root]helpimpR[yy].sas7bdat
+
+helphours.sas
+	Merge total hours helped last month across years.
+	Include files: 
+		[root]/FEM_Sas/HRS/Mac/wvlist.mac
+	Input: 
+		[root]helpimpR[yy].sas7bdat, where [yy] is 98-12
+		/sch-stor1-a/data-library/public-data/HRS/SAS/rndhrs_n.sas7bdat
+		/sch-stor1-a/data-library/public-data/HRS/SAS/formats.sas7bcat [formats library]
+	Output: 
+		[root]/helphours.sas7bdat
+
+Programs to check things:
+	 helphours_chk.sas	check that spouse hours and non-spouse hours total helphours
+	 helphoursF.sas			Make some tables of hours by age for 2004 (Wave 7)
+	 helphoursM.sas			Run descriptive statistics of hours by age for 2004 (Wave 7)

@@ -1,0 +1,2 @@
+mcare_pta_elasticity = 0-0.2
+mcare_ptb_elasticity = 0-0.2

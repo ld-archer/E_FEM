@@ -1,0 +1,34 @@
+\subsection{Cross-validation}
+The cross-validation exercise randomly samples half of the HRS respondent IDs for use in estimating the transition models.  The respondents not used for estimation, 
+but who were present in the HRS sample in 1998, are then simulated from 1998 through 2012.  Demographic, health, and economic outcomes are compared between the 
+simulated (“FEM”) and actual (“HRS”) populations.  These results are presented in Table \ref{tab:crossval_unweighted} - Table \ref{tab:crossval_cntecon} for 2000, 2006, and 2012, 
+with a statistical test of the difference between the average values in the two populations.
+
+Worth noting is how the composition of the population changes in this exercise.  In 1998, the sample represents those 51 and older.  Since we follow a fixed cohort, 
+the age of the population will increase to 65 and older in 2012.  This has consequences for some measures in later years where the eligible population shrinks.
+
+\subsubsection{Demographics}
+Demographic measures are presented in Table \ref{tab:crossval_demog}.  Demographic differences between the two populations are small.  The gender balance and fraction 
+of the population that is non-Hispanic Black or Hispanic is consistent. 
+
+\subsubsection{Health Outcomes}
+The FEM population has a slightly higher population with one or more ADL limitation in 2012 (19.6% vs 17.5%).  Those with any IADL limitations are not statistically 
+different from one another in 2012.
+
+The two populations are not statistically different from each other for prevalence of cancer, hypertension, or lung disease in 2012.  They do differ for diabetes 
+(26.8% for the FEM, 25.0% for the HRS), heart disease (35.3% for the FEM, 32.8% for the HRS), and stroke (12.3% for FEM, 11.1% for the HRS), though the practical 
+significance of these differences is not clear.
+
+\subsubsection{Health Risk Factors}
+Average BMI is slightly higher for the FEM population in 2012 (28.0 for the FEM vs. 27.7 for the HRS).  In terms of practical significance, this difference is 
+equivalent to two pounds for an individual who is 5’8”.  Smoking behavior is not statistically different between the two populations in 2012.  The nursing home 
+population is also not statistically different between the FEM and the HRS.
+
+\subsubsection{Economic Outcomes}
+Social Security claiming and Supplemental Security Income claiming do not differ between the FEM and the HRS by 2012.  The population working is slightly lower 
+in the FEM (22.9% for the FEM vs. 24.6% for the HRS). Household wealth differs in 2012 ($362,000 for the FEM vs $339,000 for the HRS).  Earnings and capital income 
+do not differ significantly between the two populations.
+
+On the whole, the cross-validation exercise is reassuring.  Comparing simulated outcomes to actual outcomes using a set of transition models estimated on a 
+separate population reveals that the majority of outcomes of interest are not statistically different.  In cases where they are, the practical difference is 
+potentially low.

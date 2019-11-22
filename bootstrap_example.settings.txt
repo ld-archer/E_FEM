@@ -1,0 +1,14 @@
+| Settings for FEM
+scenarios_file      = bootstrap_example.csv
+vars_def_file       = vars.txt
+input_data_dir      = input_data
+restricted_input_data_dir = /sch-projects/dua-data-projects/FEM/HRS/USERNAME/rdata_trunk
+use_restricted      = no
+output              = stata
+output_vars         = _all
+summary_output      = summary_output_uncertainty.txt
+random_provider     = blowfish
+log_stderr          = yes
+bootstrap_params		= external
+bootstrap_input			= yes
+bootstrap_new51			= yes

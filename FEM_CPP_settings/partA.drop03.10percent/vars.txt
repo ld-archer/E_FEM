@@ -1,0 +1,2 @@
+mcare_pta_premium_share = mcare_pta_base(year)
+mcare_pta_drop_percent = 0.03

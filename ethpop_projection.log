@@ -1,0 +1,389 @@
+
+  ___  ____  ____  ____  ____ (R)
+ /__    /   ____/   /   ____/
+___/   /   /___/   /   /___/   15.1   Copyright 1985-2017 StataCorp LLC
+  Statistics/Data Analysis            StataCorp
+                                      4905 Lakeway Drive
+     Special Edition                  College Station, Texas 77845 USA
+                                      800-STATA-PC        http://www.stata.com
+                                      979-696-4600        stata@stata.com
+                                      979-696-4601 (fax)
+
+Single-user Stata perpetual license:
+       Serial number:  401506399072
+         Licensed to:  Nik Lomax
+                       The University of Leeds
+
+Notes:
+      1.  Stata is running in batch mode.
+      2.  Unicode is supported; see help unicode_advice.
+      3.  Maximum number of variables is set to 5000; see help set_maxvar.
+
+. do /home/ld-archer/Documents/UK_FEM/trunk/FEM_Stata/Makedata/ELSA/ethpop_proj
+> ection.do 
+
+. clear
+
+. 
+. quietly include fem_env.do
+
+. 
+. * First import the census projection data
+. import excel using $outdata/UKpop2011.xlsx, firstrow
+
+. 
+. * Collapse the LAD (geography) codes focussed on the ethnicities and sum grou
+> ped data
+. collapse (sum) M* F*, by(ETH)
+
+. 
+. * Drop unnecessary columns
+. drop MB FB
+
+. 
+. * Temporarily save cleaned dataset
+. tempfile cleandata
+
+. save `cleandata'
+file /tmp/St17070.000001 saved
+
+. 
+. * Keep only male for now
+. keep ETH M* 
+
+. 
+. * Compute sum for the row of all male vars
+. egen M_total=rowtotal(M*)
+
+. * Keep only the ethnicity and total vars
+. keep ETH M_total
+
+. 
+. * Temp save male data
+. tempfile maletotal
+
+. save `maletotal'
+file /tmp/St17070.000002 saved
+
+. 
+. * Back to clean data
+. use `cleandata', clear
+
+. * Keep only female
+. keep ETH F*
+
+. 
+. * Compute sum
+. egen F_total=rowtotal(F*)
+
+. * Drop unnecessary cols
+. keep ETH F_total
+
+. 
+. *Tempfile for female?
+. tempfile femaletotal
+
+. save `femaletotal'
+file /tmp/St17070.000003 saved
+
+. 
+. * Go back to male temp data
+. use `maletotal', clear
+
+. * Merge 
+. merge ETH using `femaletotal'
+(note: you are using old merge syntax; see [D] merge for new syntax)
+
+. 
+. * Check how the merge went
+. tabulate _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |         12      100.00      100.00
+------------+-----------------------------------
+      Total |         12      100.00
+
+. * Drop _merge column after checking
+. drop _merge
+
+. 
+. * Generate boolean var for ethnicity. white - 1, non-white - 0
+. * strpos checks where a substring exists in string, returns position of
+. * substring. Therefore, if return value > 0, substring is present
+. generate white = strpos(ETH, "WBI") > 0
+
+. replace white = 1 if strpos(ETH, "WHO") > 0
+(1 real change made)
+
+. 
+. * Collapse all white and non-white together
+. collapse (sum) M* F*, by(white)
+
+. * Sort by white, descending
+. gsort -white 
+
+. drop white
+
+. 
+. * Now something a bit weird:
+. * Need to flatten the dataset, to bring all 4 values into one line (for later
+> )
+. * Therefore, its easiest to transpose the dataset, build a dummy var and 
+. * swap these 2 vars around
+. xpose, clear
+
+. 
+. * generate total for the observation (previously variable before xpose)
+. egen total = rowtotal(v1 v2)
+
+. 
+. * Calculate the proportion of the total for each value and replace
+. replace v1 = v1 / total
+(2 real changes made)
+
+. replace v2 = v2 / total
+(2 real changes made)
+
+. 
+. * No longer need total
+. drop total
+
+. 
+. * duplicate data
+. expand 2
+(2 observations created)
+
+. 
+. * Build dummy var to help swap observations around
+. gen change = _n
+
+. replace change = 0 if change < 3
+(2 real changes made)
+
+. replace change = 1 if change > 2
+(2 real changes made)
+
+. 
+. * Swap the obs
+. replace v1 = v2 if change == 1
+(2 real changes made)
+
+. 
+. *Drop columns no longer needed
+. drop v2 change
+
+. 
+. rename v1 eth_prop
+
+. 
+. * Save the output for later in the script
+. tempfile ethnic_prop
+
+. save `ethnic_prop'
+file /tmp/St17070.000004 saved
+
+. 
+. * Duplicate and stack the ethnic proportions to prepare for merging later
+. local i = 0
+
+. while `i'<50 {
+  2.         append using `ethnic_prop'
+  3.         local i = `i' + 1
+  4. }
+
+. 
+. save `ethnic_prop', replace
+file /tmp/St17070.000004 saved
+
+. clear
+
+. 
+. * Create kron matrix
+. matrix kron = (1,1 \ 1,0 \ 0,1 \ 0,0)
+
+. * Print kron
+. matrix list kron
+
+kron[4,2]
+    c1  c2
+r1   1   1
+r2   1   0
+r3   0   1
+r4   0   0
+
+. * Save kron matrix as dataset
+. svmat int kron
+number of observations will be reset to 4
+Press any key to continue, or Break to abort
+number of observations (_N) was 0, now 4
+
+. * Change variable names
+. rename kron1 Male
+
+. rename kron2 White
+
+. 
+. tempfile kron
+
+. save `kron'
+file /tmp/St17070.000005 saved
+
+. 
+. * Loop through 50 iter, append kron matrix on top of each other
+. * This is to build the kronecker notation needed for reweighting matrices
+. local i = 0
+
+. while `i'<50 {
+  2.         append using `kron'
+  3.         local i = `i' + 1
+  4. }
+
+. 
+. * Now save full kron matrix over `kron'
+. save `kron', replace
+file /tmp/St17070.000005 saved
+
+. 
+. 
+. * Read in population projection data
+. import excel using ${outdata}/ew_ppp_opendata2016.xlsx, clear firstrow
+
+. *tempfile popproj 
+. *save `popproj'
+. 
+. * Loop through lettered vars and replace name with year label (plus v for typ
+> e reasons)
+. foreach v of varlist (C-CY) {
+  2.         local x : variable label `v'
+  3.         rename `v' v`x'
+  4. }
+
+. 
+. * Encode Age variable so we can drop all ages under 50
+. encode Age, gen(Age_code)
+
+. * Drop ages under 50
+. drop if Age_code < 51
+(100 observations deleted)
+
+. 
+. * group by Sex, collapse all
+. collapse (sum) v*, by(Sex)
+
+. 
+. * Drop columns with odd years (ELSA only has every 2 years, even)
+. drop *1 *3 *5 *7 *9 
+
+. 
+. * Stack variables on top of each other into one 
+. stack v*, into(pop_proj) clear
+
+. 
+. * Duplicate projection data, sort by _stack var (maintains 1,2,1,2 ordering o
+> f pop_proj)
+. expand 2
+(102 observations created)
+
+. sort _stack
+
+. 
+. * Drop the stacking var
+. drop _stack
+
+. * Save in tempfile
+. tempfile ppp_50
+
+. save `ppp_50'
+file /tmp/St17070.000006 saved
+
+. 
+. clear
+
+. 
+. * Set number of observations, then gen sequence of years from 2016 to 2116
+. set obs 101
+number of observations (_N) was 0, now 101
+
+. egen years = seq(), f(2016) t(2116)
+
+. 
+. * Generate boolean for even and odd (odd = 1)
+. gen odd = mod(years, 2)
+
+. * Keep if even (odd=0) and drop odd var
+. keep if odd==0
+(50 observations deleted)
+
+. drop odd
+
+. 
+. * Duplicate all observations 4 times and sort to put them together
+. expand 4
+(153 observations created)
+
+. sort years
+
+. 
+. * Combine years and kron_full to produce completed kronecker notation
+. merge using `kron'
+(note: you are using old merge syntax; see [D] merge for new syntax)
+
+. drop _merge
+
+. gen pop = 0
+
+. 
+. tempfile kron_years
+
+. save `kron_years'
+file /tmp/St17070.000007 saved
+
+. 
+. * Merge population projection data with kron
+. merge using `ppp_50'
+(note: you are using old merge syntax; see [D] merge for new syntax)
+
+. tab _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |        204      100.00      100.00
+------------+-----------------------------------
+      Total |        204      100.00
+
+. drop _merge
+
+. 
+. * Add ethnic_proportion var to dataset
+. merge using `ethnic_prop'
+(note: you are using old merge syntax; see [D] merge for new syntax)
+
+. tab _merge
+
+     _merge |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          3 |        204      100.00      100.00
+------------+-----------------------------------
+      Total |        204      100.00
+
+. drop _merge
+
+. 
+. * Replace pop with projection count * ethnic_proportion
+. replace pop = pop_proj * eth_prop
+(204 real changes made)
+
+. * Drop unnecessary cols
+. drop pop_proj eth_prop
+
+. 
+. * Save the output
+. save ${outdata}/ethpop_projections.dta, replace
+(note: file /home/ld-archer/Documents/UK_FEM/trunk/input_data/ethpop_projection
+> s.dta not found)
+file /home/ld-archer/Documents/UK_FEM/trunk/input_data/ethpop_projections.dta s
+> aved
+
+. 
+end of do-file

@@ -1,0 +1,1 @@
+mcare_ptB_premium_share = if(magi <= 85000, mcare_ptb_base(year), if(magi <= 107000, mcare_ptb_bracket2(year), if(magi <= 160000, mcare_ptb_bracket3(year), if(magi <= 214000, mcare_ptb_bracket4(year), mcare_ptb_bracket5(year)) ) ) )

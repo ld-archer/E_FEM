@@ -1,0 +1,4 @@
+| Not adjusting mortality at all over time. This table must be present, or the default will be used.
+l2age65pd
+0	1.0
+1	1.0

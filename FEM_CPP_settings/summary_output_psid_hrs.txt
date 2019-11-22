@@ -1,0 +1,401 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+start_pop,Total population (million),weight,sum,0.000001,1,l2died == 0
+Replacement_pop,New Cohorts,weight,sum,0.000001,1,l2died == 0 & age >= 25 & age < 27
+pop_medicare,Total Medicare Eligible Population (Millions),weight,sum,0.000001,1,l2died==0 & medicare_elig
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,l2died == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+start_pop70p,Total population 70+ (million),weight,sum,0.000001,1,l2died == 0 & age >= 70
+end_pop70p,Total population 70+ (million),weight,sum,0.000001,1,died == 0 & age >= 70
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,l2died == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,l2died == 0 & mcare_ptb_enroll == 1
+mcare_tot,Total Medicare Costs,mcare,sum,1,weight,l2died==0
+mcare_pta_tot,Total Part A costs,mcare_pta,sum,1,weight,l2died==0
+mcare_ptb_tot,Total Part B costs,mcare_ptb,sum,1,weight,l2died==0
+mcare_ptd_tot,Total Part D costs,mcare_ptd,sum,1,weight,l2died==0
+mcare_pta_tot_enroll,Total Part A costs,mcare_pta_enroll,sum,1,weight,l2died==0
+mcare_ptb_tot_enroll,Total Part B costs,mcare_ptb_enroll,sum,1,weight,l2died==0
+mcare_ptd_tot_enroll,Total Part D costs,mcare_ptd_enroll,sum,1,weight,l2died==0
+caidmd,Total Medicaid costs,caidmd,sum,1,weight,l2died==0
+caidmd_mcbs,Total Medicaid costs from MCBS,caidmd_mcbs,sum,1,weight,l2died==0
+caidmd_meps,Total Medicaid costs from MEPS,caidmd_meps,sum,1,weight,l2died==0
+totmd_mcbs,Total Medical costs from MCBS,totmd_mcbs,sum,1,weight,l2died==0
+totmd_meps,Total Medical costs from MEPS,totmd_meps,sum,1,weight,l2died==0
+oopmd_mcbs,Total OOP from MCBS,oopmd_mcbs,sum,1,weight,l2died==0
+oopmd_meps,Total OOP from MEPS,oopmd_meps,sum,1,weight,l2died==0
+died,Deaths,died,mean,1,weight,l2died==0
+hearte,Hearte,hearte,mean,1,weight,l2died==0
+stroke,Stroke,stroke,mean,1,weight,l2died==0 
+cancre,Cancer,cancre,mean,1,weight,l2died==0
+hibpe,Hibpe,hibpe,mean,1,weight,l2died==0
+diabe,Diabe,diabe,mean,1,weight,l2died==0
+lunge,Lunge,lunge,mean,1,weight,l2died==0
+diclaim,DI Claim,diclaim,mean,1,weight,l2died==0
+ssclaim,SS Claim,ssclaim,mean,1,weight,l2died==0
+ssiclaim,SSI Claim,ssiclaim,mean,1,weight,l2died==0
+work,Working,work,mean,1,weight,l2died==0
+adl1,1 ADL,adl1,mean,1,weight,l2died==0
+adl2,2 ADL,adl2,mean,1,weight,l2died==0
+adl3p,3plus ADL,adl3p,mean,1,weight,l2died==0
+iadl1,1 IADL,iadl1,mean,1,weight,l2died==0
+iadl2p,2plus IADL,iadl2p,mean,1,weight,l2died==0
+smoken,Smoke Now,smoken,mean,1,weight,l2died==0
+smokev,Smoke Ever,smokev,mean,1,weight,l2died==0
+Under_50_pop,Population under 50,weight,sum,0.000001,1,l2died == 0 & age < 50
+hearte_tot,Hearte,hearte,sum,1,weight,l2died==0
+stroke_tot,Stroke,stroke,sum,1,weight,l2died==0 
+cancre_tot,Cancer,cancre,sum,1,weight,l2died==0
+hibpe_tot,Hibpe,hibpe,sum,1,weight,l2died==0
+diabe_tot,Diabe,diabe,sum,1,weight,l2died==0
+lunge_tot,Lunge,lunge,sum,1,weight,l2died==0
+hibpe_25_44,Hibpe 25 to 44,hibpe,mean,1,weight,l2died==0 & age>=25 & age < 45
+hibpe_45_64,Hibpe 45 to 64,hibpe,mean,1,weight,l2died==0 & age>=45 & age < 65
+hibpe_65_74,Hibpe 65 to 74,hibpe,mean,1,weight,l2died==0 & age>=65 & age < 75
+hibpe_75p,Hibpe 75 plus,hibpe,mean,1,weight,l2died==0 & age>=75
+diabe_25_44,Diabe 25 to 44,diabe,mean,1,weight,l2died==0 & age>=25 & age < 45
+diabe_45_64,Diabe 45 to 64,diabe,mean,1,weight,l2died==0 & age>=45 & age < 65
+diabe_65_74,Diabe 65 to 74,diabe,mean,1,weight,l2died==0 & age>=65 & age < 75
+diabe_75p,Diabe 75 plus,diabe,mean,1,weight,l2died==0 & age>=75
+hearte_25_44,Hearte 25 to 44,hearte,mean,1,weight,l2died==0 & age>=25 & age < 45
+hearte_45_64,Hearte 45 to 64,hearte,mean,1,weight,l2died==0 & age>=45 & age < 65
+hearte_65_74,Hearte 65 to 74,hearte,mean,1,weight,l2died==0 & age>=65 & age < 75
+hearte_75p,Hearte 75 plus,hearte,mean,1,weight,l2died==0 & age>=75
+hibpe_25_44_w,Hibpe 25 to 44,hibpe,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 0 & hispan == 0 
+hibpe_45_64_w,Hibpe 45 to 64,hibpe,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 0 & hispan == 0
+hibpe_65_74_w,Hibpe 65 to 74,hibpe,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 0 & hispan == 0
+hibpe_75p_w,Hibpe 75 plus,hibpe,mean,1,weight,l2died==0 & age>=75 & black == 0 & hispan == 0
+diabe_25_44_w,Diabe 25 to 44,diabe,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 0 & hispan == 0
+diabe_45_64_w,Diabe 45 to 64,diabe,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 0 & hispan == 0
+diabe_65_74_w,Diabe 65 to 74,diabe,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 0 & hispan == 0
+diabe_75p_w,Diabe 75 plus,diabe,mean,1,weight,l2died==0 & age>=75 & black == 0 & hispan == 0
+hearte_25_44_w,Hearte 25 to 44,hearte,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 0 & hispan == 0
+hearte_45_64_w,Hearte 45 to 64,hearte,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 0 & hispan == 0
+hearte_65_74_w,Hearte 65 to 74,hearte,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 0 & hispan == 0
+hearte_75p_w,Hearte 75 plus,hearte,mean,1,weight,l2died==0 & age>=75 & black == 0 & hispan == 0
+hibpe_25_44_b,Hibpe 25 to 44,hibpe,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 1 & hispan == 0 
+hibpe_45_64_b,Hibpe 45 to 64,hibpe,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 1 & hispan == 0
+hibpe_65_74_b,Hibpe 65 to 74,hibpe,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 1 & hispan == 0
+hibpe_75p_b,Hibpe 75 plus,hibpe,mean,1,weight,l2died==0 & age>=75 & black == 1 & hispan == 0
+diabe_25_44_b,Diabe 25 to 44,diabe,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 1 & hispan == 0
+diabe_45_64_b,Diabe 45 to 64,diabe,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 1 & hispan == 0
+diabe_65_74_b,Diabe 65 to 74,diabe,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 1 & hispan == 0
+diabe_75p_b,Diabe 75 plus,diabe,mean,1,weight,l2died==0 & age>=75 & black == 1 & hispan == 0
+hearte_25_44_b,Hearte 25 to 44,hearte,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 1 & hispan == 0
+hearte_45_64_b,Hearte 45 to 64,hearte,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 1 & hispan == 0
+hearte_65_74_b,Hearte 65 to 74,hearte,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 1 & hispan == 0
+hearte_75p_b,Hearte 75 plus,hearte,mean,1,weight,l2died==0 & age>=75 & black == 1 & hispan == 0
+hibpe_25_44_h,Hibpe 25 to 44,hibpe,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 0 & hispan == 1
+hibpe_45_64_h,Hibpe 45 to 64,hibpe,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 0 & hispan == 1
+hibpe_65_74_h,Hibpe 65 to 74,hibpe,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 0 & hispan == 1
+hibpe_75p_h,Hibpe 75 plus,hibpe,mean,1,weight,l2died==0 & age>=75 & black == 0 & hispan == 1
+diabe_25_44_h,Diabe 25 to 44,diabe,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 0 & hispan == 1
+diabe_45_64_h,Diabe 45 to 64,diabe,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 0 & hispan == 1
+diabe_65_74_h,Diabe 65 to 74,diabe,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 0 & hispan == 1
+diabe_75p_h,Diabe 75 plus,diabe,mean,1,weight,l2died==0 & age>=75 & black == 0 & hispan == 1
+hearte_25_44_h,Hearte 25 to 44,hearte,mean,1,weight,l2died==0 & age>=25 & age < 45 & black == 0 & hispan == 1
+hearte_45_64_h,Hearte 45 to 64,hearte,mean,1,weight,l2died==0 & age>=45 & age < 65 & black == 0 & hispan == 1
+hearte_65_74_h,Hearte 65 to 74,hearte,mean,1,weight,l2died==0 & age>=65 & age < 75 & black == 0 & hispan == 1
+hearte_75p_h,Hearte 75 plus,hearte,mean,1,weight,l2died==0 & age>=75 & black == 0 & hispan == 1
+med_age,Median Age of Living,age,median,1,weight,l2died==0
+imarried,Incidence of marriage,married,mean,1,weight,l2died==0 & l2mstat_new != 3
+imarried2535,Incidence of marriage age 25-35,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 25 & age < 35
+imarried3545,Incidence of marriage age 35-45,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 35 & age < 45
+imarried4555,Incidence of marriage age 45-55,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 45 & age < 55
+imarried5565,Incidence of marriage age 55-65,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 55 & age < 65
+imarried65p,Incidence of marriage age 65+,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 65
+t_imarried,Incidence of marriage,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3
+t_imarried2535,Incidence of marriage age 25-35,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 25 & age < 35
+t_imarried3545,Incidence of marriage age 35-45,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 35 & age < 45
+t_imarried4555,Incidence of marriage age 45-55,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 45 & age < 55
+t_imarried5565,Incidence of marriage age 55-65,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 55 & age < 65
+t_imarried65p,Incidence of marriage age 65+,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 65
+isingle,Incidence of single (not widowed),singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1
+isingle2535,Incidence of single (not widowed) age 25-35,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 25 & age < 35
+isingle3545,Incidence of single (not widowed) age 35-45,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 35 & age < 45
+isingle4555,Incidence of single (not widowed) age 45-55,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 45 & age < 55
+isingle5565,Incidence of single (not widowed) age 55-65,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 55 & age < 65
+isingle65p,Incidence of single (not widowed) age 65+,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 65
+t_isingle,Incidence of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1
+t_isingle2535,Incidence of single (not widowed) age 25-35,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 25 & age < 35
+t_isingle3545,Incidence of single (not widowed) age 35-45,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 35 & age < 45
+t_isingle4555,Incidence of single (not widowed) age 45-55,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 45 & age < 55
+t_isingle5565,Incidence of single (not widowed) age 55-65,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 55 & age < 65
+t_isingle65p,Incidence of single (not widowed) age 65+,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 65
+iwidowed,Incidence of widowed,widowed,mean,1,weight,l2died==0 & l2widowed==0
+iwidowed2535,Incidence of widowed age 25-35,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 25 & age < 35
+iwidowed3545,Incidence of widowed age 35-45,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 35 & age < 45
+iwidowed4555,Incidence of widowed age 45-55,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 45 & age < 55
+iwidowed5565,Incidence of widowed age 55-65,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 55 & age < 65
+iwidowed65p,Incidence of widowed age 65+,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 65
+t_iwidowed,Incidence of widowed,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0
+t_iwidowed2535,Incidence of widowed age 25-35,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 25 & age < 35
+t_iwidowed3545,Incidence of widowed age 35-45,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 35 & age < 45
+t_iwidowed4555,Incidence of widowed age 45-55,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 45 & age < 55
+t_iwidowed5565,Incidence of widowed age 55-65,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 55 & age < 65
+t_iwidowed65p,Incidence of widowed age 65+,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 65
+icohab,Incidence of cohab,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2
+icohab2535,Incidence of cohab age 25-35,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 25 & age < 35
+icohab3545,Incidence of cohab age 35-45,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 35 & age < 45
+icohab4555,Incidence of cohab age 45-55,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 45 & age < 55
+icohab5565,Incidence of cohab age 55-65,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 55 & age < 65
+icohab65p,Incidence of cohab age 65+,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 65
+t_icohab,Incidence of cohab,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2
+t_icohab2535,Incidence of cohab age 25-35,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 25 & age < 35
+t_icohab3545,Incidence of cohab age 35-45,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 35 & age < 45
+t_icohab4555,Incidence of cohab age 45-55,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 45 & age < 55
+t_icohab5565,Incidence of cohab age 55-65,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 55 & age < 65
+t_icohab65p,Incidence of cohab age 65+,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 65
+ifmarried,Incidence of first marriage,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & l2everm == 0
+pmarried,Prevalance of marriage,married,mean,1,weight,l2died==0
+psingle,Prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0
+pcohab,Prevalance of cohab,cohab,mean,1,weight,l2died==0
+pwidowed,Prevalence of widowed,widowed,mean,1,weight,l2died==0
+t_married,Prevalance of marriage,married,sum,0.000001,weight,l2died==0
+t_single,Prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0
+t_cohab,Prevalance of cohab,cohab,sum,0.000001,weight,l2died==0
+t_widowed,Prevalence of widowed,widowed,sum,0.000001,weight,l2died==0
+imarried_m,Male incidence of marriage,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & male==1
+imarried2535_m,Male incidence of marriage age 25-35,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 25 & age < 35 & male==1
+imarried3545_m,Male incidence of marriage age 35-45,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 35 & age < 45 & male==1
+imarried4555_m,Male incidence of marriage age 45-55,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 45 & age < 55 & male==1
+imarried5565_m,Male incidence of marriage age 55-65,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 55 & age < 65 & male==1
+imarried65p_m,Male incidence of marriage age 65+,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 65 & male==1
+t_imarried_m,Male incidence of marriage,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & male==1
+t_imarried2535_m,Male incidence of marriage age 25-35,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 25 & age < 35 & male==1
+t_imarried3545_m,Male incidence of marriage age 35-45,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 35 & age < 45 & male==1
+t_imarried4555_m,Male incidence of marriage age 45-55,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 45 & age < 55 & male==1
+t_imarried5565_m,Male incidence of marriage age 55-65,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 55 & age < 65 & male==1
+t_imarried65p_m,Male incidence of marriage age 65+,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 65 & male==1
+isingle_m,Male incidence of single (not widowed),singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & male==1
+isingle2535_m,Male incidence of single (not widowed) age 25-35,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 25 & age < 35 & male==1
+isingle3545_m,Male incidence of single (not widowed) age 35-45,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 35 & age < 45 & male==1
+isingle4555_m,Male incidence of single (not widowed) age 45-55,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 45 & age < 55 & male==1
+isingle5565_m,Male incidence of single (not widowed) age 55-65,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 55 & age < 65 & male==1
+isingle65p_m,Male incidence of single (not widowed) age 65+,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 65 & male==1
+t_isingle_m,Male incidence of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & male==1
+t_isingle2535_m,Male incidence of single (not widowed) age 25-35,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 25 & age < 35 & male==1
+t_isingle3545_m,Male incidence of single (not widowed) age 35-45,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 35 & age < 45 & male==1
+t_isingle4555_m,Male incidence of single (not widowed) age 45-55,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 45 & age < 55 & male==1
+t_isingle5565_m,Male incidence of single (not widowed) age 55-65,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 55 & age < 65 & male==1
+t_isingle65p_m,Male incidence of single (not widowed) age 65+,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 65 & male==1
+iwidowed_m,Male incidence of widowed,widowed,mean,1,weight,l2died==0 & l2widowed==0 & male==1
+iwidowed2535_m,Male incidence of widowed age 25-35,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 25 & age < 35 & male==1
+iwidowed3545_m,Male incidence of widowed age 35-45,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 35 & age < 45 & male==1
+iwidowed4555_m,Male incidence of widowed age 45-55,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 45 & age < 55 & male==1
+iwidowed5565_m,Male incidence of widowed age 55-65,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 55 & age < 65 & male==1
+iwidowed65p_m,Male incidence of widowed age 65+,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 65 & male==1
+t_iwidowed_m,Male incidence of widowed,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & male==1
+t_iwidowed2535_m,Male incidence of widowed age 25-35,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 25 & age < 35 & male==1
+t_iwidowed3545_m,Male incidence of widowed age 35-45,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 35 & age < 45 & male==1
+t_iwidowed4555_m,Male incidence of widowed age 45-55,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 45 & age < 55 & male==1
+t_iwidowed5565_m,Male incidence of widowed age 55-65,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 55 & age < 65 & male==1
+t_iwidowed65p_m,Male incidence of widowed age 65+,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 65 & male==1
+icohab_m,Male incidence of cohab,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & male==1
+icohab2535_m,Male incidence of cohab age 25-35,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 25 & age < 35 & male==1
+icohab3545_m,Male incidence of cohab age 35-45,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 35 & age < 45 & male==1
+icohab4555_m,Male incidence of cohab age 45-55,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 45 & age < 55 & male==1
+icohab5565_m,Male incidence of cohab age 55-65,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 55 & age < 65 & male==1
+icohab65p_m,Male incidence of cohab age 65+,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 65 & male==1
+t_icohab_m,Male incidence of cohab,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & male==1
+t_icohab2535_m,Male incidence of cohab age 25-35,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 25 & age < 35 & male==1
+t_icohab3545_m,Male incidence of cohab age 35-45,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 35 & age < 45 & male==1
+t_icohab4555_m,Male incidence of cohab age 45-55,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 45 & age < 55 & male==1
+t_icohab5565_m,Male incidence of cohab age 55-65,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 55 & age < 65 & male==1
+t_icohab65p_m,Male incidence of cohab age 65+,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 65 & male==1
+imarried_f,Female incidence of marriage,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & male==0
+imarried2535_f,Female incidence of marriage age 25-35,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 25 & age < 35 & male==0
+imarried3545_f,Female incidence of marriage age 35-45,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 35 & age < 45 & male==0
+imarried4555_f,Female incidence of marriage age 45-55,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 45 & age < 55 & male==0
+imarried5565_f,Female incidence of marriage age 55-65,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 55 & age < 65 & male==0
+imarried65p_f,Female incidence of marriage age 65+,married,mean,1,weight,l2died==0 & l2mstat_new != 3 & age >= 65 & male==0
+t_imarried_f,Female incidence of marriage,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & male==0
+t_imarried2535_f,Female incidence of marriage age 25-35,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 25 & age < 35 & male==0
+t_imarried3545_f,Female incidence of marriage age 35-45,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 35 & age < 45 & male==0
+t_imarried4555_f,Female incidence of marriage age 45-55,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 45 & age < 55 & male==0
+t_imarried5565_f,Female incidence of marriage age 55-65,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 55 & age < 65 & male==0
+t_imarried65p_f,Female incidence of marriage age 65+,married,sum,0.000001,weight,l2died==0 & l2mstat_new != 3 & age >= 65 & male==0
+isingle_f,Female incidence of single (not widowed),singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & male==0
+isingle2535_f,Female incidence of single (not widowed) age 25-35,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 25 & age < 35 & male==0
+isingle3545_f,Female incidence of single (not widowed) age 35-45,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 35 & age < 45 & male==0
+isingle4555_f,Female incidence of single (not widowed) age 45-55,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 45 & age < 55 & male==0
+isingle5565_f,Female incidence of single (not widowed) age 55-65,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 55 & age < 65 & male==0
+isingle65p_f,Female incidence of single (not widowed) age 65+,singlenwid,mean,1,weight,l2died==0 & l2mstat_new != 1 & age >= 65 & male==0
+t_isingle_f,Female incidence of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & male==0
+t_isingle2535_f,Female incidence of single (not widowed) age 25-35,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 25 & age < 35 & male==0
+t_isingle3545_f,Female incidence of single (not widowed) age 35-45,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 35 & age < 45 & male==0
+t_isingle4555_f,Female incidence of single (not widowed) age 45-55,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 45 & age < 55 & male==0
+t_isingle5565_f,Female incidence of single (not widowed) age 55-65,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 55 & age < 65 & male==0
+t_isingle65p_f,Female incidence of single (not widowed) age 65+,singlenwid,sum,0.000001,weight,l2died==0 & l2mstat_new != 1 & age >= 65 & male==0
+iwidowed_f,Female incidence of widowed,widowed,mean,1,weight,l2died==0 & l2widowed==0 & male==0
+iwidowed2535_f,Female incidence of widowed age 25-35,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 25 & age < 35 & male==0
+iwidowed3545_f,Female incidence of widowed age 35-45,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 35 & age < 45 & male==0
+iwidowed4555_f,Female incidence of widowed age 45-55,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 45 & age < 55 & male==0
+iwidowed5565_f,Female incidence of widowed age 55-65,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 55 & age < 65 & male==0
+iwidowed65p_f,Female incidence of widowed age 65+,widowed,mean,1,weight,l2died==0 & l2widowed==0 & age >= 65 & male==0
+t_iwidowed_f,Female incidence of widowed,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & male==0
+t_iwidowed2535_f,Female incidence of widowed age 25-35,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 25 & age < 35 & male==0
+t_iwidowed3545_f,Female incidence of widowed age 35-45,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 35 & age < 45 & male==0
+t_iwidowed4555_f,Female incidence of widowed age 45-55,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 45 & age < 55 & male==0
+t_iwidowed5565_f,Female incidence of widowed age 55-65,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 55 & age < 65 & male==0
+t_iwidowed65p_f,Female incidence of widowed age 65+,widowed,sum,0.000001,weight,l2died==0 & l2widowed==0 & age >= 65 & male==0
+icohab_f,Female incidence of cohab,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & male==0
+icohab2535_f,Female incidence of cohab age 25-35,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 25 & age < 35 & male==0
+icohab3545_f,Female incidence of cohab age 35-45,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 35 & age < 45 & male==0
+icohab4555_f,Female incidence of cohab age 45-55,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 45 & age < 55 & male==0
+icohab5565_f,Female incidence of cohab age 55-65,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 55 & age < 65 & male==0
+icohab65p_f,Female incidence of cohab age 65+,cohab,mean,1,weight,l2died==0 & l2mstat_new != 2 & age >= 65 & male==0
+t_icohab_f,Female incidence of cohab,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & male==0
+t_icohab2535_f,Female incidence of cohab age 25-35,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 25 & age < 35 & male==0
+t_icohab3545_f,Female incidence of cohab age 35-45,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 35 & age < 45 & male==0
+t_icohab4555_f,Female incidence of cohab age 45-55,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 45 & age < 55 & male==0
+t_icohab5565_f,Female incidence of cohab age 55-65,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 55 & age < 65 & male==0
+t_icohab65p_f,Female incidence of cohab age 65+,cohab,sum,0.000001,weight,l2died==0 & l2mstat_new != 2 & age >= 65 & male==0
+pmarried2535,Prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 25 & age < 35
+psingle2535,Prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 25 & age < 35
+pcohab2535,Prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 25 & age < 35
+pwidowed2535,Prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 25 & age < 35
+pmarried3545,Prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 35 & age < 45
+psingle3545,Prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 35 & age < 45
+pcohab3545,Prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 35 & age < 45
+pwidowed3545,Prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 35 & age < 45
+pmarried4555,Prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 45 & age < 55
+psingle4555,Prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 45 & age < 55
+pcohab4555,Prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 45 & age < 55
+pwidowed4555,Prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 45 & age < 55
+pmarried5565,Prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 55 & age < 65
+psingle5565,Prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 55 & age < 65
+pcohab5565,Prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 55 & age < 65
+pwidowed5565,Prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 55 & age < 65
+pmarried65p,Prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 65
+psingle65p,Prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 65
+pcohab65p,Prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 65
+pwidowed65p,Prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 65
+t_married2535,Prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35
+t_single2535,Prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35
+t_cohab2535,Prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35
+t_widowed2535,Prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35
+t_married3545,Prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45
+t_single3545,Prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45
+t_cohab3545,Prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45
+t_widowed3545,Prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45
+t_married4555,Prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55
+t_single4555,Prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55
+t_cohab4555,Prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55
+t_widowed4555,Prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55
+t_married5565,Prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65
+t_single5565,Prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65
+t_cohab5565,Prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65
+t_widowed5565,Prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65
+t_married65p,Prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 65
+t_single65p,Prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 65
+t_cohab65p,Prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 65
+t_widowed65p,Prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 65
+pmarried_m,Prevalance of marriage,married,mean,1,weight,l2died==0 & male==1
+psingle_m,Prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & male==1
+pcohab_m,Prevalance of cohab,cohab,mean,1,weight,l2died==0 & male==1
+pwidowed_m,Prevalence of widowed,widowed,mean,1,weight,l2died==0 & male==1
+pmarried2535_m,Male prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==1
+psingle2535_m,Male prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==1
+pcohab2535_m,Male prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==1
+pwidowed2535_m,Male prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==1
+pmarried3545_m,Male prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==1
+psingle3545_m,Male prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==1
+pcohab3545_m,Male prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==1
+pwidowed3545_m,Male prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==1
+pmarried4555_m,Male prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==1
+psingle4555_m,Male prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==1
+pcohab4555_m,Male prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==1
+pwidowed4555_m,Male prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==1
+pmarried5565_m,Male prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==1
+psingle5565_m,Male prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==1
+pcohab5565_m,Male prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==1
+pwidowed5565_m,Male prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==1
+pmarried65p_m,Male prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 65 & male==1
+psingle65p_m,Male prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 65 & male==1
+pcohab65p_m,Male prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 65 & male==1
+pwidowed65p_m,Male prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 65 & male==1
+t_married_m,Male prevalance of marriage,married,sum,0.000001,weight,l2died==0 & male==1
+t_single_m,Male prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & male==1
+t_cohab_m,Male prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & male==1
+t_widowed_m,Male prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & male==1
+t_married2535_m,Male prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==1
+t_single2535_m,Male prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==1
+t_cohab2535_m,Male prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==1
+t_widowed2535_m,Male prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==1
+t_married3545_m,Male prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==1
+t_single3545_m,Male prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==1
+t_cohab3545_m,Male prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==1
+t_widowed3545_m,Male prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==1
+t_married4555_m,Male prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==1
+t_single4555_m,Male prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==1
+t_cohab4555_m,Male prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==1
+t_widowed4555_m,Male prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==1
+t_married5565_m,Male prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==1
+t_single5565_m,Male prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==1
+t_cohab5565_m,Male prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==1
+t_widowed5565_m,Male prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==1
+t_married65p_m,Male prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 65 & male==1
+t_single65p_m,Male prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 65 & male==1
+t_cohab65p_m,Male prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 65 & male==1
+t_widowed65p_m,Male prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 65 & male==1
+pmarried_f,Female prevalance of marriage,married,mean,1,weight,l2died==0 & male==0
+psingle_f,Female prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & male==0
+pcohab_f,Female prevalance of cohab,cohab,mean,1,weight,l2died==0 & male==0
+pwidowed_f,Female prevalence of widowed,widowed,mean,1,weight,l2died==0 & male==0
+pmarried2535_f,Female prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==0
+psingle2535_f,Female prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==0
+pcohab2535_f,Female prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==0
+pwidowed2535_f,Female prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 25 & age < 35 & male==0
+pmarried3545_f,Female prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==0
+psingle3545_f,Female prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==0
+pcohab3545_f,Female prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==0
+pwidowed3545_f,Female prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 35 & age < 45 & male==0
+pmarried4555_f,Female prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==0
+psingle4555_f,Female prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==0
+pcohab4555_f,Female prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==0
+pwidowed4555_f,Female prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 45 & age < 55 & male==0
+pmarried5565_f,Female prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==0
+psingle5565_f,Female prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==0
+pcohab5565_f,Female prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==0
+pwidowed5565_f,Female prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 55 & age < 65 & male==0
+pmarried65p_f,Female prevalance of marriage,married,mean,1,weight,l2died==0 & age >= 65 & male==0
+psingle65p_f,Female prevalance of single (not widowed),singlenwid,mean,1,weight,l2died==0 & age >= 65 & male==0
+pcohab65p_f,Female prevalance of cohab,cohab,mean,1,weight,l2died==0 & age >= 65 & male==0
+pwidowed65p_f,Female prevalence of widowed,widowed,mean,1,weight,l2died==0 & age >= 65 & male==0
+t_married_f,Female prevalance of marriage,married,sum,0.000001,weight,l2died==0 & male==0
+t_single_f,Female prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & male==0
+t_cohab_f,Female prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & male==0
+t_widowed_f,Female prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & male==0
+t_married2535_f,Female prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==0
+t_single2535_f,Female prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==0
+t_cohab2535_f,Female prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==0
+t_widowed2535_f,Female prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 25 & age < 35 & male==0
+t_married3545_f,Female prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==0
+t_single3545_f,Female prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==0
+t_cohab3545_f,Female prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==0
+t_widowed3545_f,Female prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 35 & age < 45 & male==0
+t_married4555_f,Female prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==0
+t_single4555_f,Female prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==0
+t_cohab4555_f,Female prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==0
+t_widowed4555_f,Female prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 45 & age < 55 & male==0
+t_married5565_f,Female prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==0
+t_single5565_f,Female prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==0
+t_cohab5565_f,Female prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==0
+t_widowed5565_f,Female prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 55 & age < 65 & male==0
+t_married65p_f,Female prevalance of marriage,married,sum,0.000001,weight,l2died==0 & age >= 65 & male==0
+t_single65p_f,Female prevalance of single (not widowed),singlenwid,sum,0.000001,weight,l2died==0 & age >= 65 & male==0
+t_cohab65p_f,Female prevalance of cohab,cohab,sum,0.000001,weight,l2died==0 & age >= 65 & male==0
+t_widowed65p_f,Female prevalence of widowed,widowed,sum,0.000001,weight,l2died==0 & age >= 65 & male==0
+peverm,Prevalance of ever married,everm,mean,1,weight,l2died==0
+peversep,Prevalence of ever seperated,eversep,mean,1,weight,l2died==0
+pwidowev,Prevalence of ever widowed,widowev,mean,1,weight,l2died==0
+prob_single_single,Prob of single -> single,single,mean,1,weight,l2died==0 & l2mstat_new==1
+prob_single_married,Prob of single -> cohab,cohab,mean,1,weight,l2died==0 & l2mstat_new==1
+prob_single_cohab,Prob of single -> married,married,mean,1,weight,l2died==0 & l2mstat_new==1
+prob_cohab_single,Prob of cohab -> single (not widowed),singlenwid,mean,1,weight,l2died==0 & l2mstat_new==2
+prob_cohab_widowed,Prob of cohab -> widowed,widowed,mean,1,weight,l2died==0 & l2mstat_new==2 & l2widowed==0
+prob_cohab_cohab,Prob of cohab -> cohab,cohab,mean,1,weight,l2died==0 & l2mstat_new==2
+prob_cohab_married,Prob of cohab -> married,married,mean,1,weight,l2died==0 & l2mstat_new==2
+prob_married_single,Prob of married -> single (not widowed),singlenwid,mean,1,weight,l2died==0 & l2mstat_new==3
+prob_married_widowed,Prob of married -> widowed,widowed,mean,1,weight,l2died==0 & l2mstat_new==3 & l2widowed==0
+prob_married_cohab,Prob of married -> cohab,cohab,mean,1,weight,l2died==0 & l2mstat_new==3
+prob_married_married,Prob of married -> married,married,mean,1,weight,l2died==0 & l2mstat_new==3

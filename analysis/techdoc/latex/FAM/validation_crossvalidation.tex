@@ -1,0 +1,30 @@
+\subsection{Cross-validation}
+The cross-validation exercise randomly samples half of the PSID respondent IDs for use in estimating the transition models.  The respondents not used for estimation, 
+but who were present in the PSID sample in 1999, are then simulated from 1999 through 2013.  Demographic, health, and economic outcomes are compared between the 
+simulated (“FAM”) and actual (“PSID”) populations.  
+
+%These results are presented in Table \ref{tab:crossval_unweighted} - Table \ref{tab:crossval_cntecon} for 2000, 2006, and 2012, 
+%with a statistical test of the difference between the average values in the two populations.
+
+Worth noting is how the composition of the population changes in this exercise.  In 1999, the sample represents those 25 and older.  Since we follow a fixed cohort, 
+the age of the population will increase to 39 and older in 2013.  This has consequences for some measures in later years where the eligible population shrinks.
+
+\subsubsection{Demographics}
+Mortality and demographic measures are presented in Tables \ref{tab:crossval_unweighted} and \ref{tab:crossval_demog}.  Mortality incidence is comparable between
+the simulated and observed populations.  Demographic characteristics do not differ between the two.
+
+\subsubsection{Health Outcomes}
+Binary health outcomes are presented in Table \ref{tab:crossval_binhlth}. FAM underestimates the prevalence of ADL and IADL limitations compared to the crossvalidation sample. 
+Binary outcomes, like cancer, diabetes, heart diesease, and stroke do not differ.  FAM underpredicts hypertension and lung disease compared to the crossvalidation sample.
+
+\subsubsection{Health Risk Factors}
+Risk factors are presented in Table \ref{tab:crossval_risk}.  BMI is not statistically different between the two samples.  Current smoking is not statistically different,
+ but more individuals in the crossvalidation sample report being former smokers.
+
+\subsubsection{Economic Outcomes}
+Binary economic outcomes are presented in Table \ref{tab:crossval_binecon}.  FAM underpredicts claiming of federal disability and overpredicts Social Security retirement 
+claiming.  Supplemental Security claiming is not statistically different between FAM and the crossvalidation sample.  Working for pay is not statistically different.
+
+%Continuout economic outcomes are presented in Table \ref{tab:crossval_cntecon}.
+
+On the whole, the crossvalidation exercise is reassuring.  There are differences that will be explored and improved upon in the future.

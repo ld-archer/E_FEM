@@ -1,0 +1,56 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+pop_medicare,Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & medicare_elig
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+start_pop,Starting Population (million),weight,sum,0.000001,1,ldied == 0
+end_pop,Ending Population (million),weight,sum,0.000001,1,died == 0
+start_pop65p,Starting Population 65+ (Millions),weight,sum,0.000001,1,ldied==0 & age >= 65
+end_pop65p,Ending Population 65+ (Millions),weight,sum,0.000001,1,died==0 & age >= 65
+cancre,Prevelance of Cancer,cancre,mean,1,weight,died == 0
+diabe,Prevelance of Diabetes,diabe,mean,1,weight,died == 0
+hearte,Prevelance of Heart Disease,hearte,mean,1,weight,died == 0
+hibpe,Prevelance of Hypertension,hibpe,mean,1,weight,died == 0
+lunge,Prevelance of Lung Disease,lunge,mean,1,weight,died == 0
+stroke,Prevelance of Stroke,stroke,mean,1,weight,died == 0
+anycond,Prevelance of Any Health Condition,anycond,mean,1,weight,died == 0
+cond3p,Prevelance of 3 or more Health Conditions,cond3p,mean,1,weight,died == 0
+iadl1,Prevelance of 1 IADL,iadl1,mean,1,weight,died == 0
+iadl2p,PRevalence of 2+ IADLs,iadl2p,mean,1,weight,died==0
+adl1,Prevelance of 1 ADL,adl1,mean,1,weight,died == 0
+adl2,Prevelance of 2 ADLs,adl2,mean,1,weight,died == 0
+adl3p,Prevelance of 3+ ADLs,adl3p,mean,1,weight,died == 0
+nhmliv,Prevelance of In a Nursing Home,nhmliv,mean,1,weight,died == 0
+nhmliv_pop,Count of individuals in a nursing home,nhmliv,sum,1,weight,died == 0
+obese,Prevelance of Obese,obese,mean,1,weight,died == 0
+overwt,Prevelance of Overweight,overwt,mean,1,weight,died == 0
+smokev,Prevelance of Smoke Ever,smokev,mean,1,weight,died == 0
+smoken,Prevelance of Smoke Now,smoken,mean,1,weight,died == 0
+| med_wealth,Median Wealth,hatota,median,1,weight,died == 0
+work,Fraction working,work,mean,1,weight,died == 0
+| Dependency Outcomes
+mcare65plus,Total Medicare Costs 65+ (billions),mcare,sum,.000000001,weight,ldied==0 & age>=65
+caidmd65plus,Total Medicaid Costs 65+ (billions),caidmd,sum,.000000001,weight,ldied==0 & age>=65
+ssben65plus,Total Social Security Costs 65+ (billions),ssben,sum,.000000001,weight,ldied==0 & age>=65
+ssiben65plus,Total Supp Secur Income Costs 65+ (billions),ssiben,sum,.000000001,weight,ldied==0 & age>=65
+diben65plus,Total Disability Benefit Costs 65+ (billions),diben,sum,.000000001,weight,ldied==0 & age>=65
+igxfr65plus,Total Indiv Govt Transfers Costs 65+ (billions),igxfr,sum,.000000001,weight,ldied==0 & age>=65
+ftax65plus,Total Federal Taxes Paid 65+ (billions),ftax,sum,.000000001,weight,ldied==0 & age>=65
+stax65plus,Total State Taxes Paid 65+ (billions),stax,sum,.000000001,weight,ldied==0 & age>=65
+ctax65plus,Total City Taxes Paid 65+ (billions),ctax,sum,.000000001,weight,ldied==0 & age>=65
+proptax65plus,Total Property Taxes Paid 65+ (billions),proptax,sum,.000000001,weight,ldied==0 & age>=65
+hoasi65plus,Total OASI Taxes Paid 65+ (billions),hoasi,sum,.000000001,weight,ldied==0 & age>=65
+hmed65plus,Total Medicare Taxes Paid 65+ (billions),hmed,sum,.000000001,weight,ldied==0 & age>=65
+helphoursyr_nonsp65plus,Total Help Hours Received from non-spouse,helphoursyr_nonsp,sum,1,weight,ldied==0 & age>=65
+helphoursyr_sp65plus,Total Help Hours Received from spouse,helphoursyr_sp,sum,1,weight,ldied==0 & age>=65
+bequest65plus,Total Bequests Given 65+ (billions),hatotax,sum,.000001,weight,ldied==0 & age>=65 & died == 1 & married == 0
+tcamt_cpl65plus,Total Intervivos Transfers 65+ (billions),tcamt_cpl,sum,.0000000005,weight,ldied==0 & age>=65
+help_to_spouse65plus,Total Help Hours Given to spouse,help_to_spouse,sum,1,weight,ldied==0 & age>=65
+parhelphours65plus,Total Care Hours Given to parents,parhelphours,sum,.5,weight,ldied==0 & age>=65
+gkcarehrs65plus,Total Care Hours Given to grandchildren,gkcarehrs,sum,.5,weight,ldied==0 & age>=65
+volhours65plus,Total Volunteering Hours,volhours,sum,.5,weight,ldied==0 & age>=65
+
+| hatota,Household wealth,hatota,mean,1000,weight,ldied == 0
+
+
+
+

@@ -1,0 +1,19 @@
+probit
+alzhmr
+memrye	1.077252
+age	.4503106
+agesq	-.00242
+hsless	-.2598735
+college	-.1019159
+black	.0838936
+hispan	.3997325
+diabe	-.7606586
+hearte	-.0661914
+stroke	-.5271647
+lunge	-.4017833
+cancre	-.2669309
+hibpe	-.1187497
+iadl1	.9725774
+adl12	.4804765
+adl3	.416439
+_cons	-21.82894

@@ -1,0 +1,27 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+mcare,Average Medicare Costs,mcare,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+mcare_ptb_enroll,Fraction enrolled in Medicare Part B,mcare_ptb_enroll,mean,1,weight, ldied == 0 & mcare_pta_enroll == 1
+ttl_mcare_ptb_enroll,Number People enrolled in Medicare Part B,mcare_ptb_enroll,sum,1,weight, ldied == 0
+ttl_mcare,Total Medicare Costs (billions),mcare,sum,0.000000001,weight,ldied == 0
+ttl_mcare_65p,Total Medicare Costs (billions) age 65+,mcare,sum,0.000000001,weight,ldied == 0 & age >=65
+ttl_mcare_pta,Total Medicare Part A Costs (billions),mcare_pta,sum,0.000000001,weight,ldied == 0
+ttl_mcare_ptb,Total Medicare Part B Costs (billions),mcare_ptb,sum,0.000000001,weight,ldied == 0
+mcare_pta_enroll,Population enrolled in Medicare (Millions),mcare_pta_enroll,sum,.000001,weight, ldied == 0 & mcare_pta_enroll == 1
+mcare_ptd,Average Medicare Part D Costs,mcare_ptd,mean,1,weight,ldied == 0 & mcare_ptd_enroll == 1
+ttl_mcare_ptd,Total Medicare Part D Costs (billions),mcare_ptd,sum,0.000000001,weight,ldied == 0 & mcare_ptd_enroll == 1
+mcare_ptd_enroll,Fraction enrolled in Medicare Part D,mcare_ptd_enroll,mean,1,weight, ldied == 0 & mcare_pta_enroll == 1
+ttl_mcare_ptd_enroll,Number People enrolled in Medicare Part D,mcare_ptd_enroll,sum,1,weight, ldied == 0
+| From Medicareage
+pop,Total population (million),weight,sum,0.000001,1,died == 0
+pop65,Total population (million),weight,sum,0.000001,1,died == 0 & age >= 65
+pop_all,Total population (million),weight,sum,0.000001,1,ldied == 0
+pop65_all,Total population (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+| Changes to Medicaid spending
+caidmd,Average Medicaid Costs,caidmd,mean,1,weight,ldied == 0
+caidmd_fed,Average Federal Medicaid Costs,caidmd_fed,mean,1,weight,ldied == 0
+caidmd_state,Average State Medicaid Costs,caidmd_state,mean,1,weight,ldied == 0
+ttl_caidmd,Total Medicaid Costs (Billions),caidmd,sum,0.000000001,weight,ldied==0
+ttl_caidmd_fed,Total Federal Medicaid Costs (Billions),caidmd_fed,sum,0.000000001,weight,ldied==0
+ttl_caidmd_state,Total State Medicaid Costs (Billions),caidmd_state,sum,0.000000001,weight,ldied==0

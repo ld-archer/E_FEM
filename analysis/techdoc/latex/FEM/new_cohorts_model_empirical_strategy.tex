@@ -1,0 +1,29 @@
+\subsection{Information available and empirical strategy}
+\label{sec:new_cohorts_model_empirical_strategy}
+For the transition model, we need to first to obtain outcomes listed in Table \ref{tab:desc_init_conditions}. Ideally, we need 
+information on 
+\[
+f_t(y_{i1},\ldots,y_{iM}) = f_t(\mathbf{y}_i)
+\]
+where $t$ denotes calendar time, and $\mathbf{y}_i = (y_{i1},\ldots,y_{iM})$ is a vector of outcomes 
+of interest whose probability distribution at time $t$ is $f_t()$. Information on how the joint 
+distribution evolves over time is not available. Trends in conditional distributions are rarely 
+reported either.
+
+Generally, we have (from published or unpublished sources) good information on trends for some moments 
+of each outcome (say a mean or a fraction). That is, we have information on 
+$g_{t,m}(y_{im})$,
+where $g_{t,m}()$ denotes the marginal probability distribution of outcome $m$ at time $t$. 
+
+For example, we know from the NHIS repeated cross-sections that the fraction obese is increasing by 
+roughly 2\% a year among 51 year olds. In statistical jargon this means we have information on how the 
+mean of the marginal distribution of $y_{im}$, an indicator variable that denotes whether someone is obese, 
+is evolving over time. 
+
+We also have information on the joint distribution at one point in time, say year $t_0$. For example,
+ we can estimate the joint distribution on age 51 respondents in the 1992 wave of the HRS, $f_{t_0}(\mathbf{y}_i)$. 
+
+We make the assumption that only some part of $f_t(\mathbf{y}_i)$ evolves over time. In particular, 
+we will model the marginal distribution of each outcome allowing for correlation across these 
+marginals. The correlations will be assumed fixed while the mean of the marginals will be allowed to 
+change over time. 

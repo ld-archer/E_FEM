@@ -1,0 +1,65 @@
+oprobit
+smkstat
+black	-0.0459108
+hispan	-0.0051252
+hsless	0.00615318
+college	-0.06196921
+male	0.04908717
+lage65l	-0.01829052
+lage6574	-0.02676688
+lage75p	-0.01295387
+lhearte	0.09050047
+lstroke	0.06713978
+lcancre	-0.05610788
+lhibpe	-0.06664754
+ldiabe	-0.06744484
+llunge	-0.06115971
+liadl1	0.00632854
+ladl12	0.00543529
+ladl3	-0.11411593
+lsmoken	2.0424275
+lwidowed	0.11111022
+lobese	-0.27981958
+loverwt	-0.14857849
+fhearte	-0.02699558
+fstroke	-0.18048298
+fcancre	0.06129372
+fhibpe	-0.0448052
+fdiabe	0.0914469
+flunge	0.09996175
+fsmokev	5.1337317
+fsmoken	0.90392267
+fiadl1	0.01811981
+fadl12	0.06720757
+fadl3	0.07992535
+fwidowed	-0.04188095
+fsingle	0.02810969
+fwork	0.00228247
+flogiearnx	-0.94614854
+fwlth_nonzero	-0.03577145
+floghatotax	-1.8728866
+flogaime	0.07574742
+flogq	0.05278431
+fshlt	0.01797204
+fanydb	-0.01960103
+frdb_na_2	-0.07955191
+frdb_na_3	-0.0432345
+frdb_na_4	-0.1299871
+fanydc	0.01175858
+flogdcwlthx	-0.19587088
+fobese	0.09375135
+foverwt	0.06528026
+logdeltaage	-0.08057859
+lwork	0.08565316
+llogiearnx	-3.4002462
+lwlth_nonzero	-0.05091607
+lloghatotax	-0.39618379
+ldiclaim	-0.09621642
+lssiclaim	-0.00541334
+lssclaim	0.00832768
+ldbclaim	0.0491406
+lnhmliv	-0.24020953
+_cut1	0.97146944 smokev
+_cut2	5.6168096 smoken
+
+

@@ -1,0 +1,15 @@
+\subsection{Demographic adjustments}
+We make two adjustments to the weighting in the HRS to match population counts. Since we deleted some 
+cases from the data and only considered the set of respondents with matched Social Security records, 
+this takes account of selectivity based on these characteristics. First, we post-stratify the HRS sample 
+by 5 year age groups, gender and race and rebalance weights using the Census Bureau 2000-2010 Intercensal 
+Population Estimates. We do this for both the host data set and the new cohorts. We scale the weights for 
+future new cohorts using 2012 National Population Projections based on race and gender. Second, we post-
+stratify the HRS sample of deaths between the 2002 and 2004 interview waves by 5 year age groups, gender 
+and race and rebalance weights based on the Human Mortality Database. 
+ 
+Once the simulation begins, trends in migration and mortality are applied.  We use net migration from
+the SSA Trustees report intermediate cost scenario.  Seperate mortality rate adjustment factors are 
+defined for the under and over 65 age groups based on the mortality projections from the 2013 SSA
+Trustees report.  The SSA projections are interpolated through 2090, then extended using GLM with log 
+link through 2150.

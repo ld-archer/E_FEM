@@ -1,0 +1,44 @@
+\section{Implementation}
+The FAM is implemented in multiple parts. Estimation of the transition and cross 
+sectional models is performed in Stata.
+The replenishing cohort model is estimated in Stata using the CMP package \citep{statacmp2011}.
+The simulation is implemented in C++ for speed and flexibility.  Currently, the simulation is
+run on Linux, Windows, and Mac OS X.  
+
+To match the two year structure of the PSID data used to estimate the 
+transition models, the FAM simulation proceeds in two year increments. The end 
+of each two year step is designed to occur on July 1st to allow for easier 
+matching to population forecasts from Social Security. A simulation of the FAM 
+proceeds by first loading a population representative of the age 25+ US 
+population in 2009, generated from PSID. In two year increments, the FAM applies 
+the transition models for mortality, health, working, wealth, earnings, and 
+benefit claiming with Monte Carlo decisions to calculate the new states of the 
+population. The population is also adjusted by immigration forecasts from the 
+US Census Department, stratified by race and age. If incoming cohorts are being 
+used, the new 25/26 year olds are added to the population. The number of new 
+25/26 year olds added is consistent with estimates from the Census, stratified 
+by race. Once the new states have been determined and new 25/26 year olds added, 
+the cross sectional models for medical costs are performed. Summary variables 
+are then computed. Computation of medical costs includes the persons that died 
+to account for end of life costs. To reduce uncertainty due to the Monte 
+Carlo decision rules, the simulation is performed multiple times (typically 
+100), and the mean of each summary variable is calculated across repetitions. 
+
+FAM simulation takes as inputs assumptions regarding  
+% [excluding for now...]
+%the national wage index, 
+the normal retirement age, real medical cost growth, and interest rates. The 
+default assumptions are taken from the 2010 Social Security Intermediate 
+scenario, adjusted for no price increases after 2010. Therefore simulation 
+results are in real 2009 dollars.  
+%Table \ref{tab:time_series_by_year} shows the 
+%assumptions for each calendar year and Table \ref{tab:time_series_by_yob} shows 
+%assumptions for each birth year.
+
+Different simulation scenarios are implemented by changing any of the following 
+components: incoming cohort model, transition models, interventions that adjust 
+the probabilities of specific transition, and changes to assumptions on future 
+economic conditions.  	
+
+\input{./implementation_interventions.tex}
+

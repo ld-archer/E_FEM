@@ -1,0 +1,4 @@
+issclaim,"","\multicolumn{2}{|c}{SS benefit receipt} ","biennial incidence","eligible \& not receiving"
+diclaim,"","\multicolumn{2}{|c}{DI benefit receipt} ","prevalence","eligible \& $\mathrm{age} < 65$"
+anyhi,"","\multicolumn{2}{|c}{Any health insurance} ","prevalence","$\mathrm{age} < 65$"
+ssiclaim,"","\multicolumn{2}{|c}{SSI receipt} ","prevalence","all"

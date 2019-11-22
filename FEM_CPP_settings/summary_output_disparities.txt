@@ -1,0 +1,94 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+pop_medicare,Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & medicare_elig
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+pop_all,Total population (million) Subgroup: all,weight,sum,0.000001,1,ldied == 0
+pop65p_all,Total population 65+ (million) Subgroup: all,weight,sum,0.000001,1,ldied == 0 & age >= 65
+obese_all,Prevalence of Obesity Subgroup: all,obese,mean,1,weight,ldied==0
+overwt_all,Prevalence of Overweight Subgroup: all,overwt,mean,1,weight,ldied==0
+cancre_all,Prevelance of Cancer Subgroup: all,cancre,mean,1,weight,ldied == 0
+diabe_all,Prevelance of Diabetes Subgroup: all,diabe,mean,1,weight,ldied == 0
+hibpe_all,Prevelance of Hypertension Subgroup: all,hibpe,mean,1,weight,ldied == 0
+hearte_all,Prevelance of Heart Disease Subgroup: all,hearte,mean,1,weight,ldied == 0
+adl1_all,Prevalence of 1 ADL Subgroup: all,adl1,mean,1,weight,ldied==0
+adl2_all,Prevalence of 2 ADLs Subgroup: all,adl2,mean,1,weight,ldied==0
+adl3p_all,Prevalence of 3 or more ADLs Subgroup: all,adl3p,mean,1,weight,ldied==0
+anyadl_all,Prevalence of 1 or more ALDs Subgroup: all,anyadl,mean,1,weight,ldied==0
+ttl_mcare_all,Total Medicare Costs (billions) Subgroup: all,mcare,sum,0.000000001,weight,ldied == 0
+ttl_caidmd_all,Total Medicaid Spending (Billions) Subgroup: all,caidmd,sum,0.000000001,weight,ldied==0
+ttl_totmd_all,Total Medical Costs (billions) Subgroup: all,totmd,sum,0.000000001,weight,ldied == 0
+pop_black,Total population (million) Subgroup: black,weight,sum,0.000001,1,ldied == 0 & black==1
+pop65p_black,Total population 65+ (million) Subgroup: black,weight,sum,0.000001,1,ldied == 0 & age >= 65 & black==1
+obese_black,Prevalence of Obesity Subgroup: black,obese,mean,1,weight,ldied==0 & black==1
+overwt_black,Prevalence of Overweight Subgroup: black,overwt,mean,1,weight,ldied==0 & black==1
+cancre_black,Prevelance of Cancer Subgroup: black,cancre,mean,1,weight,ldied == 0 & black==1
+diabe_black,Prevelance of Diabetes Subgroup: black,diabe,mean,1,weight,ldied == 0 & black==1
+hibpe_black,Prevelance of Hypertension Subgroup: black,hibpe,mean,1,weight,ldied == 0 & black==1
+hearte_black,Prevelance of Heart Disease Subgroup: black,hearte,mean,1,weight,ldied == 0 & black==1
+adl1_black,Prevalence of 1 ADL Subgroup: black,adl1,mean,1,weight,ldied==0 & black==1
+adl2_black,Prevalence of 2 ADLs Subgroup: black,adl2,mean,1,weight,ldied==0 & black==1
+adl3p_black,Prevalence of 3 or more ADLs Subgroup: black,adl3p,mean,1,weight,ldied==0 & black==1
+anyadl_black,Prevalence of 1 or more ALDs Subgroup: black,anyadl,mean,1,weight,ldied==0 & black==1
+ttl_mcare_black,Total Medicare Costs (billions) Subgroup: black,mcare,sum,0.000000001,weight,ldied == 0 & black==1
+ttl_caidmd_black,Total Medicaid Spending (Billions) Subgroup: black,caidmd,sum,0.000000001,weight,ldied==0 & black==1
+ttl_totmd_black,Total Medical Costs (billions) Subgroup: black,totmd,sum,0.000000001,weight,ldied == 0 & black==1
+pop_white,Total population (million) Subgroup: white,weight,sum,0.000001,1,ldied == 0 & black==0 & hispan==0
+pop65p_white,Total population 65+ (million) Subgroup: white,weight,sum,0.000001,1,ldied == 0 & age >= 65 & black==0 & hispan==0
+obese_white,Prevalence of Obesity Subgroup: white,obese,mean,1,weight,ldied==0 & black==0 & hispan==0
+overwt_white,Prevalence of Overweight Subgroup: white,overwt,mean,1,weight,ldied==0 & black==0 & hispan==0
+cancre_white,Prevelance of Cancer Subgroup: white,cancre,mean,1,weight,ldied == 0 & black==0 & hispan==0
+diabe_white,Prevelance of Diabetes Subgroup: white,diabe,mean,1,weight,ldied == 0 & black==0 & hispan==0
+hibpe_white,Prevelance of Hypertension Subgroup: white,hibpe,mean,1,weight,ldied == 0 & black==0 & hispan==0
+hearte_white,Prevelance of Heart Disease Subgroup: white,hearte,mean,1,weight,ldied == 0 & black==0 & hispan==0
+adl1_white,Prevalence of 1 ADL Subgroup: white,adl1,mean,1,weight,ldied==0 & black==0 & hispan==0
+adl2_white,Prevalence of 2 ADLs Subgroup: white,adl2,mean,1,weight,ldied==0 & black==0 & hispan==0
+adl3p_white,Prevalence of 3 or more ADLs Subgroup: white,adl3p,mean,1,weight,ldied==0 & black==0 & hispan==0
+anyadl_white,Prevalence of 1 or more ALDs Subgroup: white,anyadl,mean,1,weight,ldied==0 & black==0 & hispan==0
+ttl_mcare_white,Total Medicare Costs (billions) Subgroup: white,mcare,sum,0.000000001,weight,ldied == 0 & black==0 & hispan==0
+ttl_caidmd_white,Total Medicaid Spending (Billions) Subgroup: white,caidmd,sum,0.000000001,weight,ldied==0 & black==0 & hispan==0
+ttl_totmd_white,Total Medical Costs (billions) Subgroup: white,totmd,sum,0.000000001,weight,ldied == 0 & black==0 & hispan==0
+pop_hsless,Total population (million) Subgroup: hsless,weight,sum,0.000001,1,ldied == 0 & educ==1
+pop65p_hsless,Total population 65+ (million) Subgroup: hsless,weight,sum,0.000001,1,ldied == 0 & age >= 65 & educ==1
+obese_hsless,Prevalence of Obesity Subgroup: hsless,obese,mean,1,weight,ldied==0 & hsless==1
+overwt_hsless,Prevalence of Overweight Subgroup: hsless,overwt,mean,1,weight,ldied==0 & hsless==1
+cancre_hsless,Prevelance of Cancer Subgroup: hsless,cancre,mean,1,weight,ldied == 0 & hsless==1
+diabe_hsless,Prevelance of Diabetes Subgroup: hsless,diabe,mean,1,weight,ldied == 0 & hsless==1
+hibpe_hsless,Prevelance of Hypertension Subgroup: hsless,hibpe,mean,1,weight,ldied == 0 & hsless==1
+hearte_hsless,Prevelance of Heart Disease Subgroup: hsless,hearte,mean,1,weight,ldied == 0 & hsless==1
+adl1_hsless,Prevalence of 1 ADL Subgroup: hsless,adl1,mean,1,weight,ldied==0 & hsless==1
+adl2_hsless,Prevalence of 2 ADLs Subgroup: hsless,adl2,mean,1,weight,ldied==0 & hsless==1
+adl3p_hsless,Prevalence of 3 or more ADLs Subgroup: hsless,adl3p,mean,1,weight,ldied==0 & hsless==1
+anyadl_hsless,Prevalence of 1 or more ALDs Subgroup: hsless,anyadl,mean,1,weight,ldied==0 & hsless==1
+ttl_mcare_hsless,Total Medicare Costs (billions) Subgroup: hsless,mcare,sum,0.000000001,weight,ldied == 0 & hsless==1
+ttl_caidmd_hsless,Total Medicaid Spending (Billions) Subgroup: hsless,caidmd,sum,0.000000001,weight,ldied==0 & hsless==1
+ttl_totmd_hsless,Total Medical Costs (billions) Subgroup: hsless,totmd,sum,0.000000001,weight,ldied == 0 & hsless==1
+pop_hsgrad,Total population (million) Subgroup: hsgrad,weight,sum,0.000001,1,ldied == 0 & hsless==0 & college==0
+pop65p_hsgrad,Total population 65+ (million) Subgroup: hsgrad,weight,sum,0.000001,1,ldied == 0 & age >= 65 & hsless==0 & college==0
+obese_hsgrad,Prevalence of Obesity Subgroup: hsgrad,obese,mean,1,weight,ldied==0 & hsless==0 & college==0
+overwt_hsgrad,Prevalence of Overweight Subgroup: hsgrad,overwt,mean,1,weight,ldied==0 & hsless==0 & college==0
+cancre_hsgrad,Prevelance of Cancer Subgroup: hsgrad,cancre,mean,1,weight,ldied == 0 & hsless==0 & college==0
+diabe_hsgrad,Prevelance of Diabetes Subgroup: hsgrad,diabe,mean,1,weight,ldied == 0 & hsless==0 & college==0
+hibpe_hsgrad,Prevelance of Hypertension Subgroup: hsgrad,hibpe,mean,1,weight,ldied == 0 & hsless==0 & college==0
+hearte_hsgrad,Prevelance of Heart Disease Subgroup: hsgrad,hearte,mean,1,weight,ldied == 0 & hsless==0 & college==0
+adl1_hsgrad,Prevalence of 1 ADL Subgroup: hsgrad,adl1,mean,1,weight,ldied==0 & hsless==0 & college==0
+adl2_hsgrad,Prevalence of 2 ADLs Subgroup: hsgrad,adl2,mean,1,weight,ldied==0 & hsless==0 & college==0
+adl3p_hsgrad,Prevalence of 3 or more ADLs Subgroup: hsgrad,adl3p,mean,1,weight,ldied==0 & hsless==0 & college==0
+anyadl_hsgrad,Prevalence of 1 or more ALDs Subgroup: hsgrad,anyadl,mean,1,weight,ldied==0 & hsless==0 & college==0
+ttl_mcare_hsgrad,Total Medicare Costs (billions) Subgroup: hsgrad,mcare,sum,0.000000001,weight,ldied == 0 & hsless==0 & college==0
+ttl_caidmd_hsgrad,Total Medicaid Spending (Billions) Subgroup: hsgrad,caidmd,sum,0.000000001,weight,ldied==0 & hsless==0 & college==0
+ttl_totmd_hsgrad,Total Medical Costs (billions) Subgroup: hsgrad,totmd,sum,0.000000001,weight,ldied == 0 & hsless==0 & college==0
+pop_college,Total population (million) Subgroup: college,weight,sum,0.000001,1,ldied == 0 & college==1
+pop65p_college,Total population 65+ (million) Subgroup: college,weight,sum,0.000001,1,ldied == 0 & age >= 65 & college==1
+obese_college,Prevalence of Obesity Subgroup: college,obese,mean,1,weight,ldied==0 & college==1
+overwt_college,Prevalence of Overweight Subgroup: college,overwt,mean,1,weight,ldied==0 & college==1
+cancre_college,Prevelance of Cancer Subgroup: college,cancre,mean,1,weight,ldied == 0 & college==1
+diabe_college,Prevelance of Diabetes Subgroup: college,diabe,mean,1,weight,ldied == 0 & college==1
+hibpe_college,Prevelance of Hypertension Subgroup: college,hibpe,mean,1,weight,ldied == 0 & college==1
+hearte_college,Prevelance of Heart Disease Subgroup: college,hearte,mean,1,weight,ldied == 0 & college==1
+adl1_college,Prevalence of 1 ADL Subgroup: college,adl1,mean,1,weight,ldied==0 & college==1
+adl2_college,Prevalence of 2 ADLs Subgroup: college,adl2,mean,1,weight,ldied==0 & college==1
+adl3p_college,Prevalence of 3 or more ADLs Subgroup: college,adl3p,mean,1,weight,ldied==0 & college==1
+anyadl_college,Prevalence of 1 or more ALDs Subgroup: college,anyadl,mean,1,weight,ldied==0 & college==1
+ttl_mcare_college,Total Medicare Costs (billions) Subgroup: college,mcare,sum,0.000000001,weight,ldied == 0 & college==1
+ttl_caidmd_college,Total Medicaid Spending (Billions) Subgroup: college,caidmd,sum,0.000000001,weight,ldied==0 & college==1
+ttl_totmd_college,Total Medical Costs (billions) Subgroup: college,totmd,sum,0.000000001,weight,ldied == 0 & college==1

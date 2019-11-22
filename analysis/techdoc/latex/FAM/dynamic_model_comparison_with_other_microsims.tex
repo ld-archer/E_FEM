@@ -1,0 +1,33 @@
+\subsection{Comparison with other microsimulation models of health expenditures}
+The precursor to the FAM, the FEM, was unique among models that make health expenditure projections.  It was the only 
+model that projected health trends rather than health expenditures.  It was also unique in generating mortality projections
+based on assumptions about health trends rather than historical time series.
+
+FAM extends FEM to younger ages, adding additional dimensions to the simulation.  Events over the life course, such as marital status
+and childbearing are simulated.  Labor force participation is modeled in greater detail, distinguishing between out-of-labor force, unemployed, 
+working part-time, and working full-time.
+
+\subsubsection{CBOLT Model}
+The Congressional Budget Office (CBO) uses time-series techniques to project health expenditure 
+growth in the short term and then makes an assumption on long-term growth. They use a long term 
+growth of excess costs of 2.3 percentage points starting in 2020 for Medicare. They then assume a 
+reduction in excess cost growth in Medicare of 1.5\% through 2083, leaving a rate of 0.9\% in 2083. 
+For non-Medicare spending they assume an annual decline of 4.5\%, leading to an excess growth rate in 
+2083 of 0.1\%. 
+
+\subsubsection{Centers for Medicare and Medicaid Services}
+The Centers for Medicare and Medicaid Services (CMS) performs an extrapolation of medical expenditures 
+over the first ten years, then computes a general equilibrium model for years 25 through 75 and 
+linearly interpolates to identify medical expenditures in years 11 through 24 of their estimation. 
+The core assumption they use is that excess growth of health expenditures will be one percentage point 
+higher per year for years 25-75 (that is if nominal GDP growth is 4\%, health care expenditure growth 
+will be 5\%).
+
+\subsubsection{MINT Model}
+Modeling Income in the Near Term (MINT) is a microsimulation model developed by the Urban Institute and others 
+for the Social Security Administration to enable policy analysis of proposed changes to Social Security benefits and payroll
+taxes \citet{smith2013mint}.  MINT uses the Survey of Income and Program Participation (SIPP) as the base data and simulates a range of outcomes, 
+with a focus on those that will impact Social Security.  Recent extensions have included health insurance coverage and
+out-of-pocket medical expenditures.  Health enters MINT via self-reported health status and self-reported work limitations.  MINT
+simulates marital status and fertility. 
+

@@ -1,0 +1,332 @@
+| Label,Description,Variable,Summary Type,Factor,Weight,Condition
+pop_medicare,Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & medicare_elig
+pop_medicare_age,Age Elig Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & age >= medicare_elig_age(year)
+pop_medicare_di,DI Elig Medicare Pop (Millions),weight,sum,0.000001,1,ldied == 0 & diclaim2yr
+start_pop,Total population (million),weight,sum,0.000001,1,ldied == 0
+end_pop,Total population (million),weight,sum,0.000001,1,died == 0
+death_rate,Percent Died,died,mean,100,weight,ldied == 0
+pop_healthy,Population that is healthy (no IADLs or ADLs and not in a nursing home) (millions),weight,sum,0.000001,1,iadlstat == 1 & adlstat == 1 & nhmliv == 0 & died == 0
+start_pop65p,Total population 65+ (million),weight,sum,0.000001,1,ldied == 0 & age >= 65
+end_pop65p,Total population 65+ (million),weight,sum,0.000001,1,died == 0 & age >= 65
+pop_disability,Population that is disabled (any IADLs or ADLs or Nursing Home) (millions),weight,sum,0.000001,1,not(iadlstat == 1 & adlstat == 1 & nhmliv == 0) & died == 0
+ttl_adl1p,Population 51+ with ADL 1+ (millions),weight,sum,0.000001,1,ldied==0 & adlstat >= 2
+ttl_adl2p,Population 51+ with ADL 2+ (millions),weight,sum,0.000001,1,ldied==0 & adlstat >= 3
+ttl_adl3p,Population 51+ with ADL 3+ (millions),weight,sum,0.000001,1,ldied==0 & adlstat >= 4
+pop_nhm,Population that is in a nursing home,weight,sum,0.000001,1,nhmliv == 1 & died == 0
+nhmliv,Prevelance of In a Nursing Home,nhmliv,mean,1,weight,died == 0
+died,Mortality rate,died,mean,1,weight,died == 0
+mcare_pta,Average Medicare Part A Costs,mcare_pta,mean,1,weight,ldied == 0 & mcare_pta_enroll == 1
+mcare_ptb,Average Medicare Part B Costs,mcare_ptb,mean,1,weight,ldied == 0 & mcare_ptb_enroll == 1
+qaly,Average QALY,qaly,mean,1,weight,ldied==0
+ttl_qaly,Total QALY,qaly,sum,0.000001,weight,ldied==0
+qaly65,Average QALY over 65,qaly,mean,1,weight,ldied==0 & age >= 65
+ttl_qaly65,Average QALY over 65,qaly,sum,0.000001,weight,ldied==0 & age >= 65
+qaly65nw,Average QALY over 65 and not Working,qaly,mean,1,weight,ldied==0 & age >= 65 & work==0
+ttl_nonworking,Total 51+ and Not Working,weight,sum,0.000001,1,ldied==0 & work==0
+ttl_qaly65nw,Total QALY over 65 and not Working,qaly,sum,0.000001,weight,ldied==0 & age >= 65 & work==0
+ttl_qaly_under5_65,Total Pop over 65 with QALY below 0.50,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly <= 0.5
+ttl_qaly_under6_65,Total Pop over 65 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly <= 0.6
+ttl_qaly_under7_65,Total Pop over 65 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly <= 0.7
+ttl_qaly_under8_65,Total Pop over 65 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly <= 0.8
+ttl_qaly_under5_51,Total Pop over 51 with QALY below 0.50,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.5
+ttl_qaly_under6_51,Total Pop over 51 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.6
+ttl_qaly_under7_51,Total Pop over 51 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.7
+ttl_qaly_under8_51,Total Pop over 51 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.8
+ttl_qaly_above85_51,Total Pop over 51 with QALY above 0.85,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly > 0.85
+ttl_qaly_above80_51,Total Pop over 51 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly > 0.80
+ttl_qaly_above75_51,Total Pop over 51 with QALY above 0.75,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly > 0.75
+ttl_qaly_above70_51,Total Pop over 51 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly > 0.70
+ttl_qaly_above85_65,Total Pop over 65 with QALY above 0.85,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly > 0.85
+ttl_qaly_above80_65,Total Pop over 65 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly > 0.80
+ttl_qaly_above75_65,Total Pop over 65 with QALY above 0.75,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly > 0.75
+ttl_qaly_above70_65,Total Pop over 65 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 65 & qaly > 0.70
+ttl_qaly_under5_51_nw,Total Pop over 51 with QALY below 0.50 and Not Working,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.5 & work==0
+ttl_qaly_under6_51_nw,Total Pop over 51 with QALY below 0.60 and Not Working,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.6 & work==0
+ttl_qaly_under7_51_nw,Total Pop over 51 with QALY below 0.70 and Not Working,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.7 & work==0
+ttl_qaly_under8_51_nw,Total Pop over 51 with QALY below 0.80 and Not Working,weight,sum,0.000001,1,ldied==0 & age >= 51 & qaly <= 0.8 & work==0
+adl1_ratio,Ratio of 51+ with ADL 1 to Total 51+,adl1,mean,1,weight,ldied==0
+adl2_ratio,Ratio of 51+ with ADL 2 to Total 51+,adl2,mean,1,weight,ldied==0
+adl3p_ratio,Ratio of 51+ with ADL 3+ to Total 51+,adl3p,mean,1,weight,ldied==0
+iadl1_ratio,Ratio of 51+ with IADL 1 to Total 51+,iadl1,mean,1,weight,ldied==0
+iadl2p_ratio,Ratio of 51+ with IADL 2+ to Total 51+,iadl2p,mean,1,weight,ldied==0
+ttl_adl3p,Total 51+ with ADL3P,adl3p,sum,0.000001,weight,ldied==0
+qaly_10Q,10th Percentile QALY Ages 51+,qaly,quantile-0.10,1,weight,ldied==0
+qaly_25Q,25th Percentile QALY Ages 51+,qaly,quantile-0.25,1,weight,ldied==0
+qaly_50Q,50th Percentile QALY Ages 51+,qaly,quantile-0.50,1,weight,ldied==0
+qaly_75Q,75th Percentile QALY Ages 51+,qaly,quantile-0.75,1,weight,ldied==0
+cumm_death,Portion of the 2010 Cohort that has died,died,mean,1,weight,entry==2010
+qaly_male,Average Male QALY,qaly,mean,1,weight,ldied==0 & male==1
+qaly_female,Average Female QALY,qaly,mean,1,weight,ldied==0 & male==0
+cancre_q20,Prevelance of Cancer in QALY < 0.20,cancre,mean,1,weight,ldied==0 & qaly < 0.2
+cancre_q30,Prevelance of Cancer in 0.20 <= QALY < 0.30,cancre,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+cancre_q40,Prevelance of Cancer in 0.30 <= QALY < 0.40,cancre,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+cancre_q50,Prevelance of Cancer in 0.40 <= QALY < 0.50,cancre,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+cancre_q60,Prevelance of Cancer in 0.50 <= QALY < 0.60,cancre,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+cancre_q70,Prevelance of Cancer in 0.60 <= QALY < 0.70,cancre,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+cancre_q80,Prevelance of Cancer in 0.70 <= QALY < 0.80,cancre,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+cancre_q90,Prevelance of Cancer in 0.80 <= QALY < 0.90,cancre,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+cancre_qLT60,Prevelance of Cancer in QALY <= 0.60,cancre,mean,1,weight,ldied==0 & qaly <= 0.60
+cancre_qLT70,Prevelance of Cancer in QALY <= 0.70,cancre,mean,1,weight,ldied==0 & qaly <= 0.70
+cancre_qLT80,Prevelance of Cancer in QALY <= 0.80,cancre,mean,1,weight,ldied==0 & qaly <= 0.80
+cancre_qLT90,Prevelance of Cancer in QALY <= 0.90,cancre,mean,1,weight,ldied==0 & qaly <= 0.90
+diabe_q20,Prevelance of Diabetes in QALY < 0.20,diabe,mean,1,weight,ldied==0 & qaly < 0.2
+diabe_q30,Prevelance of Diabetes in 0.20 <= QALY < 0.30,diabe,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+diabe_q40,Prevelance of Diabetes in 0.30 <= QALY < 0.40,diabe,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+diabe_q50,Prevelance of Diabetes in 0.40 <= QALY < 0.50,diabe,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+diabe_q60,Prevelance of Diabetes in 0.50 <= QALY < 0.60,diabe,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+diabe_q70,Prevelance of Diabetes in 0.60 <= QALY < 0.70,diabe,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+diabe_q80,Prevelance of Diabetes in 0.70 <= QALY < 0.80,diabe,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+diabe_q90,Prevelance of Diabetes in 0.80 <= QALY < 0.90,diabe,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+diabe_qLT60,Prevelance of Diabetes in QALY <= 0.60,diabe,mean,1,weight,ldied==0 & qaly <= 0.60
+diabe_qLT70,Prevelance of Diabetes in QALY <= 0.70,diabe,mean,1,weight,ldied==0 & qaly <= 0.70
+diabe_qLT80,Prevelance of Diabetes in QALY <= 0.80,diabe,mean,1,weight,ldied==0 & qaly <= 0.80
+diabe_qLT90,Prevelance of Diabetes in QALY <= 0.90,diabe,mean,1,weight,ldied==0 & qaly <= 0.90
+hearte_q20,Prevelance of Heart Disease in QALY < 0.20,hearte,mean,1,weight,ldied==0 & qaly < 0.2
+hearte_q30,Prevelance of Heart Disease in 0.20 <= QALY < 0.30,hearte,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+hearte_q40,Prevelance of Heart Disease in 0.30 <= QALY < 0.40,hearte,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+hearte_q50,Prevelance of Heart Disease in 0.40 <= QALY < 0.50,hearte,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+hearte_q60,Prevelance of Heart Disease in 0.50 <= QALY < 0.60,hearte,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+hearte_q70,Prevelance of Heart Disease in 0.60 <= QALY < 0.70,hearte,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+hearte_q80,Prevelance of Heart Disease in 0.70 <= QALY < 0.80,hearte,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+hearte_q90,Prevelance of Heart Disease in 0.80 <= QALY < 0.90,hearte,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+hearte_qLT60,Prevelance of Heart Disease in QALY <= 0.60,hearte,mean,1,weight,ldied==0 & qaly <= 0.60
+hearte_qLT70,Prevelance of Heart Disease in QALY <= 0.70,hearte,mean,1,weight,ldied==0 & qaly <= 0.70
+hearte_qLT80,Prevelance of Heart Disease in QALY <= 0.80,hearte,mean,1,weight,ldied==0 & qaly <= 0.80
+hearte_qLT90,Prevelance of Heart Disease in QALY <= 0.90,hearte,mean,1,weight,ldied==0 & qaly <= 0.90
+hibpe_q20,Prevelance of High Blood Pressure in QALY < 0.20,hibpe,mean,1,weight,ldied==0 & qaly < 0.2
+hibpe_q30,Prevelance of High Blood Pressure in 0.20 <= QALY < 0.30,hibpe,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+hibpe_q40,Prevelance of High Blood Pressure in 0.30 <= QALY < 0.40,hibpe,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+hibpe_q50,Prevelance of High Blood Pressure in 0.40 <= QALY < 0.50,hibpe,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+hibpe_q60,Prevelance of High Blood Pressure in 0.50 <= QALY < 0.60,hibpe,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+hibpe_q70,Prevelance of High Blood Pressure in 0.60 <= QALY < 0.70,hibpe,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+hibpe_q80,Prevelance of High Blood Pressure in 0.70 <= QALY < 0.80,hibpe,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+hibpe_q90,Prevelance of High Blood Pressure in 0.80 <= QALY < 0.90,hibpe,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+hibpe_qLT60,Prevelance of High Blood Pressure in QALY <= 0.60,hibpe,mean,1,weight,ldied==0 & qaly <= 0.60
+hibpe_qLT70,Prevelance of High Blood Pressure in QALY <= 0.70,hibpe,mean,1,weight,ldied==0 & qaly <= 0.70
+hibpe_qLT80,Prevelance of High Blood Pressure in QALY <= 0.80,hibpe,mean,1,weight,ldied==0 & qaly <= 0.80
+hibpe_qLT90,Prevelance of High Blood Pressure in QALY <= 0.90,hibpe,mean,1,weight,ldied==0 & qaly <= 0.90
+lunge_q20,Prevelance of Lung Disease in QALY < 0.20,lunge,mean,1,weight,ldied==0 & qaly < 0.2
+lunge_q30,Prevelance of Lung Disease in 0.20 <= QALY < 0.30,lunge,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+lunge_q40,Prevelance of Lung Disease in 0.30 <= QALY < 0.40,lunge,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+lunge_q50,Prevelance of Lung Disease in 0.40 <= QALY < 0.50,lunge,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+lunge_q60,Prevelance of Lung Disease in 0.50 <= QALY < 0.60,lunge,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+lunge_q70,Prevelance of Lung Disease in 0.60 <= QALY < 0.70,lunge,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+lunge_q80,Prevelance of Lung Disease in 0.70 <= QALY < 0.80,lunge,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+lunge_q90,Prevelance of Lung Disease in 0.80 <= QALY < 0.90,lunge,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+lunge_qLT60,Prevelance of Lung Disease in QALY <= 0.60,lunge,mean,1,weight,ldied==0 & qaly <= 0.60
+lunge_qLT70,Prevelance of Lung Disease in QALY <= 0.70,lunge,mean,1,weight,ldied==0 & qaly <= 0.70
+lunge_qLT80,Prevelance of Lung Disease in QALY <= 0.80,lunge,mean,1,weight,ldied==0 & qaly <= 0.80
+lunge_qLT90,Prevelance of Lung Disease in QALY <= 0.90,lunge,mean,1,weight,ldied==0 & qaly <= 0.90
+stroke_q20,Prevelance of Stroke in QALY < 0.20,stroke,mean,1,weight,ldied==0 & qaly < 0.2
+stroke_q30,Prevelance of Stroke in 0.20 <= QALY < 0.30,stroke,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+stroke_q40,Prevelance of Stroke in 0.30 <= QALY < 0.40,stroke,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+stroke_q50,Prevelance of Stroke in 0.40 <= QALY < 0.50,stroke,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+stroke_q60,Prevelance of Stroke in 0.50 <= QALY < 0.60,stroke,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+stroke_q70,Prevelance of Stroke in 0.60 <= QALY < 0.70,stroke,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+stroke_q80,Prevelance of Stroke in 0.70 <= QALY < 0.80,stroke,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+stroke_q90,Prevelance of Stroke in 0.80 <= QALY < 0.90,stroke,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+stroke_qLT60,Prevelance of Stroke in QALY <= 0.60,stroke,mean,1,weight,ldied==0 & qaly <= 0.60
+stroke_qLT70,Prevelance of Stroke in QALY <= 0.70,stroke,mean,1,weight,ldied==0 & qaly <= 0.70
+stroke_qLT80,Prevelance of Stroke in QALY <= 0.80,stroke,mean,1,weight,ldied==0 & qaly <= 0.80
+stroke_qLT90,Prevelance of Stroke in QALY <= 0.90,stroke,mean,1,weight,ldied==0 & qaly <= 0.90
+iadl1_q20,Prevelance of IADL 1+ in QALY < 0.20,iadl1,mean,1,weight,ldied==0 & qaly < 0.2
+iadl1_q30,Prevelance of IADL 1+ in 0.20 <= QALY < 0.30,iadl1,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+iadl1_q40,Prevelance of IADL 1+ in 0.30 <= QALY < 0.40,iadl1,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+iadl1_q50,Prevelance of IADL 1+ in 0.40 <= QALY < 0.50,iadl1,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+iadl1_q60,Prevelance of IADL 1+ in 0.50 <= QALY < 0.60,iadl1,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+iadl1_q70,Prevelance of IADL 1+ in 0.60 <= QALY < 0.70,iadl1,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+iadl1_q80,Prevelance of IADL 1+ in 0.70 <= QALY < 0.80,iadl1,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+iadl1_q90,Prevelance of IADL 1+ in 0.80 <= QALY < 0.90,iadl1,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+iadl1_qLT60,Prevelance of IADL 1+ in QALY <= 0.60,iadl1,mean,1,weight,ldied==0 & qaly <= 0.60
+iadl1_qLT70,Prevelance of IADL 1+ in QALY <= 0.70,iadl1,mean,1,weight,ldied==0 & qaly <= 0.70
+iadl1_qLT80,Prevelance of IADL 1+ in QALY <= 0.80,iadl1,mean,1,weight,ldied==0 & qaly <= 0.80
+iadl1_qLT90,Prevelance of IADL 1+ in QALY <= 0.90,iadl1,mean,1,weight,ldied==0 & qaly <= 0.90
+adl1_q20,Prevelance of ADL 1 in QALY < 0.20,adl1,mean,1,weight,ldied==0 & qaly < 0.2
+adl1_q30,Prevelance of ADL 1 in 0.20 <= QALY < 0.30,adl1,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+adl1_q40,Prevelance of ADL 1 in 0.30 <= QALY < 0.40,adl1,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+adl1_q50,Prevelance of ADL 1 in 0.40 <= QALY < 0.50,adl1,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+adl1_q60,Prevelance of ADL 1 in 0.50 <= QALY < 0.60,adl1,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+adl1_q70,Prevelance of ADL 1 in 0.60 <= QALY < 0.70,adl1,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+adl1_q80,Prevelance of ADL 1 in 0.70 <= QALY < 0.80,adl1,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+adl1_q90,Prevelance of ADL 1 in 0.80 <= QALY < 0.90,adl1,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+adl1_qLT60,Prevelance of ALD 1 in QALY <= 0.60,adl1,mean,1,weight,ldied==0 & qaly <= 0.60
+adl1_qLT70,Prevelance of ALD 1 in QALY <= 0.70,adl1,mean,1,weight,ldied==0 & qaly <= 0.70
+adl1_qLT80,Prevelance of ALD 1 in QALY <= 0.80,adl1,mean,1,weight,ldied==0 & qaly <= 0.80
+adl1_qLT90,Prevelance of ALD 1 in QALY <= 0.90,adl1,mean,1,weight,ldied==0 & qaly <= 0.90
+adl3p_q20,Prevelance of ADL 3 or More in QALY < 0.20,adl3p,mean,1,weight,ldied==0 & qaly < 0.2
+adl3p_q30,Prevelance of ADL 3 or More in 0.20 <= QALY < 0.30,adl3p,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+adl3p_q40,Prevelance of ADL 3 or More in 0.30 <= QALY < 0.40,adl3p,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+adl3p_q50,Prevelance of ADL 3 or More in 0.40 <= QALY < 0.50,adl3p,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+adl3p_q60,Prevelance of ADL 3 or More in 0.50 <= QALY < 0.60,adl3p,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+adl3p_q70,Prevelance of ADL 3 or More in 0.60 <= QALY < 0.70,adl3p,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+adl3p_q80,Prevelance of ADL 3 or More in 0.70 <= QALY < 0.80,adl3p,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+adl3p_q90,Prevelance of ADL 3 or More in 0.80 <= QALY < 0.90,adl3p,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+adl3p_qLT60,Prevelance of ADL 3 or More in QALY <= 0.60,adl3p,mean,1,weight,ldied==0 & qaly <= 0.60
+adl3p_qLT70,Prevelance of ADL 3 or More in QALY <= 0.70,adl3p,mean,1,weight,ldied==0 & qaly <= 0.70
+adl3p_qLT80,Prevelance of ADL 3 or More in QALY <= 0.80,adl3p,mean,1,weight,ldied==0 & qaly <= 0.80
+adl3p_qLT90,Prevelance of ADL 3 or More in QALY <= 0.90,adl3p,mean,1,weight,ldied==0 & qaly <= 0.90
+nhmliv_q20,Prevelance of Living in a Nursing Home in QALY < 0.20,nhmliv,mean,1,weight,ldied==0 & qaly < 0.2
+nhmliv_q30,Prevelance of Living in a Nursing Home in 0.20 <= QALY < 0.30,nhmliv,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+nhmliv_q40,Prevelance of Living in a Nursing Home in 0.30 <= QALY < 0.40,nhmliv,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+nhmliv_q50,Prevelance of Living in a Nursing Home in 0.40 <= QALY < 0.50,nhmliv,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+nhmliv_q60,Prevelance of Living in a Nursing Home in 0.50 <= QALY < 0.60,nhmliv,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+nhmliv_q70,Prevelance of Living in a Nursing Home in 0.60 <= QALY < 0.70,nhmliv,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+nhmliv_q80,Prevelance of Living in a Nursing Home in 0.70 <= QALY < 0.80,nhmliv,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+nhmliv_q90,Prevelance of Living in a Nursing Home in 0.80 <= QALY < 0.90,nhmliv,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+nhmliv_qLT60,Prevelance of Living in a Nursing Home in QALY <= 0.60,nhmliv,mean,1,weight,ldied==0 & qaly <= 0.60
+nhmliv_qLT70,Prevelance of Living in a Nursing Home in QALY <= 0.70,nhmliv,mean,1,weight,ldied==0 & qaly <= 0.70
+nhmliv_qLT80,Prevelance of Living in a Nursing Home in QALY <= 0.80,nhmliv,mean,1,weight,ldied==0 & qaly <= 0.80
+nhmliv_qLT90,Prevelance of Living in a Nursing Home in QALY <= 0.90,nhmliv,mean,1,weight,ldied==0 & qaly <= 0.90
+bmiGT30_q20,Prevelance of BMI > 30 in QALY < 0.20,bmiGT30,mean,1,weight,ldied==0 & qaly < 0.2
+bmiGT30_q30,Prevelance of BMI > 30 in 0.20 <= QALY < 0.30,bmiGT30,mean,1,weight,ldied==0 & 0.20 <= qaly & qaly < 0.30
+bmiGT30_q40,Prevelance of BMI > 30 in 0.30 <= QALY < 0.40,bmiGT30,mean,1,weight,ldied==0 & 0.30 <= qaly & qaly < 0.40
+bmiGT30_q50,Prevelance of BMI > 30 in 0.40 <= QALY < 0.50,bmiGT30,mean,1,weight,ldied==0 & 0.40 <= qaly & qaly < 0.50
+bmiGT30_q60,Prevelance of BMI > 30 in 0.50 <= QALY < 0.60,bmiGT30,mean,1,weight,ldied==0 & 0.50 <= qaly & qaly < 0.60
+bmiGT30_q70,Prevelance of BMI > 30 in 0.60 <= QALY < 0.70,bmiGT30,mean,1,weight,ldied==0 & 0.60 <= qaly & qaly < 0.70
+bmiGT30_q80,Prevelance of BMI > 30 in 0.70 <= QALY < 0.80,bmiGT30,mean,1,weight,ldied==0 & 0.70 <= qaly & qaly < 0.80
+bmiGT30_q90,Prevelance of BMI > 30 in 0.80 <= QALY < 0.90,bmiGT30,mean,1,weight,ldied==0 & 0.80 <= qaly & qaly < 0.90
+bmiGT30_qLT60,Prevelance of BMI > 30 in QALY <= 0.60,bmiGT30,mean,1,weight,ldied==0 & qaly <= 0.60
+bmiGT30_qLT70,Prevelance of BMI > 30 in QALY <= 0.70,bmiGT30,mean,1,weight,ldied==0 & qaly <= 0.70
+bmiGT30_qLT80,Prevelance of BMI > 30 in QALY <= 0.80,bmiGT30,mean,1,weight,ldied==0 & qaly <= 0.80
+bmiGT30_qLT90,Prevelance of BMI > 30 in QALY <= 0.90,bmiGT30,mean,1,weight,ldied==0 & qaly <= 0.90
+ttl_qaly_u8_51_52p5,Total Pop Between 51 and 52.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly <= 0.80
+ttl_qaly_u8_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly <= 0.80
+ttl_qaly_u8_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly <= 0.80
+ttl_qaly_u8_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly <= 0.80
+ttl_qaly_u8_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly <= 0.80
+ttl_qaly_u8_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly <= 0.80
+ttl_qaly_u8_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly <= 0.80
+ttl_qaly_u8_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly <= 0.80
+ttl_qaly_u8_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly <= 0.80
+ttl_qaly_u8_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly <= 0.80
+ttl_qaly_u8_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly <= 0.80
+ttl_qaly_u8_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly <= 0.80
+ttl_qaly_u8_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY below 0.80,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly <= 0.80
+ttl_qaly_u9_51_52p5,Total Pop Between 51 and 52.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly <= 0.90
+ttl_qaly_u9_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly <= 0.90
+ttl_qaly_u9_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly <= 0.90
+ttl_qaly_u9_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly <= 0.90
+ttl_qaly_u9_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly <= 0.90
+ttl_qaly_u9_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly <= 0.90
+ttl_qaly_u9_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly <= 0.90
+ttl_qaly_u9_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly <= 0.90
+ttl_qaly_u9_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly <= 0.90
+ttl_qaly_u9_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly <= 0.90
+ttl_qaly_u9_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly <= 0.90
+ttl_qaly_u9_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly <= 0.90
+ttl_qaly_u9_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY below 0.90,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly <= 0.90
+ttl_qaly_u7_51_52p5,Total Pop Between 51 and 52.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly <= 0.70
+ttl_qaly_u7_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly <= 0.70
+ttl_qaly_u7_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly <= 0.70
+ttl_qaly_u7_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly <= 0.70
+ttl_qaly_u7_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly <= 0.70
+ttl_qaly_u7_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly <= 0.70
+ttl_qaly_u7_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly <= 0.70
+ttl_qaly_u7_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly <= 0.70
+ttl_qaly_u7_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly <= 0.70
+ttl_qaly_u7_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly <= 0.70
+ttl_qaly_u7_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly <= 0.70
+ttl_qaly_u7_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly <= 0.70
+ttl_qaly_u7_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY below 0.70,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly <= 0.70
+ttl_qaly_u6_51_52p5,Total Pop Between 51 and 52.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly <= 0.60
+ttl_qaly_u6_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly <= 0.60
+ttl_qaly_u6_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly <= 0.60
+ttl_qaly_u6_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly <= 0.60
+ttl_qaly_u6_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly <= 0.60
+ttl_qaly_u6_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly <= 0.60
+ttl_qaly_u6_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly <= 0.60
+ttl_qaly_u6_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly <= 0.60
+ttl_qaly_u6_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly <= 0.60
+ttl_qaly_u6_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly <= 0.60
+ttl_qaly_u6_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly <= 0.60
+ttl_qaly_u6_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly <= 0.60
+ttl_qaly_u6_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY below 0.60,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly <= 0.60
+ttl_qaly_a8_51_52p5,Total Pop Between 51 and 52.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly >= 0.80
+ttl_qaly_a8_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly >= 0.80
+ttl_qaly_a8_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly >= 0.80
+ttl_qaly_a8_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly >= 0.80
+ttl_qaly_a8_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly >= 0.80
+ttl_qaly_a8_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly >= 0.80
+ttl_qaly_a8_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly >= 0.80
+ttl_qaly_a8_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly >= 0.80
+ttl_qaly_a8_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly >= 0.80
+ttl_qaly_a8_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly >= 0.80
+ttl_qaly_a8_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly >= 0.80
+ttl_qaly_a8_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly >= 0.80
+ttl_qaly_a8_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY above 0.80,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly >= 0.80
+ttl_qaly_a9_51_52p5,Total Pop Between 51 and 52.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly >= 0.90
+ttl_qaly_a9_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly >= 0.90
+ttl_qaly_a9_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly >= 0.90
+ttl_qaly_a9_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly >= 0.90
+ttl_qaly_a9_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly >= 0.90
+ttl_qaly_a9_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly >= 0.90
+ttl_qaly_a9_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly >= 0.90
+ttl_qaly_a9_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly >= 0.90
+ttl_qaly_a9_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly >= 0.90
+ttl_qaly_a9_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly >= 0.90
+ttl_qaly_a9_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly >= 0.90
+ttl_qaly_a9_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly >= 0.90
+ttl_qaly_a9_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY above 0.90,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly >= 0.90
+ttl_qaly_a7_51_52p5,Total Pop Between 51 and 52.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly >= 0.70
+ttl_qaly_a7_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly >= 0.70
+ttl_qaly_a7_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly >= 0.70
+ttl_qaly_a7_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly >= 0.70
+ttl_qaly_a7_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly >= 0.70
+ttl_qaly_a7_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly >= 0.70
+ttl_qaly_a7_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly >= 0.70
+ttl_qaly_a7_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly >= 0.70
+ttl_qaly_a7_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly >= 0.70
+ttl_qaly_a7_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly >= 0.70
+ttl_qaly_a7_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly >= 0.70
+ttl_qaly_a7_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly >= 0.70
+ttl_qaly_a7_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY above 0.70,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly >= 0.70
+ttl_qaly_a6_51_52p5,Total Pop Between 51 and 52.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 51 & age < 52.5 & qaly >= 0.60
+ttl_qaly_a6_52p5_57p5,Total Pop Between 52.5 and 57.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 52.5 & age < 57.5 & qaly >= 0.60
+ttl_qaly_a6_57p5_62p5,Total Pop Between 57.5 and 62.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 57.5 & age < 62.5 & qaly >= 0.60
+ttl_qaly_a6_62p5_67p5,Total Pop Between 62.5 and 67.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 62.5 & age < 67.5 & qaly >= 0.60
+ttl_qaly_a6_67p5_72p5,Total Pop Between 67.5 and 72.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 67.5 & age < 72.5 & qaly >= 0.60
+ttl_qaly_a6_72p5_77p5,Total Pop Between 72.5 and 77.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 72.5 & age < 77.5 & qaly >= 0.60
+ttl_qaly_a6_77p5_82p5,Total Pop Between 77.5 and 82.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 77.5 & age < 82.5 & qaly >= 0.60
+ttl_qaly_a6_82p5_87p5,Total Pop Between 82.5 and 87.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 82.5 & age < 87.5 & qaly >= 0.60
+ttl_qaly_a6_87p5_92p5,Total Pop Between 87.5 and 92.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 87.5 & age < 92.5 & qaly >= 0.60
+ttl_qaly_a6_92p5_97p5,Total Pop Between 92.5 and 97.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 92.5 & age < 97.5 & qaly >= 0.60
+ttl_qaly_a6_97p5_102p5,Total Pop Between 97.5 and 102.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 97.5 & age < 102.5 & qaly >= 0.60
+ttl_qaly_a6_102p5_107p5,Total Pop Between 102.5 and 107.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 102.5 & age < 107.5 & qaly >= 0.60
+ttl_qaly_a6_107p5_112p5,Total Pop Between 107.5 and 112.5 with QALY above 0.60,weight,sum,0.000001,1,ldied==0 & age >= 107.5 & age < 112.5 & qaly >= 0.60
+pcancre_50_60_male,Prevelance of Cancer in Males Aged 50 to 60,cancre,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 1
+pcancre_60_70_male,Prevelance of Cancer in Males Aged 60 to 70,cancre,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 1
+pcancre_70_80_male,Prevelance of Cancer in Males Aged 70 to 80,cancre,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 1
+pcancre_80_plus_male,Prevelance of Cancer in Males Aged 80+,cancre,mean,1,weight,ldied==0 & age >= 80 & male == 1
+pdiabe_50_60_male,Prevelance of Cancer in Males Aged 50 to 60,diabe,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 1
+pdiabe_60_70_male,Prevelance of Cancer in Males Aged 60 to 70,diabe,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 1
+pdiabe_70_80_male,Prevelance of Cancer in Males Aged 70 to 80,diabe,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 1
+pdiabe_80_plus_male,Prevelance of Cancer in Males Aged 80+,diabe,mean,1,weight,ldied==0 & age >= 80 & male == 1
+phearte_50_60_male,Prevelance of Cancer in Males Aged 50 to 60,hearte,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 1
+phearte_60_70_male,Prevelance of Cancer in Males Aged 60 to 70,hearte,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 1
+phearte_70_80_male,Prevelance of Cancer in Males Aged 70 to 80,hearte,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 1
+phearte_80_plus_male,Prevelance of Cancer in Males Aged 80+,hearte,mean,1,weight,ldied==0 & age >= 80 & male == 1
+pstroke_50_60_male,Prevelance of Cancer in Males Aged 50 to 60,stroke,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 1
+pstroke_60_70_male,Prevelance of Cancer in Males Aged 60 to 70,stroke,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 1
+pstroke_70_80_male,Prevelance of Cancer in Males Aged 70 to 80,stroke,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 1
+pstroke_80_plus_female,Prevelance of Cancer in Males Aged 80+,stroke,mean,1,weight,ldied==0 & age >= 80 & male == 0
+pcancre_50_60_female,Prevelance of Cancer in Females Aged 50 to 60,cancre,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 0
+pcancre_60_70_female,Prevelance of Cancer in Females Aged 60 to 70,cancre,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 0
+pcancre_70_80_female,Prevelance of Cancer in Females Aged 70 to 80,cancre,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 0
+pcancre_80_plus_female,Prevelance of Cancer in Females Aged 80+,cancre,mean,1,weight,ldied==0 & age >= 80 & male == 0
+pdiabe_50_60_female,Prevelance of Cancer in Females Aged 50 to 60,diabe,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 0
+pdiabe_60_70_female,Prevelance of Cancer in Females Aged 60 to 70,diabe,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 0
+pdiabe_70_80_female,Prevelance of Cancer in Females Aged 70 to 80,diabe,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 0
+pdiabe_80_plus_female,Prevelance of Cancer in Females Aged 80+,diabe,mean,1,weight,ldied==0 & age >= 80 & male == 0
+phearte_50_60_female,Prevelance of Cancer in Females Aged 50 to 60,hearte,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 0
+phearte_60_70_female,Prevelance of Cancer in Females Aged 60 to 70,hearte,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 0
+phearte_70_80_female,Prevelance of Cancer in Females Aged 70 to 80,hearte,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 0
+phearte_80_plus_female,Prevelance of Cancer in Females Aged 80+,hearte,mean,1,weight,ldied==0 & age >= 80 & male == 0
+pstroke_50_60_female,Prevelance of Cancer in Females Aged 50 to 60,stroke,mean,1,weight,ldied==0 & age >= 50 & age < 60 & male == 0
+pstroke_60_70_female,Prevelance of Cancer in Females Aged 60 to 70,stroke,mean,1,weight,ldied==0 & age >= 60 & age < 70 & male == 0
+pstroke_70_80_female,Prevelance of Cancer in Females Aged 70 to 80,stroke,mean,1,weight,ldied==0 & age >= 70 & age < 80 & male == 0
+pstroke_80_plus_female,Prevelance of Cancer in Females Aged 80+,stroke,mean,1,weight,ldied==0 & age >= 80 & male == 0
+ttl_disease0,Number of People with No Diseases,weight,sum,0.000001,1,ldied==0 & numdisease==0
+ttl_disease1,Number of People with One Disease,weight,sum,0.000001,1,ldied==0 & numdisease==1
+ttl_disease2,Number of People with Two Disease,weight,sum,0.000001,1,ldied==0 & numdisease==2
+ttl_disease3,Number of People with Three Disease,weight,sum,0.000001,1,ldied==0 & numdisease==3
+ttl_disease4p,Number of People with Four Plus Disease,weight,sum,0.000001,1,ldied==0 & numdisease>=4

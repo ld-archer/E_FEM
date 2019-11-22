@@ -1,0 +1,6 @@
+dictionary using "../../../FEM_CPP_settings/timeseries/seas_adj_unemployment.txt" {
+_firstlineoffile(3)
+_lines(1)
+int year "Year"
+float unemployment "Seasonally Adjusted Unemployment Rate"
+}

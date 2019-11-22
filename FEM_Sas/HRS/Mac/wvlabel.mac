@@ -1,0 +1,42 @@
+/* macro to label variables:
+   pref  = first character of variable
+   sufx  = stem characers of variable
+   lab   = constant text of var label
+   
+   begwv = first wave to be labelled, default=1
+   endwv = last wave to be labelled, default=maxwv
+   
+   e.g.,
+       %wvlabel(R,mstat,%str(Marital Status));
+   makes labels
+   for R1MSTAT, R2MSTAT, R3MSTAT, R4MSTAT that look like:
+       RnMSTAT:Wn Marital Status
+*/
+
+%macro wvlabel (pref,sufx,lab,begwv=1,endwv=&maxwv,all=N);
+   LABEL 
+   %do i=&begwv %to &endwv;
+       &pref&i&sufx = "%upcase(&pref&i&sufx):W&i &lab"
+   %end;
+   %if &all=Y %then %do;
+       &pref.A&sufx = "%upcase(&pref.A&sufx): &lab"
+   %end;
+   ; /* end &sufx label */
+
+%mend;   
+
+/* Some AHEAD measures are different from HRS
+   This macro allows 1 or 2 waves to be skipped
+   for similar labeling on discontinuous waves
+*/
+%macro wvlabelskp (pref,sufx,lab,begwv=1,endwv=&maxwv,skp1=,skp2=,all=N);
+   LABEL 
+   %do i=&begwv %to &endwv;
+       %if &i^=&skp1 and &i^=&skp2 %then 
+         &pref&i&sufx = "%upcase(&pref&i&sufx):W&i &lab";
+   %end;
+   ; 
+
+%mend;
+
+

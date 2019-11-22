@@ -1,0 +1,1332 @@
+\documentclass{article}
+\usepackage{savetrees}
+\usepackage{hyperref}
+\usepackage[section]{placeins}
+\usepackage{datatool}
+
+\title{Analysis of Medicare Reform Options}
+
+\begin{document}
+\maketitle
+\listoftables
+\listoffigures
+
+\begin{Rcode}{!echo,hide}
+library(foreign)
+library(ggplot2)
+\end{Rcode}
+
+\begin{Statacode}{!echo,hide}
+set linesize 100
+global discount_rate = 0.03
+\end{Statacode}
+
+\section{Summary of Results}
+
+Figure~\ref{fig:summary} shows a comparison of the costs of various Medicare reform scenarios. Each variant shows a particular parameter set for the examined scenarios. A complete listing of the excursions and their parameters is in Table~\ref{tab:scenarios}. The ACA schedule for Part B premium thresholds freezes them in nominal dollars until 2019 then allows them to rise with inflation, while the nominal dollars scenario never adjusts for inflation and the real dollars scenario always does.
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=aca_totmd}
+use ../output/ACA/summary, clear
+tsset year
+tsfill
+foreach v of varlist ttl_totmd_mcare {
+  ipolate `v' year if year >= 2012, gen(i`v')
+  replace `v' = i`v'
+}
+foreach v of varlist ttl_totmd_mcare {
+  replace `v' = `v' * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+}
+* $ to fix syntax highlighting
+
+
+twoway connected ttl_totmd_mcare year
+outsheet year ttl_totmd_mcare using aca_totmd.csv, comma replace
+\end{Statacode}
+
+\begin{figure}
+\centering
+\recallfig{aca_totmd}
+\caption{NPV of Total Medical Expenditures for Medicare Eligible}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=cost_summary}
+use ../output/ACA/summary, clear
+gen summ_ACA = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_ACAGross = ttl_mcare
+label variable summ_ACA "ACA"
+keep year summ_*
+merge year using ../output/partB.nominal.dollars/summary, sort
+gen summ_nominal = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_nominalGross = ttl_mcare
+label variable summ_nominal "Part B Nominal"
+keep year summ_*
+merge year using ../output/partA.drop00/summary, sort
+gen summ_drop00 = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_drop00Gross = ttl_mcare
+label variable summ_drop00 "Part A Drop 0 ACA Thresholds"
+keep year summ_*
+merge year using ../output/partA.drop03/summary, sort
+gen summ_drop03 = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_drop03Gross = ttl_mcare
+label variable summ_drop03 "Part A Drop 3 ACA Thresholds"
+keep year summ_*
+merge year using ../output/partA.drop03.10percent/summary, sort
+gen summ_drop0310 = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_drop0310Gross = ttl_mcare
+label variable summ_drop0310 "Part A Drop 3, 10 Percent"
+keep year summ_*
+merge year using ../output/partA.drop05/summary, sort
+gen summ_drop05 = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_drop05Gross = ttl_mcare
+label variable summ_drop05 "Part A Drop 5 ACA Thresholds"
+keep year summ_*
+merge year using ../output/voucher.gdp/summary, sort
+gen summ_gdp = ttl_mcare_pta_subsidy + ttl_mcare_ptb_subsidy + ttl_mcare_ptd
+gen summ_gdpGross = ttl_mcare_pta_subsidy + ttl_mcare_ptb_subsidy + ttl_mcare_ptd
+replace summ_gdp = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium if year < 2012
+replace summ_gdpGross = ttl_mcare if year < 2012
+label variable summ_gdp "Vouchers GDP"
+keep year summ_*
+merge year using ../output/voucher.cpi/summary, sort
+gen summ_cpi = ttl_mcare_pta_subsidy + ttl_mcare_ptb_subsidy + ttl_mcare_ptd
+gen summ_cpiGross = ttl_mcare_pta_subsidy + ttl_mcare_ptb_subsidy + ttl_mcare_ptd
+replace summ_cpi = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium if year < 2012
+replace summ_cpiGross = ttl_mcare if year < 2012
+label variable summ_cpi "Vouchers CPI"
+keep year summ_*
+merge year using ../output/elig.age67/summary, sort
+gen summ_age67 = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_age67Gross = ttl_mcare
+label variable summ_age67 "Eligibility Age 67"
+keep year summ_*
+merge year using ../output/elig.age70/summary, sort
+gen summ_age70 = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_age70Gross = ttl_mcare
+keep year summ_*
+
+merge year using ../output/ACAnolimit/summary, sort
+gen summ_acanolimit = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_acanolimitGross = ttl_mcare
+keep year summ_*
+merge year using ../output/partA.drop03nolimit/summary, sort
+gen summ_partAnolimit = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_partAnolimitGross = ttl_mcare
+keep year summ_*
+merge year using ../output/voucher.gdpnolimit/summary, sort
+gen summ_gdpnolimit = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_gdpnolimitGross = ttl_mcare
+keep year summ_*
+merge year using ../output/elig.age67nolimit/summary, sort
+gen summ_age67nolimit = ttl_mcare - ttl_mcare_ptb_premium - ttl_mcare_pta_premium
+gen summ_age67nolimitGross = ttl_mcare
+keep year summ_*
+
+tsset year
+tsfill
+foreach v of varlist summ_* {
+  ipolate `v' year if year >= 2012, gen(i`v')
+  replace `v' = i`v'
+}
+foreach v of varlist summ_* {
+  replace `v' = `v' * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+}
+* $ to fix syntax highlighting
+
+twoway connected summ_ACA summ_drop03 summ_gdp summ_age67 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("Trillions of 2010 Dollars")
+outsheet year summ_* using cost_summary.csv, comma replace
+\end{Statacode}
+
+
+\begin{figure}[ht]
+\centering
+\recallfig{cost_summary}
+\caption{Net Present Value of Medicare Reform Options}
+\label{fig:summary}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{Net Present Value of Reform Options (Trillions 2010 Dollars)}
+\recallout{cumm_cost}
+\label{tab:cumm_cost}
+\end{table}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=enroll_a_summary}
+use ../output/ACA/summary, clear
+rename ttl_mcare_pta_enroll summ_ACA
+label variable summ_ACA "ACA"
+keep year summ_*
+merge year using ../output/partB.nominal.dollars/summary, sort
+rename ttl_mcare_pta_enroll summ_nominal
+label variable summ_nominal "Part B Nominal"
+keep year summ_*
+merge year using ../output/partA.drop03/summary, sort
+rename ttl_mcare_pta_enroll summ_drop03
+label variable summ_drop03 "Part A Drop 3 ACA Thresholds"
+keep year summ_*
+merge year using ../output/voucher.gdp/summary, sort
+rename ttl_mcare_pta_enroll summ_gdp
+label variable summ_gdp "Vouchers GDP"
+keep year summ_*
+merge year using ../output/elig.age67/summary, sort
+rename ttl_mcare_pta_enroll summ_age67
+label variable summ_age67 "Eligibility Age 67"
+keep year summ_*
+merge year using ../output/voucher.cpi/summary, sort
+rename ttl_mcare_pta_enroll summ_cpi
+keep year summ_*
+merge year using ../output/partA.drop00/summary, sort
+rename ttl_mcare_pta_enroll summ_drop00
+keep year summ_*
+merge year using ../output/partA.drop03.10percent/summary, sort
+rename ttl_mcare_pta_enroll summ_drop0310
+keep year summ_*
+merge year using ../output/partA.drop05/summary, sort
+rename ttl_mcare_pta_enroll summ_drop05
+keep year summ_*
+
+merge year using ../output/ACAnolimit/summary, sort
+rename ttl_mcare_pta_enroll summ_ACAnolimit
+keep year summ_*
+merge year using ../output/partA.drop03nolimit/summary, sort
+rename ttl_mcare_pta_enroll summ_partAnolimit
+keep year summ_*
+merge year using ../output/voucher.gdpnolimit/summary, sort
+rename ttl_mcare_pta_enroll summ_gdpnolimit
+keep year summ_*
+merge year using ../output/elig.age67nolimit/summary, sort
+rename ttl_mcare_pta_enroll summ_age67nolimit
+keep year summ_*
+
+
+twoway connected summ_ACA summ_drop03 summ_gdp summ_age67 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("People Enrolled in Part A (Millions)")
+outsheet year summ_* using enroll_a_summary.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{enroll_a_summary}
+\caption{Annual Enrollment in Medicare Part A}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=enroll_b_summary}
+use ../output/ACA/summary, clear
+rename ttl_mcare_ptb_enroll summ_ACA
+label variable summ_ACA "ACA"
+keep year summ_*
+merge year using ../output/partB.nominal.dollars/summary, sort
+rename ttl_mcare_ptb_enroll summ_nominal
+label variable summ_nominal "Part B Nominal"
+keep year summ_*
+merge year using ../output/partA.drop03/summary, sort
+rename ttl_mcare_ptb_enroll summ_drop03
+label variable summ_drop03 "Part A Drop 3 ACA Thresholds"
+keep year summ_*
+merge year using ../output/voucher.gdp/summary, sort
+rename ttl_mcare_ptb_enroll summ_gdp
+label variable summ_gdp "Vouchers GDP"
+keep year summ_*
+merge year using ../output/elig.age67/summary, sort
+rename ttl_mcare_ptb_enroll summ_age67
+label variable summ_age67 "Eligibility Age 67"
+keep year summ_*
+merge year using ../output/voucher.cpi/summary, sort
+rename ttl_mcare_ptb_enroll summ_cpi
+keep year summ_*
+merge year using ../output/partA.drop00/summary, sort
+rename ttl_mcare_ptb_enroll summ_drop00
+keep year summ_*
+merge year using ../output/partA.drop03.10percent/summary, sort
+rename ttl_mcare_ptb_enroll summ_drop0310
+keep year summ_*
+merge year using ../output/partA.drop05/summary, sort
+rename ttl_mcare_ptb_enroll summ_drop05
+keep year summ_*
+
+merge year using ../output/ACAnolimit/summary, sort
+rename ttl_mcare_ptb_enroll summ_ACAnolimit
+keep year summ_*
+merge year using ../output/partA.drop03nolimit/summary, sort
+rename ttl_mcare_ptb_enroll summ_partAnolimit
+keep year summ_*
+merge year using ../output/voucher.gdpnolimit/summary, sort
+rename ttl_mcare_ptb_enroll summ_gdpnolimit
+keep year summ_*
+merge year using ../output/elig.age67nolimit/summary, sort
+rename ttl_mcare_ptb_enroll summ_age67nolimit
+keep year summ_*
+
+twoway connected summ_ACA summ_drop03 summ_gdp summ_age67 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("People Enrolled in Part B (Millions)")
+outsheet year summ_* using enroll_b_summary.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{enroll_b_summary}
+\caption{Annual Enrollment in Medicare Part B}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,savefig,label=uncovered_upper}
+use ../output/ACA/summary, clear
+rename ttl_uncovered_upper_mcare summ_aca
+label variable summ_aca "ACA"
+rename ttl_totmd_6566 unc_6566
+keep year summ_* unc_6566
+merge year using ../output/partA.drop03/summary, sort
+rename ttl_uncovered_upper_mcare summ_parta
+label variable summ_parta "Part A Drop 3 ACA Thresholds"
+keep year summ_* unc_6566
+merge year using ../output/voucher.gdp/summary, sort
+rename ttl_uncovered_upper_mcare summ_voucher
+label variable summ_voucher "Voucher GDP"
+keep year summ_* unc_6566
+merge year using ../output/elig.age67/summary, sort
+rename ttl_uncovered_upper_mcare summ_age67
+replace summ_age67 = summ_age67 + unc_6566 if year > 2010
+label variable summ_age67 "Eligibility Age 67"
+keep year summ_*
+
+merge year using ../output/ACAnolimit/summary, sort
+rename ttl_uncovered_upper_mcare summ_ACAnolimit
+rename ttl_totmd_6566 unc_6566
+keep year summ_* unc_6566
+merge year using ../output/partA.drop03nolimit/summary, sort
+rename ttl_uncovered_upper_mcare summ_partAnolimit
+keep year summ_* unc_6566
+merge year using ../output/voucher.gdpnolimit/summary, sort
+rename ttl_uncovered_upper_mcare summ_gdpnolimit
+keep year summ_* unc_6566
+merge year using ../output/elig.age67nolimit/summary, sort
+rename ttl_uncovered_upper_mcare summ_age67nolimit
+replace summ_age67nolimit = summ_age67nolimit + unc_6566 if year > 2010
+keep year summ_* unc_6566
+
+
+tsset year
+tsfill
+foreach v of varlist summ_* {
+  ipolate `v' year if year >= 2012, gen(i`v')
+  replace `v' = i`v'
+}
+foreach v of varlist summ_* {
+  replace `v' = `v' * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+}
+* $ to fix syntax highlighting
+
+twoway connected summ_aca-summ_age67 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("NPV of OOP Expenditures (Trillions)")
+outsheet year summ_* using uncovered_upper.csv, comma replace
+\end{Statacode}
+
+\begin{figure}
+\centering
+\recallfig{uncovered_upper}
+\caption{Upper Bound on Total Uncovered Expenditures for Traditional Medicare Eligible Population}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,savefig,label=uncovered_lower}
+use ../output/ACA/summary, clear
+rename ttl_uncovered_lower_mcare summ_aca
+label variable summ_aca "ACA"
+rename ttl_totmd_6566 unc_6566
+keep year summ_* unc_6566
+merge year using ../output/partA.drop03/summary, sort
+rename ttl_uncovered_lower_mcare summ_parta
+label variable summ_parta "Part A Drop 3 ACA Thresholds"
+keep year summ_* unc_6566
+merge year using ../output/voucher.gdp/summary, sort
+rename ttl_uncovered_lower_mcare summ_voucher
+label variable summ_voucher "Voucher GDP"
+keep year summ_* unc_6566
+merge year using ../output/elig.age67/summary, sort
+rename ttl_uncovered_lower_mcare summ_age67
+replace summ_age67 = summ_age67 + 18.0/41 * unc_6566 if year > 2010
+label variable summ_age67 "Eligibility Age 67"
+keep year summ_*
+
+merge year using ../output/ACAnolimit/summary, sort
+rename ttl_uncovered_lower_mcare summ_ACAnolimit
+rename ttl_totmd_6566 unc_6566
+keep year summ_* unc_6566
+merge year using ../output/partA.drop03nolimit/summary, sort
+rename ttl_uncovered_lower_mcare summ_partAnolimit
+keep year summ_* unc_6566
+merge year using ../output/voucher.gdpnolimit/summary, sort
+rename ttl_uncovered_lower_mcare summ_gdpnolimit
+keep year summ_* unc_6566
+merge year using ../output/elig.age67nolimit/summary, sort
+rename ttl_uncovered_lower_mcare summ_age67nolimit
+replace summ_age67nolimit = summ_age67nolimit + unc_6566 if year > 2010
+keep year summ_* unc_6566
+
+tsset year
+tsfill
+foreach v of varlist summ_* {
+  ipolate `v' year if year >= 2012, gen(i`v')
+  replace `v' = i`v'
+}
+foreach v of varlist summ_* {
+  replace `v' = `v' * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+}
+* $ to fix syntax highlighting
+
+twoway connected summ_aca-summ_age67 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("NPV of OOP Expenditures (Trillions)")
+outsheet year summ_* using uncovered_lower.csv, comma replace
+\end{Statacode}
+
+\begin{figure}
+\centering
+\recallfig{uncovered_lower}
+\caption{Lower Bound on Total Uncovered Expenditures for Traditional Medicare Eligible Population}
+\end{figure}
+
+\begin{table}[ht]
+\centering
+\caption{Scenario Definitions}\vspace{0.2in}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}\hline
+ & \textbf{Medicare} & \textbf{Part A} & \textbf{Part A} & \textbf{Part A} & \textbf{Part B} & \textbf{Part B} & \textbf{Medical Cost} \\
+\textbf{Scenario} & \textbf{Eligibility} & \textbf{Premium} & \textbf{Drop} & \textbf{Premium} & \textbf{Premium} & \textbf{Premium} & \textbf{Growth} \\
+& \textbf{Age} & \textbf{Schedule} & \textbf{Fraction} & \textbf{Elasticity} & \textbf{Elasticity} & \textbf{Thresholds} & \textbf{Rate}\\\hline
+ACA & 65 & 0\% & 0\% & 0.0 & -0.1 & ACA & SSA Intermediate\\\hline
+Zero Elasticity & 65 & 0\% & 0\% & 0.0 & 0.0 & ACA & SSA Intermediate\\\hline
+-0.2 Elasticity & 65 & 0\% & 0\% & 0.0 & -0.2 & ACA & SSA Intermediate\\\hline
+-0.5 Elasticity & 65 & 0\% & 0\% & 0.0 & -0.5 & ACA & SSA Intermediate\\\hline
+Part B Nominal Dollars & 65 & 0\% & 0\% & 0.0 & -0.1 & Nominal & SSA Intermediate\\\hline
+Part B Real Dollars & 65 & 0\% & 0\% & 0.0 & -0.1 & 2010 & SSA Intermediate\\\hline
+Part B 25 Percent & 65 & 0\% & 0\% & 0.0 & -0.1 & N/A & SSA Intermediate\\\hline
+Part A Drop 3 & 65 & ACA & 3\% & -0.1 & -0.1 & ACA & SSA Intermediate\\\hline
+Vouchers GDP & 65 & 0\% & 0\% & 0.0 & -0.1 & ACA & OASDI GDP \\\hline
+Vouchers GDP+1 & 65 & 0\% & 0\% & 0.0 & -0.1 & ACA & OASDI GPD + 1\%\\\hline
+Eligibility Age 67 & 67 & 0\% & 0\% & 0.0 & -0.1 & ACA & SSA Intermediate\\\hline
+Eligibility Age 70 & 70 & 0\% & 0\% & 0.0 & -0.1 & ACA & SSA Intermediate\\\hline
+\end{tabular}
+\label{tab:scenarios}
+\end{table}
+
+\section{Imposing a Premium on Part A}
+Starting in 2010, premiums are imposed for Part A according to Table~\ref{tab:sliding}. The thresholds do not grow with inflation, so in real-dollar terms they decline over time. Any household under 138\% of the poverty line does not have any premium. Figure~\ref{fig:exemptions} shows the evolution of this population over time.
+
+\begin{table}[ht]
+\caption{Individual Sliding Scale Premiums as percentage of per-enrollee program cost}
+\label{tab:sliding}
+\centering
+\begin{tabular}{|c|c|c|c|}\hline
+\textbf{Band} & \textbf{Income Bracket} & \textbf{Part A Premium} & \textbf{Part B Premium}\\\hline
+Band 1 & MAGI <= \$85,000 & 25\% & 25\%\\\hline
+Band 2 & \$85,000 < MAGI <= \$107,000 & 35\% & 35\%\\\hline
+Band 3 & \$107,000 < MAGI <= \$160,000  & 55\% & 55\%\\\hline
+Band 4 & \$160,000 < MAGI <= \$214,000 & 65\% & 65\%\\\hline
+Band 5 & \$214,000 < MAGI & 80\% & 80\%\\\hline
+\end{tabular}
+\end{table}
+
+\begin{Statacode}{!echo,hide}
+use ../output/partB.real.dollars/summary, clear
+\end{Statacode}
+\begin{Statacode}{!echo,saveout,label=income_pops_real}
+gen b0 = income_band0/pop_medicare_age
+gen b1 = income_band1/pop_medicare_age
+gen b2 = income_band2/pop_medicare_age
+gen b3 = income_band3/pop_medicare_age
+gen b4 = income_band4/pop_medicare_age
+gen b5 = income_band5/pop_medicare_age
+gen pool = pop_medicare_age
+global vlist b0 b1 b2 b3 b4 b5 pool
+format $vlist %5.2f
+outsheet year $vlist if year == 2010 | year == 2020 | year == 2036 using income_pops_real.csv, comma replace
+\end{Statacode}
+\begin{Statacode}{!echo,hide}
+use ../output/partB.nominal.dollars/summary, clear
+\end{Statacode}
+\begin{Statacode}{!echo,saveout,label=income_pops_nominal}
+gen b0 = income_band0/pop_medicare_age
+gen b1 = income_band1/pop_medicare_age
+gen b2 = income_band2/pop_medicare_age
+gen b3 = income_band3/pop_medicare_age
+gen b4 = income_band4/pop_medicare_age
+gen b5 = income_band5/pop_medicare_age
+gen pool = pop_medicare_age
+global vlist b0 b1 b2 b3 b4 b5 pool
+format $vlist %5.2f
+outsheet year $vlist if year == 2010 | year == 2020 | year == 2036 using income_pops_nominal.csv, comma replace
+\end{Statacode}
+
+\DTLloaddb[headers={Year,Medicaid,Band 1,Band 2,Band 3,Band 4,Band 5,Total 65+}]{income_pops_real}{income_pops_real.csv}
+\DTLloaddb[headers={Year,Medicaid,Band 1,Band 2,Band 3,Band 4,Band 5,Total 65+}]{income_pops_nominal}{income_pops_nominal.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Percentage in Real Dollar Threshold Bands by Year (Millions of People)}
+\DTLdisplaydb{income_pops_real}
+\label{tab:income_pops_real}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Percentage in Nominal Dollar Threshold Bands by Year (Millions of People)}
+\DTLdisplaydb{income_pops_nominal}
+\label{tab:income_pops_nominal}
+\end{table}
+
+We looked at four different scenarios all based on Buchmueller, 2006. When premium jumps from nothing to the sliding-scale premium, there is a small chance that the person will drop (or not enroll in the first place). Once enrolled, all further premium adjustments are subject to a -0.1 elasticity to price and a takeup probit based on the model for Part B takeup. The average premium paid does not change significantly from scenario to scenario. 
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=exemptions}
+use ../output/ACA/summary, clear
+gen bpop = ttl_mcare_ptb_exempt / pop_medicare
+label variable bpop "Portion of Medicare Eligible Exempt from Part B Premium"
+gen benroll = ttl_mcare_ptb_exempt / ttl_mcare_ptb_enroll
+label variable benroll "Portion of Part B Enrolled Exempt from Premium under ACA"
+keep year bpop benroll
+sort year
+merge year using ../output/partA.drop03/summary
+gen aenroll = ttl_mcare_pta_exempt / ttl_mcare_pta_enroll
+label variable aenroll "Portion of Part A Enrolled Exempt from Premium under Drop 3"
+twoway connected bpop aenroll benroll year if year >= 2010, legend(cols(1))
+outsheet year bpop aenroll benroll using exemptions.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{exemptions}
+\caption{Fraction of Medicare Enrollees Exempt from Premium in ACA}
+\label{fig:exemptions}
+\end{figure}
+
+
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=drop_enrolled}
+use ../output/ACA/summary, clear
+rename ttl_mcare_pta_enroll base
+label variable base "ACA"
+keep year base
+sort year
+merge year using ../output/partA.drop03/summary
+rename ttl_mcare_pta_enroll drop03
+label variable drop03 "Part A Drop 3 ACA Thresholds"
+keep year base drop03
+sort year
+merge year using ../output/partA.drop03.real.dollars/summary
+rename ttl_mcare_pta_enroll drop03Real
+label variable drop03Real "Part A Drop 3 Real Dollars"
+keep year base drop03 drop03Real
+sort year
+merge year using ../output/partA.drop03.25percent/summary
+rename ttl_mcare_pta_enroll drop0325
+label variable drop0325 "Part A Drop 3 25 Percent"
+keep year base drop03 drop03Real drop0325
+sort year
+merge year using ../output/partA.drop03.10percent/summary
+rename ttl_mcare_pta_enroll drop0310
+label variable drop0310 "Part A Drop 3 10 Percent"
+twoway connected base drop03 drop03Real drop0310 drop0325 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("Number of Enrolled (Millions)")
+outsheet year base drop03 drop03Real drop0310 drop0325 using drop_enrolled.csv if year >= 2010, comma replace
+\end{Statacode}
+
+\DTLloaddb[headers={Year,ACA,Drop 03, Drop 03 Real,Drop 03 10 Percent,Drop 03 25 Percent}]{parta_enrolled}{drop_enrolled.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Enrollment in Part A}
+\DTLdisplaydb{parta_enrolled}
+\label{tab:parta_c_cost}
+\end{table}
+
+\begin{figure}[ht]
+\centering
+\recallfig{drop_enrolled}
+\caption{Enrollment in Part A}
+\label{fig:drop_enrolled}
+\end{figure}
+
+Part A costs (Figure~\ref{fig:drop_costs}) are relative to the enrollment, but the net costs are roughly the same, as shown in Figure~\ref{fig:parta_net_costs}.
+\begin{Statacode}{!echo,hide,fig,savefig,label=drop_costs}
+use ../output/ACA/summary, clear
+gen base = ttl_mcare_pta
+label variable base "ACA"
+keep year base
+sort year
+merge year using ../output/partA.drop03/summary
+gen drop03 = ttl_mcare_pta
+label variable drop03 "Part A Drop 3 ACA Thresholds"
+keep year base drop03
+sort year
+merge year using ../output/partA.drop03.real.dollars/summary
+rename ttl_mcare_pta drop03Real
+label variable drop03Real "Part A Drop 3 Real Dollars"
+keep year base drop03 drop03Real
+sort year
+merge year using ../output/partA.drop03.25percent/summary
+rename ttl_mcare_pta drop0325
+label variable drop0325 "Part A Drop 3 25 Percent"
+keep year base drop03 drop03Real drop0325
+sort year
+merge year using ../output/partA.drop03.10percent/summary
+rename ttl_mcare_pta drop0310
+label variable drop0310 "Part A Drop 3 10 Percent"
+twoway connected base drop03 drop03Real drop0310 drop0325 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("Billions of 2010 Dollars")
+outsheet year base drop03 drop03Real drop0310 drop0325 using drop_costs.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{drop_costs}
+\caption{Part A Total Costs with varying drop rates (excluding payroll tax revenue)}
+\label{fig:drop_costs}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=parta_net_costs}
+use ../output/ACA/summary, clear
+gen base = ttl_mcare_pta
+label variable base "ACA"
+keep year base
+sort year
+merge year using ../output/partA.drop03/summary
+gen drop03 = ttl_mcare_pta - ttl_mcare_pta_premium
+label variable drop03 "Part A Drop 3 ACA Thresholds"
+sort year
+keep year base drop03
+merge year using ../output/partA.drop03.real.dollars/summary
+gen drop03Real = ttl_mcare_pta - ttl_mcare_pta_premium
+label variable drop03Real "Part A Drop 3 Real Dollars"
+keep year base drop03 drop03Real
+sort year
+merge year using ../output/partA.drop03.25percent/summary
+gen drop0325 = ttl_mcare_pta - ttl_mcare_pta_premium
+label variable drop0325 "Part A Drop 3 25 Percent"
+sort year
+keep year base drop03 drop03Real drop0325
+merge year using ../output/partA.drop03.10percent/summary
+gen drop0310 = ttl_mcare_pta - ttl_mcare_pta_premium
+label variable drop0310 "Part A Drop 3 10 Percent"
+twoway connected base drop03 drop03Real drop0310 drop0325 year if year >= 2010, legend(cols(1)) yscale(titlegap(*2)) ytitle("Billions of 2010 Dollars")
+outsheet year base drop03 drop03Real drop0310 drop0325 using parta_net_costs.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{parta_net_costs}
+\caption{Part A Net Costs with varying drop rates (excluding payroll tax revenue)}
+\label{fig:parta_net_costs}
+\end{figure}
+
+\begin{Statacode}{!echo,hide}
+tsset year
+tsfill
+foreach v in base drop03 {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+replace base = base * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace drop03 = drop03 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+gen c_base = sum(base) if year >= 2010
+gen c_drop03 = sum(drop03) if year >= 2010
+gen diffDrop03 = c_drop03 - c_base
+format c_base diffDrop03 %10.2f
+outsheet year c_base diffDrop03 if year >= 2010 using parta_c_cost.csv, replace comma
+\end{Statacode}
+\DTLloaddb[headers={Year,ACA,Drop 03}]{parta_c_cost}{parta_c_cost.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Net Present Value of Part A Options Less Net Present Value of ACA Part A (Billions 2010 Dollars)}
+\DTLdisplaydb{parta_c_cost}
+\label{tab:parta_c_cost}
+\end{table}
+
+\begin{Statacode}{!echo,hide}
+use ../output/partA.drop03/summary, clear
+\end{Statacode}
+\begin{Statacode}{!echo,saveout,label=parta_premium}
+gen basePremium = 0.25 * mcare_pta
+gen ptaPremium = mcare_pta_premium_paid
+format basePremium ptaPremium %10.2f
+outsheet year basePremium ptaPremium if year >= 2010 using parta_premium.csv, comma replace
+\end{Statacode}
+\DTLloaddb[headers={Year,Base Premium,Average Premium}]{parta_premium}{parta_premium.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Part A Drop 3 Nominal and Average Part A Premiums}
+\DTLdisplaydb{parta_premium}
+\label{tab:parta_premium}
+\end{table}
+
+\begin{Statacode}{!echo,hide}
+use ../output/ACA/summary, clear
+\end{Statacode}
+Here is the code for calculating the deviation:
+\begin{Statacode}{!echo,hide}
+gen base_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen base_a_mean = mcare_pta - mcare_pta_premium_paid
+gen base_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen base_d_mean = mcare_ptd
+gen base_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen base_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen base_d_enrl = ttl_mcare_ptd_enroll * 1e6
+gen base_ttl_a = ttl_mcare_pta * 1e9 - ttl_mcare_pta_premium * 1e9
+gen base_ttl_b = ttl_mcare_ptb * 1e9 - ttl_mcare_ptb_premium * 1e9
+gen base_ttl_d = ttl_mcare_ptd * 1e9
+keep year base_*
+sort year
+merge year using ../output/partA.drop03/summary
+gen drop_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen drop_a_mean = mcare_pta - mcare_pta_premium_paid
+gen drop_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen drop_d_mean = mcare_ptd
+gen drop_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen drop_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen drop_d_enrl = ttl_mcare_ptd_enroll * 1e6
+tsset year
+tsfill
+foreach v of varlist base_* drop_* pop_medicare {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+gen baseline = base_ttl / 1e9
+gen dropCost = drop_ttl / 1e9
+gen enrollment_deviation = (base_ttl_a * (drop_a_enrl - base_a_enrl)/base_a_enrl + base_ttl_b * (drop_b_enrl - base_b_enrl)/base_b_enrl + base_ttl_d * (drop_d_enrl - base_d_enrl)/base_d_enrl) / 1e9
+gen outlay_deviation = (base_a_enrl * (drop_a_mean - base_a_mean) + base_b_enrl * (drop_b_mean - base_b_mean) + base_d_enrl * (drop_d_mean - base_d_mean)) / 1e9
+replace baseline = baseline * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace dropCost = dropCost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace enrollment_deviation = enrollment_deviation * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace outlay_deviation = outlay_deviation * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+* $$ syntax highlighting fix
+gen cBaseline = sum(baseline) if year >= 2010
+gen cDropCost = sum(dropCost) if year >= 2010
+gen enrollment = sum(enrollment_deviation) if year >= 2010
+gen outlay = sum(outlay_deviation) if year >= 2010
+format cBaseline enrollment outlay %10.2f
+outsheet year cBaseline cDropCost enrollment outlay using parta_deviation.csv if year >= 2010, comma replace
+\end{Statacode}
+\DTLloaddb[headers={Year,Real Dollars Cost,Drop 03,Enrollment Deviation,Enrollee Outlay Deviation}]{parta_deviation}{parta_deviation.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Deviation of Total Medicare Costs for Drop 03 from ACA (Net Present Value in Billions of 2010 Dollars)}
+\DTLdisplaydb{parta_deviation}
+\label{tab:parta_deviation}
+\end{table}
+
+\section{Impact of Sliding Scale on Part B}
+
+Since Medicare Part B already has a premium, we don't need to make any assumptions about people dropping when a change is introduced, we can just use the elasticity directly. The current ACA plan is to keep the premium thresholds in nominal dollars. We also ran two scenarios with thresholds in real dollars (2010) and with no thresholds where everyone not exempt pays the same premium (25\%).
+
+
+Figure~\ref{fig:partB_enrollment} shows the change in enrollment fraction and Figure~\ref{fig:partB_cost} shows the change in net costs. Since the 25\% premium is a continuation of previous policy, it is not surprising that enrollment continues relatively flat. The initial large discrepancy between real and nominal dollar thresholds is due to higher average premiums under the nominal dollar scheme as shown in Figure~\ref{fig:partB_premium}. The convergence is due to the lowest threshold falling below the exemption threshold.
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=partB_enrollment}
+use ../output/ACA/summary, clear
+gen base = ttl_mcare_ptb_enroll
+keep year base
+label variable base "ACA"
+merge year using ../output/partB.25percent/summary
+gen p25 = ttl_mcare_ptb_enroll
+label variable p25 "Part B 25 Percent"
+keep year base p25
+sort year
+merge year using ../output/partB.real.dollars/summary
+gen real = ttl_mcare_ptb_enroll
+label variable real "Part B Real Dollars"
+keep year base p25 real
+sort year
+merge year using ../output/partB.nominal.dollars/summary
+gen nominal = ttl_mcare_ptb_enroll
+label variable nominal "Part B Nominal Dollars"
+twoway connected base nominal real p25 year if year >= 2010, legend(cols(1)) yscale(axis(1) titlegap(*2)) ytitle("Number of Persons Enrolled (Millions)")
+outsheet year base nominal real using partB_enrollment.csv, comma replace
+\end{Statacode}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=partB_cost}
+use ../output/ACA/summary, clear
+gen base = ttl_mcare_ptb - ttl_mcare_ptb_premium
+label variable base "ACA"
+keep year base
+merge year using ../output/partB.25percent/summary
+gen p25 = ttl_mcare_ptb - ttl_mcare_ptb_premium
+label variable p25 "Part B 25 Percent"
+keep year base p25
+sort year
+merge year using ../output/partB.real.dollars/summary
+gen real = ttl_mcare_ptb - ttl_mcare_ptb_premium
+label variable real "Part B Real Dollars"
+keep year base p25 real
+sort year
+merge year using ../output/partB.nominal.dollars/summary
+gen nominal = ttl_mcare_ptb - ttl_mcare_ptb_premium
+label variable nominal "Part B Nominal Dollars"
+twoway connected base nominal real p25 year if year >= 2010, legend(cols(1)) yscale(axis(1) titlegap(*2)) ytitle("Billions of 2010 Dollars")
+outsheet year base nominal real p25 using partB_cost.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{partB_enrollment}
+\caption{Medicare Part B Enrollment}
+\label{fig:partB_enrollment}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{partB_cost}
+\caption{Medicare Part B Net Cost (excluding payroll tax revenue)}
+\label{fig:partB_cost}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,saveout,label=partb_c_cost}
+tsset year
+tsfill
+foreach v in base p25 real nominal {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+replace base = base * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace p25 = p25 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace nominal = nominal * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace real = real * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+gen c_base = sum(base)  if year >= 2010
+gen c_p25 = sum(p25) if year >= 2010
+gen c_real = sum(real) if year >= 2010
+gen c_nominal = sum(nominal) if year >= 2010
+gen diffP25 = c_p25 - c_base
+gen diffReal = c_real - c_base
+gen diffNominal = c_nominal - c_base
+global vlist diffP25 diffReal diffNominal
+format c_base $vlist %10.2f
+outsheet year c_base $vlist if year >= 2010 using partb_c_cost.csv, comma replace
+\end{Statacode}
+\DTLloaddb[headers={Year,ACA,25\% Premium,Real Dollar Thresholds,Nominal Dollar Thresholds}]{partb_c_cost}{partb_c_cost.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Net Present Value of Part B Options Less Net Present Value of ACA Part B (Billions 2010 Dollars)}
+\DTLdisplaydb{partb_c_cost}
+\label{tab:partb_c_cost}
+\end{table}
+
+\begin{Statacode}{!echo,hide}
+use ../output/partB.25percent/summary, clear
+twoway connected mcare_ptb_enroll5564 mcare_ptb_enroll6569 mcare_ptb_enroll7074 mcare_ptb_enroll7579 mcare_ptb_enroll80pp year if year >= 2010, yscale(titlegap(*2)) ytitle("Fraction of Eligible Enrolled") legend(cols(1))
+\end{Statacode}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=premium_summary}
+use ../output/ACA/summary, clear
+gen baseB = mcare_ptb_premium_paid
+label variable baseB "ACA"
+keep year baseB
+sort year
+merge year using ../output/partB.real.dollars/summary
+gen real = mcare_ptb_premium_paid
+label variable real "Part B Real Dollars"
+keep year baseB real
+sort year
+merge year using ../output/partB.25percent/summary
+gen partB25 = mcare_ptb_premium_paid
+label variable partB25 "Part B 25 Percent"
+keep year baseB real partB25
+sort year
+merge year using ../output/partB.nominal.dollars/summary
+gen nominal = mcare_ptb_premium_paid
+label variable nominal "Part B Nominal Dollars"
+twoway connected baseB real nominal partB25 year if year >= 2010, legend(cols(1)) ytitle("Yearly Premium in 2010 Dollars")
+outsheet year baseB real nominal partB25 using  premium_summary.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{premium_summary}
+\caption{Average Part B Premium Paid}
+\label{fig:partB_premium}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=partB_elasticity}
+use ../output/ACA/summary, clear
+gen base = ttl_mcare_ptb_enroll
+label variable base "ACA"
+keep base year
+sort year
+merge year using ../output/mcare.0elas/summary
+gen zero = ttl_mcare_ptb_enroll
+label variable zero "Zero Elasticity"
+keep base zero year
+sort year
+merge year using ../output/mcare.neg2elas/summary
+gen neg2 = ttl_mcare_ptb_enroll
+label variable neg2 "-0.2 Elasticity"
+keep base zero neg2 year
+sort year
+merge year using ../output/mcare.neg5elas/summary
+gen neg5 = ttl_mcare_ptb_enroll
+label variable neg5 "-0.5 Elasticity"
+twoway connected zero neg2 base neg5 year if year >= 2010, legend(cols(1)) ytitle("Number of Enrolled (Millions)")
+outsheet year zero neg2 base neg5 using partB_elasticity.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{partB_elasticity}
+\caption{Effect of Elasticity on Part B Enrollment}
+\end{figure}
+
+
+\begin{Statacode}{!echo,hide}
+use ../output/partB.real.dollars/summary, clear
+\end{Statacode}
+\begin{Statacode}{!echo,hide}
+gen real_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen real_a_mean = mcare_pta - mcare_pta_premium_paid
+gen real_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen real_d_mean = mcare_ptd
+gen real_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen real_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen real_d_enrl = ttl_mcare_ptd_enroll * 1e6
+keep year real_*
+sort year
+merge year using ../output/ACA/summary
+gen aca_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen aca_a_mean = mcare_pta - mcare_pta_premium_paid
+gen aca_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen aca_d_mean = mcare_ptd
+gen aca_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen aca_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen aca_d_enrl = ttl_mcare_ptd_enroll * 1e6
+gen aca_ttl_a = ttl_mcare_pta * 1e9 - ttl_mcare_pta_premium * 1e9
+gen aca_ttl_b = ttl_mcare_ptb * 1e9 - ttl_mcare_ptb_premium * 1e9
+gen aca_ttl_d = ttl_mcare_ptd * 1e9
+keep year real_* aca_*
+sort year
+merge year using ../output/partB.nominal.dollars/summary
+gen nomin_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen nomin_a_mean = mcare_pta - mcare_pta_premium_paid
+gen nomin_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen nomin_d_mean = mcare_ptd
+gen nomin_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen nomin_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen nomin_d_enrl = ttl_mcare_ptd_enroll * 1e6
+tsset year
+tsfill
+foreach v of varlist real_* aca_* nomin_* {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+gen realCost = real_ttl / 1e9
+gen acaCost = aca_ttl / 1e9
+gen nominCost = nomin_ttl / 1e9
+gen enrollment_real = (aca_ttl_a * (real_a_enrl - aca_a_enrl)/aca_a_enrl + aca_ttl_b * (real_b_enrl - aca_b_enrl)/aca_b_enrl + aca_ttl_d * (real_d_enrl - aca_d_enrl)/aca_d_enrl) / 1e9
+gen outlay_real = (aca_a_enrl * (real_a_mean - aca_a_mean) + aca_b_enrl * (real_b_mean - aca_b_mean) + aca_d_enrl * (real_d_mean - aca_d_mean)) / 1e9
+gen enrollment_nomin = (aca_ttl_a * (nomin_a_enrl - aca_a_enrl)/aca_a_enrl + aca_ttl_b * (nomin_b_enrl - aca_b_enrl)/aca_b_enrl + aca_ttl_d * (nomin_d_enrl - aca_d_enrl)/aca_d_enrl) / 1e9
+gen outlay_nomin = (aca_a_enrl * (nomin_a_mean - aca_a_mean) + aca_b_enrl * (nomin_b_mean - aca_b_mean) + aca_d_enrl * (nomin_d_mean - aca_d_mean)) / 1e9
+replace realCost = realCost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace acaCost = acaCost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace nominCost = nominCost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace enrollment_real = enrollment_real * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace outlay_real = outlay_real * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace enrollment_nomin = enrollment_nomin * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace outlay_nomin = outlay_nomin * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+* $ fix syntax highlighting
+gen cReal = sum(realCost) if year >= 2010
+gen cACA = sum(acaCost) if year >= 2010
+gen cNomin = sum(nominCost) if year >= 2010
+gen cummEnrollmentReal = sum(enrollment_real) if year >= 2010
+gen cummOutlayReal = sum(outlay_real) if year >= 2010
+gen cummEnrollmentNominal = sum(enrollment_nomin) if year >= 2010
+gen cummOutlayNominal = sum(outlay_nomin) if year >= 2010
+global vlist cACA  cReal cummEnrollmentReal cummOutlayReal cNomin cummEnrollmentNominal cummOutlayNominal 
+format $vlist %10.2f
+outsheet year $vlist using partb_deviation.csv if year >= 2010, comma replace
+\end{Statacode}
+\DTLloaddb[headers={Year,\shortstack{ACA\\Cost},\shortstack{Real\\Dollars\\Cost},\shortstack{Real\\Dollars\\Enrollment\\Deviation}, \shortstack{Real\\Dollars\\Enrollee\\Outlay\\Deviation}, \shortstack{Nominal\\Dollars\\Cost},\shortstack{Nominal\\Dollars\\Enrollment\\Deviation}, \shortstack{Nominal\\Dollars\\Enrollee\\Outlay\\Deviation}}]{partb_deviation}{partb_deviation.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Deviation of Total Medicare Costs from ACA (Net Present Value in Billions of 2010 Dollars)}
+\DTLdisplaydb{partb_deviation}
+\label{tab:partb_deviation}
+\end{table}
+
+\section{Medicare Vouchers can Save Money}
+
+The analysis here assumes that the government will issue vouchers whose value will grow at a rate different from the Medicare cost growth rate. The difference between the cost of vouchers and the projected cost of Medicare would be the savings (or loss) to the government. In the base scenario, there are no vouchers and Medicare costs grow as expected. The first voucher scenario grows at the rate of GDP (normalized by labor-force growth). The second scenario grows at GDP plus 1\%. Results are shown in Figure~\ref{fig:vouchers}.
+
+The GDP plus 1\% scenario is more expensive in the out years because the Medicare cost growth is projected to fall below GDP+1\% by 2034 and to stay below until the end of the simulation period. In the near term, either voucher scenario will save money since Medicare costs are rising at about 1.5\% above GDP.
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=voucher_a_enroll}
+use ../output/ACA/summary, clear
+rename ttl_mcare_pta_enroll base
+label variable base "ACA Part A Enrollment"
+keep year base
+merge year using ../output/voucher.gdp/summary
+rename ttl_mcare_pta_enroll gdp
+label variable gdp "GDP Part A Enrollment"
+sort year
+keep year base gdp
+merge year using ../output/voucher.gdp.plus1/summary
+rename ttl_mcare_pta_enroll plus1
+label variable plus1 "GDP Plus 1 Part A Enrollment"
+keep year base gdp plus1
+merge year using ../output/voucher.cpi/summary, sort
+rename ttl_mcare_pta_enroll cpi
+label variable cpi "CPI Part A Enrollment"
+twoway connected base gdp cpi year if year >= 2010, yscale(titlegap(*2)) ytitle("Number Enrolled (Millions) in Part A") legend(cols(1))
+outsheet year base gdp plus1 cpi using voucher_a_enroll.csv, comma replace
+\end{Statacode}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=voucher_b_enroll}
+use ../output/ACA/summary, clear
+rename ttl_mcare_ptb_enroll base
+label variable base "ACA Part B Enrollment"
+keep year base
+merge year using ../output/voucher.gdp/summary
+rename ttl_mcare_ptb_enroll gdp
+label variable gdp "GDP Part B Enrollment"
+sort year
+keep year base gdp
+merge year using ../output/voucher.gdp.plus1/summary
+rename ttl_mcare_ptb_enroll plus1
+label variable plus1 "GDP Plus 1 Part B Enrollment"
+keep year base gdp plus1
+merge year using ../output/voucher.cpi/summary, sort
+rename ttl_mcare_ptb_enroll cpi
+label variable cpi "CPI Part B Enrollment"
+twoway connected base gdp cpi year if year >= 2010, yscale(titlegap(*2)) ytitle("Number Enrolled (Millions) in Part B") legend(cols(1))
+outsheet year base gdp plus1 cpi using voucher_b_enroll.csv, comma replace
+\end{Statacode}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=vouchers}
+use ../output/ACA/summary, clear
+gen base_medicare = ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium
+keep year base_medicare
+label variable base_medicare "ACA"
+merge year using ../output/voucher.gdp/summary
+sort year
+gen gdp_medicare = ttl_mcare_pta_subsidy + ttl_mcare_ptb_subsidy + ttl_mcare_ptd
+replace gdp_medicare = ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium if year < 2012
+label variable gdp_medicare "Vouchers GDP"
+keep year base_medicare gdp_medicare
+merge year using ../output/voucher.gdp.plus1/summary
+gen plus1_medicare = ttl_mcare_pta_subsidy + ttl_mcare_ptb_subsidy + ttl_mcare_ptd
+replace plus1_medicare = ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium if year < 2012
+label variable plus1_medicare "Vouchers GDP+1"
+keep year base gdp plus1
+merge year using ../output/voucher.cpi/summary, sort
+gen cpi_medicare = ttl_mcare_pta_subsidy + ttl_mcare_ptb_subsidy + ttl_mcare_ptd
+replace cpi_medicare = ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium if year < 2012
+label variable cpi_medicare "Vouchers CPI"
+twoway connected base_medicare gdp_medicare cpi_medicare year if year >= 2010, legend(cols(1)) yscale(axis(1) titlegap(*2)) ytitle("Total Medicare Cost (Billions of 2010 Dollars)")
+outsheet year base_medicare gdp_medicare plus1_medicare cpi_medicare using vouchers.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{vouchers}
+\caption{Comparison of Medicare Cost Growth with Vouchers - Long Term}
+\label{fig:vouchers}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{voucher_a_enroll}
+\caption{Number Enrolled in Part A Under Voucher Scenarios}
+\label{fig:voucher_enroll}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\recallfig{voucher_b_enroll}
+\caption{Number Enrolled in Part B Under Voucher Scenarios}
+\label{fig:voucher_enroll}
+\end{figure}
+
+
+\begin{Statacode}{!echo,hide,saveout,label=voucher_c_cost}
+tsset year
+tsfill
+foreach v in base_medicare gdp_medicare plus1_medicare {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+replace base_medicare = base_medicare * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace gdp_medicare = gdp_medicare * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace plus1_medicare = plus1_medicare * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+* $ for syntax highlights
+gen c_base = sum(base_medicare) if year >= 2010
+gen c_gdp = sum(gdp_medicare) if year >= 2010
+gen c_plus1 = sum(plus1_medicare) if year >= 2010
+gen diffGDP = c_gdp - c_base
+gen diffPlus1 = c_plus1 - c_base
+format c_base diffGDP diffPlus1 %10.2f
+outsheet year c_base diffGDP diffPlus1 if year >= 2010 using voucher_c_cost.csv, comma replace
+\end{Statacode}
+\DTLloaddb[headers={Year, ACA, GDP, GDP Plus 1\%}]{voucher_c_cost}{voucher_c_cost.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Net Present Value of Voucher Programs Less Net Present Value of ACA (Billions 2010 Dollars)}
+\DTLdisplaydb{voucher_c_cost}
+\label{tab:voucher_c_cost}
+\end{table}
+
+\begin{Statacode}{!echo,hide}
+use ../output/ACA/summary, clear
+\end{Statacode}
+\begin{Statacode}{!echo,hide}
+gen base_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen base_a_mean = mcare_pta - mcare_pta_premium_paid
+gen base_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen base_d_mean = mcare_ptd
+gen base_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen base_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen base_d_enrl = ttl_mcare_ptd_enroll * 1e6
+gen base_ttl_a = ttl_mcare_pta * 1e9 - ttl_mcare_pta_premium * 1e9
+gen base_ttl_b = ttl_mcare_ptb * 1e9 - ttl_mcare_ptb_premium * 1e9
+gen base_ttl_d = ttl_mcare_ptd * 1e9
+keep year base_*
+sort year
+merge year using ../output/voucher.gdp/summary
+gen gdp_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen gdp_a_mean = mcare_pta - mcare_pta_premium_paid
+gen gdp_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen gdp_d_mean = mcare_ptd
+gen gdp_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen gdp_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen gdp_d_enrl = ttl_mcare_ptd_enroll * 1e6
+keep year base_* gdp_*
+sort year
+merge year using ../output/voucher.gdp.plus1/summary
+gen plus_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen plus_a_mean = mcare_pta - mcare_pta_premium_paid
+gen plus_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen plus_d_mean = mcare_ptd
+gen plus_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen plus_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen plus_d_enrl = ttl_mcare_ptd_enroll * 1e6
+tsset year
+tsfill
+foreach v of varlist base_* gdp_* plus_* {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+gen baseline = base_ttl / 1e9
+gen gdpCost = gdp_ttl / 1e9
+gen plusCost = plus_ttl / 1e9
+gen enrollment_gdp = (base_ttl_a * (gdp_a_enrl - base_a_enrl)/base_a_enrl + base_ttl_b * (gdp_b_enrl - base_b_enrl)/base_b_enrl + base_ttl_d * (gdp_d_enrl - base_d_enrl)/base_d_enrl) / 1e9
+gen outlay_gdp = (base_a_enrl * (gdp_a_mean - base_a_mean) + base_b_enrl * (gdp_b_mean - base_b_mean) + base_d_enrl * (gdp_d_mean - base_d_mean)) / 1e9
+gen enrollment_plus = (base_ttl_a * (plus_a_enrl - base_a_enrl)/base_a_enrl + base_ttl_b * (plus_b_enrl - base_b_enrl)/base_b_enrl + base_ttl_d * (plus_d_enrl - base_d_enrl)/base_d_enrl) / 1e9
+gen outlay_plus = (base_a_enrl * (plus_a_mean - base_a_mean) + base_b_enrl * (plus_b_mean - base_b_mean) + base_d_enrl * (plus_d_mean - base_d_mean)) / 1e9
+replace baseline = baseline * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace gdpCost = gdpCost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace plusCost = plusCost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace enrollment_gdp = enrollment_gdp * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace outlay_gdp = outlay_gdp * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace enrollment_plus = enrollment_plus * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace outlay_plus = outlay_plus * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+* $ fix syntax highlighting
+gen cBaseline = sum(baseline) if year >= 2010
+gen cGDP = sum(gdpCost) if year >= 2010
+gen cPlus = sum(plusCost) if year >= 2010
+gen cummEnrollmentGDP = sum(enrollment_gdp) if year >= 2010
+gen cummOutlayGDP = sum(outlay_gdp) if year >= 2010
+gen cummEnrollmentPlusal = sum(enrollment_plus) if year >= 2010
+gen cummOutlayPlusal = sum(outlay_plus) if year >= 2010
+global vlist cBaseline cGDP cummEnrollmentGDP cummOutlayGDP cPlus cummEnrollmentPlusal cummOutlayPlusal 
+format $vlist %10.2f
+outsheet year $vlist using voucher_deviation.csv if year >= 2010, comma replace
+\end{Statacode}
+\DTLloaddb[headers={Year,\shortstack{ACA\\Cost},\shortstack{GDP\\Cost},\shortstack{GDP\\Enrollment\\Deviation}, \shortstack{GDP\\Enrollee\\Outlay\\Deviation}, \shortstack{Plus 1\\Cost},\shortstack{Plus 1\\Enrollment\\Deviation}, \shortstack{Plus 1\\Enrollee\\Outlay\\Deviation}}]{voucher_deviation}{voucher_deviation.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Deviation of Voucher Scenario Total Medicare Costs from ACA (Net Present Value in Billions of 2010 Dollars)}
+\DTLdisplaydb{voucher_deviation}
+\label{tab:voucher_deviation}
+\end{table}
+
+\section{Increasing Eligibility Age Reduces Total Cost and Enrollment}
+
+Figure~\ref{fig:age_enroll} shows the number of people eligible for Medicare under three different age-based criteria.
+Figure~\ref{fig:age_cost} shows that this decline in enrollment produces the expected decline in total cost, but Figure~\ref{fig:age_average} shows that the average cost per enrollee is higher, due to the elderly requiring more medical care per person.
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=age_enroll}
+use ../output/ACA/summary, clear
+rename pop_medicare base
+label variable base "ACA"
+keep year base
+merge year using ../output/elig.age67/summary
+rename pop_medicare age67
+label variable age67 "Eligibility Age 67"
+sort year
+keep year base age67
+merge year using ../output/elig.age70/summary
+rename pop_medicare age70
+label variable age70 "Eligibility Age 70"
+twoway connected base age67 age70 year if year >= 2010, yscale(titlegap(*2)) ytitle("Millions Eligible for Medicare") legend(cols(1))
+outsheet year base age67 age70 using age_enroll.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{age_enroll}
+\caption{Medicare-eligigble population after raising eligibility age}
+\label{fig:age_enroll}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=age_cost}
+use ../output/ACA/summary, clear
+gen base = ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium
+label variable base "ACA"
+keep year base
+merge year using ../output/elig.age67/summary
+gen age67 = ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium
+label variable age67 "Eligibility Age 67"
+keep base age67 year
+sort year
+merge year using ../output/elig.age70/summary
+gen age70 = ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium
+label variable age70 "Eligibility Age 70"
+twoway connected base age67 age70 year if year >= 2010, yscale(titlegap(*2)) ytitle("Total Medicare Cost (Billions of 2010 Dollars)") legend(cols(1))
+outsheet year base age67 age70 using age_cost.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{age_cost}
+\caption{Total Medicare Costs Fall when Eligibility Rises}
+\label{fig:age_cost}
+\end{figure}
+
+\begin{Statacode}{!echo,hide,saveout,label=age_c_cost}
+tsset year
+tsfill
+foreach v in base age67 age70 {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+replace base = base * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace age67 = age67 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace age70 = age70 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+* $ fix syntax highlighting
+gen c_base = sum(base) if year >= 2010
+gen c_age67 = sum(age67) if year >= 2010
+gen c_age70 = sum(age70) if year >= 2010
+gen diffAge67 = c_age67 - c_base
+gen diffAge70 = c_age70 - c_base
+global vlist c_base diffAge67 diffAge70
+format $vlist %10.2f
+outsheet year $vlist if year >= 2010 using age_c_cost.csv, replace comma
+\end{Statacode}
+\DTLloaddb[headers={Year, ACA, Eligibility Age 67, Eligibility Age 70}]{age_c_cost}{age_c_cost.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Net Present Value of Eligibility Age Options Less Net Present Value of ACA (Billions of 2010 Dollars)}
+\DTLdisplaydb{age_c_cost}
+\label{tab:age_c_cost}
+\end{table}
+
+\begin{Statacode}{!echo,hide,fig,savefig,label=age_average}
+use ../output/ACA/summary, clear
+gen base = ttl_mcare/pop_medicare
+label variable base "ACA"
+keep year base
+merge year using ../output/elig.age67/summary
+gen age67 = ttl_mcare/pop_medicare
+label variable age67 "Eligibility Age 67"
+keep base age67 year
+sort year
+merge year using ../output/elig.age70/summary
+gen age70 = ttl_mcare/pop_medicare
+label variable age70 "Eligibility Age 70"
+twoway connected base age67 age70 year if year >= 2010, yscale(titlegap(*2)) ytitle("Medicare Cost per Enrollee (2010 Dollars)") legend(cols(1))
+outsheet year base age67 age70 using age_average.csv, comma replace
+\end{Statacode}
+
+\begin{figure}[ht]
+\centering
+\recallfig{age_average}
+\caption{Average Medicare Costs Rise when Eligibility Age Rises}
+\label{fig:age_average}
+\end{figure}
+
+\begin{Statacode}{!echo,hide}
+use ../output/ACA/summary, clear
+\end{Statacode}
+\begin{Statacode}{!echo,hide}
+gen base_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen base_a_mean = mcare_pta - mcare_pta_premium_paid
+gen base_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen base_d_mean = mcare_ptd
+gen base_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen base_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen base_d_enrl = ttl_mcare_ptd_enroll * 1e6
+gen base_ttl_a = ttl_mcare_pta * 1e9 - ttl_mcare_pta_premium * 1e9
+gen base_ttl_b = ttl_mcare_ptb * 1e9 - ttl_mcare_ptb_premium * 1e9
+gen base_ttl_d = ttl_mcare_ptd * 1e9
+keep year base_*
+sort year
+merge year using ../output/elig.age67/summary
+gen a67_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen a67_a_mean = mcare_pta - mcare_pta_premium_paid
+gen a67_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen a67_d_mean = mcare_ptd
+gen a67_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen a67_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen a67_d_enrl = ttl_mcare_ptd_enroll * 1e6
+keep year base_* a67_*
+sort year
+merge year using ../output/elig.age70/summary
+gen a70_ttl = (ttl_mcare - ttl_mcare_pta_premium - ttl_mcare_ptb_premium) * 1e9
+gen a70_a_mean = mcare_pta - mcare_pta_premium_paid
+gen a70_b_mean = mcare_ptb - mcare_ptb_premium_paid
+gen a70_d_mean = mcare_ptd
+gen a70_a_enrl = ttl_mcare_pta_enroll * 1e6
+gen a70_b_enrl = ttl_mcare_ptb_enroll * 1e6
+gen a70_d_enrl = ttl_mcare_ptd_enroll * 1e6
+tsset year
+tsfill
+foreach v of varlist base_* a67_* a70_* {
+  ipolate `v' year if year >= 2010, gen(i`v')
+  replace `v' = i`v'
+}
+foreach v in "a_enrl" "b_enrl" "d_enrl" "a_mean" "b_mean" "d_mean" {
+  replace a67_`v' = base_`v' if year < 2014
+  replace a70_`v' = base_`v' if year < 2014
+} 
+gen baseline = base_ttl / 1e9
+gen a67Cost = a67_ttl / 1e9
+gen a70Cost = a70_ttl / 1e9
+gen enrollment_a67 = (base_ttl_a * (a67_a_enrl - base_a_enrl)/base_a_enrl + base_ttl_b * (a67_b_enrl - base_b_enrl)/base_b_enrl + base_ttl_d * (a67_d_enrl - base_d_enrl)/base_d_enrl) / 1e9
+gen outlay_a67 = (base_a_enrl * (a67_a_mean - base_a_mean) + base_b_enrl * (a67_b_mean - base_b_mean) + base_d_enrl * (a67_d_mean - base_d_mean)) / 1e9
+gen enrollment_a70 = (base_ttl_a * (a70_a_enrl - base_a_enrl)/base_a_enrl + base_ttl_b * (a70_b_enrl - base_b_enrl)/base_b_enrl + base_ttl_d * (a70_d_enrl - base_d_enrl)/base_d_enrl) / 1e9
+gen outlay_a70 = (base_a_enrl * (a70_a_mean - base_a_mean) + base_b_enrl * (a70_b_mean - base_b_mean) + base_d_enrl * (a70_d_mean - base_d_mean)) / 1e9
+replace baseline = baseline * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace a67Cost = a67Cost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace a70Cost = a70Cost * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace enrollment_a67 = enrollment_a67 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace outlay_a67 = outlay_a67 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace enrollment_a70 = enrollment_a70 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+replace outlay_a70 = outlay_a70 * 1/(1 + $discount_rate)^(year - 2010) if year > 2010
+* $ fix syntax highlighting
+gen cBaseline = sum(baseline) if year >= 2010
+gen cA67 = sum(a67Cost) if year >= 2010
+gen cA70 = sum(a70Cost) if year >= 2010
+gen cummEnrollmentA67 = sum(enrollment_a67) if year >= 2010
+gen cummOutlayA67 = sum(outlay_a67) if year >= 2010
+gen cummEnrollmentA70 = sum(enrollment_a70) if year >= 2010
+gen cummOutlayA70 = sum(outlay_a70) if year >= 2010
+global vlist cBaseline cA67 cummEnrollmentA67 cummOutlayA67 cA70 cummEnrollmentA70 cummOutlayA70
+format $vlist %10.2f
+outsheet year $vlist using age_deviation.csv if year >= 2010, comma replace
+\end{Statacode}
+
+\DTLloaddb[headers={Year,\shortstack{ACA\\Cost},\shortstack{Age 67\\Cost},\shortstack{Age 67\\Enrollment\\Deviation},\shortstack{Age 67\\Outlay\\Deviation},\shortstack{Age 70\\Cost},\shortstack{Age 70\\Enrollment\\Deviation},\shortstack{Age 70\\Outlay\\Deviation}}]{age_deviation}{age_deviation.csv}
+
+\begin{table}[ht]
+\centering
+\caption{Deviation of Total Medicare Costs from ACA (Net Present Value in Billions of 2010 Dollars)}
+\DTLdisplaydb{age_deviation}
+\label{tab:age_deviation}
+\end{table}
+
+\begin{Statacode}{!echo,hide}
+clear all
+\end{Statacode}
+
+\end{document}

@@ -1,0 +1,253 @@
+# These are our main configuration variables, like where data are stored
+export ROOT=$(CURDIR)
+DATADIR = $(CURDIR)/input_data
+BASEDIR = $(CURDIR)/base_data
+ESTIMATES = $(CURDIR)/FEM_Stata/Estimates
+ESTIMHRS = $(ESTIMATES)/HRS
+ESTIMPSID = $(CURDIR)/FEM_Stata/Estimates/PSID
+RESTIMATES = $(ESTIMATES)/restrictedvars
+
+include locale.makefile
+include graphviz.makefile
+include phony.makefile
+
+RANDHRS = $(HRSPUB)/RAND-HRS/rndhrs_$(RANDVER).dta
+RANDFAM = $(HRSPUB)/SAS/RANDFAM
+PSIDIND = $(PSIDPUB)/Sas/ind2015er.sas7bdat
+PSIDFAM = $(PSIDPUB)/Sas/fam2015er.sas7bdat
+
+UTILITIES = $(CURDIR)/FEM_Stata/utilities
+STATA = $(CURDIR)/run.stata15.sh 
+SAS = $(CURDIR)/run.sas.sh
+PYTHON = python
+SASSTAT=1
+
+# Control which years new 51s are generated for
+FYEAR=2010
+LYEAR=2080
+
+# Years of new 25 year olds to generate
+FYEAR_PSID = 2009
+LYEAR_PSID = 2051
+
+#  YEARS_PSID := $(shell seq 2009 2 2009)
+
+# The parameter that controls the number of copies of each individual is stored in
+# expansion.makefile
+include expansion.makefile
+
+# Check for restricted data
+#ifeq ($(findstring XSumErn.dta,$(wildcard $(HRSRESTRICT)/*.dta)), )
+#TRANSDATA=$(DATADIR)/hrs112_transition.dta
+#USERVARS=0
+#else
+#TRANSDATA=$(HRSDIR)/hrs112r_transition.dta
+#USERVARS=1
+#endif
+
+# Restricted data is not yet available, so estimate models on unrestricted
+TRANSFILE=hrs112_transition.dta
+TRANSDATA=$(DATADIR)/$(TRANSFILE)
+USERVARS=0
+
+# Check model specifications for compatibility with bootstrap draws (0=no, 1=yes)
+CHK_BOOTS=0
+
+# Auto-convert sas to stata when required
+$(DATADIR)/%.dta: $(DATADIR)/%.sas7bdat
+	st $< $@ -y
+
+# Auto-decompress large data files when necessary
+$(BASEDIR)/%: $(BASEDIR)/%.gz
+	gunzip -c $< > $@
+
+# Set up bootstrap options	
+include bootstrap.makefile 
+## list of bootstrap rep indices for HRS in HRS-based simulation
+BREPS := $(shell seq 1 1 $(N_HRS_BREPS))
+## lists of bootstrap rep indices for MCBS and MEPS data in HRS-based simulation
+HRS_MCBS_BREPS := $(shell seq 1 1 $(N_HRS_MCBS_BREPS))
+HRS_MEPS_BREPS := $(shell seq 1 1 $(N_HRS_MEPS_BREPS))
+## list of bootstrap rep indices for PSID in PSID-based simulation
+PSID_BREPS := $(shell seq 1 1 $(N_PSID_BREPS))
+## list of bootstrap rep indices for MCBS and MEPS data in PSID-based simulation
+PSID_MCBS_BREPS := $(PSID_BREPS)
+PSID_MEPS_BREPS := $(PSID_BREPS)
+
+
+include clean.makefile
+
+
+# Doxygen now looks at EVERYTHING, but is no longer undconditional
+SOURCES := $(shell find . -name bootstrap_logs -prune -o -name input_rep* -prune -o -name models_rep* -prune -o -name detailed_output -prune -o -iname "*.cpp" -or -iname "*.h" -or -iname "*.do" -or -iname "*.ado" -or -iname "*.ox" -or -iname "*.mata")
+doc/html/index.html: fem.dox $(SOURCES)
+	doxygen fem.dox
+
+include appendix.makefile
+
+## Rules for creating the FAM technical appendix. All the details are in an include file
+# TABLES=table1_1.csv table2_1.csv table9_1.csv table10_1.csv table10_2.csv table10_3.csv table10_4.csv table10_5.csv table10_6.csv table10_7.csv table10_8.csv table10_9.csv table10_10.csv table10_11.csv table10_12.csv table10_13.csv table10_14.csv table10_15.csv table10_16.csv 
+TABLES=table1_1.csv
+
+#  $(subst table,analysis/psid_techdoc/table, $(TABLES)) 
+# psid_appendix: analysis/techdoc/latex/FAM/FAM_techdoc.pdfanalysis/psid_techdoc/model_tables/estimates_psid.xml analysis/psid_techdoc/model_tables/cost_est_meps.xml analysis/psid_techdoc/model_tables/cost_est_mcbs.xml analysis/psid_techdoc/model_tables/earnings_estimates_psid.xml analysis/psid_techdoc/model_tables/PSID_ghreg_estimates.xml analysis/psid_techdoc/table12_1_unweighted.csv
+include psid_appendix.makefile
+
+## CPP Make
+include fem.makefile
+
+include meps.makefile
+include meps_estimation.makefile
+include mcbs.makefile
+include mcbs_estimation.makefile
+include nhis.makefile
+include cps.makefile
+include nhanes.makefile
+include acs.makefile
+include pop.makefile
+include hrs.makefile
+include hrs_estimation.makefile
+include hrs_bootstrap.makefile
+include simulations.makefile
+include ox.makefile
+include psid.makefile
+include psid_estimation.makefile
+include psid_bootstrap.makefile
+include ssa.makefile
+
+# Files to produce California-reweighted version of FEM
+include ca_fem.makefile
+
+## MATA
+## Sometimes, we need to recompile our Mata functions
+$(UTILITIES)/_getestimates.mo: $(UTILITIES)/_putestimates.mo
+$(UTILITIES)/_putestimates.mo: $(UTILITIES)/put_est.do
+	cd $(UTILITIES)&& $(STATA) put_est.do
+
+$(UTILITIES)/gsinh.mo $(UTILITIES)/ssr.mo $(UTILITIES)/betas.mo $(UTILITIES)/lnll_ahg.mo $(UTILITIES)/opti.mo $(UTILITIES)/lnuncll_ahg.mo $(UTILITIES)/opti_unc.mo: $(UTILITIES)/gsinhinv.mo
+$(UTILITIES)/gsinhinv.mo: $(UTILITIES)/create_mata_codes.do
+	cd $(UTILITIES) && $(STATA) create_mata_codes.do
+
+GHREG=$(UTILITIES)/ghreg.ado $(UTILITIES)/opti.mo $(UTILITIES)/opti_unc.mo
+
+$(ESTIMHRS)/models_rep%/estimates.txt: fem_env.do FEM_Stata/Estimation/init_transition.do $(UTILITIES)/takestring.ado FEM_Stata/Estimation/hrs_covariate_definitionsHRS.do $(DATADIR)/crossvalidation.dta FEM_Stata/Estimation/define_modelsHRS.do bootstrap.makefile $(DATADIR)/input_rep%/$(TRANSFILE)
+	cd FEM_Stata/Estimation && USERVARS=0 BREP=$* suffix=HRS $(STATA) init_transition.do
+$(ESTIMATES)/models_rep%/ghreg.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/ghreg_estimations.do $(UTILITIES)/takestring.ado FEM_Stata/Estimation/hrs_covariate_definitionsHRS.do FEM_Stata/Estimation/define_modelsHRS.do $(UTILITIES)/_gh.ado $(UTILITIES)/ghreg.ado $(UTILITIES)/_ggh.ado $(UTILITIES)/ghreg_p.ado $(UTILITIES)/opti_unc.mo 
+	cd FEM_Stata/Estimation && USERVARS=$(USERVARS) DATAIN=$(TRANSDATA) BREP=$* suffix=HRS $(STATA) ghreg_estimations.do
+$(ESTIMATES)/models_rep%/cost_est_mcbs.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/estimate_medcosts_mcbs.do $(MCBSDIR)/mcbs_cost_est.dta $(MCBSDIR)/mcbs_drugs.dta
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) estimate_medcosts_mcbs.do
+$(ESTIMATES)/models_rep%/mcare_ptd.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/MedicarePartD.do 
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) MedicarePartD.do
+$(ESTIMATES)/models_rep%/mcareb_init.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/InitMedicarePartBEnrollment.do
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) InitMedicarePartBEnrollment.do
+$(ESTIMATES)/models_rep%/mcare_takeup.txt: $(COMMON) fem_env.do  FEM_Stata/Estimation/MedicarePartBEnrollment.do
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) MedicarePartBEnrollment.do
+$(ESTIMATES)/models_rep%/cogstate_stock.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/cogstate_stock_6566.do 
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) cogstate_stock_6566.do
+$(ESTIMATES)/models_rep%/qaly.txt: fem_env.do FEM_Stata/Estimation/qaly_estimations.do 
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) qaly_estimations.do
+$(ESTIMATES)/models_rep%/cost_est_meps.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/estimate_medcosts_meps.do $(DATADIR)/MEPS_cost_est.dta $(DATADIR)/meps_drugs.dta
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) estimate_medcosts_meps.do
+
+# a bunch of intermediate files so that the bootstrap estimation doesn't have to restart at the beginning of the first rep after an error
+$(ESTIMHRS)/estimates_bootstrap.txt: $(addprefix $(ESTIMHRS)/models_rep, $(addsuffix /estimates.txt, $(BREPS))) 
+	touch $(ESTIMATES)/estimates_bootstrap.txt
+$(ESTIMHRS)/mcare_ptd_bootstrap.txt: $(addprefix $(ESTIMHRS)/models_rep, $(addsuffix /mcare_ptd.txt, $(BREPS)))
+	touch $(ESTIMATES)/mcare_ptd_bootstrap.txt
+$(ESTIMHRS)/mcareb_init_bootstrap.txt: $(addprefix $(ESTIMHRS)/models_rep, $(addsuffix /mcareb_init.txt, $(PSID_MCBS_BREPS))) 
+	touch $(ESTIMATES)/mcareb_init_bootstrap.txt
+$(ESTIMHRS)/mcare_takeup_bootstrap.txt: $(addprefix $(ESTIMHRS)/models_rep, $(addsuffix /mcare_takeup.txt, $(BREPS)))
+	touch $(ESTIMATES)/mcare_takeup_bootstrap.txt
+
+BEST := $(ESTIMHRS)/estimates_bootstrap.txt
+FEM_Stata/Makedata/HRS/bootstrap_estimates.txt: ${BEST}
+
+MEDBEST := $(addsuffix /cost_est_meps.txt, $(addprefix $(ESTIMHRS)/models_rep,${HRS_MEPS_BREPS})) $(addsuffix /cost_est_mcbs.txt, $(addprefix $(ESTIMHRS)/models_rep,${HRS_MCBS_BREPS})) $(ESTIMHRS)/mcare_ptd_bootstrap.txt $(ESTIMHRS)/mcareb_init_bootstrap.txt $(ESTIMHRS)/mcare_takeup_bootstrap.txt
+FEM_Stata/Makedata/HRS/bootstrap_mcbs_estimates.txt: ${MEDBEST}
+
+estimation_bootstrap_cpp:
+	cd FEM_Stata/Estimation && datain=$(ESTIMHRS) dataout=$(ROOT)/FEM_CPP_settings/hrs/models MAXBREP=${MAXBREPS} $(STATA) save_est_cpp_bootstrap.do
+
+
+$(ESTIMPSID)/models_rep%/psid_estimates.txt: fem_env.do FEM_Stata/Estimation/PSID_transition.do $(TRANSDATA) $(UTILITIES)/takestring.ado FEM_Stata/Estimation/psid_covariate_definitions.do $(DATADIR)/psid_crossvalidation.dta FEM_Stata/Estimation/psid_define_models.do bootstrap.makefile $(DATADIR)/input_rep%/psid_transition.dta $(ESTIMPSID)/models_rep%
+	cd FEM_Stata/Estimation && USERVARS=0 BREP=$* $(STATA) PSID_transition.do
+$(ESTIMPSID)/models_rep%/lniearn_nl.ster: FEM_Stata/Estimation/psid_earnings.do $(DATADIR)/psid_transition.dta FEM_Stata/Estimation/psid_covariate_definitions.do FEM_Stata/Estimation/psid_define_models.do $(DATADIR)/input_rep%/psid_transition.dta $(ESTIMPSID)/models_rep%
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) psid_earnings.do	
+$(ESTIMPSID)/models_rep%/psid_cost_est_mcbs.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/PSID_estimate_medcosts_mcbs.do $(MCBSDIR)/mcbs_cost_est.dta
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) PSID_estimate_medcosts_mcbs.do
+$(ESTIMPSID)/models_rep%/psid_cost_est_meps.txt: $(COMMON) fem_env.do FEM_Stata/Estimation/PSID_estimate_medcosts_meps.do $(DATADIR)/MEPS_cost_est.dta $(DATADIR)/meps_drugs.dta
+	cd FEM_Stata/Estimation && BREP=$* $(STATA) PSID_estimate_medcosts_meps.do
+$(ESTIMPSID)/models_rep%/qaly.ster: FEM_Stata/Estimation/PSID_qaly_estimations.do FEM_Stata/Estimation/PSID_qaly_covariate_defs.do $(DATADIR)/MEPS_EQ5D.dta $(DATADIR)/psid_analytic.dta $(DATADIR)/MEPS_cost_est.dta $(DATADIR)/input_rep%/psid_transition.dta
+	cd FEM_Stata/Estimation && PSID_BREP=$* $(STATA) PSID_qaly_estimations.do
+$(ESTIMPSID)/models_rep%/hatota.ster: FEM_Stata/Estimation/PSID_ghreg_estimations.do $(DATADIR)/input_rep%/psid_transition.dta $(UTILITIES)/opti.mo FEM_Stata/Estimation/psid_covariate_definitions.do FEM_Stata/Estimation/psid_define_models.do
+	cd FEM_Stata/Estimation/ && BREP=$* $(STATA) PSID_ghreg_estimations.do	
+
+# a bunch of intermediate files so that the bootstrap estimation doesn't have to restart at the beginning of the first rep after an error
+$(ESTIMPSID)/psid_cost_est_meps_bootstrap.txt: $(addprefix $(ESTIMPSID)/models_rep, $(addsuffix /psid_cost_est_meps.txt, $(PSID_MEPS_BREPS))) 
+	touch $(ESTIMPSID)/psid_cost_est_meps_bootstrap.txt
+$(ESTIMPSID)/psid_estimates_bootstrap.txt: $(addprefix $(ESTIMPSID)/models_rep, $(addsuffix /psid_estimates.txt, $(PSID_BREPS))) 
+	touch $(ESTIMPSID)/psid_estimates_bootstrap.txt
+$(ESTIMPSID)/psid_cost_est_mcbs_bootstrap.txt: $(addprefix $(ESTIMPSID)/models_rep, $(addsuffix /psid_cost_est_mcbs.txt, $(PSID_MCBS_BREPS))) 
+	touch $(ESTIMPSID)/psid_cost_est_mcbs_bootstrap.txt
+$(ESTIMPSID)/psid_ghreg_bootstrap.txt: $(addprefix $(ESTIMPSID)/models_rep, $(addsuffix /hatota.ster, $(PSID_BREPS))) 
+	touch $(ESTIMPSID)/psid_ghreg_bootstrap.txt
+$(ESTIMPSID)/psid_qaly_bootstrap.txt: $(addprefix $(ESTIMPSID)/models_rep, $(addsuffix /qaly.ster, $(PSID_BREPS))) 
+	touch $(ESTIMPSID)/psid_qaly_bootstrap.txt
+$(ESTIMPSID)/psid_earnings_bootstrap.txt: $(addprefix $(ESTIMPSID)/models_rep, $(addsuffix /lniearn_nl.ster, $(PSID_BREPS))) 
+	touch $(ESTIMPSID)/psid_earnings_bootstrap.txt
+
+
+
+PSID_BEST := $(ESTIMPSID)/psid_estimates_bootstrap.txt $(ESTIMPSID)/psid_qaly_bootstrap.txt $(ESTIMPSID)/psid_ghreg_bootstrap.txt $(ESTIMPSID)/psid_earnings_bootstrap.txt
+FEM_Stata/Makedata/PSID/bootstrap_estimates.txt: ${PSID_BEST}
+
+PSID_MEDBEST := $(ESTIMPSID)/psid_cost_est_meps_bootstrap.txt $(ESTIMPSID)/psid_cost_est_mcbs_bootstrap.txt $(ESTIMATES)/mcare_ptd_bootstrap.txt $(ESTIMATES)/mcareb_init_bootstrap.txt  $(ESTIMATES)/mcare_takeup_bootstrap.txt
+FEM_Stata/Makedata/PSID/bootstrap_mcbs_estimates.txt: ${PSID_MEDBEST}
+
+estimate_psid_bootstrap_cpp: $(PSID_BS_ESTDIRS)
+	cd FEM_Stata/Estimation && datain=$(ESTIMPSID) dataout=$(ROOT)/FEM_CPP_settings/psid/models MAXBREP=${N_PSID_BREPS} $(STATA) save_est_cpp_bootstrap.do
+
+## Summary Output Generation script
+summary_output: 
+	cd FEM_CPP_settings/ && $(STATA) summary_output_gen.do
+## Make mortality assumptions files
+mort_assumptions: $(COMMON)
+	cd FEM_Stata/Input_yh/mortality_assumptions && $(STATA) mortality_assumptions_any_start_year.do
+survival:
+	cd FEM_Stata/Estimation && $(STATA) survival.do
+
+# PSID technical appendix/validation simulations	
+# For some reason, the Makefile cannot use the run.mpi.sh script properly
+output/psid_minimal/psid_minimal_summary.dta: output/psid_baseline/psid_baseline_summary.dta 
+output/psid_baseline/psid_baseline_summary.dta: $(DATADIR)/stock_psid_2009.dta $(DATADIR)/new25s_default.dta FEM_CPP_settings/summary_output_psid_validation.txt FEM psid_validation.settings.txt psid_validation.csv
+	rm -Rf output/psid_baseline output/psid_minimal
+	mpiexec -n 5 ./FEM psid_validation.settings.txt	
+
+
+## Save Medicare premiums for use in cohort scenarios
+mcare_premiums: output/example_stock/example_stock_summary.dta analysis/save_premiums.do
+	cd analysis && $(STATA) save_premiums.do
+
+
+# This target is for the joint SSA models - estimated on 2004 data, for use imputing SSA variables for 2010 stock and all new51 populations.  These estimates will be committed so that everyone doesn't have to run the joint estimation (it is slow).
+#### Start of conditional check for restricted data
+ifneq ($(findstring XSumErn.dta,$(wildcard $(HRSRESTRICT)/*.dta)), )
+
+ssa_estimation: $(RESTIMATES)/ssa_means.dta $(RESTIMATES)/ssa_vcmatrix.dta $(RESTIMATES)/ssa_cut_points.dta $(RESTIMATES)/ssa_dist.dta $(RESTIMATES)/ret/ssa_means.dta $(RESTIMATES)/ret/ssa_dist.dta $(RESTIMATES)/ret/ssa_cut_points.dta $(RESTIMATES)/notret/ssa_means.dta $(RESTIMATES)/notret/ssa_dist.dta $(RESTIMATES)/notret/ssa_cut_points.dta $(RESTIMATES)/notret/ssa_vcmatrix.dta $(RESTIMATES)/ret/ssa_vcmatrix.dta
+
+## Models for 50-55 year olds (used for replenishing cohorts)
+$(RESTIMATES)/ssa_means.dta $(RESTIMATES)/ssa_dist.dta $(RESTIMATES)/ssa_cut_points.dta: $(RESTIMATES)/ssa_vcmatrix.dta
+$(RESTIMATES)/ssa_vcmatrix.dta: $(COMMON) $(HRSDIR)/age5055_hrs2004r.dta FEM_Stata/Estimation/ssa_age5055.do
+	cd FEM_Stata/Estimation	&& $(STATA) ssa_age5055.do
+
+## Models for 50 and older (used for stock population)
+$(RESTIMATES)/ret/ssa_means.dta $(RESTIMATES)/ret/ssa_dist.dta $(RESTIMATES)/ret/ssa_cut_points.dta $(RESTIMATES)/notret/ssa_means.dta $(RESTIMATES)/notret/ssa_dist.dta $(RESTIMATES)/notret/ssa_cut_points.dta $(RESTIMATES)/notret/ssa_vcmatrix.dta: $(RESTIMATES)/ret/ssa_vcmatrix.dta
+$(RESTIMATES)/ret/ssa_vcmatrix.dta: $(COMMON) $(HRSDIR)/all2004r.dta FEM_Stata/Estimation/ssa_age50p.do
+	cd FEM_Stata/Estimation && $(STATA) ssa_age50p.do	
+endif
+#### End of conditional check for restricted data
+
+
+$(DATADIR)/brfss.dta: FEM_Stata/Makedata/BRFSS/process_BRFSS.do
+	cd FEM_Stata/Makedata/BRFSS && $(STATA) process_BRFSS.do
+
