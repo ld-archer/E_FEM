@@ -1,0 +1,35 @@
+probit
+deprsymp
+black	.0584322
+hispan	.2904111
+hsless	.2385857
+college	-.1687382
+male	-.2159246
+male_hsless	-.1128587
+male_black	.0094322
+male_hispan	-.054295
+l2age65l	-.0132163
+l2age6574	-.0024979
+l2age75p	-.0030553
+l2hearta	.2268265
+l2iadl1	.4124887
+l2iadl2p	.5393062
+l2adl1	.4736746
+l2adl2	.6637439
+l2adl3p	.7826249
+l2smoken	.201415
+l2widowed	.0706602
+fheart50	.2283149
+fstrok50	-.1029585
+fcanc50	.1332304
+fhibp50	.0030673
+fdiabe50	.1489707
+flung50	.0749236
+fsmokev	.0580719
+fsmoken50	.0831486
+l2logbmi_l30	-.2132059
+l2logbmi_30p	.1503075
+flogbmi50_l30	.2342762
+flogbmi50_30p	.3404464
+logdeltaage	.1124729
+_cons	-.8748405

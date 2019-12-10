@@ -1,0 +1,47 @@
+regress
+hicap
+black	-6321.102
+hispan	82.28069
+hsless	6756.867
+college	11565.62
+male	3445.932
+male_hsless	-3243.731
+male_black	1279.859
+male_hispan	-2163.081
+l2a6	-702.8873
+l2a7	-302.5396
+l2a7p	62.24984
+l2hearte	115.4015
+l2stroke	-1089.726
+l2cancre	-999.4606
+l2hibpe	-1818.812
+l2diabe	-3194.841
+l2lunge	-277.5854
+l2iadl1	2206.637
+l2iadl2p	1637.353
+l2adl1	-1231.824
+l2adl2	-47.37123
+l2adl3p	1058.458
+l2widowed	-2759.154
+l2work	-4089.773
+l2logiearnx	460540.7
+l2wlth_nonzero	-29147.81
+l2loghatotax	672953.5
+l2diclaim	-2771.985
+l2ssclaim	-3516.672
+l2dbclaim	-20014.67
+l2nhmliv	3514.565
+fheart50	-6265.912
+fstrok50	-1755.859
+fcanc50	308.9861
+fhibp50	-4949.958
+fdiabe50	2008.643
+flung50	725.9016
+fsmokev	998.2828
+fsmoken50	-5201.989
+w5	1308.666
+w6	-1440.385
+logdeltaage	1538.455
+_cons	44551.2
+| Root Mean Square Error
+_rmse	166974.3

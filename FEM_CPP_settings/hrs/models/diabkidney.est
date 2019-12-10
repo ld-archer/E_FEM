@@ -1,0 +1,28 @@
+probit
+diabkidney
+black	.2555172
+hispan	.2025045
+hsless	.1718544
+college	-.1147051
+male	.2073618
+male_hsless	-.1205897
+male_black	-.1509384
+male_hispan	-.1387835
+l2age65l	-.0010392
+l2age6574	-.0023002
+l2age75p	.0071162
+l2smoken	.0818072
+l2widowed	.0658625
+fheart50	.2575853
+fstrok50	-.0703128
+fcanc50	.2031579
+fhibp50	.1556689
+flung50	.1741232
+fsmokev	.051868
+fsmoken50	-.0181218
+l2logbmi_l30	-.1929175
+l2logbmi_30p	.2778019
+flogbmi50_l30	.1571146
+flogbmi50_30p	.2855045
+logdeltaage	-.0163405
+_cons	-1.280299

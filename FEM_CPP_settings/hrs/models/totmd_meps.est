@@ -1,0 +1,24 @@
+regress
+totmd_meps
+age5559	531.4044
+age6064	449.581
+age6569	-509.2015
+male	-693.1316
+male_black	593.4113
+male_hispan	217.6368
+male_hsless	327.5976
+black	-538.4211
+hispan	-1072.551
+hsless	-641.2937
+college	525.7347
+widowed	116.0319
+single	169.2087
+cancre	7582.8
+diabe	2726.242
+hibpe	1140.011
+hearte	2811.454
+lunge	3082.799
+stroke	4871.611
+hearta	5330.951
+logiearnx	-15544.87
+_cons	3832.167

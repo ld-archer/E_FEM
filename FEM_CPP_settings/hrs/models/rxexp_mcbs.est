@@ -1,0 +1,35 @@
+regress
+rxexp_mcbs
+age7074	-31.2628
+age7579	-101.6808
+age8084	-192.4273
+age85	-409.7751
+male	-373.3697
+male_black	440.9192
+male_hispan	756.591
+male_hsless	-326.3078
+black	-401.8313
+hispan	-205.0127
+hsless	353.5852
+college	224.1686
+widowed	52.84259
+single	122.2588
+cancre_nlcancre	456.99
+diabe_nldiabe	339.9816
+hibpe_nlhibpe	451.515
+hearte_nlhearte	539.2649
+lunge_nllunge	749.1838
+stroke_nlstroke	344.4702
+alzhe_nlalzhe	1178.989
+cancre_lcancre	262.754
+diabe_ldiabe	1396.651
+hearte_lhearte	694.7683
+hibpe_lhibpe	579.3719
+lunge_llunge	1395.075
+stroke_lstroke	577.5817
+alzhe_lalzhe	1229.443
+heartae_lheartae	363.2962
+nhmliv	2393.021
+adl3p	1142.755
+died	310.0099
+_cons	1447.965

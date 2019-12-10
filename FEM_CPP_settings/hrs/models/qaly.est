@@ -1,0 +1,19 @@
+regress
+qaly
+iadl1	-.0574247
+iadl2p	-.0980414
+adl1	-.0753926
+adl2	-.1269003
+adl3p	-.1825779
+cancre	-.0165803
+diabe	-.0327431
+hearte	-.0392991
+hibpe	-.032231
+lunge	-.045839
+stroke	-.0448779
+hearta	-.040007
+smoken	-.0371983
+obese	-.035819
+single	-.0169235
+widowed	-.0140295
+_cons	.8943291

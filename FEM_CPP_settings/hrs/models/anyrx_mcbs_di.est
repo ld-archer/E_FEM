@@ -1,0 +1,24 @@
+probit
+anyrx_mcbs_di
+age5559	.235284
+age6064	.1841648
+male	-.5444718
+male_black	.3341781
+male_hispan	.6736802
+male_hsless	-.0653386
+black	-.0582059
+hispan	-.4302989
+hsless	.1173632
+college	-.0091979
+widowed	.0081155
+single	-.137768
+cancre	.2567955
+diabe	.273287
+hibpe	.548323
+hearte	.2195707
+lunge	.3592869
+stroke	-.2744114
+nhmliv	.197367
+adl3p	.1541784
+died	-.3982313
+_cons	1.398494

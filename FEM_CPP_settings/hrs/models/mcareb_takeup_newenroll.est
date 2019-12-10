@@ -1,0 +1,27 @@
+probit
+mcare_ptb_enroll
+male	-.1078526
+black	-.0701796
+hispan	-.007179
+hsless	-.0283814
+college	-.1266312
+widowed	.2400103
+iearnx	-.0052813
+work	-.7602448
+cancre	.0673431
+hibpe	.0165055
+hearte	.0879123
+stroke	.0705206
+iadl1	.1846578
+iadl2p	.2428424
+adl1	.0284539
+adl2	.0883555
+adl3p	-.21907
+obese	.0583421
+smokev	-.0723665
+diclaim	-.1116627
+diabe_hibpe	.0205498
+diabe_hearte	-.2687198
+hibpe_obese	-.065757
+diclaim_adl3p	.4263779
+_cons	1.317377

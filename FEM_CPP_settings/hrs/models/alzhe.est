@@ -1,0 +1,17 @@
+probit
+alzhe
+male	.0014094
+hsless	-.1454598
+college	.0707744
+black	-.0151592
+hispan	-.1259566
+l2age70l	.0000596
+l2age7074	.1358
+l2age7579	.0510808
+l2age80p	-.0176521
+l2iadl1	.2162508
+l2iadl2p	.434274
+l2cogstate1	1.273214
+l2cogstate2	.6566747
+l2hibp_stroke	.1966056
+_cons	-3.520044

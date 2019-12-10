@@ -1,0 +1,24 @@
+poisson
+hsptim
+age5559	.0106902
+age6064	.0684495
+age6569	.0272203
+male	-.0663911
+male_black	-.0110818
+male_hispan	-.0429227
+male_hsless	.0868955
+black	.1392939
+hispan	-.1113541
+hsless	.0135338
+college	-.068642
+widowed	.1943188
+single	.117309
+cancre	.8640721
+diabe	.4014477
+hibpe	.2922086
+hearte	.6812329
+lunge	.4626516
+stroke	.7021956
+hearta	.4488964
+logiearnx	-3.359265
+_cons	-2.610105

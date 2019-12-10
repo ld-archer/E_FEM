@@ -1,0 +1,21 @@
+regress
+ihs_tcamt_cpl
+age_yrs	-.036596
+agesq	.0000171
+male	.1323057
+married	.0623222
+black	-.1913697
+hispan	-.6171431
+fkids	.1209835
+hsless	-.1993199
+college	.4039676
+l2ihs_hwealth_cpl	.1839244
+flogiearnx	.2891657
+l2ihs_hicap_cpl	.1164236
+l2hicap_nonzero	-.247133
+l2adl1p	-.0090101
+l2iadl1p	-.1052188
+l2numdisease	-.1036543
+_cons	2.80537
+| Root Mean Square Error
+_rmse	3.62826

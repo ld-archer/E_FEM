@@ -1,0 +1,18 @@
+# Stata files
+*.log
+*.gph
+*.png
+
+# Model files directory
+FEM_CPP_settings/ELSA/models/*
+FEM_Stata/Estimates/ELSA/*
+
+# C++
+*.o
+*.d
+
+# Compiled FEM
+FEM
+
+# Output
+output/

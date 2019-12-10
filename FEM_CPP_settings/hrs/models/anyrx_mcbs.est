@@ -1,0 +1,35 @@
+probit
+anyrx_mcbs
+age7074	.1165307
+age7579	.2432234
+age8084	.1989409
+age85	.1154909
+male	-.2843313
+male_black	-.0625887
+male_hispan	-.2118211
+male_hsless	-.0331168
+black	-.033064
+hispan	.1381624
+hsless	-.0529181
+college	.067962
+widowed	-.1421097
+single	-.262284
+cancre_nlcancre	.45015
+diabe_nldiabe	.3641043
+hibpe_nlhibpe	.6523935
+hearte_nlhearte	.2596244
+lunge_nllunge	.2629996
+stroke_nlstroke	.1077954
+alzhe_nlalzhe	-.10371
+cancre_lcancre	.2979917
+diabe_ldiabe	.741224
+hearte_lhearte	.5158899
+hibpe_lhibpe	.913103
+lunge_llunge	.4980148
+stroke_lstroke	.2985026
+alzhe_lalzhe	-.0254304
+heartae_lheartae	.1721098
+nhmliv	-.5413302
+adl3p	.3160952
+died	.3831983
+_cons	.9361991

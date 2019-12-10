@@ -44,9 +44,11 @@ int main(int argc,char **argv)
 	std::ostringstream ss;
 #ifdef __FEM_UNIX__
 	// Reset priority asap!
-	pid_t pid = getpid();	
+	pid_t pid = getpid();
 	ss << "renice +19 -p " << pid;
-	system(ss.str().c_str());
+  int sysret = system(ss.str().c_str());
+  if(sysret != 0)
+    std::cerr << "Renice had nonzero return code.";
 	ss.str("");
 #endif
 	// Initialize the MPI environment and find the rank of this processor.
@@ -85,7 +87,7 @@ int main(int argc,char **argv)
 
 		// Read in settings file
 		settings.readSettings(std::string(settings.get("base_dir") + _PATH_DELIM_ + settings_name.c_str()).c_str());
-		
+
 		// Setup Logging
 		if(is_master) {
 
@@ -122,7 +124,7 @@ int main(int argc,char **argv)
 
 		// Log to stderr if indicated in the settings
 		if(settings.get("log_stderr") == "yes") {
-			// Both the master and slave will be logging to stderr. Need to add a prefix so we can tell what message is from 
+			// Both the master and slave will be logging to stderr. Need to add a prefix so we can tell what message is from
 			// what processor
 			if(is_master)
 				ss << "[Master] " ;
@@ -146,7 +148,7 @@ int main(int argc,char **argv)
 			rnd_provider = rbp;
 			ss.str("");
 		} else if (settings.get("random_provider") == "basic") {
-			// Random numbers just drawn using normal rand() calls. 
+			// Random numbers just drawn using normal rand() calls.
 			// Seed the random number engine with the current time.
 			srand(time(NULL));
 			rnd_provider = new RandomBasicProvider();
@@ -155,13 +157,13 @@ int main(int argc,char **argv)
 			throw fem_exception(ss.str());
 		}
 
-		// Read scenarios 
+		// Read scenarios
 		ss << settings.get("base_dir") << _PATH_DELIM_ << settings.get("scenarios_file");
 		ScenarioVector sv;
 		sv.readDelimited(ss.str().c_str(), ',');
 		ss.str("");
-		
-		
+
+
 		FEM* fem = NULL;
 
 		for(unsigned int i = 0; i < sv.size(); i++) {
@@ -172,8 +174,8 @@ int main(int argc,char **argv)
 		    fem = new FEM_MPIMaster(settings);
 		  else
 		    fem = new FEM_MPISlave(settings);
-		
-			
+
+
 			if(is_master) {
 				// Check if output directory exists. If not, create it.
 				std::string outdir = sv[i]->OutputDir()  + _PATH_DELIM_ + sv[i]->Name();
@@ -186,11 +188,11 @@ int main(int argc,char **argv)
 				if(!dir_exists(outdir))
 					make_dir(outdir);
 			}
-			
+
 			// Run the scenario
 			fem->runScenario(sv[i], rnd_provider);
 
-			// Scenario is done and all data is written. 
+			// Scenario is done and all data is written.
 			// Copy all small input files (settings, models, variables, etc) into the
 			// scenario directory for reproducibility
 			if(is_master) {
@@ -212,21 +214,21 @@ int main(int argc,char **argv)
 				for(unsigned int j = 0; j < files_to_copy.size(); j++)
 					copy_file(dest_settings_dir  + _PATH_DELIM_ + files_to_copy[j], settings.get("base_dir") + _PATH_DELIM_ + files_to_copy[j]);
 				files_to_copy.clear();
-				
+
 				// Copy over the scenario migration table, if any
 				if(sv[i]->contains("migration_table")) {
 					ss << sv[i]->get("migration_table") << ".txt";
 					copy_file(dest_settings_dir  + _PATH_DELIM_ + ss.str(), settings.get("base_dir") + _PATH_DELIM_ + "FEM_CPP_settings" + _PATH_DELIM_ + ss.str());
 					ss.str("");
 				}
-				
+
 				// Check if a directory exists in the scenario folder called "settings/input_data". If not, make it
 				ss << sv[i]->OutputDir()  << _PATH_DELIM_ << sv[i]->Name() << _PATH_DELIM_ << "FEM_CPP_settings" << _PATH_DELIM_ << "input_data";
 				std::string input_data_dir = ss.str();
 				ss.str("");
 				if(!dir_exists(input_data_dir))
 					make_dir(input_data_dir);
-	
+
 				if(sv[i]->SimuType() == 3) {
 					/* Copy incoming cohorts if simutype is 3*/
 					for(unsigned int yr = sv[i]->StartYr(); yr <= sv[i]->StopYr(); yr+= sv[i]->YrStep()) {
@@ -250,7 +252,7 @@ int main(int argc,char **argv)
 				copy_settings(src_settings_dir,dest_settings_dir,settings);
 
 				if(sv[i]->contains("settings") && sv[i]->get("settings").length() > 0) {
-									
+
 					ss << sv[i]->OutputDir()  << _PATH_DELIM_ << sv[i]->Name() << _PATH_DELIM_ << "FEM_CPP_settings" << _PATH_DELIM_  << sv[i]->get("settings");
 					dest_settings_dir = ss.str();
 					ss.str("");
@@ -263,7 +265,7 @@ int main(int argc,char **argv)
 
 					copy_settings(src_settings_dir,dest_settings_dir,settings);
 				}
-			
+
 			}
 
 		}
@@ -290,7 +292,7 @@ int main(int argc,char **argv)
 }
 
 void copy_settings(std::string source, std::string dest, Settings &settings) {
-	
+
 	std::ostringstream ss;
 
 	// Check if the other settings directories we need are there, and if not, make them.
@@ -307,13 +309,13 @@ void copy_settings(std::string source, std::string dest, Settings &settings) {
 		ss.str("");
 	}
 
-	// Copy all relevant files 
+	// Copy all relevant files
 	std::vector<std::string> files_to_copy;
 	std::vector<std::string> temp;
 
 	files_to_copy.push_back(settings.get("vars_def_file"));
 	files_to_copy.push_back(settings.get("summary_output"));
-	
+
 	/* Copy time series, if any */
 	ss << source << _PATH_DELIM_ << "timeseries";
 	std::string time_series_dir = ss.str();
@@ -327,7 +329,7 @@ void copy_settings(std::string source, std::string dest, Settings &settings) {
 		}
 		temp.clear();
 	}
-	
+
 	/* Copy tables, if any */
 	ss << source << _PATH_DELIM_ << "tables";
 	std::string tables_dir = ss.str();
@@ -361,10 +363,10 @@ void copy_settings(std::string source, std::string dest, Settings &settings) {
 }
 
 #include "SSCalculator.h"
-void test_ss_calc(std::string settings_path) {	
-	
-	
-	
+void test_ss_calc(std::string settings_path) {
+
+
+
 	std::ostringstream ss;
 	ss.str("");
 
@@ -381,7 +383,7 @@ void test_ss_calc(std::string settings_path) {
 	} catch (const fem_exception & e) {
 		std::cout << e.what() << std::endl;
 	}
-	
+
 	// Test retirement benefits
 	SSCalculator sscalc(&ts_manager);
 	Person p;
@@ -399,7 +401,7 @@ void test_ss_calc(std::string settings_path) {
 		p.set(Vars::rbmonth, rbmonth);
 		int ben = (int) sscalc.SSBenefit(&p, cyr, rclyr);
 		std::cout << "Benefit Amount: " << ben << std::endl << std::endl;
-	}	
+	}
 
 	// Test spousal benefits
 	Person sp;
@@ -408,11 +410,11 @@ void test_ss_calc(std::string settings_path) {
 	p.set(Vars::widowed, true);
 	p.set(Vars::raime, 0.0);
 	p.setSpouse(&sp);
-	
+
 	sp.set(Vars::widowed, false);
 	sp.set(Vars::ry_earn, 0.0);
 	sp.set(Vars::rq, 400);
-	
+
 	while(0) {
 		std::cout << "person aime rbyr rbmonth rclyr cyr" << std::endl;
 		double aime;
@@ -434,7 +436,7 @@ void test_ss_calc(std::string settings_path) {
 
 		int ben = (int) sscalc.SSBenefit(&p, cyr, rclyr);
 		std::cout << "Benefit Amount: " << ben << std::endl << std::endl;
-	}	
+	}
 
 	sscalc.test();
 }

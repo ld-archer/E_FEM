@@ -1,0 +1,21 @@
+regress
+parhelphours
+l2parhelphours	.2774904
+age_yrs	-15.61852
+agesq	.0769846
+male	3.618039
+black	21.96303
+hispan	-1.730176
+hsless	-23.60872
+college	10.02987
+l2loghatotax	67.42231
+l2logiearnx	-60.02006
+l2hicap	8.50e-06
+l2adl1p	-6.811203
+l2iadl1p	1.643877
+l2numdisease	-5.84584
+l2widowed	2.595677
+nkid_liv10mi	2.001215
+suburb	8.377332
+exurb	5.418392
+_cons	767.3151

@@ -1,0 +1,28 @@
+probit
+lungoxy
+black	.0506126
+hispan	-.0865827
+hsless	.0716017
+college	-.0815059
+male	-.0627166
+male_hsless	.096902
+male_black	-.0363535
+male_hispan	.2902192
+l2age65l	.0371179
+l2age6574	.0288502
+l2age75p	.0198667
+l2smoken	-.28702
+l2widowed	.0417142
+fheart50	.289478
+fstrok50	.2207284
+fcanc50	-.0252269
+fhibp50	-.1187994
+fdiabe50	.1725319
+fsmokev	.3022424
+fsmoken50	.3975246
+l2logbmi_l30	-.9138338
+l2logbmi_30p	1.605574
+flogbmi50_l30	.7536001
+flogbmi50_30p	.1406913
+logdeltaage	.0871192
+_cons	-3.373762

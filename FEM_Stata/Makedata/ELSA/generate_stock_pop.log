@@ -3,7 +3,7 @@
        log:  /home/ld-archer/Documents/E_FEM/trunk/FEM_Stata/Makedata/ELSA/gene
 > rate_stock_pop.log
   log type:  text
- opened on:  18 Nov 2019, 13:22:06
+ opened on:   9 Dec 2019, 08:51:22
 
 . 
 . quietly include ../../../fem_env.do

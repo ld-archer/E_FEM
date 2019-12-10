@@ -1,0 +1,24 @@
+regress
+oopmd_meps
+age5559	55.02836
+age6064	188.732
+age6569	32.87094
+male	-234.5551
+male_black	84.8193
+male_hispan	61.76142
+male_hsless	72.34399
+black	-395.7587
+hispan	-276.8421
+hsless	-208.0215
+college	210.345
+widowed	-62.88089
+single	-45.86642
+cancre	349.8003
+diabe	332.1931
+hibpe	172.6854
+hearte	199.1053
+lunge	239.9578
+stroke	309.4038
+hearta	62.45447
+logiearnx	-839.111
+_cons	692.8587

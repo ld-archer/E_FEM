@@ -18,7 +18,7 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::cancre,
 		Vars::diabe,
 		Vars::hibpe,
-		Vars::hearta,	
+		Vars::hearta,
 		Vars::hearte,
 		Vars::lunge,
 		Vars::stroke,
@@ -59,23 +59,23 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::diabe,
 		Vars::hibpe,
 		Vars::hearte,
-		Vars::hearta,	
+		Vars::hearta,
 		Vars::lunge,
 		Vars::nhmliv,
 		Vars::stroke,
 		Vars::died,
 		Vars::alzhmr,
 		Vars::memrye,
-		Vars::work, 
+		Vars::work,
 		Vars::ssclaim,
 		Vars::smoken,
 		Vars::smokev,
 		Vars::drink
 	};
 
-	
+
 	int nVars = sizeof(vars)/sizeof(Vars::Vars_t);
-	
+
 	for(int i = 0; i < nVars; i++) {
 
 		// Create probability adjusting interventions
@@ -93,13 +93,13 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 	}
 
 	interventions[inter->name()] = inter;
-	
+
 	Vars::Vars_t ordvars[] = {
 		Vars::painstat
 	};
 
 	int nOrdVars = sizeof(ordvars)/sizeof(Vars::Vars_t);
-	
+
 	for(int i = 0; i < nOrdVars; i++) {
 		// Create multiplier interventions
 	  inter = new OrderedVarMultIntervention(ordvars[i], index++, tp, vp);
@@ -114,13 +114,13 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 
 	WeightLossPill* wlp = new WeightLossPill(index++, tp, vp);
 	interventions[wlp->name()] = wlp;
-	
+
 	ReduceDrinkDays* rdd = new ReduceDrinkDays(index++, tp, vp);
 	interventions[rdd->name()] = rdd;
-	
+
 	SmokeStopIntervention* ssi = new SmokeStopIntervention(index++, tp, vp);
 	interventions[ssi->name()] = ssi;
-	
+
 
 }
 
@@ -135,7 +135,7 @@ InterventionFactory::~InterventionFactory(void)
 Intervention* InterventionFactory::getIntervention(std::string name) {
 	if(interventions.count(name) > 0)
 		return interventions[name];
-	else 
+	else
 		return NULL;
 }
 

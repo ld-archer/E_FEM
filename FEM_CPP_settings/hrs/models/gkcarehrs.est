@@ -1,0 +1,21 @@
+regress
+gkcarehrs
+l2gkcarehrs	.1998244
+age_yrs	3.758031
+agesq	-.0634139
+male	-53.85583
+black	30.32768
+hispan	2.521944
+hsless	-4.366054
+college	-1.651892
+l2loghatotax	-3.233507
+l2logiearnx	-546.7882
+l2hicap	-.0000349
+l2adl1p	-6.775116
+l2iadl1p	-17.62438
+l2numdisease	1.362087
+l2widowed	-17.03293
+nkid_liv10mi	22.24788
+suburb	-1.341093
+exurb	-5.145376
+_cons	170.2097

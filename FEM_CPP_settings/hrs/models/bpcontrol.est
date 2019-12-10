@@ -1,0 +1,29 @@
+probit
+bpcontrol
+black	-.1971558
+hispan	-.1172943
+hsless	-.151843
+college	.0661348
+male	.1556273
+male_hsless	-.0716601
+male_black	.1123774
+male_hispan	-.0138408
+l2age65l	.0166013
+l2age6574	.007859
+l2age75p	.004553
+l2diabe	-.0998855
+l2smoken	-.1394399
+l2widowed	-.032144
+fheart50	-.2797574
+fstrok50	.1510966
+fcanc50	-.108483
+fdiabe50	-.1121658
+flung50	-.0259545
+fsmokev	.0265561
+fsmoken50	-.0201158
+l2logbmi_l30	.1066194
+l2logbmi_30p	-.1500273
+flogbmi50_l30	.1627197
+flogbmi50_30p	-.0268461
+logdeltaage	.0748602
+_cons	-.0959391

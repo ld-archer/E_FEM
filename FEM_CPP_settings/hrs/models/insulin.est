@@ -1,0 +1,28 @@
+probit
+insulin
+black	.3110701
+hispan	.0241795
+hsless	.0676973
+college	-.0639563
+male	.0392135
+male_hsless	-.0594576
+male_black	-.0717433
+male_hispan	-.0165503
+l2age65l	.0007337
+l2age6574	-.0007167
+l2age75p	.006389
+l2smoken	.0154099
+l2widowed	-.0054682
+fheart50	.3695205
+fstrok50	.2264031
+fcanc50	.1711913
+fhibp50	.1040077
+flung50	-.2082773
+fsmokev	.1054881
+fsmoken50	-.0390519
+l2logbmi_l30	.1432692
+l2logbmi_30p	1.387539
+flogbmi50_l30	-.2977967
+flogbmi50_30p	-.4059488
+logdeltaage	.0285123
+_cons	-.491234

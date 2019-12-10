@@ -1,0 +1,25 @@
+probit
+anyrx_meps
+age5559	.0470588
+age6064	.1627226
+age6569	.2653605
+male	-.4192378
+black	-.3635159
+hispan	-.2756889
+hsless	-.0672167
+college	.1946195
+male_black	.1524399
+male_hispan	-.06026
+male_hsless	-.0300554
+widowed	-.0555113
+single	-.119091
+cancre	.6020558
+diabe	.9188554
+hibpe	.8688201
+hearte	.4809564
+lunge	.8924491
+stroke	.3646697
+hearta	.5501924
+overwt	.2189437
+obese	.3062144
+_cons	.2432885

@@ -1,0 +1,154 @@
+[Mon Dec  9 17:24:23 2019] Preparing the FEM Simulator:
+[Mon Dec  9 17:24:23 2019] Loaded default settings
+[Mon Dec  9 17:24:23 2019] Starting FEM Simulation
+[Mon Dec  9 17:24:23 2019] Scenario: ReduceDrinkDays
+[Mon Dec  9 17:24:23 2019] Using specific settings from settings/hrs
+[Mon Dec  9 17:24:23 2019] Using specific settings from settings/ELSA
+[Mon Dec  9 17:24:23 2019] Using specific settings from settings/no_immigration
+[Mon Dec  9 17:24:23 2019] [WARNING] Global Pre-Initialization Module could not find the afibe_prev model
+
+[Mon Dec  9 17:24:23 2019] Repetition 5..........
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: s1idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: s2idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: s3idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: s4idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: s5idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: s6idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: s7idauniq
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: raclust
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: cwtresp
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r2scwtresp
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r4scwtresp
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r5scwtresp
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r6scwtresp
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r7scwtresp
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: iwindm
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: iwindy
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: radyear
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: agey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r1fagey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r2fagey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r3fagey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r4fagey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r5fagey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r6fagey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: r7fagey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: ragender
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: raeduc_e
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: walkra
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: dressa
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: batha
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: eata
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: beda
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: toilta
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: mapa
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: phonea
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: moneya
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: medsa
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: shopa
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: mealsa
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: housewka
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: drinkwn_e
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: smokef
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: strat
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: bmi
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: adlcount
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: iadlcount
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: anyadl
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: anyiadl
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: modex_reg
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2agey
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2bmi
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2adlcount
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2anyadl
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2iadlcount
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2anyiadl
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2educ
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2hlthlm
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2retage
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2drinkwn_e
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2modex_reg
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: any_adl
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: any_iadl
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: l2single
+[Mon Dec  9 17:24:23 2019] [WARNING] present in data, missing in FEM: v
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: hhidstr
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: s1idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: s2idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: s3idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: s4idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: s5idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: s6idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: s7idauniq
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: raclust
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: cwtresp
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r2scwtresp
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r4scwtresp
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r5scwtresp
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r6scwtresp
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r7scwtresp
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: iwindm
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: iwindy
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: radyear
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: agey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r1fagey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r2fagey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r3fagey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r4fagey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r5fagey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r6fagey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: r7fagey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: ragender
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: raeduc_e
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: walkra
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: dressa
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: batha
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: eata
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: beda
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: toilta
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: mapa
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: phonea
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: moneya
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: medsa
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: shopa
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: mealsa
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: housewka
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: drinkwn_e
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: smokef
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: strat
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: bmi
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: hhidpnstr
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: adlcount
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: iadlcount
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: anyadl
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: anyiadl
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: modex_reg
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2agey
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2bmi
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2adlcount
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2anyadl
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2iadlcount
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2anyiadl
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2educ
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2hlthlm
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2retage
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2drinkwn_e
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2modex_reg
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: any_adl
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: any_iadl
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: l2single
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: v
+[Mon Dec  9 17:24:24 2019] [WARNING] present in data, missing in FEM: total
+[Mon Dec  9 17:24:59 2019] Master finished Rep 5
+[Mon Dec  9 17:25:06 2019] Simulation for Scenario [ReduceDrinkDays] Finished!
+[Mon Dec  9 17:25:06 2019] Preparing the FEM Simulator:
+[Mon Dec  9 17:25:06 2019] Loaded default settings
+[Mon Dec  9 17:25:06 2019] Starting FEM Simulation
+[Mon Dec  9 17:25:06 2019] Scenario: SmokeStopIntervention
+[Mon Dec  9 17:25:06 2019] Using specific settings from settings/hrs
+[Mon Dec  9 17:25:06 2019] Using specific settings from settings/ELSA
+[Mon Dec  9 17:25:06 2019] Using specific settings from settings/no_immigration
+[Mon Dec  9 17:25:06 2019] [ERROR] Unknown FEM error!
+		No data for parameter [ssi_start_yr]

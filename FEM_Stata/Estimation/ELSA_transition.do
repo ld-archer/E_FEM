@@ -20,10 +20,10 @@ global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn
 global order adlstat iadlstat drinkd_e vgactx_e mdactx_e ltactx_e smkstat
 
-global allvars_died male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2drink l2drinkd_e l2modex_reg
+global allvars_died male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2drink l2drinkd_e
 global allvars_cancre male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2drink l2drinkd_e smokev
-global allvars_diabe male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2drink l2drinkd_e l2modex_reg
-global allvars_hearte male hsless college l2age65l l2age6574 l2age75p l2hibpe l2diabe l2logbmi l2smokev l2smoken l2drink l2drinkd_e l2modex_reg
+global allvars_diabe male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2drink l2drinkd_e
+global allvars_hearte male hsless college l2age65l l2age6574 l2age75p l2hibpe l2diabe l2logbmi l2smokev l2smoken l2drink l2drinkd_e
 global allvars_hibpe male hsless college l2age65l l2age6574 l2age75p l2diabe l2logbmi l2smokev l2smoken l2hearte l2drink l2drinkd_e
 global allvars_lunge male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken 
 global allvars_stroke male hsless college l2age65l l2age6574 l2age75p l2hearte l2cancre l2hibpe l2diabe l2logbmi l2smokev l2smoken l2drink l2drinkd_e
@@ -45,7 +45,7 @@ global allvars_work male hsless college l2age65l l2age6574 l2age75p l2hearte l2s
 global allvars_hlthlm male hsless college l2age65l l2age6574 l2age75p hearte stroke cancre hibpe diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smokev smoken arthre psyche asthmae parkine drink drinkd_e
 global allvars_retemp male hsless college l2age65l l2age6574 l2age75p l2hearte l2stroke l2cancre l2hibpe l2diabe l2lunge l2logbmi l2work l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2psyche l2arthre l2asthmae l2parkine l2hlthlm 
 
-global allvars_logbmi male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2psyche l2arthre l2asthmae l2parkine drink drinkd_e l2modex_reg
+global allvars_logbmi male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2psyche l2arthre l2asthmae l2parkine drink drinkd_e
 global allvars_retage male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2work hlthlm l2arthre l2psyche l2asthmae l2parkine
 global allvars_ipubpen male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2itearn l2work hlthlm l2arthre l2psyche l2asthmae l2parkine
 global allvars_atotf male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2itearn work l2work hlthlm l2arthre l2psyche l2asthmae l2parkine
@@ -53,7 +53,7 @@ global allvars_itearn male hsless college l2age65l l2age6574 l2age75p l2cancre l
 
 global allvars_adlstat male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2psyche l2arthre l2asthmae l2parkine l2drink l2drinkd_e
 global allvars_iadlstat male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2psyche l2arthre l2asthmae l2parkine l2drink l2drinkd_e
-global allvars_drinkd_e male hsless college l2age65l l2age6574 l2age75p l2hearte l2stroke l2cancre l2hibpe l2diabe l2logbmi l2psyche l2modex_reg
+global allvars_drinkd_e male hsless college l2age65l l2age6574 l2age75p l2hearte l2stroke l2cancre l2hibpe l2diabe l2logbmi l2psyche
 global allvars_vgactx_e male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2psyche l2arthre l2asthmae l2parkine l2smokev l2smoken
 global allvars_mdactx_e male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2psyche l2arthre l2asthmae l2parkine l2smokev l2smoken
 global allvars_ltactx_e male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2psyche l2arthre l2asthmae l2parkine l2smokev l2smoken

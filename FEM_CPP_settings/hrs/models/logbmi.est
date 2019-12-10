@@ -1,0 +1,44 @@
+regress
+logbmi
+black	-.0018193
+hispan	-.0023256
+hsless	-.0023266
+college	-.0010265
+male	.0007046
+male_hsless	.0011915
+male_black	-.0047757
+male_hispan	-.0011582
+l2age65l	-.0000968
+l2age6574	-.0009104
+l2age75p	-.0019703
+l2hearte	-.0008237
+l2stroke	-.0027597
+l2cancre	-.0010509
+l2hibpe	.0038181
+l2diabe	-.0000779
+l2lunge	-.0049937
+l2hearta	.0076851
+l2iadl1	-.0035958
+l2iadl2p	-.0033339
+l2adl1	.0016299
+l2adl2	-.0005561
+l2adl3p	-.0008188
+l2smoken	-.0100526
+l2widowed	.0011879
+fheart50	.0014538
+fstrok50	.0054122
+fcanc50	.0019533
+fhibp50	.0024636
+fdiabe50	-.0045416
+flung50	.004278
+fsmokev	.0017629
+fsmoken50	.0006608
+l2logbmi_l30	.813537
+l2logbmi_30p	.8250552
+flogbmi50_l30	.1371533
+flogbmi50_30p	.107304
+logdeltaage	-.0117986
+frbyr	.000032
+_cons	.1249541
+| Root Mean Square Error
+_rmse	.078952

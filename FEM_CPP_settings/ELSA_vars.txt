@@ -197,7 +197,7 @@ mcare_pta_elasticity = 0-0.1 :: float
 mcare_ptb_elasticity = 0-0.1 :: float
 mcare_ptB_premium_share = if(magi <= mcare_ptb_thresh1(year), mcare_ptb_base(year), if(magi <= mcare_ptb_thresh2(year), mcare_ptb_bracket2(year), if(magi <= mcare_ptb_thresh3(year), mcare_ptb_bracket3(year), if(magi <= mcare_ptb_thresh4(year), mcare_ptb_bracket4(year), mcare_ptb_bracket5(year)) ) ) ) :: float
 income_band =  if(poverty_level <= 1.38, 0, if(magi <= mcare_ptb_thresh1(year), 1, if(magi <= mcare_ptb_thresh2(year), 2, if(magi <= mcare_ptb_thresh3(year), 3, if(magi <= mcare_ptb_thresh4(year), 4, 5) ) ) ) ) :: short
-mcare_pta_premium_baseline = 700 :: short 
+mcare_pta_premium_baseline = 700 :: short
 
 qaly_nhmliv_reduction = 0.9 : Multiplier for QALY when person lives in a nursing home : float
 
@@ -224,8 +224,8 @@ elig_cancer_mort = l2cancre : Eligible for the reduction in mortality for cancer
 elig_hearte_mort = l2hearte : Eligible for the reduction in mortality for heart disease patients : boolean
 
 | Indicators that determines whether or not to run the cogstate stock and transition models
-runcog = if(year-rbyr >= 67, 1, 0) 
-runcogstk = if(year-rbyr >= 65 & year-rbyr < 67, 1, 0) 
+runcog = if(year-rbyr >= 67, 1, 0)
+runcogstk = if(year-rbyr >= 65 & year-rbyr < 67, 1, 0)
 
 | For revised work and ssclaim models that use age relative to Social Security Normal Retirement Age
 nradist = (nra(rbyr)/12)-age :: float
@@ -331,3 +331,5 @@ all_pop = not(died)
 
 smokers = not(died) & smoken==1
 drinkers = not(died) & drink==1
+
+rdd_start_yr = 2012

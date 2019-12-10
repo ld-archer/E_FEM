@@ -1,0 +1,23 @@
+regress
+mcare_ptd
+age75l	-11.59393
+age75p	-7.863252
+male	-203.6092
+black	485.8244
+hispan	133.4976
+hsless	503.7608
+college	-112.0221
+widowed	143.0544
+diabe	211.0216
+hibpe	146.3291
+stroke	101.5389
+hearte	168.0932
+lunge	212.3918
+smoken	163.776
+diclaim	719.1013
+iadl1	173.0147
+iadl2p	311.4368
+adl1	62.4443
+adl2	79.48066
+adl3p	202.5364
+_cons	1590.954

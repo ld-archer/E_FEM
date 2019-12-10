@@ -4,8 +4,8 @@
 
 double DerivedVariable::value(const Person* person) const {
 	try {
-		return node->value(person); 
-	} catch (const missing_var_exception & mve) {
+		return node->value(person);
+	} catch (missing_var_exception mve) {
 		std::ostringstream ss;
 		ss << "Derived variable could not be evaluated: missing value for variable, ";
 		ss << mve.getVarname() <<  ", in the equation, " <<  this->equation() <<  std::endl;

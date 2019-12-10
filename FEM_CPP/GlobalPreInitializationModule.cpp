@@ -24,12 +24,12 @@ void GlobalPreInitializationModule::setScenario(Scenario* scen) {
 	Module::setScenario(scen);
 	if(scen->get("psid_data")=="1")
 		ref_year = 2009;
-	else 
+	else
 		ref_year = 2010;
 }
 
 void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int year, Random* random) {
-		
+
 	Logger::log("Running Global Pre-Initialization Module", FINE);
  	int simu_type = scenario->SimuType();
 
@@ -48,7 +48,7 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 		  // Set the variable to track the current MC rep
 		  p->set(Vars::mcrep, random->rep());
 
-			// Some special handling for base cohort 
+			// Some special handling for base cohort
 			if(year == scenario->StartYr()) {
 				// First year claiming DB benefits
 				if(simu_type != 2 && !p->test(Vars::died)) {
@@ -72,7 +72,7 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 			p->set(Vars::mcare_pta_enroll, false);
 			p->set(Vars::mcare_ptb_enroll, false);
 			p->set(Vars::mcare_ptd_enroll, false);
-					
+
 			// No one should have premiums calculated yet
 			p->set_missing(Vars::mcare_ptb_premium);
 
@@ -124,7 +124,7 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 			//p->set(Vars::l2cogstate1, p->get(Vars::l2cogstate) == 1);
 			//p->set(Vars::l2cogstate2, p->get(Vars::l2cogstate) == 2);
 			//p->set(Vars::l2cogstate3, p->get(Vars::l2cogstate) == 3);
-		
+
 			p->set(Vars::pcancre, 0.0);
 			p->set(Vars::pdiabe,0.0);
 			p->set(Vars::phearte,0.0);
@@ -140,7 +140,7 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 			if(p->is_missing(Vars::l2afibe) && !p->is_missing(Vars::afibe))
 			  p->set(Vars::l2afibe, p->get(Vars::afibe));
 
-			// Do not do the following for persons that are dead already 
+			// Do not do the following for persons that are dead already
 			if (!p->test(Vars::died)) {
 				/*
 				// Scale up AIME based on NWI(year)/NWI(start_year)
@@ -166,23 +166,23 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 				p->set(Vars::iearn, iearn);
 				p->set(Vars::iearnx, iearnx);
 				p->set(Vars::l2iearnx, iearnx);
-				
+
 				p->set(Vars::iearnuc, iearnuc);
 				p->set(Vars::l2iearnuc, iearnuc);
 
 				p->set(Vars::logiearnuc, logiearnuc);
-				p->set(Vars::l2logiearnuc, logiearnuc);					
+				p->set(Vars::l2logiearnuc, logiearnuc);
 
 				p->set(Vars::logiearn, logiearn);
 				p->set(Vars::l2logiearn, logiearn);
-				
+
 				p->set(Vars::logiearnx, logiearnx);
 				p->set(Vars::l2logiearnx, logiearnx);
 
 				p->set(Vars::l2died, 0.0);
-				
+
 			}
-			
+
 			// Update marital status for dead persons with missing marital status to be consistent
 			if(p->test(Vars::died)) {
 				if(p->getSpouse() != NULL) {
@@ -212,22 +212,22 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 
 			// SS Claiming age
 			p->set(Vars::ssage, p->test(Vars::ssclaim) ? p->get(Vars::rssclyr) - p->get(Vars::rbyr) : 1000.0);
-				
+
 			// No one is claiming SS widows benefits yet - Assigned in cross-sectional module
 			if(p->is_missing(Vars::rsswclyr))
 				p->set(Vars::rsswclyr, 2100);
 			if(p->get(Vars::rsswclyr) == 2100)
-				p->set(Vars::sswclaim, false);		
+				p->set(Vars::sswclaim, false);
 
 			// If we dont know when the person claimed DB, then just assume they havent
 			if(p->is_missing(Vars::rdbclyr))
 				p->set(Vars::rdbclyr, 2100);
-				
+
 			// If they havent claimed DB, then mark it
 			if(p->get(Vars::rdbclyr) == 2100)
 				p->set(Vars::dbclaim, false);
 
-			
+
 			// If the DB claiming year is in the past, and dbclaim is missing, then set it, otherwise unset it
 			if(p->is_missing(Vars::dbclaim))
 				p->set(Vars::dbclaim, p->get(Vars::rdbclyr) <= year);
@@ -249,6 +249,10 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 			// Set initial medicare premiums to missing
 			p->set_missing(Vars::fmcare_pta_premium);
 			p->set_missing(Vars::fmcare_ptb_premium);
+
+			// Set initial rdd_treated and ssi_treated vars to false
+			p->set(Vars::rdd_treated, false);
+			p->set(Vars::ssi_treated, false);
 		}
 	}
 }
@@ -257,7 +261,7 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 
 void GlobalPreInitializationModule::setModelProvider(IModelProvider* mp) {
 	std::ostringstream ss;
-	
+
 	std::string model_name;
 
 	try {

@@ -1,0 +1,16 @@
+probit
+medicaid_elig
+male	-.1463814
+male_black	.1969404
+male_hispan	.230993
+male_hsless	.0524694
+black	.2345779
+hispan	.1981531
+hsless	.3710383
+college	-.3088668
+widowed	.7567806
+single	.9135247
+cancre	.0812112
+logiearnx	-10.0858
+adl1p	.9061523
+_cons	-1.417149

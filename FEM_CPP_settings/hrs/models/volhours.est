@@ -1,0 +1,27 @@
+regress
+volhours
+l2volhours	.3443001
+age_yrs	8.263842
+agesq	-.0658877
+male	4.247028
+black	-1.607286
+hispan	-13.23029
+hsless	-17.61452
+college	47.83691
+l2loghatotax	433.1405
+l2logiearnx	-516.0593
+l2hicap	1.88e-06
+l2adl1p	-14.35995
+l2iadl1p	-18.89023
+l2numdisease	-6.963122
+l2widowed	9.299954
+nkid_liv10mi	-.7662397
+suburb	.9716952
+exurb	-1.084404
+catholic	-15.11055
+jewish	-3.438371
+reloth	3.087319
+relnone	-13.28868
+rel_notimp	-42.47011
+rel_someimp	-39.12814
+_cons	-187.6471

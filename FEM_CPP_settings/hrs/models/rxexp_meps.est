@@ -1,0 +1,25 @@
+regress
+rxexp_meps
+age5559	20.86871
+age6064	5.362579
+age6569	113.98
+male	-333.6659
+black	-440.9733
+hispan	-314.9125
+hsless	105.2733
+college	187.7262
+male_black	532.3875
+male_hispan	53.89566
+male_hsless	-82.55887
+widowed	190.2359
+single	79.57688
+cancre	885.5955
+diabe	1638.455
+hibpe	373.597
+hearte	711.8049
+lunge	1122.261
+stroke	1014.046
+hearta	987.3188
+overwt	-3.744601
+obese	232.7987
+_cons	1045.686

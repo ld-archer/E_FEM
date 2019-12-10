@@ -1,0 +1,24 @@
+regress
+rxexp_mcbs_di
+age5559	-627.9106
+age6064	-1476.445
+male	-1195.209
+male_black	336.1863
+male_hispan	1637.336
+male_hsless	-447.2348
+black	-912.7004
+hispan	-1962.358
+hsless	267.8251
+college	354.238
+widowed	337.695
+single	740.921
+cancre	659.6897
+diabe	1349.565
+hibpe	824.1683
+hearte	244.6791
+lunge	1244.1
+stroke	-308.1247
+nhmliv	2047.249
+adl3p	1401.582
+died	-1601.827
+_cons	5075.589

@@ -37,7 +37,7 @@ Notes:
        log:  /home/ld-archer/Documents/E_FEM/trunk/FEM_Stata/Makedata/ELSA/rewe
 > ight_ELSA_stock_smoken.log
   log type:  text
- opened on:  18 Nov 2019, 13:22:09
+ opened on:   9 Dec 2019, 08:51:24
 
 . 
 . *use ../../../input_data/ELSA_stock_`file'.dta, clear

@@ -1,0 +1,29 @@
+time_scaled_probit
+cancre
+2
+black	-.0957604
+hispan	-.1552237
+hsless	-.0339368
+college	.042999
+male	.1174572
+male_hsless	.0868804
+male_black	.1261145
+male_hispan	.014735
+l2age65l	.0258794
+l2age6574	.0156249
+l2age75p	-.0027461
+l2smoken	.0669336
+l2widowed	.0081022
+fheart50	.0435986
+fstrok50	.0335993
+fhibp50	.1111037
+fdiabe50	-.0181722
+flung50	.103848
+fsmokev	.0574465
+fsmoken50	.0312401
+l2logbmi_l30	-.0371508
+l2logbmi_30p	-.1804711
+flogbmi50_l30	.0956617
+flogbmi50_30p	.2857712
+logdeltaage	.2933009
+_cons	-4.100171

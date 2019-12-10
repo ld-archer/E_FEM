@@ -1,0 +1,31 @@
+regress
+helphoursyr_nonsp
+age_yrs	-53.27346
+agesq	.4208757
+male	-31.30046
+married	-69.2883
+black	32.05793
+hispan	11.44792
+fkids	2.834263
+hsless	32.99649
+college	4.322508
+l2ihs_hwealth_cpl	-.8242065
+flogiearnx	-164.8635
+l2ihs_hicap_cpl	2.855122
+l2hicap_nonzero	-49.40745
+l2iadl1	83.16404
+l2iadl2p	380.8907
+l2adl1	45.16457
+l2adl2	109.2352
+l2adl3p	178.2653
+l2hearte	22.36689
+l2stroke	68.75035
+l2cancre	-5.153186
+l2hibpe	8.795451
+l2diabe	18.65471
+l2lunge	34.47556
+nkid_liv10mi	12.55568
+l2helphoursyr_nonsp	.3417921
+_cons	1723.405
+| Root Mean Square Error
+_rmse	579.4876
