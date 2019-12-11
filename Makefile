@@ -17,13 +17,13 @@ RSCRIPT = Rscript
 
 ready_all: start_data transitions estimates summary_out
 
-start_data: populations reweight
+start_data: populations projections reweight
 
 populations: ELSA_long.dta ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transition.dta
 
 ### Populations
 
-H_ELSA.dta: $(DATADIR)/H_ELSA_long.dta
+H_ELSA.dta: $(DATADIR)/ELSA_long.dta
 	cd FEM_Stata/Makedata/ELSA && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
 ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
@@ -47,7 +47,7 @@ projections: $(DATADIR)/census_pop_estimates_02-18.csv $(DATADIR)/CT0469_2011cen
 ### Reweighting
 
 reweight: projections $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta
-	cd FEM_Stata/Makedata/ELSA && scen=base $(STATA) reweight_ELSA_stock.do 
+	cd FEM_Stata/Makedata/ELSA && scen=base $(STATA) reweight_ELSA_stock.do
 	cd FEM_Stata/Makedata/ELSA && scen=exercise1 $(STATA) reweight_ELSA_stock.do
 	cd FEM_Stata/Makedata/ELSA && scen=drink $(STATA) reweight_ELSA_stock.do
 	cd FEM_Stata/Makedata/ELSA && scen=drinkd_e $(STATA) reweight_ELSA_stock.do

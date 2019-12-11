@@ -3,6 +3,7 @@
 #include "fem_exception.h"
 #include <sstream>
 #include <math.h>
+#incldue <random.h>
 
 
 
@@ -13,7 +14,7 @@ SmokeStopIntervention::SmokeStopIntervention(unsigned int intervention_id, ITime
   Intervention(intervention_id, tp, vp)
 {
 	params_map["ssi_start_yr"] = "2012";
-	threshold = 0.5;
+	elig_threshold = 0.5;
 }
 
 SmokeStopIntervention::~SmokeStopIntervention(void)
@@ -76,6 +77,16 @@ bool SmokeStopIntervention::elig(Person* p) const {
 	// Want to call a random uniform distribution between 0 & 1 so 
 	// we can "decide" who gets the intervention. i.e. check if 
 	// sample is above threshold (defined above) and then make eligible
-	return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1;
+
+//	return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1;
+
+    std::default_random_engine generator;
+    std::uniform_real_distribution<double> distribution(0.0,1.0);
+
+    double sample = distribution(generator);
+
+
+
+    return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1 && sample > elig_threshold;
 }
 

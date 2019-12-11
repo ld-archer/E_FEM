@@ -11,8 +11,23 @@ FEM_Stata/Estimates/ELSA/*
 *.o
 *.d
 
+# log files
+log_*.txt
+
 # Compiled FEM
 FEM
+
+# Input data (only need select files the rest are generated)
+input_data/detailed_output/
+input_data/*.dta
+!input_data/H_ELSA.dta
+!input_data/ELSA_long.dta
+!input_data/census_pop_estimates_02-18.csv
+!input_data/CT0469_2011census_educ.csv
+!input_data/psid_incoming_cut_points.dta
+!input_data/psid_incoming_means.dta
+!input_data/psid_incoming_vcmatrix.dta
+!input_data/crossvalidation.dta
 
 # Output
 output/

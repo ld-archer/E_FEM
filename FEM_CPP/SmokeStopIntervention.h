@@ -14,5 +14,5 @@ protected:
 	bool elig(Person* p) const;
 
 	unsigned int start_yr;
-	double threshold;
+	double elig_threshold;
 };
