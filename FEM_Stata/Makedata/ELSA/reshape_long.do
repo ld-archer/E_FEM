@@ -368,6 +368,7 @@ foreach var in
     logbmi
     smokev
     smoken
+    smokef
     died
     adlcount
     adlstat
@@ -392,7 +393,6 @@ foreach var in
     drink
     drinkd_e
     drinkwn_e
-    modex_reg
     {;
         gen l2`var' = L.`var';
     };
@@ -446,14 +446,15 @@ gen hsless = (educ == 1)
 gen college = (educ == 3)
 
 * Preferably would use PMM here but going to hotdeck for the time being
-replace drinkd_e = . if missing(drinkd_e)
-hotdeck drinkd_e using ELSA_drinkd_e_imp, store seed(`seed') keep(_all) impute(1)
+*replace drinkd_e = . if missing(drinkd_e)
+*hotdeck drinkd_e using ELSA_drinkd_e_imp, store seed(`seed') keep(_all) impute(1)
 * Load in imputed dataset
-use ELSA_drinkd_e_imp1.dta, clear
+*use ELSA_drinkd_e_imp1.dta, clear
 
 * Now impute lag of educ and drinkd_e
 replace l2educ = educ
-replace l2drinkd_e = drinkd_e
+replace l2drinkd_e = drinkd_e if missing(l2drinkd_e) & !missing(drinkd_e)
+replace drinkd_e = l2drinkd_e if missing(drinkd_e) & !missing(l2drinkd_e)
 
 /*
 * Impute BMI data using hotdeck method TODO

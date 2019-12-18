@@ -587,6 +587,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2ssi_treated]  		= VarInfo("l2ssi_treated", "Lag of whether treated with SmokeStopIntervention", VarTypes::Boolean);
 	info[Vars::rdd_treated]			= VarInfo("rdd_treated", "Whether treated with ReduceDrinkDays intervention", VarTypes::Boolean);
 	info[Vars::l2rdd_treated]		= VarInfo("l2rdd_treated", "Lag of whether treated with ReduceDrinkDays intervention", VarTypes::Boolean);
+	info[Vars::mei_treated]         = VarInfo("mei_treated", "Whether treated with Moderate Exercise Increase intervention", VarTypes::Boolean);
+    info[Vars::l2mei_treated]         = VarInfo("l2mei_treated", "Lag of whether treated with Moderate Exercise Increase intervention", VarTypes::Boolean);
 
 	
 	// This is for vars that are transitioned each wave, not just assigned
@@ -714,6 +716,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::ltactx_e] = Vars::l2ltactx_e;
 	lag_map[Vars::rdd_treated] = Vars::l2rdd_treated;
 	lag_map[Vars::ssi_treated] = Vars::l2ssi_treated;
+	lag_map[Vars::mei_treated] = Vars::l2mei_treated;
 
 
 

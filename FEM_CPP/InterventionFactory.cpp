@@ -9,6 +9,7 @@
 #include "WeightLossPill.h"
 #include "ReduceDrinkDays.h"
 #include "SmokeStopIntervention.h"
+#include "ModExIncrease.h"
 
 InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvider* tp)
 {

@@ -20,6 +20,7 @@ FEM
 # Input data (only need select files the rest are generated)
 input_data/detailed_output/
 input_data/*.dta
+FEM_Stata/Makedata/ELSA/*.dta
 !input_data/H_ELSA.dta
 !input_data/ELSA_long.dta
 !input_data/census_pop_estimates_02-18.csv

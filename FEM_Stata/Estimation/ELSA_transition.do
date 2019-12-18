@@ -21,7 +21,7 @@ global ols logbmi retage ipubpen atotf itearn
 global order adlstat iadlstat drinkd_e vgactx_e mdactx_e ltactx_e smkstat
 
 global allvars_died male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2drink l2drinkd_e
-* cancre below
+* cancre
 global allvars_cancre male hsless college l2age65l l2age6574 l2age75p l2logbmi smokev l2smoken l2drink l2drinkd_e smokef
 global allvars_diabe male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2drink l2drinkd_e
 global allvars_hearte male hsless college l2age65l l2age6574 l2age75p l2hibpe l2diabe l2logbmi l2smokev l2smoken smokef l2drink l2drinkd_e
@@ -39,8 +39,9 @@ global allvars_parkine male hsless college l2age65l l2age6574 l2age75p l2diabe  
 * smoke_start and smoke_stop
 global allvars_smoke_start male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd_e
 ***********************************
-global allvars_smoke_stop male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd_e smokef
+global allvars_smoke_stop male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd_e
 global allvars_drink male hsless college l2age65l l2age6574 l2age75p logbmi smoken smokef
+* male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd_e smokef
 * smoken and smokev
 * Look at Hymovitz et. al (1997) for justification for some of the vars as smoking predictors (like drinkd_e. Need to add smokef to this??)(Could also add var for self-reported health measures as paper says its important)
 global allvars_smoken male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd_e atotf itearn /*What are these again? Should they be lag??*/
@@ -86,7 +87,7 @@ local select_hlthlm !died & wave > 1
 local select_itearn !died
 local select_ipubpen !died & work == 0
 local select_retage !died & retemp == 1
-local select_drinkd_e !died & wave > 1
+local select_drinkd_e !died & drink == 1 & wave > 1
 
 
 /*********************************************************************/

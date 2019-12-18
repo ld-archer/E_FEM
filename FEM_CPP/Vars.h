@@ -518,6 +518,8 @@ namespace Vars
 		l2rdd_treated,				///< Lag of whether treated with ReduceDrinkDays intervention
 		ssi_treated,				///< Whether treated with SmokeStopIntervention
 		l2ssi_treated,				///< Lag of whether treated with SmokeStopIntervention
+		mei_treated,                ///< Whether treated with Moderate Exercise Increase intervention
+		l2mei_treated,              ///< Lag of whether treated with Moderate Exercise Increase intervention
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
