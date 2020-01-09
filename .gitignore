@@ -29,6 +29,8 @@ FEM_Stata/Makedata/ELSA/*.dta
 !input_data/psid_incoming_means.dta
 !input_data/psid_incoming_vcmatrix.dta
 !input_data/crossvalidation.dta
+!input_data/education_data.dta
+!input_data/pop_projections.dta
 
 # Output
 output/
