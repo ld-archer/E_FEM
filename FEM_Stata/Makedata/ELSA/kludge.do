@@ -144,11 +144,3 @@ replace vgactx_e = 5 if missing(vgactx_e)
 replace l2vgactx_e = 5 if missing(l2vgactx_e)
 replace mdactx_e = 5 if missing(mdactx_e)
 replace l2mdactx_e = 5 if missing(l2mdactx_e)
-
-* Handle missing modex_reg data
-replace l2modex_reg = modex_reg if missing(l2modex_reg) & !missing(modex_reg)
-replace modex_reg = l2modex_reg if missing(modex_reg) & !missing(l2modex_reg)
-** DO NOT LEAVE THIS LINE IN!! JUST FOR REMOVING AN ERROR, MUST HOTDECK THIS SOON
-replace l2modex_reg = 0 if missing(l2modex_reg)
-replace modex_reg = 0 if missing(modex_reg)
-** DO NOT LEAVE!!!

@@ -316,15 +316,6 @@ gen adl3p = adlstat==4 if !missing(adlstat)
 gen iadl1 = iadlstat==2 if !missing(iadlstat)
 gen iadl2p = iadlstat==3 if !missing(iadlstat)
 
-* Generate indicator variable for moderate exercise.
-* If exercise once a week or more, indicator has value of 1
-* Indicator == 0 if exercise less than once a week.
-* Organising var like this so able to run interventions
-gen modex_reg = 0
-replace modex_reg = 1 if mdactx_e==2 | mdactx_e==3
-replace modex_reg = . if missing(mdactx_e)
-label variable modex_reg "Moderate exercise 1+ times per week"
-
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
 replace bmi = bmi_ipolate if missing(bmi)
