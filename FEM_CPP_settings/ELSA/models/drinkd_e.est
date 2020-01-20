@@ -1,0 +1,16 @@
+oprobit
+drinkd_e
+male                      0.35410
+hsless                   -0.21029
+college                   0.28030
+l2age65l                  0.00787
+l2age6574                -0.00713
+l2age75p                 -0.00902
+l2logbmi                 -0.71797
+cut1                     -2.48859
+cut2                     -2.07109
+cut3                     -1.66562
+cut4                     -1.36012
+cut5                     -1.11385
+cut6                     -0.88009
+cut7                     -0.64533

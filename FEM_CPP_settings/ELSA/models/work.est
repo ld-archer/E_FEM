@@ -1,0 +1,25 @@
+probit
+work
+male	.1862621
+hsless	-.0841072
+college	.044338
+l2age65l	-.0817062
+l2age6574	-.0413553
+l2age75p	-.0369295
+l2hearte	-.0836637
+l2stroke	-.1271341
+l2cancre	-.0098501
+l2hibpe	-.02883
+l2diabe	-.1280613
+l2lunge	-.1758823
+l2logbmi	.0103461
+l2work	2.286414
+l2adl1	-.0802907
+l2adl2	-.2282396
+l2adl3p	-.3769244
+l2iadl1	-.187117
+l2iadl2p	-.3818823
+l2psyche	-.0941895
+l2arthre	-.0585812
+l2parkine	-.004214
+_cons	3.340717

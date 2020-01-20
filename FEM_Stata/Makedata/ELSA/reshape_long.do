@@ -340,7 +340,7 @@ label values smkstat smkstat
 xtset hhidpn wave
 * Make sure that smokev is an absorbing state
 replace smokev = 1 if L.smokev == 1 & smokev == 0
-* L.***, L is lag operator; can use L2 for 2 wave prior also
+* L.***, L is lag operator; can use L2 for 2 waves prior also
 * can use this as xtset tells stata that data is panel data
 
 #d ;
@@ -437,10 +437,10 @@ gen hsless = (educ == 1)
 gen college = (educ == 3)
 
 * Preferably would use PMM here but going to hotdeck for the time being
-*replace drinkd_e = . if missing(drinkd_e)
-*hotdeck drinkd_e using ELSA_drinkd_e_imp, store seed(`seed') keep(_all) impute(1)
+replace drinkd_e = . if missing(drinkd_e)
+hotdeck drinkd_e using ELSA_drinkd_e_imp, store seed(`seed') keep(_all) impute(1)
 * Load in imputed dataset
-*use ELSA_drinkd_e_imp1.dta, clear
+use ELSA_drinkd_e_imp1.dta, clear
 
 * Now impute lag of educ and drinkd_e
 replace l2educ = educ

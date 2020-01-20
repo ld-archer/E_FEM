@@ -1,0 +1,15 @@
+time_scaled_probit
+diabe
+2
+male	.1991589
+hsless	.0469645
+college	-.0746042
+l2age65l	.0125546
+l2age6574	.0080101
+l2age75p	-.0103855
+l2logbmi	1.61006
+l2smokev	.0652163
+l2smoken	.1246527
+l2drink	-.1219559
+l2drinkd_e	-.0358998
+_cons	-8.252796

@@ -3,10 +3,6 @@
 *.gph
 *.png
 
-# Model files directory
-FEM_CPP_settings/ELSA/models/*
-FEM_Stata/Estimates/ELSA/*
-
 # C++
 *.o
 *.d
@@ -32,8 +28,8 @@ FEM_Stata/Makedata/ELSA/*.dta
 !input_data/education_data.dta
 !input_data/pop_projections.dta
 
-# Output
-output/
+# Output files
+output/*
 
 # Jetbrains
 .idea/

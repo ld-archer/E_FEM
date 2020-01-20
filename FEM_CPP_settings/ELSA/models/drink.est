@@ -1,0 +1,12 @@
+probit
+drink
+male	.324787
+hsless	-.3039548
+college	.1021366
+l2age65l	-.0026352
+l2age6574	-.0291736
+l2age75p	-.022586
+logbmi	-.4055273
+smoken	-.223053
+smokef	.0003759
+_cons	2.835991

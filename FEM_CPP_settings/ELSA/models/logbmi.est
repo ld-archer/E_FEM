@@ -1,0 +1,30 @@
+regress
+logbmi
+male	.0008788
+hsless	.0007759
+college	-.0014155
+l2age65l	-.0000489
+l2age6574	-.0002692
+l2age75p	-.0005568
+l2cancre	.0003802
+l2diabe	-.0028421
+l2hearte	-.0005964
+l2hibpe	.0003192
+l2lunge	-.0003271
+l2stroke	.0009651
+l2adl1	.0003197
+l2adl2	-.0014654
+l2adl3p	.0024103
+l2iadl1	.0001538
+l2iadl2p	-.0021767
+l2logbmi	.9974473
+l2smoken	-.0008222
+l2psyche	-.000062
+l2arthre	.0002905
+l2asthmae	-.00124
+l2parkine	-.0005632
+drink	.0015204
+drinkd_e	.0001353
+_cons	.0123906
+| Root Mean Square Error
+_rmse	.033156

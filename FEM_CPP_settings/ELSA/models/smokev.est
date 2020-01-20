@@ -1,0 +1,14 @@
+probit
+smokev
+male	.3902139
+hsless	.1626803
+college	-.1920409
+l2age65l	.0096696
+l2age6574	-.0058429
+l2age75p	.0088995
+l2logbmi	.1124949
+l2drink	.0478348
+l2drinkd_e	.0543677
+atotf	-2.75e-07
+itearn	-3.82e-06
+_cons	-.952285

@@ -1,0 +1,20 @@
+time_scaled_probit
+stroke
+2
+male	.0298017
+hsless	.081442
+college	-.0168334
+l2age65l	.0283223
+l2age6574	.0342515
+l2age75p	.0228385
+l2hearte	.1185262
+l2cancre	-.0130238
+l2hibpe	.1406155
+l2diabe	.1938541
+l2logbmi	.1108179
+l2smokev	.0495458
+l2smoken	.3315504
+smokef	-.0169547
+l2drink	-.0533068
+l2drinkd_e	.01222
+_cons	-4.839669

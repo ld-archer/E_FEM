@@ -1,0 +1,14 @@
+time_scaled_probit
+lunge
+2
+male	.0588471
+hsless	.0612311
+college	-.1083733
+l2age65l	.0259008
+l2age6574	.0073777
+l2age75p	.0020013
+l2logbmi	-.1415059
+l2smokev	.2824442
+l2smoken	.4807776
+smokef	-.0045017
+_cons	-3.738982
