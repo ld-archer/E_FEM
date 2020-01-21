@@ -50,17 +50,17 @@ reweight: projections $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.d
 	cd FEM_Stata/Makedata/ELSA && scen=base $(STATA) reweight_ELSA_stock.do
 	cd FEM_Stata/Makedata/ELSA && scen=exercise1 $(STATA) reweight_ELSA_stock.do
 	cd FEM_Stata/Makedata/ELSA && scen=drink $(STATA) reweight_ELSA_stock.do
-	cd FEM_Stata/Makedata/ELSA && scen=drinkd_e $(STATA) reweight_ELSA_stock.do
+	cd FEM_Stata/Makedata/ELSA && scen=drinkd $(STATA) reweight_ELSA_stock.do
 	cd FEM_Stata/Makedata/ELSA && scen=smoken $(STATA) reweight_ELSA_stock.do
 	cd FEM_Stata/Makedata/ELSA && scen=base $(STATA) reweight_ELSA_repl.do
 	cd FEM_Stata/Makedata/ELSA && scen=exercise1 $(STATA) reweight_ELSA_repl.do
 	cd FEM_Stata/Makedata/ELSA && scen=drink $(STATA) reweight_ELSA_repl.do
-	cd FEM_Stata/Makedata/ELSA && scen=drinkd_e $(STATA) reweight_ELSA_repl.do
+	cd FEM_Stata/Makedata/ELSA && scen=drinkd $(STATA) reweight_ELSA_repl.do
 	cd FEM_Stata/Makedata/ELSA && scen=smoken $(STATA) reweight_ELSA_repl.do
 
 ### Transitions
 
-transitions: $(DATADIR)/ELSA_transition.dta
+transitions: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_transition.do
 	cd FEM_Stata/Estimation && datain=$(DATADIR) && dataout=$(DATADIR) $(STATA) ELSA_transition.do
 
 transitions_bmi:

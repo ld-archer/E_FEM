@@ -573,9 +573,23 @@ VarsInfo::VarsInfo() {
 	info[Vars::pretemp]         	= VarInfo("pretemp", "Prob(considers self retired)", VarTypes::Float);
 	info[Vars::retage]        		= VarInfo("retage", "Retirement age", VarTypes::Float);
 	info[Vars::drink]				= VarInfo("drink", "Whether drinks alcohol at all", VarTypes::Boolean);
-	info[Vars::drinkd_e]			= VarInfo("drinkd_e", "Number of days per week drinks alcohol Approx Range [0,7]", VarTypes::Short);
+	info[Vars::drinkd]				= VarInfo("drinkd", "Number of days per week drinks alcohol, Range [0,7]", VarTypes::Short);
 	info[Vars::l2drink]				= VarInfo("l2drink", "Lag of whether drinks alcohol at all", VarTypes::Boolean);
-	info[Vars::l2drinkd_e]			= VarInfo("l2drinkd_e", "Lag of Number of days per week drinks alcohol Approx Range [0,7]", VarTypes::Short);
+	info[Vars::l2drinkd]			= VarInfo("l2drinkd", "Lag of Number of days per week drinks alcohol, Range [0,7]", VarTypes::Short);
+	info[Vars::drinkd1]				= VarInfo("drinkd1", "drinkd 1 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 1);
+	info[Vars::drinkd2]				= VarInfo("drinkd2", "drinkd 2 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 2);
+	info[Vars::drinkd3]				= VarInfo("drinkd3", "drinkd 3 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 3);
+	info[Vars::drinkd4]				= VarInfo("drinkd4", "drinkd 4 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 4);
+	info[Vars::drinkd_stat]			= VarInfo("drinkd_stat", "Drink Status", VarTypes::Short, true);
+	info[Vars::l2drinkd1]			= VarInfo("l2drinkd1", "Lag of drinkd1 [0, 1]", VarTypes::Boolean, Vars::l2drinkd_stat, 1);
+	info[Vars::l2drinkd2]			= VarInfo("l2drinkd2", "Lag of drinkd1 [0, 1]", VarTypes::Boolean, Vars::l2drinkd_stat, 2);
+	info[Vars::l2drinkd3]			= VarInfo("l2drinkd3", "Lag of drinkd1 [0, 1]", VarTypes::Boolean, Vars::l2drinkd_stat, 3);
+	info[Vars::l2drinkd4]			= VarInfo("l2drinkd4", "Lag of drinkd1 [0, 1]", VarTypes::Boolean, Vars::l2drinkd_stat, 4);
+	info[Vars::l2drinkd_stat]		= VarInfo("l2drinkd_stat", "Lag of Drink Status", VarTypes::Short);
+	info[Vars::pdrinkd_stat1]		= VarInfo("pdrinkd_stat1", "Probability of drinkd_stat==1", VarTypes::Float);
+	info[Vars::pdrinkd_stat2]		= VarInfo("pdrinkd_stat2", "Probability of drinkd_stat==2", VarTypes::Float);
+	info[Vars::pdrinkd_stat3]		= VarInfo("pdrinkd_stat3", "Probability of drinkd_stat==3", VarTypes::Float);
+	info[Vars::pdrinkd_stat4]		= VarInfo("pdrinkd_stat4", "Probability of drinkd_stat==4", VarTypes::Float);
 	info[Vars::vgactx_e]			= VarInfo("vgactx_e", "Number of times done vigorous exercise per week, stored as Short", VarTypes::Short);
 	info[Vars::mdactx_e]			= VarInfo("mdactx_e", "Number of times done moderate exercise per week, stored as Short", VarTypes::Short);
 	info[Vars::ltactx_e]			= VarInfo("ltactx_e", "Number of times done light exercise per week, stored as Short", VarTypes::Short);
@@ -710,7 +724,12 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::retemp] = Vars::l2retemp;
 	lag_map[Vars::atotf] = Vars::l2atotf;
 	lag_map[Vars::drink] = Vars::l2drink;
-	lag_map[Vars::drinkd_e] = Vars::l2drinkd_e;
+	lag_map[Vars::drinkd] = Vars::l2drinkd;
+	lag_map[Vars::drinkd1] = Vars::l2drinkd1;
+	lag_map[Vars::drinkd2] = Vars::l2drinkd2;
+	lag_map[Vars::drinkd3] = Vars::l2drinkd3;
+	lag_map[Vars::drinkd4] = Vars::l2drinkd4;
+	lag_map[Vars::drinkd_stat] = Vars::l2drinkd_stat;
 	lag_map[Vars::vgactx_e] = Vars::l2vgactx_e;
 	lag_map[Vars::mdactx_e] = Vars::l2mdactx_e;
 	lag_map[Vars::ltactx_e] = Vars::l2ltactx_e;
@@ -756,6 +775,10 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::adl3p] = 		Vars::padlstat4;
 	prob_map[Vars::iadl1] = 		Vars::piadlstat2;
 	prob_map[Vars::iadl2p] = 		Vars::piadlstat3;
+	prob_map[Vars::drinkd1] =		Vars::pdrinkd_stat1;
+	prob_map[Vars::drinkd2] =		Vars::pdrinkd_stat2;
+	prob_map[Vars::drinkd3] =		Vars::pdrinkd_stat3;
+	prob_map[Vars::drinkd4] =		Vars::pdrinkd_stat4;
 
 
 

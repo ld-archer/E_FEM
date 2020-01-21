@@ -1,17 +1,17 @@
 time_scaled_probit
 hibpe
 2
-male	.0655113
-hsless	.1317231
-college	-.0020307
-l2age65l	.0073211
-l2age6574	.0172148
-l2age75p	-.0044917
-l2diabe	.0532858
-l2logbmi	.8536265
-l2smokev	.0294565
-l2smoken	.0693397
-l2hearte	-.076923
-l2drink	-.0205415
-l2drinkd_e	.0046746
-_cons	-4.917198
+male	.0660555
+hsless	.1312486
+college	-.0012697
+l2age65l	.0073468
+l2age6574	.017237
+l2age75p	-.0044906
+l2diabe	.0529923
+l2logbmi	.8525658
+l2smokev	.0301441
+l2smoken	.069096
+l2hearte	-.0769771
+l2drink	-.0194407
+l2drinkd_stat	.0077617
+_cons	-4.923314

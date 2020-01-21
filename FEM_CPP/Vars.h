@@ -75,7 +75,12 @@ namespace Vars
 		died,                     ///< Died [0, 1], stored as Boolean
 		doctim,                   ///< Times at a doctor Approx Range [0.0182607,80.70206], stored as Double
 		drink,						///< Whether drinks alcohol at all, stored asl Boolean
-		drinkd_e, 					///< How many days per week drinking alcohol, stored as Short
+		drinkd, 					///< How many days per week drinking alcohol, stored as Short
+		drinkd1,					///< Drinkd 1 [0, 1], stored as Boolean
+		drinkd2,					///< Drinkd 2 [0, 1], stored as Boolean
+		drinkd3,					///< Drinkd 3 [0, 1], stored as Boolean
+		drinkd4,					///< Drinkd 4 [0, 1], stored as Boolean
+		drinkd_stat,				///< Drinkd Status (1=0 days, 2 = 1/2 days, 3 = 3/4, 4 = 5-7)
 		educ,                     ///< Education recoded Approx Range [1, 3], stored as Short
 		educlvl,									///< Six-level education variable, all educ vars should derive from this for FAM
 		educ_t1, 									///< Transition variable from educlvl1
@@ -222,7 +227,12 @@ namespace Vars
 		l2diclaim,                 ///< Lag of Claiming SSDI, [0, 1], stored as Boolean
 		l2died,                    ///< Lag of Died, [0, 1], stored as Boolean
 		l2drink,					///< Lag of whether drinks alcohol at all, stored as Boolean
-		l2drinkd_e,					///< Lag of how many days per week drinking alcohol, stored as Short
+		l2drinkd,					///< Lag of how many days per week drinking alcohol, stored as Short
+		l2drinkd1,					///< Lag of drinkd 1 [0, 1], stored as Boolean
+		l2drinkd2,					///< Lag of drinkd 2 [0, 1], stored as Boolean
+		l2drinkd3,					///< Lag of drinkd 3 [0, 1], stored as Boolean
+		l2drinkd4,					///< Lag of drinkd 4 [0, 1], stored as Boolean
+		l2drinkd_stat,				///< Lag of drinkd status
 		l2gkcarehrs,								///< Lag of grandkid care hours
 		l2hatota,                  ///< Lag of HH wlth in 1000s, Approx Range [-2245.5, 74459], stored as Double
 		l2hatotax,                 ///< Lag of HH wlth in 1000s if positive-max 2000,zero otherwise, Approx Range [-2245.5, 2000], stored as Double
@@ -392,6 +402,10 @@ namespace Vars
 		pdiabe,                   ///< Probability of diabetes, stored as Double
 		pdied,                    ///< Probability of death, stored as Double
 		pdrink,						///< Probability of whether drinks alcohol at all, stored as Double
+		pdrinkd_stat1,				///< Probability of drinkd_stat==1, stored as Float
+		pdrinkd_stat2,				///< Probability of drinkd_stat==2, stored as Float
+		pdrinkd_stat3,				///< Probability of drinkd_stat==3, stored as Float
+		pdrinkd_stat4,				///< Probability of drinkd_stat==4, stored as Float
 		phearte,                  ///< Probability of heart disease, stored as Double
 		phibpe,                   ///< Probability of hypertension, stored as Double
 		phicap_nonzero,           ///< Probability of nonzero household capital income, Double

@@ -42,8 +42,9 @@ local measures
 						t_ipubpen a_ipubpen
 						t_atotf   a_atotf
 						t_itearn  a_itearn
-					p_drink    i_drink    n_drink
-					a_drinkd_e 
+					p_drink		i_drink		n_drink
+					p_drinkd1	p_drinkd2	p_drinkd3	p_drinkd4
+					a_drinkd 	a_drinkd_stat
 					p_mdactx_e	a_mdactx_e
 			
 										

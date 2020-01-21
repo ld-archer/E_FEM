@@ -4,8 +4,8 @@ local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
-*use ../../../input_data/H_ELSA.dta, clear
-use $outdata/H_ELSA.dta, clear
+use ../../../input_data/H_ELSA.dta, clear
+*use $outdata/H_ELSA.dta, clear
 
 global firstwave 1
 global lastwave 7
@@ -125,6 +125,14 @@ forvalues wv = $firstwave/$lastwave {
     rename h`wv'atotf r`wv'atotf
 }
 
+* Rename r*drinkd_e to more readable (and pleasant) form - r*drinkd
+forvalues wv = $firstwave/$lastwave {
+	if `wv' == 1 {
+		continue /*drinkd_e has no data for wave 1 so continue*/
+	}
+	rename r`wv'drinkd_e r`wv'drinkd
+}
+
 * Rename variables to make reshape easier and have names consistent with US FEM
 * Respondent?
 #d ;
@@ -174,7 +182,7 @@ foreach var in
     mdactx_e
     ltactx_e
     drink
-    drinkd_e
+    drinkd
     drinkwn_e
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
@@ -192,7 +200,7 @@ reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata be
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e
-    drink drinkd_e drinkwn_e
+    drink drinkd drinkwn_e
 , i(idauniq) j(wave)
 ; 
 
@@ -239,7 +247,7 @@ label variable vgactx_e "Number of times done vigorous exercise per week"
 label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
-label variable drinkd_e "# Days/week has a drink"
+label variable drinkd "# Days/week has a drink"
 label variable drinkwn_e "# drinks/week"
 
 *** Recode Variables ***
@@ -335,6 +343,16 @@ replace smkstat = 3 if smoken == 1
 label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
+* Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
+recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
+label define drinkd_stat 1 "Teetotal" 2 "Light drinker" 3 "Moderate drinker" 4 "Heavy drinker"
+label values drinkd_stat drinkd_stat
+
+gen drinkd1 = drinkd_stat==1 if !missing(drinkd_stat)
+gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
+gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
+gen drinkd4 = drinkd_stat==4 if !missing(drinkd_stat)
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
@@ -382,7 +400,8 @@ foreach var in
     mdactx_e
     ltactx_e
     drink
-    drinkd_e
+    drinkd
+    drinkd_stat
     drinkwn_e
     {;
         gen l2`var' = L.`var';
@@ -437,15 +456,30 @@ gen hsless = (educ == 1)
 gen college = (educ == 3)
 
 * Preferably would use PMM here but going to hotdeck for the time being
-replace drinkd_e = . if missing(drinkd_e)
-hotdeck drinkd_e using ELSA_drinkd_e_imp, store seed(`seed') keep(_all) impute(1)
+replace drinkd = . if missing(drinkd)
+hotdeck drinkd using ELSA_drinkd_imp, store seed(`seed') keep(_all) impute(1)
 * Load in imputed dataset
-use ELSA_drinkd_e_imp1.dta, clear
+use ELSA_drinkd_imp1.dta, clear
 
-* Now impute lag of educ and drinkd_e
+*Once again hotdecking because it's simple, need to replace
+replace drinkd_stat = . if missing(drinkd_stat)
+hotdeck drinkd_stat using ELSA_drinkd_stat_imp, store seed(`seed') keep(_all) impute(1)
+* Load in imputed dataset
+use ELSA_drinkd_stat_imp1.dta, clear
+
+* Now impute lag of educ and drink vars
 replace l2educ = educ
-replace l2drinkd_e = drinkd_e if missing(l2drinkd_e) & !missing(drinkd_e)
-replace drinkd_e = l2drinkd_e if missing(drinkd_e) & !missing(l2drinkd_e)
+replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
+
+* Handle missing drinkd_stat data
+replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat)
+replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat)
+
+* Now handle missing drinkd# data
+replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
+replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
+replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
+replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
 
 /*
 * Impute BMI data using hotdeck method TODO
@@ -455,12 +489,12 @@ mi set mlong
 
 mi register imputed bmi
 
-mi impute pmm bmi male age adlstat hsless college drink drinkd_e vgactx_e mdactx_e ltactx_e, add(20) rseed(`seed') knn(5)
+mi impute pmm bmi male age adlstat hsless college drink drinkd vgactx_e mdactx_e ltactx_e, add(20) rseed(`seed') knn(5)
 
 codebook bmi
 */
 
-*save ../../../input_data/ELSA_long.dta, replace
-save $outdata/ELSA_long.dta, replace
+save ../../../input_data/ELSA_long.dta, replace
+*save $outdata/ELSA_long.dta, replace
 
 capture log close

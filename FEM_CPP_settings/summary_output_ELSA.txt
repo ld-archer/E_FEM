@@ -203,9 +203,24 @@ i_drink_f,Incidence of drink: Sample= female,drink,mean,1,weight,l2died==0&l2dri
 n_drink_all,Sum of drink: Sample= all,drink,sum,1,weight,l2died==0
 n_drink_m,Sum of drink: Sample= male,drink,sum,1,weight,l2died==0& male == 1
 n_drink_f,Sum of drink: Sample= female,drink,sum,1,weight,l2died==0& male == 0
-a_drinkd_e_all,Average of drinkd_e: Sample= all,drinkd_e,mean,1,weight,l2died==0
-a_drinkd_e_m,Average of drinkd_e: Sample= male,drinkd_e,mean,1,weight,l2died==0& male == 1
-a_drinkd_e_f,Average of drinkd_e: Sample= female,drinkd_e,mean,1,weight,l2died==0& male == 0
+p_drinkd1_all,Prevalence of drinkd1: Sample= all,drinkd1,mean,1,weight,l2died==0
+p_drinkd1_m,Prevalence of drinkd1: Sample= male,drinkd1,mean,1,weight,l2died==0& male == 1
+p_drinkd1_f,Prevalence of drinkd1: Sample= female,drinkd1,mean,1,weight,l2died==0& male == 0
+p_drinkd2_all,Prevalence of drinkd2: Sample= all,drinkd2,mean,1,weight,l2died==0
+p_drinkd2_m,Prevalence of drinkd2: Sample= male,drinkd2,mean,1,weight,l2died==0& male == 1
+p_drinkd2_f,Prevalence of drinkd2: Sample= female,drinkd2,mean,1,weight,l2died==0& male == 0
+p_drinkd3_all,Prevalence of drinkd3: Sample= all,drinkd3,mean,1,weight,l2died==0
+p_drinkd3_m,Prevalence of drinkd3: Sample= male,drinkd3,mean,1,weight,l2died==0& male == 1
+p_drinkd3_f,Prevalence of drinkd3: Sample= female,drinkd3,mean,1,weight,l2died==0& male == 0
+p_drinkd4_all,Prevalence of drinkd4: Sample= all,drinkd4,mean,1,weight,l2died==0
+p_drinkd4_m,Prevalence of drinkd4: Sample= male,drinkd4,mean,1,weight,l2died==0& male == 1
+p_drinkd4_f,Prevalence of drinkd4: Sample= female,drinkd4,mean,1,weight,l2died==0& male == 0
+a_drinkd_all,Average of drinkd: Sample= all,drinkd,mean,1,weight,l2died==0
+a_drinkd_m,Average of drinkd: Sample= male,drinkd,mean,1,weight,l2died==0& male == 1
+a_drinkd_f,Average of drinkd: Sample= female,drinkd,mean,1,weight,l2died==0& male == 0
+a_drinkd_stat_all,Average of drinkd_stat: Sample= all,drinkd_stat,mean,1,weight,l2died==0
+a_drinkd_stat_m,Average of drinkd_stat: Sample= male,drinkd_stat,mean,1,weight,l2died==0& male == 1
+a_drinkd_stat_f,Average of drinkd_stat: Sample= female,drinkd_stat,mean,1,weight,l2died==0& male == 0
 p_mdactx_e_all,Prevalence of mdactx_e: Sample= all,mdactx_e,mean,1,weight,l2died==0
 p_mdactx_e_m,Prevalence of mdactx_e: Sample= male,mdactx_e,mean,1,weight,l2died==0& male == 1
 p_mdactx_e_f,Prevalence of mdactx_e: Sample= female,mdactx_e,mean,1,weight,l2died==0& male == 0

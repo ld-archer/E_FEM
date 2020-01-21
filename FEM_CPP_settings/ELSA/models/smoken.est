@@ -1,14 +1,14 @@
 probit
 smoken
-male	.1011448
-hsless	.2735829
-college	-.3085362
-l2age65l	-.0242733
-l2age6574	-.0326023
-l2age75p	-.0506143
-l2logbmi	-1.149775
-l2drink	-.1404786
-l2drinkd_e	-.0122618
-atotf	-1.47e-06
-itearn	-6.47e-06
-_cons	4.398029
+male	.1073363
+hsless	.2694634
+college	-.3048529
+l2age65l	-.0241834
+l2age6574	-.0327727
+l2age75p	-.0508091
+l2logbmi	-1.16024
+l2drink	-.1119191
+l2drinkd_stat	-.0470336
+atotf	-1.45e-06
+itearn	-6.37e-06
+_cons	4.476512

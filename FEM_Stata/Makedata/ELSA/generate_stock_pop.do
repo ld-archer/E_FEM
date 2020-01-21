@@ -73,12 +73,12 @@ saveold $outdata/ELSA_stock_drink.dta, replace v(12)
 use $outdata/ELSA_stock_base.dta, clear
 *use ../../../input_data/ELSA_stock_base.dta, clear
 * Decrease number of days/week people drink alcohol
-* var is drinkd_e, has 8 levels
+* var is drinkd, has 8 levels
 * Ranges from 0-7, for number of days/week
 * Reduce every person by 1 (except 0 for obvious reasons)
-replace drinkd_e = drinkd_e - 1 if drinkd_e > 0
-saveold $outdata/ELSA_stock_drinkd_e.dta, replace v(12)
-*saveold ../../../input_data/ELSA_stock_drinkd_e.dta, replace v(12)
+replace drinkd = drinkd - 1 if drinkd > 0
+saveold $outdata/ELSA_stock_drinkd.dta, replace v(12)
+*saveold ../../../input_data/ELSA_stock_drinkd.dta, replace v(12)
 
 
 use $outdata/ELSA_stock_base.dta, clear

@@ -1,15 +1,15 @@
 oprobit
 smkstat
-male                      0.28653
-hsless                    0.20539
-college                  -0.21570
-l2age65l                 -0.00354
-l2age6574                -0.01460
+male                      0.29156
+hsless                    0.20257
+college                  -0.21048
+l2age65l                 -0.00338
+l2age6574                -0.01444
 l2age75p                 -0.00501
-l2logbmi                 -0.29136
-l2drink                  -0.01740
-l2drinkd_e                0.02920
+l2logbmi                 -0.30018
+l2drink                  -0.00695
+l2drinkd_stat             0.04578
 atotf                    -0.00000
 itearn                   -0.00000
-cut1                     -1.38816
-cut2                      0.11394
+cut1                     -1.36066
+cut2                      0.14009

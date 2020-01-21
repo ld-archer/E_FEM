@@ -54,7 +54,7 @@ void ReduceDrinkDays::intervene(PersonVector& persons, unsigned int year, Random
 			if(elig(person)) {
 				//  Yes, treat them
 				person->set(Vars::rdd_treated, true);
-				person->set(Vars::logbmi, person->get(Vars::drinkd_e) - 2);
+				person->set(Vars::logbmi, person->get(Vars::drinkd) - 2);
 			}
 		}
 	}
@@ -62,5 +62,5 @@ void ReduceDrinkDays::intervene(PersonVector& persons, unsigned int year, Random
 
 bool ReduceDrinkDays::elig(Person* p) const {
 	// Eligible for treatment if not treated yet, and BMI >= 25
-	return !p->test(Vars::rdd_treated) && p->get(Vars::drinkd_e) >= 4;
+	return !p->test(Vars::rdd_treated) && p->get(Vars::drinkd) >= 4;
 }
