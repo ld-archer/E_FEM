@@ -128,10 +128,10 @@ replace l2asthmae = asthmae if missing(l2asthmae)
 replace l2parkine = parkine if missing(l2parkine)
 
 *Handle missing drink data
-replace l2drink = drink if missing(l2drink) & !missing(drink)
-replace drink = l2drink if missing(drink) & !missing(l2drink)
+*replace l2drink = drink if missing(l2drink) & !missing(drink)
+*replace drink = l2drink if missing(drink) & !missing(l2drink)
 ** DO NOT LEAVE THIS LINE IN!! JUST FOR REMOVING AN ERROR, MUST HOTDECK/IMPUTE THIS SOON
-replace l2drink = 0 if missing(l2drink)
+*replace l2drink = 0 if missing(l2drink)
 ** DO NOT LEAVE!!!
 
 * Handle missing vgactx_e && mdactx_e data **THIS IS BAD!!!

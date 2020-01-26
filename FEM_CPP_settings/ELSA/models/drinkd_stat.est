@@ -1,12 +1,27 @@
 oprobit
 drinkd_stat
-male                      0.36003
-hsless                   -0.21671
-college                   0.31029
-l2age65l                  0.00792
-l2age6574                -0.01035
-l2age75p                 -0.01065
-l2logbmi                 -0.73308
-cut1                     -2.54394
-cut2                     -1.72076
-cut3                     -1.16923
+male                      0.36388
+hsless                   -0.20274
+college                   0.30483
+l2age65l                  0.00959
+l2age6574                -0.00878
+l2age75p                 -0.00659
+l2logbmi                 -0.60695
+l2cancre                  0.02645
+l2diabe                  -0.31639
+l2hearte                 -0.05124
+l2hibpe                   0.01733
+l2lunge                   0.00812
+l2stroke                 -0.02722
+l2adl1                    0.02579
+l2adl2                   -0.13193
+l2adl3p                  -0.14455
+l2iadl1                  -0.11509
+l2iadl2p                 -0.22088
+l2psyche                 -0.02245
+l2arthre                 -0.03256
+l2asthmae                -0.03532
+l2parkine                -0.08952
+cut1                     -2.08351
+cut2                     -1.25282
+cut3                     -0.69811
