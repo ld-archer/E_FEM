@@ -252,7 +252,7 @@ label variable drinkwn_e "# drinks/week"
 
 * There are 5,362 records missing massive amounts of data, they are almost useless
 * so should be removed. Easy way to do this is to remove those without an
-* interview data:
+* interview date:
 drop if missing(iwindy)
 * Also a single person missing a birthyear, may as well get rid
 drop if missing(rabyear)
@@ -348,6 +348,7 @@ drop if missing(cancre)
 drop if missing(hibpe)
 drop if missing(arthre)
 drop if missing(parkine)
+
 * Check
 *codebook cancre hibpe diabe lunge hearte stroke psyche asthmae arthre parkine
 
@@ -357,6 +358,10 @@ replace educ = . if missing(educ)
 replace drink = . if missing(drink)
 replace drinkd = . if missing(drinkd)
 
+* Need to set data as longitudinal:
+* xtset tells stata data is panel data (i.e. longitudinal)
+xtset hhidpn wave
+
 * Having a go at multiple imputation to replace a lot of the crap below
 * Does this need to be after we produce lag variables? I'm not sure and don't really care anymore
 * Set the style of the data as full long
@@ -365,48 +370,39 @@ mi set flong
 * Variables to be imputed
 local imputees bmi educ drink drinkd
 
+* Regular variables (used in imputation) (cba listing everything)
+local regulars ragender rbyr retemp work adlcount iadlcount hibpe diabe cancre lunge hearte stroke psyche asthmae arthre parkine
+
 * Check some summary statistics of imputees and pattern of missing data
 misstable summ `imputees'
 misstable pattern `imputees'
 
-* Register the variables to be imputed
+* Register the variables to be imputed and listed regulars
 mi register imputed `imputees'
+mi register regular `regulars'
 
 * Describe mi data
 mi describe
 
-* Check the models converge
-*logit drink i.educ i.drinkd bmi i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount
-*logit drink i.educ i.drinkd bmi i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine
-
-*ologit educ i.drink i.drinkd bmi i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount
-*ologit educ i.drink i.drinkd bmi i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine
-
-*ologit drinkd /*i.drink*/ i.educ bmi i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount
-*ologit drinkd /*i.drink*/ i.educ bmi i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine
-
-*regress bmi i.drink i.educ i.drinkd i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount
-*regress bmi i.drink i.educ i.drinkd i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine
-
-
-* Now actually impute the data!
-* Can't do this all in one go as drink and drinkd variables result in perfect prediction of each other
-* Therefore going to do them 1 by one, first impute drink then impute drinkd using same predictors (including imputed vars)
-*mi impute chained (regress) bmi (logit) drink (ologit) educ ///
-*	= i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
-*	, add(20) chaindots rseed(`seed')
-
 * Having a go at imputing with PMM instead of regress and multiple logit/ologit 
 mi impute chained (pmm, knn(10)) bmi drink educ ///
 	= i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
-	, add(20) chaindots rseed(`seed')
+	, add(5) chaindots rseed(`seed')
+	
+save ../../../input_data/ELSA_imputed1.dta, replace
+	
+mi extract 5
+
+mi impute chained (pmm, knn(10)) drinkd ///
+	= i.ragender rbyr bmi i.educ i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
+	, add(5) chaindots rseed(`seed')
+	
+save ../../../input_data/ELSA_imputed2.dta, replace
+	
+mi extract 5
 	
 * THIS TOOK FOREVER! Get a script working on here and then lets switch the data generation to the HPC
 * Can easily do the stata part on HPC then scp the data to machine and run the other bit locally
 * Bash script would do this? Make call to Makefile and then scp to local machine? Or some other type of transfer?
 
-*codebook bmi drink educ ragender rbyr retemp work adlcount iadlcount hibpe diabe cancre lunge hearte stroke psyche asthmae arthre parkine
-
-*mi impute chained (ologit) drinkd ///
-*	= i.ragender rbyr bmi i.educ i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
-*	, add(20) chaindots rseed(`seed')
+save ../../../input_data/ELSA_long_imputed1.dta, replace

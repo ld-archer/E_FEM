@@ -21,22 +21,28 @@ start_data: populations projections reweight
 
 populations: ELSA_long.dta ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transition.dta
 
+### Imputing data using Predictive Mean Matching
+
+ELSA_long.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/multiple_imputation_attempt1.do $(MAKEDATA)/multiple_imputation_part2.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_attempt1.do
+	cd $(MAKEDATA) $(STATA) multiple_imputation_part2.do
+
 ### Populations
 
 H_ELSA.dta: $(DATADIR)/ELSA_long.dta
-	cd FEM_Stata/Makedata/ELSA && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
+	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
-ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
-	cd FEM_Stata/Makedata/ELSA && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
+#ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
+#	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta
-	cd FEM_Stata/Makedata/ELSA && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
 
 ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta
-	cd FEM_Stata/Makedata/ELSA && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_replenishing_pop.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_replenishing_pop.do
 
 ELSA_transition.dta: $(DATADIR)/ELSA_long.dta
-	cd FEM_Stata/Makedata/ELSA && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do
 
 ### Producing the reweighting data (pop. projection and education)
 
@@ -47,16 +53,16 @@ projections: $(DATADIR)/census_pop_estimates_02-18.csv $(DATADIR)/CT0469_2011cen
 ### Reweighting
 
 reweight: projections $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta
-	cd FEM_Stata/Makedata/ELSA && scen=base $(STATA) reweight_ELSA_stock.do
-	cd FEM_Stata/Makedata/ELSA && scen=exercise1 $(STATA) reweight_ELSA_stock.do
-	cd FEM_Stata/Makedata/ELSA && scen=drink $(STATA) reweight_ELSA_stock.do
-	cd FEM_Stata/Makedata/ELSA && scen=drinkd $(STATA) reweight_ELSA_stock.do
-	cd FEM_Stata/Makedata/ELSA && scen=smoken $(STATA) reweight_ELSA_stock.do
-	cd FEM_Stata/Makedata/ELSA && scen=base $(STATA) reweight_ELSA_repl.do
-	cd FEM_Stata/Makedata/ELSA && scen=exercise1 $(STATA) reweight_ELSA_repl.do
-	cd FEM_Stata/Makedata/ELSA && scen=drink $(STATA) reweight_ELSA_repl.do
-	cd FEM_Stata/Makedata/ELSA && scen=drinkd $(STATA) reweight_ELSA_repl.do
-	cd FEM_Stata/Makedata/ELSA && scen=smoken $(STATA) reweight_ELSA_repl.do
+	cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_stock.do
+	cd $(MAKEDATA) && scen=exercise1 $(STATA) reweight_ELSA_stock.do
+	cd $(MAKEDATA) && scen=drink $(STATA) reweight_ELSA_stock.do
+	cd $(MAKEDATA) && scen=drinkd $(STATA) reweight_ELSA_stock.do
+	cd $(MAKEDATA) && scen=smoken $(STATA) reweight_ELSA_stock.do
+	cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_repl.do
+	cd $(MAKEDATA) && scen=exercise1 $(STATA) reweight_ELSA_repl.do
+	cd $(MAKEDATA) && scen=drink $(STATA) reweight_ELSA_repl.do
+	cd $(MAKEDATA) && scen=drinkd $(STATA) reweight_ELSA_repl.do
+	cd $(MAKEDATA) && scen=smoken $(STATA) reweight_ELSA_repl.do
 
 ### Transitions
 
