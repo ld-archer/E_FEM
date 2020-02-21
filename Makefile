@@ -15,6 +15,8 @@ RSCRIPT = Rscript
 
 ### Combined rules
 
+non_imp_all: ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transition.dta projections reweight transitions estimates summary_out
+
 ready_all: start_data transitions estimates summary_out
 
 start_data: populations projections reweight

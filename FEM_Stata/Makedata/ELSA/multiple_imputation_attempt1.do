@@ -368,7 +368,7 @@ xtset hhidpn wave
 mi set flong
 
 * Variables to be imputed
-local imputees bmi educ drink drinkd
+local imputees bmi educ drink
 
 * Regular variables (used in imputation) (cba listing everything)
 local regulars ragender rbyr retemp work adlcount iadlcount hibpe diabe cancre lunge hearte stroke psyche asthmae arthre parkine
@@ -392,6 +392,10 @@ mi impute chained (pmm, knn(10)) bmi drink educ ///
 save ../../../input_data/ELSA_imputed1.dta, replace
 	
 mi extract 5
+
+mi set flong
+mi register imputed drinkd
+mi register regular bmi educ drink `regulars'
 
 mi impute chained (pmm, knn(10)) drinkd ///
 	= i.ragender rbyr bmi i.educ i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
