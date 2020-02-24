@@ -253,9 +253,9 @@ label variable drinkwn_e "# drinks/week"
 * There are 5,362 records missing massive amounts of data, they are almost useless
 * so should be removed. Easy way to do this is to remove those without an
 * interview date:
-drop if missing(iwindy)
+*drop if missing(iwindy)
 * Also a single person missing a birthyear, may as well get rid
-drop if missing(rabyear)
+*drop if missing(rabyear)
 
 *** Recode Variables ***
 /*
@@ -335,19 +335,19 @@ gen iadl2p = iadlstat==3 if !missing(iadlstat)
 
 * Only 35 records missing information on work and 38 missing for retemp (share 35),
 * drop these to use for imputation
-replace retemp = . if missing(retemp)
-drop if missing(work)
-drop if missing(retemp)
+*replace retemp = . if missing(retemp)
+*drop if missing(work)
+*drop if missing(retemp)
 * Check
 *codebook work retemp
 
 * Also 6 records consistently missing data for chronic diseases, removing missing
 * cancre data removes these 6 records (pointless as contain no info on chronic
 * diseases)
-drop if missing(cancre)
-drop if missing(hibpe)
-drop if missing(arthre)
-drop if missing(parkine)
+*drop if missing(cancre)
+*drop if missing(hibpe)
+*drop if missing(arthre)
+*drop if missing(parkine)
 
 * Check
 *codebook cancre hibpe diabe lunge hearte stroke psyche asthmae arthre parkine
@@ -387,7 +387,7 @@ mi describe
 * Having a go at imputing with PMM instead of regress and multiple logit/ologit 
 mi impute chained (pmm, knn(10)) bmi drink educ ///
 	= i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
-	, add(5) chaindots rseed(`seed')
+	, add(5) chaindots rseed(`seed') force
 	
 save ../../../input_data/ELSA_imputed1.dta, replace
 	
@@ -399,7 +399,7 @@ mi register regular bmi educ drink `regulars'
 
 mi impute chained (pmm, knn(10)) drinkd ///
 	= i.ragender rbyr bmi i.educ i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
-	, add(5) chaindots rseed(`seed')
+	, add(5) chaindots rseed(`seed') force
 	
 save ../../../input_data/ELSA_imputed2.dta, replace
 	
