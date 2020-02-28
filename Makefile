@@ -30,19 +30,19 @@ populations: ELSA_long.dta ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transitio
 
 ### Imputing data using Predictive Mean Matching
 
-ELSA_long_imputed1.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/multiple_imputation_attempt1.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_attempt1.do
+#ELSA_long_imputed1.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/multiple_imputation_attempt1.do
+#	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_attempt1.do
 
-ELSA_long.dta: $(MAKEDATA)/multiple_imputation_part2.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_part2.do
+#ELSA_long.dta: $(MAKEDATA)/multiple_imputation_part2.do
+#	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_part2.do
 
 ### Populations
 
 H_ELSA.dta: $(DATADIR)/ELSA_long.dta
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
-#ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
-#	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
+ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
