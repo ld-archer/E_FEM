@@ -5,8 +5,8 @@ local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
-use ../../../input_data/H_ELSA.dta, clear
-*use $outdata/H_ELSA.dta, clear
+*use ../../../input_data/H_ELSA.dta, clear
+use $outdata/H_ELSA.dta, clear
 
 global firstwave 1
 global lastwave 7
@@ -389,7 +389,7 @@ mi impute chained (pmm, knn(10)) bmi drink educ ///
 	= i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
 	, add(5) chaindots rseed(`seed') force
 	
-save ../../../input_data/ELSA_imputed1.dta, replace
+*save ../../../input_data/ELSA_imputed1.dta, replace
 	
 mi extract 5
 
@@ -401,7 +401,7 @@ mi impute chained (pmm, knn(10)) drinkd ///
 	= i.ragender rbyr bmi i.educ i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
 	, add(5) chaindots rseed(`seed') force
 	
-save ../../../input_data/ELSA_imputed2.dta, replace
+*save ../../../input_data/ELSA_imputed2.dta, replace
 	
 mi extract 5
 	
@@ -409,4 +409,5 @@ mi extract 5
 * Can easily do the stata part on HPC then scp the data to machine and run the other bit locally
 * Bash script would do this? Make call to Makefile and then scp to local machine? Or some other type of transfer?
 
-save ../../../input_data/ELSA_long_imputed1.dta, replace
+*save ../../../input_data/ELSA_long_imputed1.dta, replace
+save $outdata/ELSA_long_imputed1.dta, replace

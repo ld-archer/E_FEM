@@ -1,5 +1,6 @@
 # Stata files
 *.log
+FEM_Stata/Makedata/ELSA/*.log
 *.gph
 *.png
 

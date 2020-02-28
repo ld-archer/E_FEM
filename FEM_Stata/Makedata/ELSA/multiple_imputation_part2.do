@@ -3,7 +3,10 @@
 
 clear
 
+quietly include ../../../fem_env.do
+
 use ../../../input_data/ELSA_long_imputed1.dta, clear
+use $outdata/ELSA_long_imputed1.dta, clear
 
 
 * log(bmi)
@@ -79,6 +82,10 @@ foreach var in
     drink
     drinkd
     drinkd_stat
+	drinkd1
+	drinkd2
+	drinkd3
+	drinkd4
     drinkwn_e
     {;
         gen l2`var' = L.`var';

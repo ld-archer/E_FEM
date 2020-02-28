@@ -30,9 +30,11 @@ populations: ELSA_long.dta ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transitio
 
 ### Imputing data using Predictive Mean Matching
 
-ELSA_long.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/multiple_imputation_attempt1.do $(MAKEDATA)/multiple_imputation_part2.do
+ELSA_long_imputed1.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/multiple_imputation_attempt1.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_attempt1.do
-	cd $(MAKEDATA) $(STATA) multiple_imputation_part2.do
+
+ELSA_long.dta: $(MAKEDATA)/multiple_imputation_part2.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_part2.do
 
 ### Populations
 
@@ -105,4 +107,8 @@ handovers:
 ### Housekeeping and cleaning
 
 clean:
-	rm -r *.log
+	rm -f *.log
+	rm -f FEM_Stata/Makedata/ELSA/*.log
+	rm -f output/*/*.dta
+	rm -f output/*/*/*.dta
+	rm -f output/graphs/*/*.png
