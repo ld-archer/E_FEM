@@ -102,7 +102,7 @@ local select_ipubpen !died & work == 0
 local select_retage !died & retemp == 1
 local select_drinkd !died & drink == 1 & wave > 1
 local select_drinkd_stat !died & drink == 1 & wave > 1
-local select_logbmi !died & (wave==2 | wave==4 | wave==6) /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */
+local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8) /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */
 
 
 /*********************************************************************/
