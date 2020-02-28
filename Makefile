@@ -9,6 +9,7 @@ MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
 include fem.makefile
 
 STATA = $(CURDIR)/run.stata15.sh
+MPI = $(CURDIR)/run.mpi.sh
 PYTHON = python
 RSCRIPT = Rscript
 
@@ -17,7 +18,11 @@ RSCRIPT = Rscript
 
 non_imp_all: ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transition.dta projections reweight transitions estimates summary_out
 
-ready_all: start_data transitions estimates summary_out
+full_run: ready_all simulation
+
+transitions_all: transitions estimates summary_out
+
+ready_all: start_data transitions estimates summary_out 
 
 start_data: populations projections reweight
 
@@ -85,6 +90,12 @@ estimates:
 summary_out:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
 	cd FEM_CPP_settings && measures_suffix=validate_ELSA $(STATA) summary_output_gen.do
+
+
+### FEM Simulation
+
+simulation:
+	$(MPI) ELSA_example.settings.txt
 
 ### Handovers and Validation
 

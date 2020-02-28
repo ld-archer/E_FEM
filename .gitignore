@@ -5,6 +5,7 @@
 
 # C++
 *.o
+FEM_CPP/optimized/*.o
 *.d
 
 # log files
