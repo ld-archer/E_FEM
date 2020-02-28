@@ -106,9 +106,11 @@ handovers:
 
 ### Housekeeping and cleaning
 
-clean:
+clean_log:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
+
+clean_out:
 	rm -f output/*/*.dta
 	rm -f output/*/*/*.dta
 	rm -f output/graphs/*/*.png

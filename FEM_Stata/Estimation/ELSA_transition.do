@@ -21,7 +21,6 @@ global ols logbmi retage ipubpen atotf itearn smokef
 global order adlstat iadlstat drinkd drinkd_stat vgactx_e mdactx_e ltactx_e smkstat
 
 *Death
-*global allvars_died male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 global allvars_died male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 
 * Chronic Diseases
@@ -89,7 +88,7 @@ foreach var in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae park
 }
 
 * Selection criteria for models that only rely on not being dead
-foreach var in adlstat iadlstat smkstat work retemp atotf drink vgactx_e mdactx_e ltactx_e smoken smokev {
+foreach var in adlstat iadlstat smkstat work retemp itearn atotf drink vgactx_e mdactx_e ltactx_e smoken smokev {
 	local select_`var' !died
 }
 
@@ -99,11 +98,10 @@ local select_smoke_start !died & l2smoken == 0
 local select_smoke_stop !died & l2smoken == 1
 local select_smokef !died & smoken==1
 local select_hlthlm !died & wave > 1
-local select_itearn !died
 local select_ipubpen !died & work == 0
 local select_retage !died & retemp == 1
-local select_drinkd_stat !died & drink == 1 & wave > 1
 local select_drinkd !died & drink == 1 & wave > 1
+local select_drinkd_stat !died & drink == 1 & wave > 1
 local select_logbmi !died & (wave==2 | wave==4 | wave==6) /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */
 
 
