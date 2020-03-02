@@ -16,11 +16,9 @@ RSCRIPT = Rscript
 
 ### Combined rules
 
-non_imp_all: ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transition.dta projections reweight transitions estimates summary_out
-
 full_run: ready_all simulation
 
-transitions_all: transitions estimates summary_out
+transitions_full: transitions estimates summary_out simulation
 
 ready_all: start_data transitions estimates summary_out 
 
@@ -28,13 +26,6 @@ start_data: populations projections reweight
 
 populations: ELSA_long.dta ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transition.dta
 
-### Imputing data using Predictive Mean Matching
-
-#ELSA_long_imputed1.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/multiple_imputation_attempt1.do
-#	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_attempt1.do
-
-#ELSA_long.dta: $(MAKEDATA)/multiple_imputation_part2.do
-#	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) multiple_imputation_part2.do
 
 ### Populations
 
@@ -53,11 +44,13 @@ ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta
 ELSA_transition.dta: $(DATADIR)/ELSA_long.dta
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do
 
+
 ### Producing the reweighting data (pop. projection and education)
 
 projections: $(DATADIR)/census_pop_estimates_02-18.csv $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)/gen_pop_projections.do $(MAKEDATA)/education_proj.do
 	cd $(MAKEDATA) $(STATA) gen_pop_projections.do
 	cd $(MAKEDATA) $(STATA) education_proj.do
+
 
 ### Reweighting
 
@@ -73,6 +66,7 @@ reweight: projections $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.d
 	cd $(MAKEDATA) && scen=drinkd $(STATA) reweight_ELSA_repl.do
 	cd $(MAKEDATA) && scen=smoken $(STATA) reweight_ELSA_repl.do
 
+
 ### Transitions
 
 transitions: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_transition.do
@@ -80,6 +74,7 @@ transitions: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_transition
 
 transitions_bmi:
 	cd FEM_Stata/Estimation $(STATA) ELSA_bmi_trans.do
+
 
 ### Estimates and Summary
 
@@ -99,6 +94,7 @@ summary_out:
 simulation:
 	$(MPI) ELSA_example.settings.txt
 
+
 ### Handovers and Validation
 
 handovers:
@@ -106,6 +102,7 @@ handovers:
 
 BMI_valid: 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do
+
 
 ### Housekeeping and cleaning
 
