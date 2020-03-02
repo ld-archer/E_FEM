@@ -24,15 +24,10 @@ global order adlstat iadlstat drinkd drinkd_stat vgactx_e mdactx_e ltactx_e smks
 global allvars_died male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smokev l2smoken l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 
 * Chronic Diseases
-*global allvars_cancre male hsless college l2age65l l2age6574 l2age75p l2logbmi smokev l2smoken l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 l2smokef
 global allvars_cancre male hsless college l2age65l l2age6574 l2age75p l2logbmi smokev l2smoken l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 l2smokef
-*global allvars_diabe male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 global allvars_diabe male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2hibpe l2psyche l2ltactx_e l2mdactx_e l2vgactx_e l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors*/
-*global allvars_hearte male hsless college l2age65l l2age6574 l2age75p l2hibpe l2diabe l2logbmi l2smokev l2smoken l2smokef l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 global allvars_hearte male hsless college l2age65l l2age6574 l2age75p l2hibpe l2diabe l2logbmi l2smokev l2smoken l2smokef l2ltactx_e l2mdactx_e l2vgactx_e l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 /*https://www.bhf.org.uk/informationsupport/risk-factors*/
-*global allvars_hibpe male hsless college l2age65l l2age6574 l2age75p l2diabe l2logbmi l2smokev l2smoken l2hearte l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 global allvars_hibpe male hsless college l2age65l l2age6574 l2age75p l2diabe l2logbmi l2smokev l2smoken l2smokef l2ltactx_e l2mdactx_e l2vgactx_e l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure*/
-*global allvars_lunge male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2smokef
 global allvars_lunge male hsless college l2age65l l2age6574 l2age75p l2logbmi l2smokev l2smoken l2smokef  /*https://www.healthline.com/health/understanding-idiopathic-pulmonary-fibrosis/chronic-lung-diseases-causes-and-risk-factors#1*/
 global allvars_stroke male hsless college l2age65l l2age6574 l2age75p l2hearte l2cancre l2hibpe l2diabe l2logbmi l2smokev l2smoken l2smokef l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 
@@ -41,7 +36,7 @@ global allvars_psyche male hsless college l2age65l l2age6574 l2age75p l2hearte l
 global allvars_asthmae male hsless college l2age65l l2age6574 l2age75p l2lunge l2logbmi l2smokev l2smoken l2smokef
 global allvars_parkine male hsless college l2age65l l2age6574 l2age75p l2diabe  l2stroke l2logbmi l2smokev l2smoken l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 
-* Smoking. Look at Hymovitz et. al (1997) for justification for some of the vars as smoking predictors (like drinkd_stat. Need to add smokef to this??)(Could also add var for self-reported health measures as paper says its important)
+* Smoking. Look at Hymovitz et. al (1997) for justification for some of the vars as smoking predictors (Could also add var for self-reported health measures as paper says its important)
 global allvars_smoke_start male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2psyche l2arthre l2asthmae l2parkine
 global allvars_smoke_stop male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2psyche l2arthre l2asthmae l2parkine
 global allvars_smoken male hsless college l2age65l l2age6574 l2age75p l2logbmi l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4 l2atotf l2itearn l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2psyche l2arthre l2asthmae l2parkine
@@ -55,9 +50,8 @@ global allvars_drink male hsless college l2age65l l2age6574 l2age75p l2logbmi l2
 global allvars_drinkd_stat male hsless college l2age65l l2age6574 l2age75p l2logbmi l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2psyche l2arthre l2asthmae l2parkine
 global allvars_drinkd male hsless college l2age65l l2age6574 l2age75p l2logbmi l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2psyche l2arthre l2asthmae l2parkine
 
-* LOGBMI & other health
-* Removed drinking variables as right hand predictors of logbmi - seemed to have big impact on drinking interventions (changed output to expected from opposite of expected!)
-global allvars_logbmi male hsless college l2age65l l2age6574 l2age75p l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2logbmi l2smoken l2psyche l2arthre l2asthmae l2parkine l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
+* Logbmi & other health
+global allvars_logbmi male hsless college l2age65l l2age6574 l2age75p l2logbmi l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2smoken l2psyche l2arthre l2asthmae l2parkine l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 global allvars_hlthlm male hsless college l2age65l l2age6574 l2age75p hearte stroke cancre hibpe diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smokev smoken smokef arthre psyche asthmae parkine drink drinkd1 drinkd2 drinkd3 drinkd4
 
 * Disabilities
