@@ -10,8 +10,8 @@ set more off
 **************************************************
 
 ***define folder locations***
-local stataraw "/home/ld-archer/Documents/EFEM/UKDA-5050-stata/stata/stata11_se/"
-local output "/home/ld-archer/Documents/EFEM/trunk/input_data/"
+local stataraw "/home/luke/Documents/E_FEM/UKDA-5050-stata/stata/stata11_se/"
+local output "/home/luke/Documents/E_FEM/trunk/input_data/"
 
 ***define raw files***
 global index "`stataraw'/index_file_wave_0-wave_5_v2.dta"
