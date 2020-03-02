@@ -31,6 +31,10 @@ replace drinkd6 = . if missing(drinkd6)
 replace drinkd7 = . if missing(drinkd7)
 replace drinkd8 = . if missing(drinkd8)
 
+generate bmi_imputed = 1 if missing(bmi2, bmi4, bmi6, bmi8)
+gen drink_imputed = 1 if missing(drink1, drink2, drink3, drink4, drink5, drink6, drink7, drink8)
+gen drinkd_imputed = 1 if missing(drinkd2, drinkd3, drinkd4, drinkd5, drinkd6, drinkd7, drinkd8)
+
 * Check if all missing values replaced
 codebook bmi2 bmi4 bmi6 bmi8 raeducl drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
 			drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8

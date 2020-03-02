@@ -104,6 +104,9 @@ simulation:
 handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
 
+BMI_valid: 
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do
+
 ### Housekeeping and cleaning
 
 clean_log:
