@@ -32,9 +32,11 @@ local measures
 						a_bmi     q05_bmi   q50_bmi   q95_bmi
 						p_adl1	  p_adl2    p_adl3p
 						p_iadl1   p_iadl2p
+						a_adlstat a_iadlstat
 						a_age     d_age
 						p_smoken  i_smoken  n_smoken
 						p_smokev  i_smokev  n_smokev
+						n_smokef  a_smokef
 						p_work 	  n_work
 						p_hlthlm  n_hlthlm
 						p_retemp  i_retemp  n_retemp
@@ -45,7 +47,9 @@ local measures
 					p_drink		i_drink		n_drink
 					p_drinkd1	p_drinkd2	p_drinkd3	p_drinkd4
 					a_drinkd 	a_drinkd_stat
-					p_mdactx_e	a_mdactx_e
+					p_mdactx_e	a_mdactx_e  n_mdactx_e
+					p_ltactx_e	a_ltactx_e  n_ltactx_e
+					p_vgactx_e	a_vgactx_e  n_vgactx_e
 			
 										
 ;
