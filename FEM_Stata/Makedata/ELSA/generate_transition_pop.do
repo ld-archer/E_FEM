@@ -9,8 +9,6 @@ local in_file : env INPUT
 local out_file : env OUTPUT
 
 *use ../../../input_data/ELSA_long.dta, clear
-*use ../../../input_data/ELSA_long_imputed.dta, clear
-*use $outdata/ELSA_long.dta, clear
 use $outdata/ELSA_long.dta, clear
 
 keep if wave >= 2
@@ -38,8 +36,8 @@ label var l2age75p "Max(0, two-year lag age - 73)"
 * Age squared
 gen l2agesq = l2`age_var'*l2`age_var'
 
-* BMI dummies for obese (BMI > 23.5) or not
-gen l2obese = (l2bmi > 23.5) if !missing(l2bmi)
+* BMI dummies for obese (BMI > 25.0) or not
+gen l2obese = (l2bmi > 25.0) if !missing(l2bmi)
 
 * Label the variables to use for technical appendix
 label variable male "Male"

@@ -11,17 +11,6 @@ local expansion 1
 
 local goal_yr : env GOAL_YR
 
-* Suffix for filenames
-if "`scr'" == "no_trend" {
-    local fnamesuf
-}
-if "`scr'" == "smoke_reduce" {
-    local fnamesuf "_`goal'_by_`goal_yr'"
-}
-if "`scr'" == "no_smokev" {
-    local fnamesuf "_no_smokev"
-}
-
 clear all
 
 *use ../../../input_data/ELSA_stock.dta, replace
@@ -31,21 +20,13 @@ use $outdata/ELSA_stock_base.dta, replace
 keep if year == 2012
 keep if inlist(age, 51, 52)
 
-* Drop people who have never smoked if that is the scenario we want
-if "`scr'" == "no_smokev" {
-    keep if l2smokev == 0
-}
-
 *** Kludge section - fix these when we get the chance
 
-*do kludge.do
+do kludge.do
 foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
     replace `var' = 0 if missing(`var')
     replace l2`var' = 0 if missing(l2`var')
 }
-
-* Drop because created when adjusting stock population?
-*drop unadj_weight
 
 * Expand the sample based on expansion factor
 *multiply_persons `expansion'
@@ -103,10 +84,7 @@ saveold $outdata/ELSA_repl_base.dta, replace v(12)
 
 * Increase number of people doing moderate exercise
 * More full explanation of whats happening in generate_stock_pop.do
-*gen rand_ex = runiform() if inrange(mdactx_e, 3, 5)
-* Reduce mdactx_e by 1 in 30% of people 
 replace mdactx_e = mdactx_e - 1 if mdactx_e > 2
-*drop rand_ex
 * Save the file
 saveold $outdata/ELSA_repl_exercise1.dta, replace v(12)
 *saveold ../../../input_data/ELSA_repl_exercise1.dta, replace v(12)
@@ -116,9 +94,9 @@ use $outdata/ELSA_repl_base.dta, clear
 *use ../../../input_data/ELSA_repl_base.dta, clear
 * Decrease number of people who drink alcohol
 * var is drink, binary
-* Convert 20% of drinkers to non-drinkers
+* Convert 40% of drinkers to non-drinkers
 gen rand_drink = runiform() if drink==1
-* Switch to non-drinkers in 20% of cases
+* Switch to non-drinkers in 40% of cases
 replace drink = 0 if rand_drink < 0.4
 drop rand_drink
 * Save

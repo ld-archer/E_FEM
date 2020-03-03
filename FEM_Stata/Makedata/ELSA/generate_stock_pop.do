@@ -43,14 +43,8 @@ saveold $outdata/ELSA_stock_base.dta, replace v(12)
 * Increase the number of people doing moderate exercise
 * var used is mdactx_e and has 4 levels:
 * >1/week, 1/week, 1-3/month, hardly ever or never
-* We will move 20% of people in 3 lowest bands up 1 level.
-* Create random numbers from uniform distribution RELIC >
-*gen rand_ex = runiform() if inrange(mdactx_e, 3, 5)
-* Reduce mdactx_e by 1 in 30% of people 
-* (i.e. increase exercise level by 1 in 30% of people exercising once a week or less) RELIC <
 * Now just increasing exercise level of everybody by 1. i.e. shift everyone up a band
 replace mdactx_e = mdactx_e - 1 if mdactx_e > 2
-*drop rand_ex
 * Save the file
 saveold $outdata/ELSA_stock_exercise1.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_exercise1.dta, replace v(12)
@@ -60,7 +54,7 @@ use $outdata/ELSA_stock_base.dta, clear
 *use ../../../input_data/ELSA_stock_base.dta, clear
 * Decrease number of people who drink alcohol
 * var is drink, binary
-* Convert 20% of drinkers to non-drinkers
+* Convert 40% of drinkers to non-drinkers
 gen rand_drink = runiform() if drink==1
 * Switch to non-drinkers in 20% of cases
 replace drink = 0 if rand_drink < 0.4
