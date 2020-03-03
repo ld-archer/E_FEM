@@ -2,7 +2,7 @@ export ROOT=$(CURDIR)
 DATADIR = $(CURDIR)/input_data
 BASEDIR = $(CURDIR)/base_data
 ESTIMATES = $(CURDIR)/FEM_Stata/Estimates
-RAW_ELSA = /home/ld-archer/Documents/EFEM/UKDA-5050-stata/stata/stata11-se/
+RAW_ELSA = /home/luke/Documents/E_FEM/UKDA-5050-stata/stata/stata11_se
 
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
 
@@ -102,6 +102,9 @@ handovers:
 
 BMI_valid: 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do
+
+BMI_valid2:
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate2.do
 
 
 ### Housekeeping and cleaning
