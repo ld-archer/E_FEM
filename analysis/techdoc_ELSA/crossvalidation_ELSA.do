@@ -1,26 +1,30 @@
-/* Creating script for internal validation.
+/* 
 
-This script will extract information from ELSA on chronic disease, ADLs and IADLs
-for both men and women, and compares them to estimates produced by our FEM 
-simluation. 
+This script runs the cross-validation for the English Future Elderly Model
 
-ELSA first wave was in 2002, and data was collected every 2 years subsequently 
-(known as waves), with our current final wave (wave 6) collected in 2014.
-We will therefore simulate from 2006 onwards, allowing us to see unsimulated 
-ELSA data for the first 6 years, and then a comparison with simulated FEM data
-from 2006-2014, finally showing only FEM simulated data from 2014 onwards.
+Components this script needs to run for cross-validation:
 
-This is to validate our early simulated data against known true trajectories 
-in the raw data.
+1. Split the original population in 2
+	- One half is for estimating transition models
+	- Other half is simulated using the transition models produced previously
+
+2. Generate stock population from simulate half
+	- reshape_long
+	- generate_stock_pop
+	
+3. Estimate transition models from transitions half
+
+4. Simulate the stock pop using transitions from wave 3 -> 8
 
 */
 
 quietly include ../../fem_env.do
 
-use $outdata/H_ELSA.dta, clear
+*use $outdata/H_ELSA_f_2002-2016.dta, clear
+*use ../../input_data/H_ELSA_f_2002-2016.dta, clear
 
-local chronic_diseases cancre diabe hibpe hearte lunge stroke
-local disabilities adlstat iadlstat
+* Run script to split the original population in 2
+do ID_selection_CV.do
+* output saved in /input_data/cross_validation/crossvalidation.dta
 
-local minwave 3
-local maxwave 6
+
