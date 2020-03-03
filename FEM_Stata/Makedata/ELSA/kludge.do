@@ -127,12 +127,6 @@ replace l2asthmae = asthmae if missing(l2asthmae)
 * Handle missing lag parkinson data, same as above
 replace l2parkine = parkine if missing(l2parkine)
 
-*Handle missing drink data
-replace l2drink = drink if missing(l2drink) & !missing(drink)
-replace drink = l2drink if missing(drink) & !missing(l2drink)
-** DO NOT LEAVE THIS LINE IN!! JUST FOR REMOVING AN ERROR, MUST HOTDECK/IMPUTE THIS SOON
-replace l2drink = 0 if missing(l2drink)
-** DO NOT LEAVE!!!
 
 * Handle missing vgactx_e && mdactx_e data **THIS IS BAD!!!
 replace l2vgactx_e = vgactx_e if missing(l2vgactx_e) & !missing(vgactx_e)
@@ -144,3 +138,11 @@ replace vgactx_e = 5 if missing(vgactx_e)
 replace l2vgactx_e = 5 if missing(l2vgactx_e)
 replace mdactx_e = 5 if missing(mdactx_e)
 replace l2mdactx_e = 5 if missing(l2mdactx_e)
+
+* Handle missing atotf data
+replace atotf = l2atotf if missing(atotf) & !missing(l2atotf)
+replace l2atotf = atotf if missing(l2atotf) & !missing(atotf)
+
+* Handle missing itearn data
+replace itearn = l2itearn if missing(itearn) & !missing(l2itearn)
+replace l2itearn = itearn if missing(l2itearn) & !missing(itearn)

@@ -303,6 +303,7 @@ namespace Vars
 		l2smkstat,                 ///< Lag of Smoking status, Approx Range [1, 3], stored as Short
 		l2smoken,                  ///< Lag of Current smoking, [0, 1], stored as Boolean
 		l2smokev,					///< Lag of ever smoked
+		l2smokef,					///< Lag of number cigarettes/day
 		l2ssclaim,                 ///< Lag of Claiming OASI, [0, 1], stored as Boolean
 		l2ssiclaim,                ///< Lag of Claiming SSI, [0, 1], stored as Boolean
 		l2stroke,                  ///< Lag of Stroke, [0, 1], stored as Boolean
@@ -480,6 +481,7 @@ namespace Vars
 		smkstat,                  ///< Smoking status Approx Range [1, 3], stored as Short
 		smoken,                   ///< Current smoking [0, 1], stored as Boolean
 		smokev,                   ///< Ever smoked [0, 1], stored as Boolean
+		smokef,						///< Number cigarettes/day, stored as Double
 		smoke_start,				///< Whether person transitions from not smoking to smoking
 		smoke_stop,               ///< Whether person transitions from smoking to not smoking
 		srh,											///< Self-reported health (cross-sectional)

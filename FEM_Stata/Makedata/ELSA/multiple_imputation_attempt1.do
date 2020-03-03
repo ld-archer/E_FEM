@@ -1,23 +1,17 @@
 clear
-set maxvar 10000
-log using reshape_long_imp.log, replace
-
 quietly include ../../../fem_env.do
 
 local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
-*use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
-use $outdata/H_ELSA_f_2002-2016.dta, clear
+*use ../../../input_data/H_ELSA.dta, clear
+use $outdata/H_ELSA.dta, clear
 
 global firstwave 1
-global lastwave 8
+global lastwave 7
 
 local seed 5000
-set seed `seed'
-local num_imputations 10
-local num_knn 5
 
 /* Variables from Harmonized ELSA:
 
@@ -70,7 +64,7 @@ keep idauniq
 h*coupid
 r*iwstat
 r*strat 
-r*clust
+raclust
 r*cwtresp
 r*iwindy
 r*iwindm
@@ -200,28 +194,17 @@ foreach var in
     } ;
 #d cr
 
-* Replace impossible bmi values found in wave 8 with missing ('.')
-replace bmi8 = . if bmi8 < 10
-
-* Run multiple imputation script
-do multiple_imputation_attempt6.do `seed' `num_imputations' `num_knn'
-
-* Still missing a single record for bmi2,4,6,8; drop it
-drop if missing(bmi2)
-
 * Reshape data from wide to long
-
 #d ;
 reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
-    asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd drinkwn_e 
+    hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm
+    asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e
+    drink drinkd drinkwn_e
 , i(idauniq) j(wave)
-;
+; 
+
 #d cr
-
-
 label variable iwindy "Interview Year"
 label variable iwindm "Interview Month"
 label variable agey "Age at Interview (yrs)"
@@ -267,6 +250,23 @@ label variable drink "Drinks at all"
 label variable drinkd "# Days/week has a drink"
 label variable drinkwn_e "# drinks/week"
 
+* There are 5,362 records missing massive amounts of data, they are almost useless
+* so should be removed. Easy way to do this is to remove those without an
+* interview date:
+*drop if missing(iwindy)
+* Also a single person missing a birthyear, may as well get rid
+*drop if missing(rabyear)
+
+*** Recode Variables ***
+/*
+* Recode the education variable (HRS has 3 tiers of eductation, )
+recode raeduc_e (1 = 1) (3/4 = 2) (5 = 3), gen(educ_h)
+label variable educ_h "Education Level"
+label drop educharm
+label define educ_h 1 "1.No Qualifications" 2 "2.Less than University degree" 3 "3.University degree or higher"
+label values educ_h educ_h
+drop raeduc_e
+*/
 
 * Use harmonised education var
 gen educ = raeducl
@@ -275,9 +275,7 @@ label define educ 1 "1.Less than Secondary" 2 "2.Upper Secondary and Vocational"
 label values educ educ
 drop raeducl
 
-* Create separate variables for hsless (less than secondary school) and college (university)
-gen hsless = (educ == 1)
-gen college = (educ == 3)
+*codebook educ
 
 * Label males
 gen male = (ragender == 1) if !missing(ragender)
@@ -301,13 +299,10 @@ replace hhid = hhidpn
 gen rbyr = rabyear
 gen age = agey
 
+*codebook age agey
+
 * Year variable derived from wave (wave 1: 2002-3, wave 2: 2004-5...)
 gen year = 2000 + wave*2
-
-* Age is top-coded at 90 in ELSA data. Therefore calculate correct age from birthyear
-replace age = year - rbyr
-
-codebook age year rbyr agey
 
 * No birth month in ELSA data (unlike HRS, KLoSA) so cannot calculate exact age
 * Therefore keep agey as age variable (in years)
@@ -338,160 +333,81 @@ gen adl3p = adlstat==4 if !missing(adlstat)
 gen iadl1 = iadlstat==2 if !missing(iadlstat)
 gen iadl2p = iadlstat==3 if !missing(iadlstat) 
 
-* Handle missing bmi values
-bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
-replace bmi = bmi_ipolate if missing(bmi)
+* Only 35 records missing information on work and 38 missing for retemp (share 35),
+* drop these to use for imputation
+*replace retemp = . if missing(retemp)
+*drop if missing(work)
+*drop if missing(retemp)
+* Check
+*codebook work retemp
 
-** Now to add some noise to the BMI imputation **
-* generate a random number between -1 & 1 for waves 1,3,5,7
-gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
-* Add the random number to the interpolated BMI
-replace bmi = bmi + rand if !missing(rand)
+* Also 6 records consistently missing data for chronic diseases, removing missing
+* cancre data removes these 6 records (pointless as contain no info on chronic
+* diseases)
+*drop if missing(cancre)
+*drop if missing(hibpe)
+*drop if missing(arthre)
+*drop if missing(parkine)
 
-* log(bmi)
-gen logbmi = log(bmi) if !missing(bmi)
+* Check
+*codebook cancre hibpe diabe lunge hearte stroke psyche asthmae arthre parkine
 
-* Handle weird smoking status (smoke now but not smoke ever, nonsensical)
-count if smokev==0 & smoken==1
-replace smokev = 1 if smoken==1 & smokev==0
+* Have to replace soft missing values with hard (.) missing
+replace bmi = . if missing(bmi)
+replace educ = . if missing(educ)
+replace drink = . if missing(drink)
+replace drinkd = . if missing(drinkd)
 
-*Categorical smoking variable
-gen smkstat = 1 if smokev == 0 & smoken == 0
-replace smkstat = 2 if smokev == 1 & smoken == 0
-replace smkstat = 3 if smoken == 1
-label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
-label values smkstat smkstat
-
-count if missing(drinkd)
-* Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
-recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
-label define drinkd_stat 1 "Teetotal" 2 "Light drinker" 3 "Moderate drinker" 4 "Heavy drinker"
-label values drinkd_stat drinkd_stat
-
-count if missing(drinkd_stat)
-
-gen drinkd1 = drinkd_stat==1 if !missing(drinkd_stat)
-gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
-gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
-gen drinkd4 = drinkd_stat==4 if !missing(drinkd_stat)
-
-*** Generate lagged variables ***
+* Need to set data as longitudinal:
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
-* Make sure that smokev is an absorbing state
-replace smokev = 1 if L.smokev == 1 & smokev == 0
-* L.***, L is lag operator; can use L2 for 2 waves prior also
-* can use this as xtset tells stata that data is panel data
 
-#d ;
-foreach var in
-    iwstat
-    agey
-	age
-    hibpe
-    diabe
-    cancre
-    lunge
-    hearte
-    stroke
-    psyche
-    arthre
-    bmi
-    logbmi
-    smokev
-    smoken
-    smokef
-    died
-    adlcount
-    adlstat
-    anyadl
-    iadlcount
-    iadlstat
-    anyiadl
-    smkstat
-    educ
-    work
-    hlthlm
-    asthmae
-    parkine
-    retemp
-    retage
-    ipubpen
-    atotf
-    itearn
-    vgactx_e
-    mdactx_e
-    ltactx_e
-    drink
-    drinkd
-    drinkd_stat
-    drinkwn_e
-	drinkd1
-	drinkd2
-	drinkd3
-	drinkd4
-    {;
-        gen l2`var' = L.`var';
-    };
-;
-#d cr
+* Having a go at multiple imputation to replace a lot of the crap below
+* Does this need to be after we produce lag variables? I'm not sure and don't really care anymore
+* Set the style of the data as full long
+mi set flong
 
-*** Imputation Section ***
-* Be aware of what this section is doing, particularly for missing cases!
-* We want to assess how many people are missing and being assigned mean value on
-* lines 289-293
+* Variables to be imputed
+local imputees bmi educ drink
 
-* Create any_adl and any_iadl
-gen any_adl = 1 if adlcount > 0
-replace any_adl = 0 if adlcount == 0
-gen any_iadl = 1 if iadlcount > 0
-replace any_iadl = 0 if iadlcount == 0
+* Regular variables (used in imputation) (cba listing everything)
+local regulars ragender rbyr retemp work adlcount iadlcount hibpe diabe cancre lunge hearte stroke psyche asthmae arthre parkine
 
-* One record missing data for education
-drop if missing(educ)
-* Education doesn't vary over time so can safely replace missing lag with current
-replace l2educ = educ if missing(l2educ) & !missing(educ)
+* Check some summary statistics of imputees and pattern of missing data
+misstable summ `imputees'
+misstable pattern `imputees'
 
-* Hotdeck drinkd and check for logical inconsistencies
-tab drink drinkd if drink==0
-* Going to hotdeck for the time being
-replace drinkd = . if missing(drinkd)
-hotdeck drinkd using ELSA_drinkd_imp, store seed(`seed') keep(_all) impute(1)
-* Load in imputed dataset
-use ELSA_drinkd_imp1.dta, clear
-tab drink drinkd if drink==0
-* Now handle logical inconsistencies from hotdecking
-replace drinkd = 0 if drink==0
-tab drink drinkd
+* Register the variables to be imputed and listed regulars
+mi register imputed `imputees'
+mi register regular `regulars'
 
-* Handle missing smkstat data
-replace smkstat = l2smkstat if missing(smkstat)
-replace l2smkstat = smkstat if missing(l2smkstat)
+* Describe mi data
+mi describe
 
-gen smoke_start = 1 if l2smoken == 0 & smoken == 1
-replace smoke_start = 0 if l2smoken == 0 & smoken == 0
-gen smoke_stop = 1 if l2smoken == 1 & smoken == 0
-replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
+* Having a go at imputing with PMM instead of regress and multiple logit/ologit 
+mi impute chained (pmm, knn(10)) bmi drink educ ///
+	= i.ragender rbyr i.retemp i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
+	, add(5) chaindots rseed(`seed') force
+	
+*save ../../../input_data/ELSA_imputed1.dta, replace
+	
+mi extract 5
 
-replace drink = l2drink if missing(drink) & !missing(l2drink)
-replace l2drink = drink if missing(l2drink) & !missing(drink)
-drop if missing(drink) /*Only 1 missing case*/
+mi set flong
+mi register imputed drinkd
+mi register regular bmi educ drink `regulars'
 
-replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
+mi impute chained (pmm, knn(10)) drinkd ///
+	= i.ragender rbyr bmi i.educ i.work i.adlcount i.iadlcount i.hibpe i.diabe i.cancre i.lunge i.hearte i.stroke i.psyche i.asthmae i.arthre i.parkine ///
+	, add(5) chaindots rseed(`seed') force
+	
+*save ../../../input_data/ELSA_imputed2.dta, replace
+	
+mi extract 5
+	
+* THIS TOOK FOREVER! Get a script working on here and then lets switch the data generation to the HPC
+* Can easily do the stata part on HPC then scp the data to machine and run the other bit locally
+* Bash script would do this? Make call to Makefile and then scp to local machine? Or some other type of transfer?
 
-* Handle missing drinkd_stat data
-replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat)
-replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat)
-
-* Now handle missing drinkd# data
-replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
-replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
-replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
-replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
-
-*save ../../../input_data/ELSA_long_imp6.dta, replace
-*save ../../../input_data/ELSA_long.dta, replace
-save $outdata/ELSA_long_imp6.dta, replace
-save $outdata/ELSA_long.dta, replace
-
-capture log close
+*save ../../../input_data/ELSA_long_imputed1.dta, replace
+save $outdata/ELSA_long_imputed1.dta, replace
