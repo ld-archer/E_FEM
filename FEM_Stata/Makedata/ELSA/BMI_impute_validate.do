@@ -105,7 +105,14 @@ local predictors 	i.hlthlm2 i.hlthlm3 i.hlthlm4 i.hlthlm5 i.hlthlm6 i.hlthlm7 i.
 					i.ltactx_e1 i.ltactx_e2 i.ltactx_e3 i.ltactx_e4 i.ltactx_e5 i.ltactx_e6 i.ltactx_e7 i.ltactx_e8 ///
 					i.cancre1 i.cancre2 i.cancre3 i.cancre4 i.cancre5 i.cancre6 i.cancre7 i.cancre8 ///
 					i.diabe1 i.diabe2 i.diabe3 i.diabe4 i.diabe5 i.diabe6 i.diabe7 i.diabe8 ///
-					i.hibpe1 i.hibpe2 i.hibpe3 i.hibpe4 i.hibpe5 i.hibpe6 i.hibpe7 i.hibpe8
+					i.hibpe1 i.hibpe2 i.hibpe3 i.hibpe4 i.hibpe5 i.hibpe6 i.hibpe7 i.hibpe8 ///
+					i.lunge1 i.lunge2 i.lunge3 i.lunge4 i.lunge5 i.lunge6 i.lunge7 i.lunge8 ///
+					i.stroke1 i.stroke2 i.stroke3 i.stroke4 i.stroke5 i.stroke6 i.stroke7 i.stroke8 ///
+					i.smoken1 i.smoken2 i.smoken3 i.smoken4 i.smoken5 i.smoken6 i.smoken7 i.smoken8 ///
+					i.psyche1 i.psyche2 i.psyche3 i.psyche4 i.psyche5 i.psyche6 i.psyche7 i.psyche8 ///
+					i.arthre1 i.arthre2 i.arthre3 i.arthre4 i.arthre5 i.arthre6 i.arthre7 i.arthre8
+					
+global allvars_logbmi male hsless college l2age65l l2age6574 l2age75p l2logbmi l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2smoken l2psyche l2arthre l2asthmae l2parkine l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 
 * Have a go!
 mi impute chained 	(ologit) raeducl ///

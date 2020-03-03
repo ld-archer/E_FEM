@@ -1,11 +1,11 @@
 quietly include ../../../fem_env.do
 
-log using BMI_impute_validate.log, replace
+log using BMI_impute_validate2.log, replace
 
 * Set imputation parameters
 local seed 5000
 set seed `seed'
-local num_imputations 10
+local num_imputations 5
 local num_knn 5
 
 * Read in pre-imputed data
@@ -13,12 +13,12 @@ local num_knn 5
 use $outdata/H_ELSA_pre_impute.dta, clear
 
 * Have to replace hard missing values with soft (.) missing
+replace raeducl = . if missing(raeducl)
+
 replace bmi2 = . if missing(bmi2)
 replace bmi4 = . if missing(bmi4)
 replace bmi6 = . if missing(bmi6)
 replace bmi8 = . if missing(bmi8)
-
-replace raeducl = . if missing(raeducl)
 
 replace drink1 = . if missing(drink1)
 replace drink2 = . if missing(drink2)
@@ -41,7 +41,7 @@ replace drinkd8 = . if missing(drinkd8)
 codebook bmi2 bmi4 bmi6 bmi8 raeducl drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
 			drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8
 			
-* Remove impossible BMI value (BMI == 2.91, weight == 1 kg)
+* Remove impossible BMI values (anything below 10)
 drop if bmi8 < 10
 			
 * Copy BMI to new var, remove 10% of known values
@@ -65,58 +65,143 @@ replace bmi8 = . if bmi_removed==1
 codebook bmi_removed bmi2 bmi2_k bmi4 bmi4_k bmi6 bmi6_k bmi8 bmi8_k
 
 
-*** RUN THE IMPUTATION ***
-* Set format as wide
-mi set wide
-
-* Variable to be imputed
-local imputees	raeducl /// 
-				bmi2 bmi4 bmi6 bmi8 /// 
-				drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8
-				
-
-* Register the variables to be imputed and listed regulars
-mi register imputed `imputees'
-
-* Check some summary statistics of imputees and pattern of missing data
-misstable summ `imputees'
-*misstable pattern `imputees'
-
-* Describe mi data
-mi describe
-
-local wave1pred i.walkra1 i.dressa1 i.batha1 i.mdactx_e1 i.vgactx_e1 i.ltactx_e1 i.work1
-
+* For loop to collect all the predictors for each wave in 1 go
 forvalues x = 1/8 {
 	local wave`x'predictors i.walkra`x' i dress`x' i.batha`x' i.mdactx_e`x' i.vgactx_e`x' i.ltactx_e`x' i.work`x' i.cancre`x' i.diabe`x' i.hearte`x' i.hibpe`x' i.stroke`x'
 }
 
-local predictors 	i.hlthlm2 i.hlthlm3 i.hlthlm4 i.hlthlm5 i.hlthlm6 i.hlthlm7 i.hlthlm8 ///
-					i. walkra1 i.walkra2 i.walkra3 i.walkra4 i.walkra5 i.walkra6 i.walkra7 i.walkra8 ///
-					i.dressa1 i.dressa2 i.dressa3 i.dressa4 i.dressa5 i.dressa6 i.dressa7 i.dressa8 ///
-					i.batha1 i.batha2 i.batha3 i.batha4 i.batha5 i.batha6 i.batha7 i.batha8 ///
-					i.mdactx_e1 i.mdactx_e2 i.mdactx_e3 i.mdactx_e4 i.mdactx_e5 i.mdactx_e6 i.mdactx_e7 i.mdactx_e8 ///
-					i.vgactx_e1 i.vgactx_e2 i.vgactx_e3 i.vgactx_e4 i.vgactx_e5 i.vgactx_e6 i.vgactx_e7 i.vgactx_e8 ///
-					i.ltactx_e1 i.ltactx_e2 i.ltactx_e3 i.ltactx_e4 i.ltactx_e5 i.ltactx_e6 i.ltactx_e7 i.ltactx_e8
 
-* Have a go!
-mi impute chained 	(ologit) raeducl ///
-					(pmm, knn(`num_knn')) bmi2 bmi4 bmi6 bmi8 ///
-					(logit) drink1 ///
-					(logit) drink2 /// 
-					(logit) drink3 ///
+************* RUN THE IMPUTATION *************
+
+* Set format as wide
+mi set wide
+
+* Register the education variable to be imputed first
+mi register imputed raeducl
+
+* Describe mi data
+mi describe
+					
+mi impute ologit raeducl = i.ragender rabyear `wave1pred' `wave2pred' ///
+								`wave3pred' `wave4pred' `wave5pred' ///
+								`wave6pred' `wave7pred' `wave8pred' ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+
+mi extract `num_imputations', clear
+
+*** NOW WAVE 1 PREDICTIONS ***
+mi set wide
+
+local imputees_wave1 drink1 
+
+mi register imputed `imputees_wave1'
+
+mi impute logit drink1 = i.ragender rabyear raeducl `wave1pred' ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+									
+mi extract `num_imputations', clear
+
+*** WAVE 2 PREDICTIONS ***
+
+mi set wide
+
+local imputees_wave2 drink2 bmi2 
+
+mi register imputed `imputees_wave2'
+
+mi impute chained 	(pmm, knn(`num_knn')) bmi2 ///
+					(logit) drink2 ///
+								= i.ragender rabyear raeducl `wave2pred' i.hlthlm2 ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+									
+mi extract `num_imputations', clear
+
+*** WAVE 3 PREDICTIONS ***
+
+mi set wide
+
+local imputees_wave3 drink3 
+
+mi register imputed `imputees_wave3'
+
+mi impute logit drink3 = i.ragender rabyear raeducl `wave3pred' i.hlthlm3 ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+									
+mi extract `num_imputations', clear
+
+*** WAVE 4 PREDICTIONS ***
+
+mi set wide
+
+local imputees_wave4 drink4 bmi4 
+
+mi register imputed `imputees_wave4'
+
+mi impute chained 	(pmm, knn(`num_knn')) bmi4 ///
 					(logit) drink4 ///
-					(logit) drink5 ///
+								= i.ragender rabyear raeducl `wave4pred' i.hlthlm4 ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+									
+mi extract `num_imputations', clear
+
+*** WAVE 5 PREDICTIONS ***
+
+mi set wide
+
+local imputees_wave5 drink5 
+
+mi register imputed `imputees_wave5'
+
+mi impute logit drink5 = i.ragender rabyear raeducl `wave5pred' i.hlthlm5 ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+									
+mi extract `num_imputations', clear
+
+*** WAVE 6 PREDICTIONS ***
+
+mi set wide
+
+local imputees_wave6 drink6 bmi6 
+
+mi register imputed `imputees_wave6'
+
+mi impute chained 	(pmm, knn(`num_knn')) bmi6 ///
 					(logit) drink6 ///
-					(logit) drink7 ///
+								= i.ragender rabyear raeducl `wave6pred' i.hlthlm6 ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+									
+mi extract `num_imputations', clear
+
+*** WAVE 7 PREDICTIONS ***
+
+mi set wide
+
+local imputees_wave7 drink7 
+
+mi register imputed `imputees_wave7'
+
+mi impute logit drink7 = i.ragender rabyear raeducl `wave7pred' i.hlthlm7 ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+									
+mi extract `num_imputations', clear
+
+*** WAVE 8 PREDICTIONS ***
+
+mi set wide
+
+local imputees_wave8 drink8 bmi8 
+
+mi register imputed `imputees_wave8'
+
+mi impute chained 	(pmm, knn(`num_knn')) bmi8 ///
 					(logit) drink8 ///
-					= i.ragender rabyear `predictors' ///
-					, add(`num_imputations') chaindots rseed(`seed') force
+								= i.ragender rabyear raeducl `wave8pred' i.hlthlm8 ///
+								, add(`num_imputations') chaindots rseed(`seed') force
+
+mi extract `num_imputations', clear
 
 * Save full dataset 
-save ../../../input_data/validate/ELSA_half_imp_validate_`num_imputations'.dta, replace
-
-mi extract `num_imputations'
+save ../../../input_data/validate/educ_drink_bmi_`num_imputations'.dta, replace
 
 * Have to impute drinkd separately to drink as drinkd is perfect predictor of drink
 * Stata's augment option is not good enough to handle this problem
@@ -134,7 +219,9 @@ mi impute chained 	(ologit) drinkd2 ///
 					(ologit) drinkd6 ///
 					(ologit) drinkd7 ///
 					(ologit) drinkd8 ///
-					= bmi2 bmi4 bmi6 bmi8 i.raeducl i.ragender rabyear `predictors' ///
+					= bmi2 bmi4 bmi6 bmi8 i.raeducl i.ragender rabyear ///
+					`wave1pred' `wave2pred' `wave3pred' `wave4pred' ///
+					`wave5pred' `wave6pred' `wave7pred' `wave8pred' ///
 					if drink2 | drinkd3 | drink4 | drink5 | drink6 | drink7 | drink8 ///
 					, add(`num_imputations') chaindots rseed(`seed') force
 
@@ -169,6 +256,6 @@ order idauniq bmi2_known bmi2 bmi2_e bmi4_known bmi4 bmi4_e bmi6_known bmi6 bmi6
 
 * Save dataset for playing around with later
 *save ../../../input_data/validate/imputed_with_errors_`num_imputations'.dta, replace
-save $outdata/validate/imputed_with_errors_`num_imputations'.dta, replace
+save $outdata/validate/imputed_with_errors_attempt2_`num_imputations'.dta, replace
 
 capture log close
