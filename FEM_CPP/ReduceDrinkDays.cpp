@@ -49,18 +49,20 @@ void ReduceDrinkDays::intervene(PersonVector& persons, unsigned int year, Random
 	std::vector<Person*>::iterator itr;
 	for(itr = persons.begin(); itr != persons.end(); ++itr) {
 		Person* person = *itr;
+		//Are they alive and active?
 		if(person->test(Vars::active) && !person->test(Vars::l2died)) {
 			//Are they eligible?
 			if(elig(person)) {
 				//  Yes, treat them
 				person->set(Vars::rdd_treated, true);
-				person->set(Vars::logbmi, person->get(Vars::drinkd) - 2);
+				person->set(Vars::drinkd, person->get(Vars::drinkd) - 2);
+				// Include a counter variable for people getting the treatment
 			}
 		}
 	}
 }
 
 bool ReduceDrinkDays::elig(Person* p) const {
-	// Eligible for treatment if not treated yet, and BMI >= 25
-	return !p->test(Vars::rdd_treated) && p->get(Vars::drinkd) >= 4;
+	// Eligible for treatment if drinkd >= 4
+	return p->get(Vars::drinkd) >= 4;
 }

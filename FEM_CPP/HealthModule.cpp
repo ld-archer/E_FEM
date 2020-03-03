@@ -331,6 +331,17 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 					}
 				}			
 			}
+
+			// If we change drink to 0 then we need to make sure drinkd is also 0
+			// i.e. if we stop someone drinking at all, the number of days they drink must also be set to 0
+			if (elsa_data) {
+				// Doesn't drink/stopped drinking
+				if(!person->test(Vars::drink)) {
+					// Set drink days to 0
+					person->set(Vars::drinkd, 0.0);
+					// USE LAG VARIABLE
+				}
+			}
 					
 			// Do partner/spouse mortality for PSID simulation
 			if(psid_data && person->get(Vars::l2mstat_new) != 1) {
