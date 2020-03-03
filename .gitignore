@@ -45,3 +45,6 @@ output/*
 # Jetbrains
 .idea/
 FEM_CPP/.idea/
+
+# Summary output file (generated)
+FEM_CPP_settings/summary_output_ELSA.txt
