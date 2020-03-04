@@ -2,6 +2,7 @@ export ROOT=$(CURDIR)
 DATADIR = $(CURDIR)/input_data
 BASEDIR = $(CURDIR)/base_data
 ESTIMATES = $(CURDIR)/FEM_Stata/Estimates
+ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
 RAW_ELSA = /home/luke/Documents/E_FEM/UKDA-5050-stata/stata/stata11_se
 
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
@@ -101,7 +102,13 @@ handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
 
 cross_validation:
-	
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
+	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) reshape_long_CV.do
+	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_stock_CV.do
+	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_transition_CV.do
+	cd $(ESTIMATION) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) ELSA_transition_CV.do
+	populations
+	cd $(MAKEDATA) && scen=CV $(STATA) reweight_ELSA_stock.do
 
 BMI_valid: 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do

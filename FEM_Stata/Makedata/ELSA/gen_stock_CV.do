@@ -1,11 +1,14 @@
 clear
 
-*log using generate_stock_pop.log, replace
+log using gen_stock_CV.log, replace
 
-quietly include ../../fem_env.do
+quietly include ../../../fem_env.do
 
-*use $outdata/cross_validation/CV_long.dta, clear
-use ../../../input_data/cross_validation/CV_long.dta, clear
+use $outdata/cross_validation/CV_long.dta, clear
+*use ../../../input_data/cross_validation/CV_long.dta, clear
+
+* Keep only the simulate half
+keep if simulation == 1
 
 * Keep respondents in wave 6
 keep if wave == 3
@@ -20,7 +23,7 @@ drop if missing(l2smkstat)
 drop if died == 1
 
 *** KLUDGE ***
-do ../../FEM_Stata/Makedata/ELSA/kludge.do
+do kludge.do
 
 foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
     replace `var' = 0 if missing(`var')
@@ -30,5 +33,5 @@ foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
 replace l2age = age - 2 if missing(l2age)
 
 * Save the file
-*saveold $outdata/cross_validation/CV_stock_base.dta, replace v(12)
-saveold ../../../input_data/cross_validation/CV_stock_base.dta, replace v(12)
+saveold $outdata/cross_validation/ELSA_stock_CV.dta, replace v(12)
+*saveold ../../../input_data/cross_validation/ELSA_stock_CV.dta, replace v(12)

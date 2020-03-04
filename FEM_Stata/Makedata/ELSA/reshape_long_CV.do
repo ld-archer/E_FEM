@@ -2,24 +2,21 @@ clear
 set maxvar 10000
 log using reshape_long_CV.log, replace
 
-quietly include ../../fem_env.do
+quietly include ../../../fem_env.do
 
 local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
-use ../../input_data/cross_validation/crossvalidation.dta, clear
-*use $outdata/cross_validation/crossvalidation.dta, clear
-
-* Keep only the simulate half
-keep if simulate == 1
+*use ../../../input_data/cross_validation/crossvalidation.dta, clear
+use $outdata/cross_validation/crossvalidation.dta, clear
 
 global firstwave 1
 global lastwave 8
 
 local seed 5000
 set seed `seed'
-local num_imputations 10
+local num_imputations 3
 local num_knn 5
 
 
@@ -84,6 +81,8 @@ r*ltactx_e
 r*drink
 r*drinkd_e
 r*drinkwn_e
+simulation
+transition
 ;
 #d cr
 
@@ -175,7 +174,7 @@ reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata be
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd drinkwn_e 
+    drink drinkd drinkwn_e
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -448,7 +447,7 @@ replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
 replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
 replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
 
-save ../../input_data/cross_validation/CV_long.dta, replace
-*save $outdata/cross_validation/CV_long.dta, replace
+*save ../../../input_data/cross_validation/CV_long.dta, replace
+save $outdata/cross_validation/CV_long.dta, replace
 
 capture log close

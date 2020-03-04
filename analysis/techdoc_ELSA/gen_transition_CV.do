@@ -1,6 +1,6 @@
 clear
 
-log using generate_transition_pop.log, replace
+log using gen_transition_CV.log, replace
 
 quietly include ../../fem_env.do
 
@@ -8,9 +8,10 @@ local in_file : env INPUT
 
 local out_file : env OUTPUT
 
-*use ../../../input_data/ELSA_long.dta, clear
-*use ../../../input_data/ELSA_long_imputed.dta, clear
-use $outdata/ELSA_long.dta, clear
+use ../../input_data/cross_validation/crossvalidation.dta, clear
+*use $outdata/cross_validation/crossvalidation.dta, clear
+
+keep if transition == 1
 
 keep if wave >= 2
 
@@ -65,8 +66,8 @@ label variable l2iadl2p "Lag: 2 or more IADLs"
 
 
 * Save the file
-*save ../../../input_data/ELSA_transition.dta, replace
-save $outdata/ELSA_transition.dta, replace
+*save ../../../input_data/cross_validation/transition_CV.dta, replace
+save $outdata/cross_validation/transition_CV.dta, replace
 
 inspect
 
