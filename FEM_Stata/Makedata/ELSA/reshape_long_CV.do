@@ -19,7 +19,7 @@ global lastwave 8
 
 local seed 5000
 set seed `seed'
-local num_imputations 3
+local num_imputations 20
 local num_knn 5
 
 
