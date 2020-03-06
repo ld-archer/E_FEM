@@ -118,6 +118,7 @@ cross_validation: $(MAKEDATA)/ID_selection_CV.do $(MAKEDATA)/reshape_long_CV.do 
 	# Save transition models as .est files to be read by the model
 	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
+	$(MPI) ELSA_cross-validation.settings.txt
 
 BMI_valid: 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do
