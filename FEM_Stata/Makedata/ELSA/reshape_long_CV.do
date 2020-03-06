@@ -8,8 +8,14 @@ local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
+use $outdata/H_ELSA_f_2002-2016.dta, clear
+*use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
+
+merge 1:1 idauniq using ../../../input_data/cross_validation/crossvalidation.dta
+*merge 1:1 idauniq using $outdata/cross_validation/crossvalidation.dta
+
 *use ../../../input_data/cross_validation/crossvalidation.dta, clear
-use $outdata/cross_validation/crossvalidation.dta, clear
+*use $outdata/cross_validation/crossvalidation.dta, clear
 
 global firstwave 1
 global lastwave 8

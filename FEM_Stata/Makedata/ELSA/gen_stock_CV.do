@@ -32,6 +32,8 @@ foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
 
 replace l2age = age - 2 if missing(l2age)
 
+drop if missing(logbmi)
+
 * Save the file
 saveold $outdata/cross_validation/ELSA_stock_CV.dta, replace v(12)
 *saveold ../../../input_data/cross_validation/ELSA_stock_CV.dta, replace v(12)

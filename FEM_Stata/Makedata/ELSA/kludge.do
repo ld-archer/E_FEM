@@ -146,3 +146,9 @@ replace l2atotf = atotf if missing(l2atotf) & !missing(atotf)
 * Handle missing itearn data
 replace itearn = l2itearn if missing(itearn) & !missing(l2itearn)
 replace l2itearn = itearn if missing(l2itearn) & !missing(itearn)
+
+replace asthmae = l2asthmae if missing(asthmae) & !missing(l2asthmae)
+replace l2asthmae = asthmae if missing(l2asthmae) & !missing(asthmae)
+
+replace parkine = l2parkine if missing(parkine) & !missing(l2parkine)
+replace l2parkine = parkine if missing(l2parkine) & !missing(parkine)

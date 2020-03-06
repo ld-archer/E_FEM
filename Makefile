@@ -101,14 +101,23 @@ simulation:
 handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
 
-cross_validation:
+cross_validation: $(MAKEDATA)/ID_selection_CV.do $(MAKEDATA)/reshape_long_CV.do $(MAKEDATA)/gen_stock_CV.do $(MAKEDATA)/gen_transition_CV.do $(MAKEDATA)/reweight_ELSA_stock_CV.do $(ESTIMATION)/ELSA_transition_CV.do
+	# ID selection, gen flags to split the population in half
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
+	# Reshape original data 
 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) reshape_long_CV.do
+	# Generate stock and transition populations from separate halves of the original data
 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_stock_CV.do
 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_transition_CV.do
-	cd $(ESTIMATION) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) ELSA_transition_CV.do
-	populations
-	cd $(MAKEDATA) && scen=CV $(STATA) reweight_ELSA_stock.do
+	# Gen populations and reweight
+	cd $(MAKEDATA) $(STATA) gen_pop_projections.do
+	cd $(MAKEDATA) $(STATA) education_proj.do
+	cd $(MAKEDATA) && scen=CV $(STATA) reweight_ELSA_stock_CV.do
+	# Estimate transition models
+	cd $(ESTIMATION) && datain=$(DATADIR)/cross_validation dataout=$(ESTIMATES)/ELSA/crossvalidation $(STATA) ELSA_transition_CV.do
+	# Save transition models as .est files to be read by the model
+	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
 
 BMI_valid: 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do
@@ -126,4 +135,6 @@ clean_log:
 clean_out:
 	rm -f output/*/*.dta
 	rm -f output/*/*/*.dta
+	rm -f output/*/*/*.csv
+	rm -f output/*/*/*.txt
 	rm -f output/graphs/*/*.png

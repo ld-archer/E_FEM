@@ -5,18 +5,19 @@
 * 27/07/2019
 clear
 set maxvar 10000
+set seed 5000
 
 quietly include ../../../fem_env.do
 
 use $outdata/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 
-*keep idauniq r4iwstat
-sum idauniq if r4iwstat == 1
-* 11,050 ID's, so use roughly 5525 for simulation (=11050/2)
+keep idauniq r3iwstat
+sum idauniq if r3iwstat == 1
+* 11,050 ID's, so use roughly 5525 for simulation (=11050/2) (values for wave 4 not 3)
 
 * Create random numbers from uniform distribution
-gen rand = runiform() if r4iwstat == 1
+gen rand = runiform() if r3iwstat == 1
 
 gen simulation = .
 replace simulation = 1 if rand > 0.5 & !missing(rand)
@@ -25,8 +26,8 @@ replace simulation = 0 if rand < 0.5 & !missing(rand)
 tab simulation
 
 gen transition = .
-replace transition = 1 if simulation == 0
-replace transition = 0 if simulation == 1
+replace transition = 1 if simulation == 0 & !missing(rand)
+replace transition = 0 if simulation == 1 & !missing(rand)
 
 save $outdata/cross_validation/crossvalidation.dta, replace
 *save ../../../input_data/cross_validation/crossvalidation.dta, replace
