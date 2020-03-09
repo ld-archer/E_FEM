@@ -152,3 +152,10 @@ replace l2asthmae = asthmae if missing(l2asthmae) & !missing(asthmae)
 
 replace parkine = l2parkine if missing(parkine) & !missing(l2parkine)
 replace l2parkine = parkine if missing(l2parkine) & !missing(parkine)
+
+replace drinkd = l2drinkd if missing(drinkd) & !missing(l2drinkd)
+replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
+
+replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat) & !missing(l2drinkd_stat)
+replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
+

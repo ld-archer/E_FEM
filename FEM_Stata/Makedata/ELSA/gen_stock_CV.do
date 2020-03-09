@@ -10,9 +10,9 @@ use $outdata/cross_validation/CV_long.dta, clear
 * Keep only the simulate half
 keep if simulation == 1
 
-* Keep respondents in wave 6
-keep if wave == 3
-gen entry = 2006 /* First wave is 2002 so 3rd is 2006 */
+* Keep respondents in wave 1
+keep if wave == 1
+gen entry = 2002 /* First wave is 2002 */
 
 * Make sure no l2smkstat variables are missing (otherwise CrossSectionalModule/summary_output breaks(?))
 replace l2smkstat = smkstat if missing(l2smkstat) & !missing(smkstat)

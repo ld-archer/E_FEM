@@ -19,7 +19,7 @@ global lastwave 8
 
 local seed 5000
 set seed `seed'
-local num_imputations 20
+local num_imputations 5
 local num_knn 5
 
 
@@ -443,6 +443,9 @@ replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
 * Handle missing drinkd_stat data
 replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat)
 replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat)
+* If still missing, replace with 1 (teetotal)
+replace drinkd_stat = 1 if missing(drinkd_stat)
+replace l2drinkd_stat = 1 if missing(l2drinkd_stat)
 
 * Now handle missing drinkd# data
 replace drinkd1 = drinkd_stat==1 if missing(drinkd1)

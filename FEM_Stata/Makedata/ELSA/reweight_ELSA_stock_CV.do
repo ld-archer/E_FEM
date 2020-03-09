@@ -17,7 +17,7 @@ drop if age < 51
 merge m:1 male age year using $outdata/pop_projections.dta, keep(matched)
 
 if "`file'" == "CV" {
-	keep if year == 2006
+	keep if year == 2002
 } 
 else {
 	keep if year == 2012
