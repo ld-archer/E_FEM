@@ -16,7 +16,7 @@ global lastwave 8
 
 local seed 5000
 set seed `seed'
-local num_imputations 10
+local num_imputations 5
 local num_knn 5
 
 /* Variables from Harmonized ELSA:
@@ -344,8 +344,13 @@ replace bmi = bmi_ipolate if missing(bmi)
 
 ** Now to add some noise to the BMI imputation **
 * generate a random number between -1 & 1 for waves 1,3,5,7
-gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
+*gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
 * Add the random number to the interpolated BMI
+*replace bmi = bmi + rand if !missing(rand)
+
+* Trying another method of adding noise to BMI imputation
+* Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
+gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
 replace bmi = bmi + rand if !missing(rand)
 
 * log(bmi)
