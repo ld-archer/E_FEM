@@ -25,8 +25,11 @@ drop _merge
 * Generate the weighting var from cross-sectional weight var
 gen weight = .
 
+summ age
+local max_age = r(max)
+
 * Nested for loops to calculate the denominator and in turn the weight value
-forvalues age = 51/90 {
+forvalues age = 51/`max_age' {
 	forvalues male = 0/1 {
 		sum cwtresp if age == `age' & male == `male'
 		scalar denom = r(sum)
