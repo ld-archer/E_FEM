@@ -31,13 +31,23 @@ replace drinkd6 = . if missing(drinkd6)
 replace drinkd7 = . if missing(drinkd7)
 replace drinkd8 = . if missing(drinkd8)
 
+replace drinkwn4 = . if missing(drinkwn4)
+replace drinkwn5 = . if missing(drinkwn5)
+replace drinkwn6 = . if missing(drinkwn6)
+replace drinkwn7 = . if missing(drinkwn7)
+replace drinkwn8 = . if missing(drinkwn8)
+
 generate bmi_imputed = 1 if missing(bmi2, bmi4, bmi6, bmi8)
 gen drink_imputed = 1 if missing(drink1, drink2, drink3, drink4, drink5, drink6, drink7, drink8)
 gen drinkd_imputed = 1 if missing(drinkd2, drinkd3, drinkd4, drinkd5, drinkd6, drinkd7, drinkd8)
+gen drinkwn_imputed = 1 if missing(drinkwn4, drinkwn5, drinkwn5, drinkwn6, drinkwn7, drinkwn8)
 
 * Check if all missing values replaced
-codebook bmi2 bmi4 bmi6 bmi8 raeducl drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
-			drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8
+codebook 	bmi2 bmi4 bmi6 bmi8 ///
+			raeducl ///
+			drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
+			drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8 ///
+			drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8
 
 * Set format as wide
 mi set wide
@@ -62,7 +72,11 @@ mi describe
 * Have a go!
 mi impute chained 	(ologit) raeducl ///
 					(pmm, knn(`num_knn')) bmi2 bmi4 bmi6 bmi8 ///
-					(logit) drink1 ///
+					(logit) drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
+					= i.ragender rabyear ///
+					, add(`num_imputations') chaindots rseed(`seed') force
+
+/*
 					(logit) drink2 ///
 					(logit) drink3 ///
 					(logit) drink4 ///
@@ -70,13 +84,9 @@ mi impute chained 	(ologit) raeducl ///
 					(logit) drink6 ///
 					(logit) drink7 ///
 					(logit) drink8 ///
-					= i.ragender rabyear ///
-					, add(`num_imputations') chaindots rseed(`seed') force
-
-* Save full dataset 
-save ../../../input_data/ELSA_half_imputed.dta, replace
-
-mi extract `num_imputations'
+*/
+					
+mi extract `num_imputations', clear
 
 * Have to impute drinkd separately to drink as drinkd is perfect predictor of drink
 * Stata's augment option is not good enough to handle this problem
@@ -87,20 +97,35 @@ local imputees2 drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8
 
 mi register imputed `imputees2'
 
-mi impute chained 	(ologit) drinkd2 ///
+mi impute chained 	(ologit) drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8 ///
+					= bmi2 bmi4 bmi6 bmi8 i.raeducl i.ragender rabyear ///
+					, add(`num_imputations') chaindots rseed(`seed') force
+					
+/*
 					(ologit) drinkd3 ///
 					(ologit) drinkd4 ///
 					(ologit) drinkd5 ///
 					(ologit) drinkd6 ///
 					(ologit) drinkd7 ///
 					(ologit) drinkd8 ///
-					= bmi2 bmi4 bmi6 bmi8 i.raeducl i.ragender rabyear ///
+*/
+
+* Extract final imputation
+mi extract `num_imputations', clear
+
+* Now impute drinkwn separately again
+
+mi set wide
+
+local imputees3 drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8
+
+mi register imputed `imputees3'
+
+mi impute chained	(pmm, knn(`num_knn')) `imputees3' ///
+					= i.raeducl i.ragender rabyear `imputees' `imputees2' ///
 					, add(`num_imputations') chaindots rseed(`seed') force
 
-* Save again
-save ../../../input_data/ELSA_post_impute_full.dta, replace					
-
-* Extract final imputation		
-mi extract `num_imputations'
+* Extract final imputation
+mi extract `num_imputations', clear
 
 save ../../../input_data/ELSA_post_impute_`num_imputations'.dta, replace

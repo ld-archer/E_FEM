@@ -1,6 +1,6 @@
 clear
 set maxvar 10000
-log using reshape_long_imp.log, replace
+log using reshape_long.log, replace
 
 quietly include ../../../fem_env.do
 
@@ -121,6 +121,7 @@ r*mdactx_e
 r*ltactx_e
 r*drink
 r*drinkd_e
+r*drinkn_e
 r*drinkwn_e
 ;
 #d cr
@@ -131,12 +132,21 @@ forvalues wv = $firstwave/$lastwave {
     rename h`wv'atotf r`wv'atotf
 }
 
-* Rename r*drinkd_e to more readable (and pleasant) form - r*drinkd
+* Rename drink vars to more readable (and pleasant) form - r*drinkd
+* Also rename exercise variables in the near future
 forvalues wv = $firstwave/$lastwave {
-	if `wv' == 1 {
-		continue /*drinkd_e has no data for wave 1 so continue*/
+	if `wv' >= 2 {
+		/* drinkd_e not present in wave 1 */
+		rename r`wv'drinkd_e r`wv'drinkd
 	}
-	rename r`wv'drinkd_e r`wv'drinkd
+	if `wv' == 2 | `wv' == 3 {
+		/* drinkn_e only present in waves 2 and 3 */
+		rename r`wv'drinkn_e r`wv'drinkn
+	}
+	if `wv' >= 4 {
+		/* drinkwn_e replaces drinkn_e from wave 4 onwards */
+		rename r`wv'drinkwn_e r`wv'drinkwn
+	}
 }
 
 * Rename variables to make reshape easier and have names consistent with US FEM
@@ -189,7 +199,8 @@ foreach var in
     ltactx_e
     drink
     drinkd
-    drinkwn_e
+	drinkn
+    drinkwn
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -209,14 +220,20 @@ do multiple_imputation_attempt6.do `seed' `num_imputations' `num_knn'
 * Still missing a single record for bmi2,4,6,8; drop it
 drop if missing(bmi2)
 
-* Reshape data from wide to long
+* Generate vars for drinkwn in waves 2 & 3
+* Calculate the values from drinkn 
+*generate drinkwn2 = drinkn2 * 7
+*generate drinkwn3 = drinkn3 * 7
+* Now drop drinkn vars
+*drop drinkn2 drinkn3
 
+* Reshape data from wide to long
 #d ;
 reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd drinkwn_e 
+    drink drinkd drinkwn
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -265,7 +282,8 @@ label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
 label variable drinkd "# Days/week has a drink"
-label variable drinkwn_e "# drinks/week"
+*label variable drinkn "# drinks/day"
+label variable drinkwn "# drinks/week"
 
 
 * Use harmonised education var
@@ -367,6 +385,8 @@ replace smkstat = 3 if smoken == 1
 label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
+* Calculate drinkwn from drinkn for waves 2 and 3
+
 count if missing(drinkd)
 * Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
 recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
@@ -430,7 +450,7 @@ foreach var in
     drink
     drinkd
     drinkd_stat
-    drinkwn_e
+    drinkwn
 	drinkd1
 	drinkd2
 	drinkd3
