@@ -576,8 +576,10 @@ VarsInfo::VarsInfo() {
 	info[Vars::retage]        		= VarInfo("retage", "Retirement age", VarTypes::Float);
 	info[Vars::drink]				= VarInfo("drink", "Whether drinks alcohol at all", VarTypes::Boolean);
 	info[Vars::drinkd]				= VarInfo("drinkd", "Number of days per week drinks alcohol, Range [0,7]", VarTypes::Short);
+	info[Vars::drinkwn]				= VarInfo("drinkwn", "Number of drinks per week", VarTypes::Double);
 	info[Vars::l2drink]				= VarInfo("l2drink", "Lag of whether drinks alcohol at all", VarTypes::Boolean);
 	info[Vars::l2drinkd]			= VarInfo("l2drinkd", "Lag of Number of days per week drinks alcohol, Range [0,7]", VarTypes::Short);
+	info[Vars::l2drinkwn]			= VarInfo("l2drinkwn", "Lag of number of drinks per week", VarTypes::Double);
 	info[Vars::drinkd1]				= VarInfo("drinkd1", "drinkd 1 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 1);
 	info[Vars::drinkd2]				= VarInfo("drinkd2", "drinkd 2 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 2);
 	info[Vars::drinkd3]				= VarInfo("drinkd3", "drinkd 3 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 3);
@@ -728,6 +730,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::atotf] = Vars::l2atotf;
 	lag_map[Vars::drink] = Vars::l2drink;
 	lag_map[Vars::drinkd] = Vars::l2drinkd;
+	lag_map[Vars::drinkwn] = Vars::l2drinkwn;
 	lag_map[Vars::drinkd1] = Vars::l2drinkd1;
 	lag_map[Vars::drinkd2] = Vars::l2drinkd2;
 	lag_map[Vars::drinkd3] = Vars::l2drinkd3;

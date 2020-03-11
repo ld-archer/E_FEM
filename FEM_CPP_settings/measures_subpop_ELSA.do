@@ -47,6 +47,7 @@ local measures
 					p_drink		i_drink		n_drink
 					p_drinkd1	p_drinkd2	p_drinkd3	p_drinkd4
 					a_drinkd 	a_drinkd_stat
+					n_drinkwn 	t_drinkwn	a_drinkwn
 					p_mdactx_e	a_mdactx_e  n_mdactx_e
 					p_ltactx_e	a_ltactx_e  n_ltactx_e
 					p_vgactx_e	a_vgactx_e  n_vgactx_e

@@ -37,14 +37,23 @@ replace drinkwn6 = . if missing(drinkwn6)
 replace drinkwn7 = . if missing(drinkwn7)
 replace drinkwn8 = . if missing(drinkwn8)
 
-generate bmi_imputed = 1 if missing(bmi2, bmi4, bmi6, bmi8)
-gen drink_imputed = 1 if missing(drink1, drink2, drink3, drink4, drink5, drink6, drink7, drink8)
-gen drinkd_imputed = 1 if missing(drinkd2, drinkd3, drinkd4, drinkd5, drinkd6, drinkd7, drinkd8)
-gen drinkwn_imputed = 1 if missing(drinkwn4, drinkwn5, drinkwn5, drinkwn6, drinkwn7, drinkwn8)
+* Generate a few flags for imputed variables
+forvalues wv = 2 (2) 8 {
+	generate bmi_imputed`wv' = 1 if missing(bmi`wv')
+}
+forvalues wv = 1/8 {
+	gen drink_imputed`wv' = 1 if missing(drink`wv')
+}
+forvalues wv = 2/8 {
+	gen drinkd_imputed`wv' = 1 if missing(drinkd`wv')
+}
+forvalues wv = 4/8 {
+	gen drinkwn_imputed`wv' = 1 if missing(drinkwn`wv')
+}
 
 * Check if all missing values replaced
-codebook 	bmi2 bmi4 bmi6 bmi8 ///
-			raeducl ///
+codebook 	raeducl ///
+			bmi2 bmi4 bmi6 bmi8 ///
 			drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
 			drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8 ///
 			drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8
