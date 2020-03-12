@@ -61,14 +61,15 @@ codebook 	raeducl ///
 
 local right_hand_vars 	i.ragender rabyear ///
 						i.work1 i.work2 i.work3 i.work4 i.work5 i.work6 i.work7 i.work8 ///
+						i.hlthlm2 i.hlthlm3 i.hlthlm4 i.hlthlm5 i.hlthlm6 i.hlthlm7 i.hlthlm8 ///
 						itearn1 itearn2 itearn3 itearn4 itearn5 itearn6 itearn7 itearn8 ///
 						i.retemp1 i.retemp2 i.retemp3 i.retemp4 i.retemp5 i.retemp6 i.retemp7 i.retemp8 ///
-						retage1 retage2 retage3 retage4 retage5 retage6 retage7 retage8 ///
-						ipubpen1 ipubpen2 ipubpen3 ipubpen4 ipubpen5 ipubpen6 ipubpen7 ipubpen8 ///
-						atotf1 atotf2 atotf3 atotf4 atotf5 atotf6 atotf7 atotf8 ///
 						i.vgactx_e1 i.vgactx_e2 i.vgactx_e3 i.vgactx_e4 i.vgactx_e5 i.vgactx_e6 i.vgactx_e7 i.vgactx_e8 ///
 						i.mdactx_e1 i.mdactx_e2 i.mdactx_e3 i.mdactx_e4 i.mdactx_e5 i.mdactx_e6 i.mdactx_e7 i.mdactx_e8 ///
-						i.ltactx_e1 i.ltactx_e2 i.ltactx_e3 i.ltactx_e4 i.ltactx_e5 i.ltactx_e6 i.ltactx_e7 i.ltactx_e8
+						i.ltactx_e1 i.ltactx_e2 i.ltactx_e3 i.ltactx_e4 i.ltactx_e5 i.ltactx_e6 i.ltactx_e7 i.ltactx_e8 ///
+						ipubpen1 ipubpen2 ipubpen3 ipubpen4 ipubpen5 ipubpen6 ipubpen7 ipubpen8 
+						/*retage1 retage2 retage3 retage4 retage5 retage6 retage7 retage8 */
+						/*atotf1 atotf2 atotf3 atotf4 atotf5 atotf6 atotf7 atotf8 */
 
 * Set format as wide
 mi set wide
@@ -93,11 +94,6 @@ mi describe
 * Have a go!
 mi impute chained 	(ologit) raeducl ///
 					(pmm, knn(`num_knn')) bmi2 bmi4 bmi6 bmi8 ///
-					(logit) drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
-					= `right_hand_vars' ///
-					, add(`num_imputations') chaindots rseed(`seed') force
-
-/*
 					(logit) drink2 ///
 					(logit) drink3 ///
 					(logit) drink4 ///
@@ -105,6 +101,11 @@ mi impute chained 	(ologit) raeducl ///
 					(logit) drink6 ///
 					(logit) drink7 ///
 					(logit) drink8 ///
+					= `right_hand_vars' ///
+					, add(`num_imputations') chaindots rseed(`seed') force
+
+/*
+					(logit) drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
 */
 					
 mi extract `num_imputations', clear
