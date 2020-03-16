@@ -97,7 +97,7 @@ misstable summ `imputees'
 mi describe
 
 local predictors 	i.hlthlm2 i.hlthlm3 i.hlthlm4 i.hlthlm5 i.hlthlm6 i.hlthlm7 i.hlthlm8 ///
-					i. walkra1 i.walkra2 i.walkra3 i.walkra4 i.walkra5 i.walkra6 i.walkra7 i.walkra8 ///
+					i.walkra1 i.walkra2 i.walkra3 i.walkra4 i.walkra5 i.walkra6 i.walkra7 i.walkra8 ///
 					i.dressa1 i.dressa2 i.dressa3 i.dressa4 i.dressa5 i.dressa6 i.dressa7 i.dressa8 ///
 					i.batha1 i.batha2 i.batha3 i.batha4 i.batha5 i.batha6 i.batha7 i.batha8 ///
 					i.mdactx_e1 i.mdactx_e2 i.mdactx_e3 i.mdactx_e4 i.mdactx_e5 i.mdactx_e6 i.mdactx_e7 i.mdactx_e8 ///
@@ -110,7 +110,11 @@ local predictors 	i.hlthlm2 i.hlthlm3 i.hlthlm4 i.hlthlm5 i.hlthlm6 i.hlthlm7 i.
 					i.stroke1 i.stroke2 i.stroke3 i.stroke4 i.stroke5 i.stroke6 i.stroke7 i.stroke8 ///
 					i.smoken1 i.smoken2 i.smoken3 i.smoken4 i.smoken5 i.smoken6 i.smoken7 i.smoken8 ///
 					i.psyche1 i.psyche2 i.psyche3 i.psyche4 i.psyche5 i.psyche6 i.psyche7 i.psyche8 ///
-					i.arthre1 i.arthre2 i.arthre3 i.arthre4 i.arthre5 i.arthre6 i.arthre7 i.arthre8
+					i.arthre1 i.arthre2 i.arthre3 i.arthre4 i.arthre5 i.arthre6 i.arthre7 i.arthre8 
+					/*i.work1 i.work2 i.work3 i.work4 i.work5 i.work6 i.work7 i.work8 ///
+					itearn1 itearn2 itearn3 itearn4 itearn5 itearn6 itearn7 itearn8 ///
+					i.retemp1 i.retemp2 i.retemp3 i.retemp4 i.retemp5 i.retemp6 i.retemp7 i.retemp8 ///
+					drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8*/
 					
 global allvars_logbmi male hsless college l2age65l l2age6574 l2age75p l2logbmi l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p l2smoken l2psyche l2arthre l2asthmae l2parkine l2drink l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 

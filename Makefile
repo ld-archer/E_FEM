@@ -109,6 +109,8 @@ BMI_valid2:
 
 ### Housekeeping and cleaning
 
+clean: clean_log clean_out
+
 clean_log:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log

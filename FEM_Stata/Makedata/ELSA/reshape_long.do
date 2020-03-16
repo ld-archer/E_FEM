@@ -392,13 +392,17 @@ count if missing(drinkd)
 recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
 label define drinkd_stat 1 "Teetotal" 2 "Light drinker" 3 "Moderate drinker" 4 "Heavy drinker"
 label values drinkd_stat drinkd_stat
-
 count if missing(drinkd_stat)
 
 gen drinkd1 = drinkd_stat==1 if !missing(drinkd_stat)
 gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
 gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
 gen drinkd4 = drinkd_stat==4 if !missing(drinkd_stat)
+
+label variable drinkd1 "Teetotal"
+label variable drinkd2 "Light Drinker"
+label variable drinkd3 "Moderate Drinker"
+label variable drinkd4 "Heavy Drinker"
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
@@ -514,9 +518,7 @@ replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
 replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
 replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
 
-*save ../../../input_data/ELSA_long_imp6.dta, replace
 *save ../../../input_data/ELSA_long.dta, replace
-save $outdata/ELSA_long_imp6.dta, replace
 save $outdata/ELSA_long.dta, replace
 
 capture log close
