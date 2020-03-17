@@ -33,6 +33,7 @@ local measures
 						p_adl1	  p_adl2    p_adl3p
 						p_iadl1   p_iadl2p
 						a_adlstat a_iadlstat
+						n_anyadl  n_anyiadl
 						a_age     d_age
 						p_smoken  i_smoken  n_smoken
 						p_smokev  i_smokev  n_smokev

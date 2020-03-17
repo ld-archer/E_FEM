@@ -88,5 +88,10 @@ bool SmokeStopIntervention::elig(Person* p) const {
 
 
     return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1 && sample > elig_threshold;
+
+
+	// Think about more complicated logic for eligibility
+	// i.e. people who just started smoking, different rates
+	
 }
 

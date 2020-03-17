@@ -134,6 +134,12 @@ a_adlstat_f,Average of adlstat: Sample= female,adlstat,mean,1,weight,l2died==0& 
 a_iadlstat_all,Average of iadlstat: Sample= all,iadlstat,mean,1,weight,l2died==0
 a_iadlstat_m,Average of iadlstat: Sample= male,iadlstat,mean,1,weight,l2died==0& male == 1
 a_iadlstat_f,Average of iadlstat: Sample= female,iadlstat,mean,1,weight,l2died==0& male == 0
+n_anyadl_all,Sum of anyadl: Sample= all,anyadl,sum,1,weight,l2died==0
+n_anyadl_m,Sum of anyadl: Sample= male,anyadl,sum,1,weight,l2died==0& male == 1
+n_anyadl_f,Sum of anyadl: Sample= female,anyadl,sum,1,weight,l2died==0& male == 0
+n_anyiadl_all,Sum of anyiadl: Sample= all,anyiadl,sum,1,weight,l2died==0
+n_anyiadl_m,Sum of anyiadl: Sample= male,anyiadl,sum,1,weight,l2died==0& male == 1
+n_anyiadl_f,Sum of anyiadl: Sample= female,anyiadl,sum,1,weight,l2died==0& male == 0
 a_age_all,Average of age: Sample= all,age,mean,1,weight,l2died==0
 a_age_m,Average of age: Sample= male,age,mean,1,weight,l2died==0& male == 1
 a_age_f,Average of age: Sample= female,age,mean,1,weight,l2died==0& male == 0

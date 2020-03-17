@@ -336,6 +336,19 @@ gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
 gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
 gen drinkd4 = drinkd_stat==4 if !missing(drinkd_stat)
 
+** Economic vars
+
+* Earnings
+replace itearn = 0 if work == 0
+gen itearnx = itearn/1000
+replace itearnx = min(itearn, 200) if !missing(itearn)
+label var itearnx "Individual earnings in 1000s, max 200"
+
+* Non-housing Wealth
+gen atotfx = atotf/1000
+replace atotfx = min(atotf, 2000) if !missing(atotf)
+label var atotfx "HH wealth in 1000s (max 2000) if positive, zero otherwise"
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
@@ -452,6 +465,9 @@ replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
 replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
 replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
 replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
+
+replace logbmi = l2logbmi if missing(logbmi)
+replace l2logbmi = logbmi if missing(l2logbmi)
 
 *save ../../../input_data/cross_validation/CV_long.dta, replace
 save $outdata/cross_validation/CV_long.dta, replace

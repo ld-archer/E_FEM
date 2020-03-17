@@ -68,7 +68,6 @@ lunge_diclaim = lunge*diclaim : lung disease disability claiming interaction ter
 died_nhmliv = died*nhmliv : death and nursing home interaction term : boolean
 diclaim_nhmliv = nhmliv * diclaim : Interaction of nursing home and disabled : boolean
 diclaim_died = died * diclaim : Interaction of died and disabled : boolean
-adl3p_alzhmr = adl3p*alzhmr : Interaction of alzheimers and adl3p : boolean
 
 | Disease staging variables
 cancre_nlcancre = cancre * not(l2cancre) * not(died) : Cancer Diagnosis Stage : boolean
@@ -92,7 +91,6 @@ died_stroke = died*stroke : Stroke Terminal Stage : boolean
 alzhe_nlalzhe = alzhe * not(l2alzhe) * not(died) : Alzhe Diagnosis Stage : boolean
 alzhe_lalzhe = alzhe * l2alzhe * not(died) : Alzhe Maintenance Stage : boolean
 died_alzhe = died*alzhe : Alzhe Terminal Stage : boolean
-
 
 male_hsless = male*hsless : male and HS or less interaction term : boolean
 male_black = male*black : male and black interaction term : boolean

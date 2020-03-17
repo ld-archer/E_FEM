@@ -1,30 +1,439 @@
-/* 
-
-This script runs the cross-validation for the English Future Elderly Model
-
-Components this script needs to run for cross-validation:
-
-1. Split the original population in 2
-	- One half is for estimating transition models
-	- Other half is simulated using the transition models produced previously
-
-2. Generate stock population from simulate half
-	- reshape_long
-	- generate_stock_pop
-	
-3. Estimate transition models from transitions half
-
-4. Simulate the stock pop using transitions from wave 3 -> 8
-
+/*
+Cross-validation results using ELSA
 */
 
-quietly include ../../fem_env.do
+*ssc install descsave
 
-*use $outdata/H_ELSA_f_2002-2016.dta, clear
-*use ../../input_data/H_ELSA_f_2002-2016.dta, clear
+clear all
+set maxvar 10000
+include ../../fem_env.do
 
-* Run script to split the original population in 2
-do ID_selection_CV.do
-* output saved in /input_data/cross_validation/crossvalidation.dta
+log using crossvalidation_ELSA.log, replace
+
+* Path to files
+*local output "$output_dir/ELSA_CrossValidation"
+local output "../../output/ELSA_CrossValidation"
+*local input "$outdata"
+local input "../../input_data"
+
+* For processing simulation output (WHAT DOES THIS MEAN?)
+local iter 5
+
+* For processing ELSA (ALSO WHAT DOES THIS MEAN??)
+local minwave 1
+local maxwave 8
+
+********************************
+* PROCESS ELSA
+********************************
+
+use `input'/H_ELSA_f_2002-2016.dta, clear
+*use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
+
+* Keep only those used in the simulation (simulation==1)
+merge 1:1 idauniq using `input'/cross_validation/crossvalidation.dta, keepusing(simulation)
+tab _merge
+keep if simulation == 1
+drop _merge
+
+#d ;
+keep 
+	idauniq
+	raracem
+	ragender
+	rabyear
+	
+	r*iwstat
+	r*agey
+	r*cancre
+	r*diabe
+	r*hearte
+	r*hibpe
+	r*lunge
+	r*stroke
+	r*smoken
+	r*smokev
+	r*work
+	r*bmi
+	r*itearn
+	r*cwtresp
+	h*atotf
+	r*ipubpen
+	
+	r*walkra
+	r*dressa
+	r*batha
+	r*eata
+	r*beda
+	r*toilta
+	r*mapa
+	r*phonea
+	r*moneya
+	r*medsa 
+	r*shopa
+	r*mealsa
+	r*housewka
+;
+#d cr
+
+* Reshape this data to long
+#d ;
+local shapelist
+	r@iwstat
+	r@agey
+	r@cancre
+	r@diabe
+	r@hearte
+	r@hibpe
+	r@lunge
+	r@stroke
+	r@smoken
+	r@smokev
+	r@work
+	r@bmi
+	r@itearn
+	r@cwtresp
+	h@atotf
+	r@ipubpen
+	
+	r@walkra
+	r@dressa
+	r@batha
+	r@eata
+	r@beda
+	r@toilta
+	r@mapa
+	r@phonea
+	r@moneya
+	r@medsa 
+	r@shopa
+	r@mealsa
+	r@housewka
+;
+#d cr
+
+reshape long `shapelist', i(idauniq) j(wave)
+
+keep if wave >= `minwave'
+keep if rabyear <= 1951 /* Keep only those aged 50 or over */
+
+* Recode variables
+* Fixed variables
+gen white = raracem == 1
+label var white "White"
+
+* ADL/IADL
+egen adlcount = rowtotal(rwalkra rdressa rbatha reata rbeda rtoilta)
+egen iadlcount = rowtotal(rmapa rphonea rmoneya rmedsa rshopa rmealsa rhousewka)
+recode adlcount (0=1) (1=2) (2=3) (3/7 = 4), gen(adlstat)
+recode adlcount (0=0) (1/6 = 1), gen(anyadl)
+recode iadlcount (0=1) (1=2) (2/7=3), gen(iadlstat)
+recode iadlcount (0=0) (1/7=1), gen(anyiadl)
+label define adlstat 1 "No ADLs" 2 "1 ADL" 3 "2 ADLs" 4 "3 or more ADLs"
+label values adlstat adlstat
+label define anyadl 0 "No ADLs" 1 "1 or more ADL" 
+label values anyadl anyadl
+label var anyadl "Any ADL limitations"
+label define iadlstat 1 "No IADLs" 2 "1 IADL" 3 "2 or more IADLs"
+label values iadlstat iadlstat
+label define anyiadl 0 "No IADLs" 1 "1 or more IADL" 
+label values anyiadl anyiadl
+label var anyiadl "Any IADL limitations"
+
+gen adl1 = adlstat==2 if !missing(adlstat)
+gen adl2 = adlstat==3 if !missing(adlstat)
+gen adl3p = adlstat==4 if !missing(adlstat)
+label var adl1 "One ADL limitation"
+label var adl2 "Two ADL limitations"
+label var adl3p "Three or more ADL limitations"
+
+gen iadl1 = iadlstat==2 if !missing(iadlstat)
+gen iadl2p = iadlstat==3 if !missing(iadlstat)
+label var iadl1 "One IADL limitation"
+label var iadl2p "Two or more IADL limitations"
+
+
+* Health conditions
+foreach var in cancre diabe hearte hibpe lunge stroke {
+	ren r`var' `var'
+}
+label var cancre "R ever had cancer"
+label var diabe "R ever had diabetes"
+label var hearte "R ever had heart disease"
+label var hibpe "R ever had hypertension"
+label var lunge "R ever had lung disease"
+label var stroke "R ever had stroke"
+
+* Mortality
+gen died = riwstat
+recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
+label var died "Whether died or not in this wave"
+
+* Risk factors
+foreach var in bmi smokev smoken {
+	ren r`var' `var'
+}
+label var bmi "R Body mass index"
+label var smoken "R smokes now"
+label var smokev "R smoke ever"
+
+* Sampling weight
+ren rcwtresp weight
+label var weight "R cross-sectional weight"
+
+codebook weight
+
+* Interview Status
+ren riwstat iwstat
+
+* Age years
+ren ragey age
+gen age_yrs = age
+
+* Economic vars
+foreach var in work itearn {
+	ren r`var' `var'
+}
+
+* Work status
+label var work "R working for pay"
+
+* Earnings
+replace itearn = 0 if work == 0
+gen itearnx = itearn/1000
+replace itearnx = min(itearn, 200) if !missing(itearn)
+label var itearnx "Individual earnings in 1000s, max 200"
+
+* Non-housing Wealth
+gen atotfx = hatotf/1000
+replace atotfx = min(hatotf, 2000) if !missing(hatotf)
+label var atotfx "HH wealth in 1000s (max 2000) if positive, zero otherwise"
+
+* Couple level Capital Income
+
+* Interview year
+gen iwyear = 2000 + 2*wave
+
+
+gen FEM = 0
+gen year = iwyear
+
+tempfile ELSA
+save `ELSA'
+save ELSA_2002_2016.dta, replace
+clear all
+
+********************************
+* Process simulation output
+* iter = 5 numbers of reps
+********************************
+forvalues i = 1/`iter' {
+	forvalues yr = 2002 (2) 2012 {
+		append using "`output'/detailed_output/y`yr'_rep`i'.dta"
+	}
+}
+gen reweight = weight/`iter'
+gen FEM = 1
+gen rep = mcrep + 1
+
+*replace hicap = hicap/1000
+
+append using `ELSA'
+
+bys FEM: sum diabe [aw=weight] if year == 2002
+bys FEM: sum diabe [aw=weight] if year == 2012
+
+/* Shorter Variable Labels */
+label var died "Died"
+
+label var adl1 "1 ADL"
+label var adl2 "2 ADLs"
+label var adl3p "3+ ADLs"
+
+label var anyadl "Any ADLs"
+
+label var iadl1 "1 IADL"
+label var iadl2p "2+ IADLs"
+
+label var anyiadl "Any IADLs"
+
+label var cancre "Cancer"
+label var diabe "Diabetes"
+label var hearte "Heart Disease" 
+label var hibpe "Hypertension"
+label var lunge "Lung Disease"
+label var stroke "Stroke"
+
+label var bmi "BMI"
+label var smoken "Current smoker"
+label var smokev "Ever smoked"
+
+label var work "Working for pay"
+
+label var itearnx "Earnings (thou.)"
+label var atotfx "Household wealth (thou.)"
+
+label var age_yrs "Age at interview"
+label var male "Male"
+label var white "White"
+
+
+
+* Get variable labels for later merging
+preserve
+tempfile varlabs
+descsave, list(name varlab) saving(`varlabs', replace)
+*save varlabs, replace
+use `varlabs', clear
+rename name variables
+save `varlabs', replace
+restore
+
+
+
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl 
+local risk smoken smokev bmi 
+local binecon work
+local cntecon itearnx atotfx
+local demog age_yrs male white
+local unweighted died
+
+foreach tp in binhlth risk binecon cntecon demog {
+	forvalues wave = `minwave'/`maxwave' {
+		file open myfile using "`output'/fem_ELSA_ttest_`tp'_`wave'.txt", write replace
+		file write myfile "variable" _tab "fem_mean" _tab "fem_n" _tab "fem_sd" _tab "ELSA_mean" _tab "ELSA_n" _tab "ELSA_sd" _tab "p_value" _n
+		
+		local yr = 2000 + 2*`wave'
+		
+		foreach var in ``tp'' {
+			
+			local select
+			if "`var'" == "work" {
+				local select & age_yrs <= 80
+			}
+			if "`var'" == "itearnx" {
+				local select & age_yrs <= 80
+			}
+			
+			di "var is `var' and select is `select'"
+			
+			qui sum `var' if FEM == 1 & died == 0 & year == `yr' `select' [aw=reweight]
+			local N1 = r(N)
+			local av1 = r(mean)
+			local sd1 = r(sd)
+			qui sum `var' if FEM == 0 & died == 0 & year == `yr' `select' [aw=weight] 
+			local N2 = r(N)
+			local av2 = r(mean)
+			local sd2 = r(sd)
+			ttesti `N1' `av1' `sd1' `N2' `av2' `sd2', unequal
+			file write myfile %15s "`var'" _tab %15.5f (`av1') _tab %15.0f (`N1') _tab %15.5f (`sd1') _tab %15.5f (`av2') _tab %15.0f (`N2')	_tab %15.5f (`sd2') _tab %15.5f (r(p)) _n
+		}
+		file close myfile
+	}
+}
+
+
+foreach tp in unweighted {
+	forvalues wave = `minwave'/`maxwave' {
+		file open myfile using "`output'/fem_ELSA_ttest_`tp'_`wave'.txt", write replace
+		file write myfile "variable" _tab "fem_mean" _tab "fem_n" _tab "fem_sd" _tab "ELSA_mean" _tab "ELSA_n" _tab "ELSA_sd" _tab "p_value" _n
+
+		local yr = 2000 + 2*`wave' 
+
+		foreach var in ``tp'' {
+			qui sum `var' if FEM == 1 & year == `yr'  
+			local N1 = r(N)
+			local av1 = r(mean)
+			local sd1 = r(sd)
+			qui sum `var' if FEM == 0 & year == `yr'
+			local N2 = r(N)
+			local av2 = r(mean)
+			local sd2 = r(sd)
+			ttesti `N1' `av1' `sd1' `N2' `av2' `sd2', unequal
+	 		file write myfile %15s "`var'" _tab %15.5f (`av1') _tab %15.0f (`N1') _tab %15.5f (`sd1') _tab %15.5f (`av2') _tab %15.0f (`N2')	_tab %15.5f (`sd2') _tab %15.5f (r(p)) _n
+		}
+		file close myfile
+	}
+}
+
+
+local varlist "fem_mean fem_n fem_sd ELSA_mean ELSA_n ELSA_sd p_value"
+
+
+* Produce tables
+foreach tabl in binhlth risk binecon cntecon demog unweighted {
+	
+	foreach wave in 1 3 5 8 {
+		tempfile wave`wave'
+		insheet using "`output'/fem_ELSA_ttest_`tabl'_`wave'.txt",clear
+	
+		foreach var in `varlist' {
+			ren `var' `var'_wave`wave'
+		}
+		save `wave`wave''
+	}
+
+	use "`wave1'", replace
+	merge 1:1 variable using "`wave3'", nogen
+	merge 1:1 variable using "`wave5'", nogen
+	merge 1:1 variable using "`wave8'", nogen
+	
+	* Add variable labels
+	merge 1:1 variable using `varlabs'
+	drop if _merge==2
+	drop _merge
+	replace variable = varlab if varlab != ""
+	keep variable fem_mean* ELSA_mean* p_value*
+		
+	keep variable fem_mean* ELSA_mean* p_value*
+	outsheet using crossval_`tabl'.csv, comma replace
+}
+
+
+* Produce tables of all years
+foreach tabl in binhlth risk binecon cntecon demog unweighted {
+	
+	foreach wave in 1 2 3 4 5 6 7 8 {
+		tempfile wave`wave'
+		insheet using "`output'/fem_ELSA_ttest_`tabl'_`wave'.txt",clear
+	
+		foreach var in `varlist' {
+			ren `var' `var'_wave`wave'
+		}
+		save `wave`wave''
+	}
+
+	use "`wave3'", replace
+	merge 1:1 variable using "`wave4'", nogen
+	merge 1:1 variable using "`wave5'", nogen
+	merge 1:1 variable using "`wave6'", nogen
+	merge 1:1 variable using "`wave7'", nogen
+	merge 1:1 variable using "`wave8'", nogen
+	
+	* Add variable labels
+	merge 1:1 variable using `varlabs'
+	drop if _merge==2
+	drop _merge
+	replace variable = varlab if varlab != ""
+	keep variable fem_mean* ELSA_mean* p_value*
+		
+	keep variable fem_mean* ELSA_mean* p_value*
+	outsheet using crossval_all_waves_`tabl'.csv, comma replace
+}
+
+
+
+
+
+
+capture log close
+
+
+
+
+
+
+
+
 
 

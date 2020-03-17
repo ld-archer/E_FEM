@@ -10,6 +10,11 @@ local ster "$local_path/Estimates/ELSA/crossvalidation" /* ster file for storing
 *local ster "../Estimates/ELSA/crossvalidation" /* ster file for storing estimates */
 
 
+/* Add switch for cross-validation to use a different ster dir
+	Change selection criteria for models to include transition == 1
+*/
+
+
 use $outdata/cross_validation/transition_CV.dta
 *use ../../input_data/cross_validation/transition_CV.dta
 

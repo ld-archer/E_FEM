@@ -113,8 +113,6 @@ replace l2hlthlm = hlthlm if missing(l2hlthlm)
 replace hlthlm = 0 if missing(hlthlm)
 replace l2hlthlm = 0 if missing(l2hlthlm)
 
-replace logbmi = l2logbmi if missing(logbmi)
-replace l2logbmi = logbmi if missing(l2logbmi)
 gen flogbmi50 = l2logbmi
 
 

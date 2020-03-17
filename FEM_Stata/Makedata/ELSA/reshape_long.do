@@ -1,6 +1,6 @@
 clear
 set maxvar 10000
-log using reshape_long_imp.log, replace
+log using reshape_long.log, replace
 
 quietly include ../../../fem_env.do
 
@@ -16,7 +16,7 @@ global lastwave 8
 
 local seed 5000
 set seed `seed'
-local num_imputations 10
+local num_imputations 3
 local num_knn 5
 
 /* Variables from Harmonized ELSA:
@@ -121,6 +121,7 @@ r*mdactx_e
 r*ltactx_e
 r*drink
 r*drinkd_e
+r*drinkn_e
 r*drinkwn_e
 ;
 #d cr
@@ -131,12 +132,21 @@ forvalues wv = $firstwave/$lastwave {
     rename h`wv'atotf r`wv'atotf
 }
 
-* Rename r*drinkd_e to more readable (and pleasant) form - r*drinkd
+* Rename drink vars to more readable (and pleasant) form - r*drinkd
+* Also rename exercise variables in the near future
 forvalues wv = $firstwave/$lastwave {
-	if `wv' == 1 {
-		continue /*drinkd_e has no data for wave 1 so continue*/
+	if `wv' >= 2 {
+		/* drinkd_e not present in wave 1 */
+		rename r`wv'drinkd_e r`wv'drinkd
 	}
-	rename r`wv'drinkd_e r`wv'drinkd
+	if `wv' == 2 | `wv' == 3 {
+		/* drinkn_e only present in waves 2 and 3 */
+		rename r`wv'drinkn_e r`wv'drinkn
+	}
+	if `wv' >= 4 {
+		/* drinkwn_e replaces drinkn_e from wave 4 onwards */
+		rename r`wv'drinkwn_e r`wv'drinkwn
+	}
 }
 
 * Rename variables to make reshape easier and have names consistent with US FEM
@@ -189,7 +199,8 @@ foreach var in
     ltactx_e
     drink
     drinkd
-    drinkwn_e
+	drinkn
+    drinkwn
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -209,14 +220,20 @@ do multiple_imputation_attempt6.do `seed' `num_imputations' `num_knn'
 * Still missing a single record for bmi2,4,6,8; drop it
 drop if missing(bmi2)
 
-* Reshape data from wide to long
+* Generate vars for drinkwn in waves 2 & 3
+* Calculate the values from drinkn 
+*generate drinkwn2 = drinkn2 * 7
+*generate drinkwn3 = drinkn3 * 7
+* Now drop drinkn vars
+*drop drinkn2 drinkn3
 
+* Reshape data from wide to long
 #d ;
 reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd drinkwn_e 
+    drink drinkd drinkwn
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -265,7 +282,8 @@ label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
 label variable drinkd "# Days/week has a drink"
-label variable drinkwn_e "# drinks/week"
+*label variable drinkn "# drinks/day"
+label variable drinkwn "# drinks/week"
 
 
 * Use harmonised education var
@@ -344,8 +362,13 @@ replace bmi = bmi_ipolate if missing(bmi)
 
 ** Now to add some noise to the BMI imputation **
 * generate a random number between -1 & 1 for waves 1,3,5,7
-gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
+*gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
 * Add the random number to the interpolated BMI
+*replace bmi = bmi + rand if !missing(rand)
+
+* Trying another method of adding noise to BMI imputation
+* Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
+gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
 replace bmi = bmi + rand if !missing(rand)
 
 * log(bmi)
@@ -362,18 +385,24 @@ replace smkstat = 3 if smoken == 1
 label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
+* Calculate drinkwn from drinkn for waves 2 and 3
+
 count if missing(drinkd)
 * Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
 recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
 label define drinkd_stat 1 "Teetotal" 2 "Light drinker" 3 "Moderate drinker" 4 "Heavy drinker"
 label values drinkd_stat drinkd_stat
-
 count if missing(drinkd_stat)
 
 gen drinkd1 = drinkd_stat==1 if !missing(drinkd_stat)
 gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
 gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
 gen drinkd4 = drinkd_stat==4 if !missing(drinkd_stat)
+
+label variable drinkd1 "Teetotal"
+label variable drinkd2 "Light Drinker"
+label variable drinkd3 "Moderate Drinker"
+label variable drinkd4 "Heavy Drinker"
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
@@ -425,7 +454,7 @@ foreach var in
     drink
     drinkd
     drinkd_stat
-    drinkwn_e
+    drinkwn
 	drinkd1
 	drinkd2
 	drinkd3
@@ -489,9 +518,10 @@ replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
 replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
 replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
 
-*save ../../../input_data/ELSA_long_imp6.dta, replace
+replace logbmi = l2logbmi if missing(logbmi)
+replace l2logbmi = logbmi if missing(l2logbmi)
+
 *save ../../../input_data/ELSA_long.dta, replace
-save $outdata/ELSA_long_imp6.dta, replace
 save $outdata/ELSA_long.dta, replace
 
 capture log close

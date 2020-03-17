@@ -12,12 +12,24 @@ quietly include ../../../fem_env.do
 use $outdata/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 
-keep idauniq r1iwstat
-sum idauniq if r1iwstat == 1
+keep idauniq r4iwstat
+sum idauniq if r4iwstat == 1
 * 11,050 ID's, so use roughly 5525 for simulation (=11050/2) (this true for wave 4 at least)
 
+* keep 1 record per person
+* gen rand for each person 
+* split entire sample between sim and transition
+* simulation sample has additional cut for r1iwstat==1
+* would have more people in transition than simulation
+
+* OR/AND
+* Use full sample for both transitions and simulation up to wave x, simulate from wave x onwards
+
+* ALSO
+* Start simulation from 2016 and see if there is big jumps from ELSA to FEM
+
 * Create random numbers from uniform distribution
-gen rand = runiform() if r1iwstat == 1
+gen rand = runiform() if r4iwstat == 1
 
 gen simulation = .
 replace simulation = 1 if rand > 0.5 & !missing(rand)

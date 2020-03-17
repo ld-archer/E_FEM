@@ -22,7 +22,8 @@ keep if inlist(age, 51, 52)
 
 *** Kludge section - fix these when we get the chance
 
-do kludge.do
+*do kludge.do
+
 foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
     replace `var' = 0 if missing(`var')
     replace l2`var' = 0 if missing(l2`var')
