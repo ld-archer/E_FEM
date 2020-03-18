@@ -157,3 +157,5 @@ replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
 replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat) & !missing(l2drinkd_stat)
 replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
 
+replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
+replace retemp = l2retemp if missing(retemp) & !missing(l2retemp)
