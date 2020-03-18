@@ -16,10 +16,10 @@ local output "../../output/ELSA_CrossValidation"
 *local input "$outdata"
 local input "../../input_data"
 
-* For processing simulation output (WHAT DOES THIS MEAN?)
+* For processing simulation output
 local iter 5
 
-* For processing ELSA (ALSO WHAT DOES THIS MEAN??)
+* For processing ELSA
 local minwave 1
 local maxwave 8
 
@@ -315,7 +315,7 @@ foreach tp in binhlth risk binecon cntecon demog {
 				local select & age_yrs <= 80
 			}
 			
-			di "var is `var' and select is `select'"
+			di "var is `var' and select is `select' and wave is `wave'"
 			
 			qui sum `var' if FEM == 1 & died == 0 & year == `yr' `select' [aw=reweight]
 			local N1 = r(N)
