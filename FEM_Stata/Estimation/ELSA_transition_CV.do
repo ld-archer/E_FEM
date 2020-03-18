@@ -12,6 +12,11 @@ local ster "$local_path/Estimates/ELSA/crossvalidation" /* ster file for storing
 
 /* Add switch for cross-validation to use a different ster dir
 	Change selection criteria for models to include transition == 1
+	
+	
+	THIS IS PART OF USING THE SAME SCRIPTS FOR NORMAL E_FEM USE AS WELL AS CROSS_VALIDATION
+	Using the same scripts would be ideal as then wouldn't need to modify multiple scripts to make a change
+	Also would make the Makefile rules a lot nicer? Just better in general, easy enough to do
 */
 
 
