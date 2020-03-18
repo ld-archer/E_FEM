@@ -42,6 +42,7 @@ r*agey
 ragender
 raeduc_e
 raeducl
+raracem
 r*walkra
 r*dressa
 r*batha
@@ -243,6 +244,10 @@ gen college = (educ == 3)
 * Label males
 gen male = (ragender == 1) if !missing(ragender)
 label variable male "Male"
+
+* Label ethnicity
+gen white = (raracem == 1) if !missing(raracem)
+label variable white "White"
 
 * Find if dead with iwstat var
 gen died = (iwstat == 5) if !missing(iwstat)
@@ -468,6 +473,9 @@ replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
 
 replace logbmi = l2logbmi if missing(logbmi)
 replace l2logbmi = logbmi if missing(l2logbmi)
+
+replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
+replace retemp = l2retemp if missing(retemp) & !missing(l2retemp)
 
 *save ../../../input_data/cross_validation/CV_long.dta, replace
 save $outdata/cross_validation/CV_long.dta, replace
