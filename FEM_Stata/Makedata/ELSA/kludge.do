@@ -159,3 +159,7 @@ replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_
 
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
 replace retemp = l2retemp if missing(retemp) & !missing(l2retemp)
+replace retemp = 0 if missing(retemp) & age < 65
+replace retemp = 1 if missing(retemp) & age > 65
+replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
+
