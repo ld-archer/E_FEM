@@ -117,10 +117,18 @@ reshape long `shapelist', i(idauniq) j(wave)
 keep if wave >= `minwave'
 keep if rabyear <= 1951 /* Keep only those aged 50 or over */
 
+* FEM uses hhidpn as the person ID
+gen hhidpn = idauniq
+replace hhid = hhidpn
+
 * Recode variables
 * Fixed variables
 gen white = raracem == 1
 label var white "White"
+
+* Label males
+gen male = (ragender == 1) if !missing(ragender)
+label variable male "Male"
 
 * ADL/IADL
 egen adlcount = rowtotal(rwalkra rdressa rbatha reata rbeda rtoilta)
@@ -228,7 +236,7 @@ clear all
 * iter = 5 numbers of reps
 ********************************
 forvalues i = 1/`iter' {
-	forvalues yr = 2002 (2) 2012 {
+	forvalues yr = 2002 (2) 2016 {
 		append using "`output'/detailed_output/y`yr'_rep`i'.dta"
 	}
 }
@@ -283,29 +291,34 @@ label var white "White"
 preserve
 tempfile varlabs
 descsave, list(name varlab) saving(`varlabs', replace)
-*save varlabs, replace
+save varlabs, replace
 use `varlabs', clear
-rename name variables
+rename name variable
 save `varlabs', replace
 restore
 
-
+save test_pre_loop.dta, replace
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl 
 local risk smoken smokev bmi 
 local binecon work
-local cntecon itearnx atotfx
+local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
 local unweighted died
 
 foreach tp in binhlth risk binecon cntecon demog {
 	forvalues wave = `minwave'/`maxwave' {
-		file open myfile using "`output'/fem_ELSA_ttest_`tp'_`wave'.txt", write replace
-		file write myfile "variable" _tab "fem_mean" _tab "fem_n" _tab "fem_sd" _tab "ELSA_mean" _tab "ELSA_n" _tab "ELSA_sd" _tab "p_value" _n
+		file open myfile using "`output'/fem_elsa_ttest_`tp'_`wave'.txt", write replace
+		file write myfile "variable" _tab "fem_mean" _tab "fem_n" _tab "fem_sd" _tab "elsa_mean" _tab "elsa_n" _tab "elsa_sd" _tab "p_value" _n
 		
 		local yr = 2000 + 2*`wave'
 		
 		foreach var in ``tp'' {
+		
+			* BMI has no data for odd waves, skip over these in the loop
+			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
+				continue
+			}
 			
 			local select
 			if "`var'" == "work" {
@@ -321,6 +334,12 @@ foreach tp in binhlth risk binecon cntecon demog {
 			local N1 = r(N)
 			local av1 = r(mean)
 			local sd1 = r(sd)
+			
+			di "N, mean, and sd:"
+			di `N1'
+			di `av1'
+			di `sd1'
+			
 			qui sum `var' if FEM == 0 & died == 0 & year == `yr' `select' [aw=weight] 
 			local N2 = r(N)
 			local av2 = r(mean)
@@ -335,8 +354,8 @@ foreach tp in binhlth risk binecon cntecon demog {
 
 foreach tp in unweighted {
 	forvalues wave = `minwave'/`maxwave' {
-		file open myfile using "`output'/fem_ELSA_ttest_`tp'_`wave'.txt", write replace
-		file write myfile "variable" _tab "fem_mean" _tab "fem_n" _tab "fem_sd" _tab "ELSA_mean" _tab "ELSA_n" _tab "ELSA_sd" _tab "p_value" _n
+		file open myfile using "`output'/fem_elsa_ttest_`tp'_`wave'.txt", write replace
+		file write myfile "variable" _tab "fem_mean" _tab "fem_n" _tab "fem_sd" _tab "elsa_mean" _tab "elsa_n" _tab "elsa_sd" _tab "p_value" _n
 
 		local yr = 2000 + 2*`wave' 
 
@@ -357,15 +376,14 @@ foreach tp in unweighted {
 }
 
 
-local varlist "fem_mean fem_n fem_sd ELSA_mean ELSA_n ELSA_sd p_value"
-
+local varlist "fem_mean fem_n fem_sd elsa_mean elsa_n elsa_sd p_value"
 
 * Produce tables
 foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	
-	foreach wave in 1 3 5 8 {
+	foreach wave in 3 5 8 {
 		tempfile wave`wave'
-		insheet using "`output'/fem_ELSA_ttest_`tabl'_`wave'.txt",clear
+		insheet using "`output'/fem_elsa_ttest_`tabl'_`wave'.txt",clear
 	
 		foreach var in `varlist' {
 			ren `var' `var'_wave`wave'
@@ -373,19 +391,19 @@ foreach tabl in binhlth risk binecon cntecon demog unweighted {
 		save `wave`wave''
 	}
 
-	use "`wave1'", replace
-	merge 1:1 variable using "`wave3'", nogen
+	use "`wave3'", replace
 	merge 1:1 variable using "`wave5'", nogen
 	merge 1:1 variable using "`wave8'", nogen
 	
 	* Add variable labels
 	merge 1:1 variable using `varlabs'
+	tab _merge
 	drop if _merge==2
 	drop _merge
 	replace variable = varlab if varlab != ""
-	keep variable fem_mean* ELSA_mean* p_value*
+	keep variable fem_mean* elsa_mean* p_value*
 		
-	keep variable fem_mean* ELSA_mean* p_value*
+	keep variable fem_mean* elsa_mean* p_value*
 	outsheet using crossval_`tabl'.csv, comma replace
 }
 
@@ -395,7 +413,7 @@ foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	
 	foreach wave in 1 2 3 4 5 6 7 8 {
 		tempfile wave`wave'
-		insheet using "`output'/fem_ELSA_ttest_`tabl'_`wave'.txt",clear
+		insheet using "`output'/fem_elsa_ttest_`tabl'_`wave'.txt",clear
 	
 		foreach var in `varlist' {
 			ren `var' `var'_wave`wave'
@@ -415,9 +433,9 @@ foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	drop if _merge==2
 	drop _merge
 	replace variable = varlab if varlab != ""
-	keep variable fem_mean* ELSA_mean* p_value*
+	keep variable fem_mean* elsa_mean* p_value*
 		
-	keep variable fem_mean* ELSA_mean* p_value*
+	keep variable fem_mean* elsa_mean* p_value*
 	outsheet using crossval_all_waves_`tabl'.csv, comma replace
 }
 
