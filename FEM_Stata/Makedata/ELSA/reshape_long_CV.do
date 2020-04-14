@@ -31,7 +31,7 @@ drop r*lwtresp
 keep idauniq
 h*coupid
 r*iwstat
-r*strat 
+r*strat
 r*clust
 r*cwtresp
 r*iwindy
@@ -251,6 +251,7 @@ label variable white "White"
 
 * Find if dead with iwstat var
 gen died = (iwstat == 5) if !missing(iwstat)
+label var died "Died"
 * Keep only those alive or recently deceased
 count
 tab iwstat, m
@@ -292,17 +293,24 @@ label define adlstat 1 "No ADLs" 2 "1 ADL" 3 "2 ADLs" 4 "3 or more ADLs"
 label values adlstat adlstat
 label define anyadl 0 "No ADLs" 1 "1 or more ADL" 
 label values anyadl anyadl
+label var anyadl "Any ADLs"
 label define iadlstat 1 "No IADLs" 2 "1 IADL" 3 "2 or more IADLs"
 label values iadlstat iadlstat
 label define anyiadl 0 "No IADLs" 1 "1 or more IADL" 
 label values anyiadl anyiadl
+label var anyiadl "Any IADLs"
 
 gen adl1 = adlstat==2 if !missing(adlstat)
 gen adl2 = adlstat==3 if !missing(adlstat)
 gen adl3p = adlstat==4 if !missing(adlstat)
+label var adl1 "1 ADL"
+label var adl2 "2 ADLs"
+label var adl3p "3+ ADLs"
 
 gen iadl1 = iadlstat==2 if !missing(iadlstat)
-gen iadl2p = iadlstat==3 if !missing(iadlstat) 
+gen iadl2p = iadlstat==3 if !missing(iadlstat)
+label var iadl1 "1 IADL"
+label var iadl2p "2+ IADLs"
 
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate

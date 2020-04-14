@@ -251,6 +251,7 @@ append using `ELSA'
 bys FEM: sum diabe [aw=weight] if year == 2002
 bys FEM: sum diabe [aw=weight] if year == 2012
 
+
 /* Shorter Variable Labels */
 label var died "Died"
 
@@ -265,16 +266,16 @@ label var iadl2p "2+ IADLs"
 
 label var anyiadl "Any IADLs"
 
-label var cancre "Cancer"
-label var diabe "Diabetes"
-label var hearte "Heart Disease" 
-label var hibpe "Hypertension"
-label var lunge "Lung Disease"
-label var stroke "Stroke"
+label var hibpe "Hypertension ever"
+label var diabe "Diabetes ever"
+label var cancre "Cancer ever"
+label var lunge "Lung disease ever"
+label var hearte "Heart disease ever"
+label var stroke "Stroke ever"
 
 label var bmi "BMI"
-label var smoken "Current smoker"
-label var smokev "Ever smoked"
+label var smokev "Smoke ever"
+label var smoken "Smoke now"
 
 label var work "Working for pay"
 
@@ -291,10 +292,12 @@ label var white "White"
 preserve
 tempfile varlabs
 descsave, list(name varlab) saving(`varlabs', replace)
-save varlabs, replace
+*save varlabs, replace
 use `varlabs', clear
 rename name variable
+*recast str18 variable
 save `varlabs', replace
+save varlabs.dta, replace
 restore
 
 save test_pre_loop.dta, replace
@@ -302,7 +305,7 @@ save test_pre_loop.dta, replace
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl 
 local risk smoken smokev bmi 
 local binecon work
-local cntecon /*itearnx atotfx*/
+*local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
 local unweighted died
 
@@ -379,7 +382,7 @@ foreach tp in unweighted {
 local varlist "fem_mean fem_n fem_sd elsa_mean elsa_n elsa_sd p_value"
 
 * Produce tables
-foreach tabl in binhlth risk binecon cntecon demog unweighted {
+foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 	
 	foreach wave in 3 5 8 {
 		tempfile wave`wave'
@@ -390,11 +393,16 @@ foreach tabl in binhlth risk binecon cntecon demog unweighted {
 		}
 		save `wave`wave''
 	}
+	
+	di "Table is `tabl'"
 
 	use "`wave3'", replace
 	merge 1:1 variable using "`wave5'", nogen
 	merge 1:1 variable using "`wave8'", nogen
 	
+	recast str10 variable
+	
+	///*
 	* Add variable labels
 	merge 1:1 variable using `varlabs'
 	tab _merge
@@ -405,11 +413,12 @@ foreach tabl in binhlth risk binecon cntecon demog unweighted {
 		
 	keep variable fem_mean* elsa_mean* p_value*
 	outsheet using crossval_`tabl'.csv, comma replace
+	//*/
 }
 
-
+///*
 * Produce tables of all years
-foreach tabl in binhlth risk binecon cntecon demog unweighted {
+foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 	
 	foreach wave in 1 2 3 4 5 6 7 8 {
 		tempfile wave`wave'
@@ -439,19 +448,4 @@ foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	outsheet using crossval_all_waves_`tabl'.csv, comma replace
 }
 
-
-
-
-
-
 capture log close
-
-
-
-
-
-
-
-
-
-

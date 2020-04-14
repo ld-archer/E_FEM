@@ -1,0 +1,4 @@
+variable,fem_mean_wave3,elsa_mean_wave3,p_value_wave3,fem_mean_wave5,elsa_mean_wave5,p_value_wave5,fem_mean_wave8,elsa_mean_wave8,p_value_wave8
+"BMI",,,,,,,27.64195,27.91436,.02238
+"Smoke now",.13677,.14477,.24711,.10562,.12049,.01514,.07775,.07484,.61914
+"Smoke ever",.63861,.62886,.30548,.63927,.64548,.49289,.64117,.66214,.04609

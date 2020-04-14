@@ -1,0 +1,4 @@
+variable,fem_mean_wave3,elsa_mean_wave3,p_value_wave3,fem_mean_wave4,elsa_mean_wave4,p_value_wave4,fem_mean_wave5,elsa_mean_wave5,p_value_wave5,fem_mean_wave6,elsa_mean_wave6,p_value_wave6,fem_mean_wave7,elsa_mean_wave7,p_value_wave7,fem_mean_wave8,elsa_mean_wave8,p_value_wave8
+"BMI",,,,27.75038,28.30867,0,,,,27.71671,28.3082,0,,,,27.64195,27.91436,.02238
+"Smoke now",.13677,.14477,.24711,.12152,.13736,.00907,.10562,.12049,.01514,.09528,.10367,.15931,.08565,.09065,.40257,.07775,.07484,.61914
+"Smoke ever",.63861,.62886,.30548,.64004,.62704,.12971,.63927,.64548,.49289,.63989,.65563,.09331,.64214,.66189,.04636,.64117,.66214,.04609

@@ -1,4 +1,4 @@
- /* Estimate transition models using the ELSA dataset */
+/* Estimate transition models using the ELSA dataset */
 
 quietly include ../../fem_env.do
 
@@ -17,6 +17,13 @@ local ster "$local_path/Estimates/ELSA/crossvalidation" /* ster file for storing
 	THIS IS PART OF USING THE SAME SCRIPTS FOR NORMAL E_FEM USE AS WELL AS CROSS_VALIDATION
 	Using the same scripts would be ideal as then wouldn't need to modify multiple scripts to make a change
 	Also would make the Makefile rules a lot nicer? Just better in general, easy enough to do
+	
+	
+	
+	
+	Produce a minimal version of transition models with only demographic vars
+	Age, sex, education
+	
 */
 
 
@@ -106,7 +113,7 @@ local select_ipubpen !died & work == 0
 local select_retage !died & retemp == 1
 local select_drinkd !died & drink == 1 & wave > 1
 local select_drinkd_stat !died & drink == 1 & wave > 1
-local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8) /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */
+local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8) /* Only estimate bmi model using waves 2,4,6,8 as other waves are imputed */
 
 
 /*********************************************************************/
