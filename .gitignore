@@ -51,3 +51,6 @@ FEM_CPP/.idea/
 
 # Summary output file (generated)
 FEM_CPP_settings/summary_output_ELSA.txt
+
+# Data files produced in cross-validation and calculation of T-tests
+analysis/techdoc_ELSA/*.dta
