@@ -45,6 +45,7 @@ FEM_Stata/Makedata/ELSA/*.dta
 
 # Cross validation data
 analysis/techdoc_ELSA/ELSA_2002_2016.dta
+analysis/techdoc_ELSA/*.dta
 
 # Output files
 output/*
@@ -56,3 +57,4 @@ FEM_CPP/.idea/
 
 # Summary output file (generated)
 FEM_CPP_settings/summary_output_ELSA.txt
+
