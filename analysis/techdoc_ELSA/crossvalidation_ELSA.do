@@ -300,7 +300,7 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-save test_pre_loop.dta, replace
+*save test_pre_loop.dta, replace
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl 
 local risk smoken smokev bmi 
