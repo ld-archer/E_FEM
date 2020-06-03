@@ -25,6 +25,7 @@ FEM_CPP_settings/ELSA/models/crossvalidation/*.est
 FEM_CPP_settings/ELSA_cross-validation/models/*.est
 FEM_Stata/Estimates/ELSA/*.ster
 FEM_Stata/Estimates/ELSA/crossvalidation/*.ster
+FEM_Stata/Estimates/ELSA/minimal/*.ster
 
 # Input data (only need select files the rest are generated)
 input_data/detailed_output/
