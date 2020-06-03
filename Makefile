@@ -9,7 +9,7 @@ MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
 
 include fem.makefile
 
-STATA = $(CURDIR)/run.stata15.sh
+STATA = $(CURDIR)/run.stata16.sh
 MPI = $(CURDIR)/run.mpi.sh
 PYTHON = python
 RSCRIPT = Rscript
@@ -21,28 +21,30 @@ full_run: ready_all simulation
 
 transitions_full: transitions estimates summary_out simulation
 
-ready_all: start_data transitions estimates summary_out 
+ready_all: start_data transitions estimates summary_out
+
+ready_new: start_data transitions_base estimates summary_out
 
 start_data: populations projections reweight
 
-populations: ELSA_long.dta ELSA_stock_base.dta ELSA_repl_base.dta ELSA_transition.dta
+populations: $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
 
 ### Populations
 
-H_ELSA.dta: $(DATADIR)/ELSA_long.dta
+$(DATADIR)/H_ELSA.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
-ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
+$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
-ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta
+$(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
 
-ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta
+$(DATADIR)/ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_replenishing_pop.do
 
-ELSA_transition.dta: $(DATADIR)/ELSA_long.dta
+$(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do
 
 
@@ -75,6 +77,12 @@ transitions: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_transition
 
 transitions_bmi:
 	cd FEM_Stata/Estimation $(STATA) ELSA_bmi_trans.do
+
+transitions_base: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_init_transition.do
+	cd FEM_Stata/Estimation && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
+
+transitions_CV: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_init_transition.do 
+	cd FEM_Stata/Estimation && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA_CV $(STATA) ELSA_init_transition.do
 
 
 ### Estimates and Summary
