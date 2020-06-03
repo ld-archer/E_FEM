@@ -34,7 +34,6 @@ input_data/WIP/
 input_data/validate/*
 input_data/cross_validation/*.dta
 FEM_Stata/Makedata/ELSA/*.dta
-!input_data/H_ELSA_f_2002-2016.dta
 !input_data/census_pop_estimates_02-18.csv
 !input_data/CT0469_2011census_educ.csv
 !input_data/psid_incoming_cut_points.dta
