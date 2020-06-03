@@ -35,7 +35,7 @@ populations: $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/
 $(DATADIR)/H_ELSA.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
-$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do
+$(DATADIR)/ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 $(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta 
@@ -72,26 +72,26 @@ reweight: projections $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.d
 
 ### Transitions
 
-transitions: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_transition.do
+transitions: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_transition.do
 	cd FEM_Stata/Estimation && datain=$(DATADIR) && dataout=$(DATADIR) $(STATA) ELSA_transition.do
 
 transitions_bmi:
-	cd FEM_Stata/Estimation $(STATA) ELSA_bmi_trans.do
+	cd $(ESTIMATION) $(STATA) ELSA_bmi_trans.do
 
-transitions_base: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_init_transition.do
-	cd FEM_Stata/Estimation && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
+transitions_base: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
 
-transitions_CV: $(DATADIR)/ELSA_transition.dta FEM_Stata/Estimation/ELSA_init_transition.do 
-	cd FEM_Stata/Estimation && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA_CV $(STATA) ELSA_init_transition.do
+transitions_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do 
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA_CV $(STATA) ELSA_init_transition.do
 
 
 ### Estimates and Summary
 
 estimates:
-	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
-	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
-	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA_bmi1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_bmi1/models $(STATA) save_est_cpp.do
-	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA_bmi2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_bmi2/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_bmi1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_bmi1/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_bmi2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_bmi2/models $(STATA) save_est_cpp.do
 
 summary_out:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
@@ -124,7 +124,7 @@ cross_validation: $(MAKEDATA)/ID_selection_CV.do $(MAKEDATA)/reshape_long_CV.do 
 	# Estimate transition models
 	cd $(ESTIMATION) && datain=$(DATADIR)/cross_validation dataout=$(ESTIMATES)/ELSA/crossvalidation $(STATA) ELSA_transition_CV.do
 	# Save transition models as .est files to be read by the model
-	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
 	$(MPI) ELSA_cross-validation.settings.txt
 
@@ -143,7 +143,7 @@ minimal2: $(MAKEDATA)/ID_selection_CV.do $(MAKEDATA)/reshape_long_CV.do $(MAKEDA
 	# Estimate transition models
 	cd $(ESTIMATION) && datain=$(DATADIR)/cross_validation dataout=$(ESTIMATES)/ELSA/crossvalidation $(STATA) ELSA_transition_minimal.do
 	# Save transition models as .est files to be read by the model
-	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
 	$(MPI) ELSA_cross-validation.settings.txt
 
@@ -161,7 +161,7 @@ minimal:
 	# Estimate transition models
 	cd $(ESTIMATION) && datain=$(DATADIR) dataout=$(ESTIMATES)/ELSA/minimal $(STATA) ELSA_transition_minimal.do
 	# Save transition models as .est files to be read by the model
-	cd FEM_Stata/Estimation && datain=$(ESTIMATES)/ELSA/minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
 	$(MPI) ELSA_cross-validation.settings.txt
 
@@ -173,6 +173,8 @@ BMI_valid2:
 
 
 ### Housekeeping and cleaning
+
+clean: clean_log clean_out
 
 clean_log:
 	rm -f *.log
