@@ -80,6 +80,7 @@ r*agey
 ragender
 raeduc_e
 raeducl
+raracem
 r*walkra
 r*dressa
 r*batha
@@ -282,6 +283,10 @@ gen college = (educ == 3)
 * Label males
 gen male = (ragender == 1) if !missing(ragender)
 label variable male "Male"
+
+* Label white
+gen white = raracem == 1
+label var white "White"
 
 * Find if dead with iwstat var
 gen died = (iwstat == 5) if !missing(iwstat)
