@@ -17,13 +17,15 @@ RSCRIPT = Rscript
 
 ### Combined rules
 
-full_run: ready_all simulation
+full_run: ready_base simulation
 
-transitions_full: transitions estimates summary_out simulation
+transitions_full: transitions_base estimates summary_out simulation
 
-ready_all: start_data transitions estimates summary_out
+old: start_data transitions estimates summary_out
 
-ready_new: start_data transitions_base estimates summary_out
+base: start_data transitions_base estimates summary_out
+
+cross-validation: start_data transitions_CV estimates summary_out
 
 start_data: populations projections reweight
 
@@ -32,10 +34,10 @@ populations: $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/
 
 ### Populations
 
-$(DATADIR)/H_ELSA.dta: $(MAKEDATA)/H_ELSA_long.do
+$(DATADIR)/H_ELSA_f_2002-2016.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
-$(DATADIR)/ELSA_long.dta: $(DATADIR)/H_ELSA.dta $(MAKEDATA)/reshape_long.do
+$(DATADIR)/ELSA_long.dta:  $(MAKEDATA)/reshape_long.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 $(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta 
@@ -82,7 +84,7 @@ transitions_base: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transit
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
 
 transitions_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do 
-	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA_CV $(STATA) ELSA_init_transition.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV $(STATA) ELSA_init_transition.do
 
 
 ### Estimates and Summary

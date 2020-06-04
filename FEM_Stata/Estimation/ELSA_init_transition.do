@@ -42,7 +42,12 @@ local datain: env DATAIN
 
 log using "./init_transition_`defmod'.log", replace
 if !missing("`defmod'") {
-	local ster "$local_path/Estimates/`defmod'"
+	if "`defmod'" == "CV" {
+		local ster "$local_path/Estimates/ELSA"
+	}
+	else {
+		local ster "$local_path/Estimates/`defmod'"
+	}
 }
 else {
 	di as error "The ELSA_init_transition.do script requires a suffix input"
@@ -65,7 +70,12 @@ merge m:1 idauniq using "$outdata/cross_validation/crossvalidation.dta", keepusi
 tab _merge
 drop if _m==2
 
-include ELSA_covariate_definitions`defmod'.do
+if "`defmod'" == "CV" {
+	include ELSA_covariate_definitionsELSA.do
+}
+else {
+	include ELSA_covariate_definitions`defmod'.do
+}
 *include define_models`defmod'.do
 
 set more off
@@ -99,7 +109,7 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
             est store b_`n'_mfx
         
         * For cross validation
-        if "`defmod'" == "ELSA_CV" {
+        if "`defmod'" == "CV" {
             probit `n' $`x' if `select_`n'' & transition==1
             est save `ster'/crossvalidation/`n'.ster, replace
             eststo cv_`n'
@@ -111,7 +121,7 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
 esttab mod_* using `ster'/estim_parameters`defmod'.csv, replace
 
 * For cross validation
-if "`defmod'" == "ELSA_CV" {
+if "`defmod'" == "CV" {
     esttab cv_* using `ster'/crossvalidation/estim_parameters`defmod'.csv, replace
 }
 
@@ -138,7 +148,7 @@ foreach n in $ols {
 			est store ols_`n'_mfx
 			
     	*for cross validation
-    	if "`defmod'" == "ELSA_CV" {
+    	if "`defmod'" == "CV" {
     		reg `n' $`x' if `select_`n'' & transition==1
     		est save `ster'/crossvalidation/`n'.ster, replace
 		}
@@ -171,7 +181,7 @@ foreach n in $order {
 			est store o_`n'_mfx
 			
     	*for cross validation
-    	if "`defmod'" == "ELSA_CV" {
+    	if "`defmod'" == "CV" {
 	  	  oprobit `n' $`x' if `select_`n'' & transition==1
           est save `ster'/crossvalidation/`n'.ster, replace
 		}

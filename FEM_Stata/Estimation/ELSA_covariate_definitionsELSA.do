@@ -117,7 +117,7 @@ global allvars_smoke_stop   $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth 
 *global allvars_smoken       $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth l2atotf l2itearn l2psyche l2arthre l2asthmae
 *global allvars_smokev       $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth l2atotf l2itearn l2psyche l2arthre l2asthmae
 * smokef is xsectional so don't use lags of chronic diseases/choices as right hand variables
-global allvars_smokef       $dvars $lvars_age logbmi drink drinkd1 drinkd2 drinkd3 drinkd4 drinkwn atotf itearn cancre diabe hearte hibpe lunge stroke adl1 adl2 adl3p iadl1 iadl2p psyche arthre asthmae
+global allvars_smokef       $dvars $lvars_age logbmi drink drinkd1 drinkd2 drinkd3 drinkd4 atotf itearn cancre diabe hearte hibpe lunge stroke adl1 adl2 adl3p iadl1 iadl2p psyche arthre asthmae
 global allvars_smkstat      $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
 
 
@@ -125,12 +125,12 @@ global allvars_smkstat      $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth 
 global allvars_drink        $dvars $lvars_age $bmivars $lvars_smoke $lvars_hlth l2psyche l2arthre l2asthmae l2parkine
 global allvars_drinkd_stat  $dvars $lvars_age $bmivars $lvars_hlth l2psyche l2arthre l2asthmae l2parkine
 global allvars_drinkd       $dvars $lvars_age $bmivars $lvars_hlth l2psyche l2arthre l2asthmae l2parkine
-global allvars_drinkwn      $dvars $lvars_age $bmivars $lvars_hlth l2psyche l2arthre l2asthmae l2parkine l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
+*global allvars_drinkwn      $dvars $lvars_age $bmivars $lvars_hlth l2psyche l2arthre l2asthmae l2parkine l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 
 
 *** Logbmi & other health
 global allvars_logbmi       $dvars $lvars_age $bmivars $lvars_hlth $lvars_drink l2smoken l2psyche l2arthre l2asthmae l2parkine
-global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre hibpe diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smokev smoken smokef arthre psyche asthmae parkine drink drinkd1 drinkd2 drinkd3 drinkd4 drinkwn
+global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre hibpe diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smokev smoken smokef arthre psyche asthmae parkine drink drinkd1 drinkd2 drinkd3 drinkd4
 
 
 *** Disabilities
@@ -177,5 +177,5 @@ local select_ipubpen !died & work == 0
 local select_retage !died & retemp == 1
 local select_drinkd !died & drink == 1 & wave > 1
 local select_drinkd_stat !died & drink == 1 & wave > 1
-local select_drinkwn !died & drink == 1 & wave > 3 /* Estimate model if not dead, is a drinker and wave 4 or higher */
+*local select_drinkwn !died & drink == 1 & wave > 3 /* Estimate model if not dead, is a drinker and wave 4 or higher */
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8) /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */
