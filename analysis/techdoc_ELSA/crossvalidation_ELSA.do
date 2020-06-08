@@ -412,7 +412,7 @@ foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 	keep variable fem_mean* elsa_mean* p_value*
 		
 	keep variable fem_mean* elsa_mean* p_value*
-	outsheet using crossval_`tabl'.csv, comma replace
+	outsheet using "`output'/T-tests/crossval_`tabl'.csv", comma replace
 	//*/
 }
 
@@ -445,7 +445,7 @@ foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 	keep variable fem_mean* elsa_mean* p_value*
 		
 	keep variable fem_mean* elsa_mean* p_value*
-	outsheet using crossval_all_waves_`tabl'.csv, comma replace
+	outsheet using "`output'/T-tests/crossval_all_waves_`tabl'.csv", comma replace
 }
 
 capture log close

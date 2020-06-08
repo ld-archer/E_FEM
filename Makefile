@@ -57,24 +57,28 @@ $(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta
 
 ### Producing the reweighting data (pop. projection and education)
 
-projections: $(DATADIR)/census_pop_estimates_02-18.csv $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)/gen_pop_projections.do $(MAKEDATA)/education_proj.do
+projections: $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta
+
+$(DATADIR)/pop_projections.dta: $(DATADIR)/census_pop_estimates_02-18.csv $(MAKEDATA)/gen_pop_projections.do
 	cd $(MAKEDATA) $(STATA) gen_pop_projections.do
+
+$(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)/education_proj.do
 	cd $(MAKEDATA) $(STATA) education_proj.do
 
 
 ### Reweighting
 
-reweight: $(DATADIR)/census_pop_estimates_02-18.csv $(DATADIR)/CT0469_2011census_educ.csv $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta
+reweight: $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta
 	cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_stock.do
-	cd $(MAKEDATA) && scen=exercise1 $(STATA) reweight_ELSA_stock.do
-	cd $(MAKEDATA) && scen=drink $(STATA) reweight_ELSA_stock.do
-	cd $(MAKEDATA) && scen=drinkd $(STATA) reweight_ELSA_stock.do
-	cd $(MAKEDATA) && scen=smoken $(STATA) reweight_ELSA_stock.do
-	cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_repl.do
-	cd $(MAKEDATA) && scen=exercise1 $(STATA) reweight_ELSA_repl.do
-	cd $(MAKEDATA) && scen=drink $(STATA) reweight_ELSA_repl.do
-	cd $(MAKEDATA) && scen=drinkd $(STATA) reweight_ELSA_repl.do
-	cd $(MAKEDATA) && scen=smoken $(STATA) reweight_ELSA_repl.do
+	# cd $(MAKEDATA) && scen=exercise1 $(STATA) reweight_ELSA_stock.do
+	# cd $(MAKEDATA) && scen=drink $(STATA) reweight_ELSA_stock.do
+	# cd $(MAKEDATA) && scen=drinkd $(STATA) reweight_ELSA_stock.do
+	# cd $(MAKEDATA) && scen=smoken $(STATA) reweight_ELSA_stock.do
+	# cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_repl.do
+	# cd $(MAKEDATA) && scen=exercise1 $(STATA) reweight_ELSA_repl.do
+	# cd $(MAKEDATA) && scen=drink $(STATA) reweight_ELSA_repl.do
+	# cd $(MAKEDATA) && scen=drinkd $(STATA) reweight_ELSA_repl.do
+	# cd $(MAKEDATA) && scen=smoken $(STATA) reweight_ELSA_repl.do
 
 
 ### Transitions
@@ -137,8 +141,10 @@ BMI_valid:
 BMI_valid2:
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate2.do
 
-Ttest: 
+Ttests: 
 	cd $(ANALYSIS) $(STATA) crossvalidation_ELSA.do
+
+
 
 
 ### Housekeeping and cleaning
