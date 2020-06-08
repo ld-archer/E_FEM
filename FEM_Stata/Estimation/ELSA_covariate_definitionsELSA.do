@@ -2,6 +2,11 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop
+global bin_econ work hlthlm retemp
+global ols logbmi retage ipubpen atotf itearn smokef
+global order adlstat iadlstat drinkd drinkd_stat vgactx_e mdactx_e ltactx_e smkstat
+
+* Variable names
 #d ;
 global bin_hlth_names
     "Cancer"
@@ -19,19 +24,11 @@ global bin_hlth_names
     "Started Smoking"
     "Stopped Smoking"
 ;
-
-#d cr
-global bin_econ work hlthlm retemp
-#d ;
 global bin_econ_names
     "R working for pay"
     "Health Limits Work"
     "Whether retired at time of interview"
 ;
-
-#d cr
-global ols logbmi retage ipubpen atotf itearn smokef
-#d ;
 global ols_names
     "Log(BMI)"
     "Retirement Age"
@@ -40,10 +37,6 @@ global ols_names
     "Individual Employment Earnings (annual, after tax)"
     "Average # cigs/day"
 ;
-
-#d cr
-global order adlstat iadlstat drinkd drinkd_stat vgactx_e mdactx_e ltactx_e smkstat
-#d ;
 global order_names 
     "ADL status"
     "IADL status"
@@ -153,29 +146,3 @@ global allvars_itearn       $dvars $lvars_age $bmivars $lvars_hlth $lvars_econ $
 global allvars_vgactx_e     $dvars $lvars_age $bmivars $lvars_hlth $lvars_smoke l2psyche l2arthre l2asthmae l2parkine
 global allvars_mdactx_e     $dvars $lvars_age $bmivars $lvars_hlth $lvars_smoke l2psyche l2arthre l2asthmae l2parkine
 global allvars_ltactx_e     $dvars $lvars_age $bmivars $lvars_hlth $lvars_smoke l2psyche l2arthre l2asthmae l2parkine
-
-
-*** Sample Selection Macros
-* Selection criteria for models that only rely on not being dead
-foreach v in adlstat iadlstat smkstat work retemp itearn atotf drink vgactx_e mdactx_e ltactx_e smoken smokev {
-    local select_`v' !died
-}
-
-* Selection criteria for models that only rely on lag value and not being dead
-foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine anyadl anyiadl {
-    local select_`v' !l2`v' & !died
-}
-
-local select_died !l2died
-
-* Selection criteria for models with specific requirements
-local select_smoke_start !died & l2smoken == 0
-local select_smoke_stop !died & l2smoken == 1
-local select_smokef !died & smoken==1
-local select_hlthlm !died & wave > 1
-local select_ipubpen !died & work == 0
-local select_retage !died & retemp == 1
-local select_drinkd !died & drink == 1 & wave > 1
-local select_drinkd_stat !died & drink == 1 & wave > 1
-*local select_drinkwn !died & drink == 1 & wave > 3 /* Estimate model if not dead, is a drinker and wave 4 or higher */
-local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8) /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */

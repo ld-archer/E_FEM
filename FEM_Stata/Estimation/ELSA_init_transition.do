@@ -76,6 +76,8 @@ if "`defmod'" == "CV" {
 else {
 	include ELSA_covariate_definitions`defmod'.do
 }
+
+include ELSA_sample_selections.do
 *include define_models`defmod'.do
 
 set more off
