@@ -39,16 +39,13 @@ input_data/detailed_output/
 input_data/*.dta
 input_data/WIP/
 input_data/validate/*
-input_data/cross_validation/*.dta
+#input_data/cross_validation/*.dta
 FEM_Stata/Makedata/ELSA/*.dta
 !input_data/census_pop_estimates_02-18.csv
 !input_data/CT0469_2011census_educ.csv
 !input_data/psid_incoming_cut_points.dta
 !input_data/psid_incoming_means.dta
 !input_data/psid_incoming_vcmatrix.dta
-!input_data/crossvalidation.dta
-!input_data/education_data.dta
-!input_data/pop_projections.dta
 
 # Cross validation data
 analysis/techdoc_ELSA/ELSA_2002_2016.dta
@@ -64,10 +61,8 @@ FEM_CPP/.idea/
 
 # Summary output file (generated)
 FEM_CPP_settings/summary_output_ELSA.txt
-<<<<<<< HEAD
 
 # Data files produced in cross-validation and calculation of T-tests
 analysis/techdoc_ELSA/*.dta
-=======
 FEM_CPP_settings/summary_output_ELSA_*
->>>>>>> cross-validation
+
