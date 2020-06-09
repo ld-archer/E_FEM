@@ -12,7 +12,7 @@ set maxvar 10000
 
 ***define folder locations***
 local stataraw "/home/luke/Documents/E_FEM/UKDA-5050-stata/stata/stata11_se/"
-local output "/home/luke/Documents/E_FEM/trunk/input_data/"
+local output "/home/luke/Documents/E_FEM_clean/E_FEM/input_data/"
 
 ***define raw files***
 global index "`stataraw'/index_file_wave_0-wave_5_v2.dta"
