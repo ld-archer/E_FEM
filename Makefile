@@ -23,14 +23,14 @@ old: start_data transitions estimates summary_out
 
 base: start_data transitions_base estimates summary_out simulation_base
 
-cross-validation: ID_selection_CV start_data transitions_CV estimates summary_out simulation_CV
+cross-validation: ID_selection_CV start_data transitions_CV estimates summary_out simulation_CV Ttests
 
 minimal: start_data transitions_minimal estimates summary_out
 
 
 ### Combined rules
 
-start_data: populations projections reweight
+start_data: populations reweight
 
 transitions_full: transitions_base estimates summary_out simulation_base
 
