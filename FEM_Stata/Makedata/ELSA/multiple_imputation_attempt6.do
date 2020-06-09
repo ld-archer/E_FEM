@@ -7,6 +7,9 @@ save $outdata/H_ELSA_pre_impute.dta, replace
 
 ***** Before reshaping, impute data (supposedly better to impute in wide format)
 * Have to replace hard missing values with soft (.) missing
+
+* IS THIS STEP A MISTAKE??
+* Statalist entry I found says that you should often NOT impute hard missing values (.a, .[a-z])
 replace bmi2 = . if missing(bmi2)
 replace bmi4 = . if missing(bmi4)
 replace bmi6 = . if missing(bmi6)
