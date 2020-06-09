@@ -1,65 +1,27 @@
 clear
 set maxvar 10000
-log using reshape_long.log, replace
+log using reshape_long_CV.log, replace
 
-quietly include ../../../fem_env.do
+quietly include ../../fem_env.do
 
 local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
-*use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
-use $outdata/H_ELSA_f_2002-2016.dta, clear
+use ../../input_data/cross_validation/crossvalidation.dta, clear
+*use $outdata/cross_validation/crossvalidation.dta, clear
+
+* Keep only the simulate half
+keep if simulate == 1
 
 global firstwave 1
 global lastwave 8
 
 local seed 5000
 set seed `seed'
-local num_imputations 3
+local num_imputations 10
 local num_knn 5
 
-/* Variables from Harmonized ELSA:
-
-Section A: Demographics, Identifiers, and Weights::
-Person unique ID; CoupleID number; Spouse unique ID;
-Interview status (morbidity); Stratification variable; 
-Clustering variable; Person-level cross-sectional weight; 
-Individual interview year; Individual interview month; Birth year; 
-Death year; Age at interview (years); Gender; Education (categ).
-
-Section B: Health::
-ADLs. Some difficulty:
-Walking across room; Dressing; Bathing/Shower; Eating;
-Getting in/out of bed; Using the toilet.
-
-IADLs. Some difficulty:
-Using a map; Using a telephone; Managing money; 
-Taking Medications; Shopping for groceries;
-Preparing a hot meal; Doing work around the house or garden.
-
-Doctor diagnosed health problems. Ever have condition:
-High blood pressure; Diabetes; Cancer; Lung Disease;
-Heart problems; Stroke; Psychological problems; 
-Arthritis, Asthma, Parkinson's disease.
-
-Height, Weight, BMI:
-Height in meters; Weight in kilograms; BMI
-
-Health Behaviours:
-Smoke ever; Smoke now; How many cigs per day (avg);
-Exercise(vigorous, moderate, light); Drinking ever;
-# days/week drinks; # drinks/week.
-
-Whether Health Limits Work.
-
-Section E Financial and Housing Wealth::
-Net Value of Non-Housing Financial Wealth;
-
-Section F: Income and Consumption::
-Individual employment earnings; Public pension income;
-
-*/
 
 * Dropping the longitudinal sample weight
 drop r*lwtresp
@@ -80,7 +42,6 @@ r*agey
 ragender
 raeduc_e
 raeducl
-raracem
 r*walkra
 r*dressa
 r*batha
@@ -122,6 +83,7 @@ r*mdactx_e
 r*ltactx_e
 r*drink
 r*drinkd_e
+r*drinkwn_e
 ;
 #d cr
 
@@ -131,13 +93,12 @@ forvalues wv = $firstwave/$lastwave {
     rename h`wv'atotf r`wv'atotf
 }
 
-* Rename drink vars to more readable (and pleasant) form - r*drinkd
-* Also rename exercise variables in the near future
+* Rename r*drinkd_e to more readable (and pleasant) form - r*drinkd
 forvalues wv = $firstwave/$lastwave {
-	if `wv' >= 2 {
-		/* drinkd_e not present in wave 1 */
-		rename r`wv'drinkd_e r`wv'drinkd
-    }
+	if `wv' == 1 {
+		continue /*drinkd_e has no data for wave 1 so continue*/
+	}
+	rename r`wv'drinkd_e r`wv'drinkd
 }
 
 * Rename variables to make reshape easier and have names consistent with US FEM
@@ -190,6 +151,7 @@ foreach var in
     ltactx_e
     drink
     drinkd
+    drinkwn_e
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -201,24 +163,19 @@ foreach var in
 #d cr
 
 * Replace impossible bmi values found in wave 8 with missing ('.')
-replace bmi2 = . if bmi2 < 10
-replace bmi4 = . if bmi4 < 10
-replace bmi6 = . if bmi6 < 10
 replace bmi8 = . if bmi8 < 10
 
 * Run multiple imputation script
 do multiple_imputation_attempt6.do `seed' `num_imputations' `num_knn'
 
-* Still missing a single record for bmi2,4,6,8; drop it
-drop if missing(bmi2)
-
 * Reshape data from wide to long
+
 #d ;
 reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd 
+    drink drinkd drinkwn_e 
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -267,6 +224,7 @@ label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
 label variable drinkd "# Days/week has a drink"
+label variable drinkwn_e "# drinks/week"
 
 
 * Use harmonised education var
@@ -283,10 +241,6 @@ gen college = (educ == 3)
 * Label males
 gen male = (ragender == 1) if !missing(ragender)
 label variable male "Male"
-
-* Label white
-gen white = raracem == 1
-label var white "White"
 
 * Find if dead with iwstat var
 gen died = (iwstat == 5) if !missing(iwstat)
@@ -349,13 +303,8 @@ replace bmi = bmi_ipolate if missing(bmi)
 
 ** Now to add some noise to the BMI imputation **
 * generate a random number between -1 & 1 for waves 1,3,5,7
-*gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
+gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
 * Add the random number to the interpolated BMI
-*replace bmi = bmi + rand if !missing(rand)
-
-* Trying another method of adding noise to BMI imputation
-* Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
-gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
 replace bmi = bmi + rand if !missing(rand)
 
 * log(bmi)
@@ -372,24 +321,18 @@ replace smkstat = 3 if smoken == 1
 label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
-* Calculate drinkwn from drinkn for waves 2 and 3
-
 count if missing(drinkd)
 * Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
 recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
 label define drinkd_stat 1 "Teetotal" 2 "Light drinker" 3 "Moderate drinker" 4 "Heavy drinker"
 label values drinkd_stat drinkd_stat
+
 count if missing(drinkd_stat)
 
 gen drinkd1 = drinkd_stat==1 if !missing(drinkd_stat)
 gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
 gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
 gen drinkd4 = drinkd_stat==4 if !missing(drinkd_stat)
-
-label variable drinkd1 "Teetotal"
-label variable drinkd2 "Light Drinker"
-label variable drinkd3 "Moderate Drinker"
-label variable drinkd4 "Heavy Drinker"
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
@@ -441,6 +384,7 @@ foreach var in
     drink
     drinkd
     drinkd_stat
+    drinkwn_e
 	drinkd1
 	drinkd2
 	drinkd3
@@ -504,7 +448,7 @@ replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
 replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
 replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
 
-*save ../../../input_data/ELSA_long.dta, replace
-save $outdata/ELSA_long.dta, replace
+save ../../input_data/cross_validation/CV_long.dta, replace
+*save $outdata/cross_validation/CV_long.dta, replace
 
 capture log close

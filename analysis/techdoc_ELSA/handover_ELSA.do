@@ -21,8 +21,8 @@ quietly include ../../fem_env.do
 quietly include ../../FEM_CPP_settings/measures_subpop_ELSA.do
 
 * Load reshaped data
-use $outdata/H_ELSA.dta, clear
-*use ../../input_data/ELSA_long_reweighted.dta, clear
+*use ../../input_data/H_ELSA_f_2002-2016.dta, clear
+use ../../input_data/ELSA_long.dta, clear
 
 * Keep people ages 55+
 keep if age >= 55

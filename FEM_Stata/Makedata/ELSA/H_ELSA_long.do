@@ -1,5 +1,6 @@
 clear all
 set more off
+set maxvar 10000
 
 **************************************************
 *Title: H_ELSA_long

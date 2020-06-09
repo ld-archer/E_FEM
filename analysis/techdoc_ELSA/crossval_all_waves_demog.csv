@@ -1,0 +1,4 @@
+variable,fem_mean_wave3,elsa_mean_wave3,p_value_wave3,fem_mean_wave4,elsa_mean_wave4,p_value_wave4,fem_mean_wave5,elsa_mean_wave5,p_value_wave5,fem_mean_wave6,elsa_mean_wave6,p_value_wave6,fem_mean_wave7,elsa_mean_wave7,p_value_wave7,fem_mean_wave8,elsa_mean_wave8,p_value_wave8
+"Age at interview",69.44305,67.21908,0,71.1274,68.8796,0,72.81403,70.59528,0,74.39002,71.75524,0,75.92045,73.21703,0,77.37648,74.50317,0
+"Male",.45816,.46277,.6394,.4602,.46766,.39857,.46095,.46971,.35304,.46183,.46675,.61679,.46357,.46489,.89936,.46478,.46425,.96177
+"White",.98181,.97732,.11977,.98163,.97345,.00306,.9815,.97317,.00506,.98126,.97165,.00246,.98157,.97441,.02659,.98135,.97906,.46579

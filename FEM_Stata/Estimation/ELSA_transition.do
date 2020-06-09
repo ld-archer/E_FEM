@@ -77,7 +77,8 @@ global allvars_ltactx_e male hsless college l2age65l l2age6574 l2age75p l2cancre
 
 
 * selection criteria for models that only rely on lag value and not being dead
-local select_died !l2died 
+local select_died !l2died & wave < 7
+
 foreach var in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine anyadl anyiadl {
 	local select_`var' !l2`var' & !died 
 }

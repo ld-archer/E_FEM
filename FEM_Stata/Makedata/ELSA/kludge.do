@@ -113,8 +113,6 @@ replace l2hlthlm = hlthlm if missing(l2hlthlm)
 replace hlthlm = 0 if missing(hlthlm)
 replace l2hlthlm = 0 if missing(l2hlthlm)
 
-replace logbmi = l2logbmi if missing(logbmi)
-replace l2logbmi = logbmi if missing(l2logbmi)
 gen flogbmi50 = l2logbmi
 
 
@@ -146,3 +144,22 @@ replace l2atotf = atotf if missing(l2atotf) & !missing(atotf)
 * Handle missing itearn data
 replace itearn = l2itearn if missing(itearn) & !missing(l2itearn)
 replace l2itearn = itearn if missing(l2itearn) & !missing(itearn)
+
+replace asthmae = l2asthmae if missing(asthmae) & !missing(l2asthmae)
+replace l2asthmae = asthmae if missing(l2asthmae) & !missing(asthmae)
+
+replace parkine = l2parkine if missing(parkine) & !missing(l2parkine)
+replace l2parkine = parkine if missing(l2parkine) & !missing(parkine)
+
+replace drinkd = l2drinkd if missing(drinkd) & !missing(l2drinkd)
+replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
+
+replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat) & !missing(l2drinkd_stat)
+replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
+
+replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
+replace retemp = l2retemp if missing(retemp) & !missing(l2retemp)
+replace retemp = 0 if missing(retemp) & age < 65
+replace retemp = 1 if missing(retemp) & age > 65
+replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
+
