@@ -23,7 +23,7 @@ old: start_data transitions estimates summary_out
 
 base: start_data transitions_base estimates summary_out simulation_base
 
-cross-validation: ID_selection_CV start_data transitions_CV estimates summary_out simulation_CV Ttests
+cross-validation: start_data transitions_CV estimates summary_out simulation_CV Ttests
 
 minimal: start_data transitions_minimal estimates summary_out
 
@@ -37,10 +37,13 @@ transitions_full: transitions_base estimates summary_out simulation_base
 
 ### Populations
 
-populations: $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
+populations: $(DATADIR)/H_ELSA_f_2002-2016.dta $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
 $(DATADIR)/H_ELSA_f_2002-2016.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
+	
+$(DATADIR)/cross_validation/crossvalidation.dta: $(DATADIR)/H_ELSA_f_2002-2016.dta $(MAKEDATA)/ID_selection_CV.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
 
 $(DATADIR)/ELSA_long.dta:  $(MAKEDATA)/reshape_long.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
@@ -131,9 +134,6 @@ simulation_CV:
 
 handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
-
-ID_selection_CV: $(DATADIR)/H_ELSA_f_2002-2016.dta $(MAKEDATA)/ID_selection_CV.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
 
 BMI_valid: 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do
