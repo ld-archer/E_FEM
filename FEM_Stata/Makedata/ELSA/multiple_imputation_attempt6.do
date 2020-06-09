@@ -3,7 +3,6 @@
 
 args seed num_imputations num_knn
 
-save $outdata/H_ELSA_pre_impute.dta, replace
 
 ***** Before reshaping, impute data (supposedly better to impute in wide format)
 * Have to replace hard missing values with soft (.) missing
@@ -34,11 +33,6 @@ replace drinkd6 = . if missing(drinkd6)
 replace drinkd7 = . if missing(drinkd7)
 replace drinkd8 = . if missing(drinkd8)
 
-replace drinkwn4 = . if missing(drinkwn4)
-replace drinkwn5 = . if missing(drinkwn5)
-replace drinkwn6 = . if missing(drinkwn6)
-replace drinkwn7 = . if missing(drinkwn7)
-replace drinkwn8 = . if missing(drinkwn8)
 
 * Generate a few flags for imputed variables
 forvalues wv = 2 (2) 8 {
@@ -50,16 +44,13 @@ forvalues wv = 1/8 {
 forvalues wv = 2/8 {
 	gen drinkd_imputed`wv' = 1 if missing(drinkd`wv')
 }
-forvalues wv = 4/8 {
-	gen drinkwn_imputed`wv' = 1 if missing(drinkwn`wv')
-}
+
 
 * Check if all missing values replaced
 codebook 	raeducl ///
 			bmi2 bmi4 bmi6 bmi8 ///
 			drink1 drink2 drink3 drink4 drink5 drink6 drink7 drink8 ///
-			drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8 ///
-			drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8
+			drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drinkd8
 			
 
 local right_hand_vars 	i.ragender rabyear ///
@@ -71,8 +62,7 @@ local right_hand_vars 	i.ragender rabyear ///
 						i.mdactx_e1 i.mdactx_e2 i.mdactx_e3 i.mdactx_e4 i.mdactx_e5 i.mdactx_e6 i.mdactx_e7 i.mdactx_e8 ///
 						i.ltactx_e1 i.ltactx_e2 i.ltactx_e3 i.ltactx_e4 i.ltactx_e5 i.ltactx_e6 i.ltactx_e7 i.ltactx_e8 ///
 						ipubpen1 ipubpen2 ipubpen3 ipubpen4 ipubpen5 ipubpen6 ipubpen7 ipubpen8 
-						/*retage1 retage2 retage3 retage4 retage5 retage6 retage7 retage8
-						atotf1 atotf2 atotf3 atotf4 atotf5 atotf6 atotf7 atotf8 */
+
 
 * Set format as wide
 mi set wide
@@ -101,15 +91,6 @@ mi impute chained 	(ologit) raeducl ///
 					= `right_hand_vars' ///
 					, add(`num_imputations') chaindots rseed(`seed') force
 
-/*
-					(logit) drink2 ///
-					(logit) drink3 ///
-					(logit) drink4 ///
-					(logit) drink5 ///
-					(logit) drink6 ///
-					(logit) drink7 ///
-					(logit) drink8 ///
-*/
 					
 mi extract `num_imputations', clear
 
@@ -138,19 +119,5 @@ mi impute chained 	(ologit) drinkd2 drinkd3 drinkd4 drinkd5 drinkd6 drinkd7 drin
 * Extract final imputation
 mi extract `num_imputations', clear
 
-* Now impute drinkwn separately again
-
-mi set wide
-
-local imputees3 drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8
-
-mi register imputed `imputees3'
-
-mi impute chained	(pmm, knn(`num_knn')) `imputees3' ///
-					= i.raeducl bmi2 bmi4 bmi6 bmi8 `right_hand_vars' `imputees2' ///
-					, add(`num_imputations') chaindots rseed(`seed') force
-
-* Extract final imputation
-mi extract `num_imputations', clear
 
 save ../../../input_data/ELSA_post_impute_`num_imputations'.dta, replace
