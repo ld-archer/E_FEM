@@ -2,6 +2,7 @@
 *.log
 FEM_Stata/Makedata/ELSA/*.log
 FEM_CPP_settings/*.log
+FEM_Stata/Estimation/*.log
 *.gph
 *.png
 
@@ -52,8 +53,7 @@ analysis/techdoc_ELSA/ELSA_2002_2016.dta
 analysis/techdoc_ELSA/*.dta
 
 # Output files
-output/*
-!output/scripts/*
+#!output/scripts/*
 
 # Jetbrains
 .idea/
