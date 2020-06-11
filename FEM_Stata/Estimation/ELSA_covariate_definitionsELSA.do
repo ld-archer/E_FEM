@@ -1,7 +1,7 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop smoken smokev
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn smokef
 global order adlstat iadlstat drinkd drinkd_stat vgactx_e mdactx_e ltactx_e smkstat
@@ -23,6 +23,8 @@ global bin_hlth_names
     "Drinks Alcohol"
     "Started Smoking"
     "Stopped Smoking"
+    "Smokes Now"
+    "Smoked Ever"
 ;
 global bin_econ_names
     "R working for pay"
@@ -107,8 +109,8 @@ global allvars_parkine      $dvars $lvars_age $bmivars $lvars_smoke $lvars_drink
 * Look at Hymovitz et. al (1997) for justification for some of the vars as smoking predictors (Could also add var for self-reported health measures as paper says its important)
 global allvars_smoke_start  $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
 global allvars_smoke_stop   $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
-*global allvars_smoken       $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth l2atotf l2itearn l2psyche l2arthre l2asthmae
-*global allvars_smokev       $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth l2atotf l2itearn l2psyche l2arthre l2asthmae
+global allvars_smoken       $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
+global allvars_smokev       $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
 * smokef is xsectional so don't use lags of chronic diseases/choices as right hand variables
 global allvars_smokef       $dvars $lvars_age logbmi drink drinkd1 drinkd2 drinkd3 drinkd4 atotf itearn cancre diabe hearte hibpe lunge stroke adl1 adl2 adl3p iadl1 iadl2p psyche arthre asthmae
 global allvars_smkstat      $dvars $lvars_age $bmivars $lvars_drink $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
