@@ -3,8 +3,8 @@ clear
 quietly include fem_env.do
 
 * First import the census projection data
-*import excel using $outdata/UKpop2011.xlsx, firstrow
-import excel using input_data/UKpop2011.xlsx, firstrow
+import excel using $outdata/UKpop2011.xlsx, firstrow
+*import excel using ../../../input_data/UKpop2011.xlsx, firstrow
 
 * Collapse the LAD (geography) codes focussed on the ethnicities and sum grouped data
 collapse (sum) M* F*, by(ETH)
@@ -136,8 +136,8 @@ save `kron', replace
 
 
 * Read in population projection data
-*import excel using ${outdata}/ew_ppp_opendata2016.xlsx, clear firstrow
-import excel using input_data/ew_ppp_opendata2016.xlsx, clear firstrow
+import excel using $outdata/ew_ppp_opendata2016.xlsx, clear firstrow
+*import excel using input_data/ew_ppp_opendata2016.xlsx, clear firstrow
 *tempfile popproj 
 *save `popproj'
 
@@ -213,5 +213,5 @@ replace pop = pop_proj * eth_prop
 drop pop_proj eth_prop
 
 * Save the output
-*save ${outdata}/ethpop_projections.dta, replace
-save input_data/ethpop_projections.dta, replace
+save $outdata/ethpop_projections.dta, replace
+*save input_data/ethpop_projections.dta, replace

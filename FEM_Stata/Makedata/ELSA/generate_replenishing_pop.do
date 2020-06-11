@@ -80,49 +80,4 @@ replace l2age = age - 2 if missing(l2age)
 saveold $outdata/ELSA_repl_base.dta, replace v(12)
 
 
-** Now prepare different repl files for different scenarios
-
-* Increase number of people doing moderate exercise
-* More full explanation of whats happening in generate_stock_pop.do
-replace mdactx_e = mdactx_e - 1 if mdactx_e > 2
-* Save the file
-saveold $outdata/ELSA_repl_exercise1.dta, replace v(12)
-*saveold ../../../input_data/ELSA_repl_exercise1.dta, replace v(12)
-
-
-use $outdata/ELSA_repl_base.dta, clear
-*use ../../../input_data/ELSA_repl_base.dta, clear
-* Decrease number of people who drink alcohol
-* var is drink, binary
-* Convert 40% of drinkers to non-drinkers
-gen rand_drink = runiform() if drink==1
-* Switch to non-drinkers in 40% of cases
-replace drink = 0 if rand_drink < 0.4
-drop rand_drink
-* Save
-saveold $outdata/ELSA_repl_drink.dta, replace v(12)
-*saveold ../../../input_data/ELSA_repl_drink.dta, replace v(12)
-
-
-use $outdata/ELSA_repl_base.dta, clear
-*use ../../../input_data/ELSA_repl_base.dta, clear
-* Decrease number of days/week people drink alcohol
-* var is drinkd, has 8 levels
-* Ranges from 0-7, for number of days/week
-* Reduce every person by 1 (except 0 for obvious reasons)
-replace drinkd = drinkd - 1 if drinkd > 0
-saveold $outdata/ELSA_repl_drinkd.dta, replace v(12)
-*saveold ../../../input_data/ELSA_repl_drinkd.dta, replace v(12)
-
-
-use $outdata/ELSA_repl_base.dta, clear
-*use ../../../input_data/ELSA_repl_base.dta, clear
-* Decrease number of people who smoke at start of sim by 30%
-gen rand_smoken = runiform() if smoken==1
-replace smoken=0 if rand_smoken < 0.3
-drop rand_smoken
-saveold $outdata/ELSA_repl_smoken.dta, replace v(12)
-*saveold ../../../input_data/ELSA_repl_smoken.dta, replace v(12)
-
 capture log close
-

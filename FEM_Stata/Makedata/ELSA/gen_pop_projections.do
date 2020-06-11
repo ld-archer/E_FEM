@@ -2,7 +2,8 @@ clear all
 
 quietly include ../../../fem_env.do
 
-import delimited using "../../../input_data/census_pop_estimates_02-18.csv", varnames(8)
+*import delimited using "../../../input_data/census_pop_estimates_02-18.csv", varnames(8)
+import delimited using "$outdata/census_pop_estimates_02-18.csv", varnames(8)
 
 * Loop through lettered vars and replace name with year label (plus v for type reasons)
 foreach v of varlist (v2-v18) {
@@ -72,7 +73,8 @@ tempfile pop0218
 save `pop0218'
 
 * Import population projection data from 2016 onwards
-import excel using ../../../input_data/en_ppp_opendata2016.xlsx, clear firstrow
+*import excel using ../../../input_data/en_ppp_opendata2016.xlsx, clear firstrow
+import excel using $outdata/en_ppp_opendata2016.xlsx, clear firstrow
 
 * Loop through lettered vars and replace name with year label (plus v for type reasons)
 foreach v of varlist (C-CY) {
@@ -153,4 +155,5 @@ order year age male
 * Sort by year first, then age then male
 sort year age male
 
-save ../../../input_data/pop_projections.dta, replace
+*save ../../../input_data/pop_projections.dta, replace
+save $outdata/pop_projections.dta, replace

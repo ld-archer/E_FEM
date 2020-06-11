@@ -2,13 +2,10 @@ clear all
 
 quietly include ../../../fem_env.do
 
-* Name of the scenario
-local file : env scen
+log using reweight_ELSA_stock.log, replace
 
-log using reweight_ELSA_stock_`file'.log, replace
-
-*use ../../../input_data/ELSA_stock_`file'.dta, clear
-use $outdata/ELSA_stock_`file'.dta, clear
+*use ../../../input_data/ELSA_stock_base.dta, clear
+use $outdata/ELSA_stock_base.dta, clear
 
 drop if age < 51
 
@@ -37,13 +34,8 @@ forvalues age = 51/`max_age' {
 	}
 }
 
-if "`file'" == "base" {
-	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
-	saveold $outdata/ELSA_stock.dta, replace v(12)
-} 
-else {
-	*saveold ../../../input_data/ELSA_stock_`file'.dta, replace v(12)
-	saveold $outdata/ELSA_stock_`file'.dta, replace v(12)
-}
+*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
+saveold $outdata/ELSA_stock.dta, replace v(12)
+
 
 capture log close

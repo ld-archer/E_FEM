@@ -4,10 +4,9 @@ log using reweight_ELSA_repl.log, replace
 
 quietly include ../../../fem_env.do
 
-local file : env scen
 
-*use ../../../input_data/ELSA_repl_`file'.dta, clear
-use $outdata/ELSA_repl_`file'.dta, clear
+*use ../../../input_data/ELSA_repl_base.dta, clear
+use $outdata/ELSA_repl_base.dta, clear
 
 * Merge the stock population with the projections by sex, age and year
 *merge m:1 male age year using ../../../input_data/pop_projections.dta, keep(matched)
@@ -63,13 +62,9 @@ drop weight2
 * seen in education_data.dta
 tab rbyr educ [aw=weight] if inrange(rbyr, 1963, 1982), row
 
-if "`file'" == "base" {
-	*saveold ../../../input_data/ELSA_repl.dta, replace v(12)
-	saveold $outdata/ELSA_repl.dta, replace v(12)
-}
-else {
-	*saveold ../../../input_data/ELSA_repl_`file'.dta, replace v(12)
-	saveold $outdata/ELSA_repl_`file'.dta, replace v(12)
-}
+
+*saveold ../../../input_data/ELSA_repl.dta, replace v(12)
+saveold $outdata/ELSA_repl.dta, replace v(12)
+
 
 capture log close 
