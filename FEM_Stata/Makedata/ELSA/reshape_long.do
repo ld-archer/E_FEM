@@ -200,6 +200,8 @@ foreach var in
     } ;
 #d cr
 
+save $outdata/H_ELSA_pre_reshape.dta, replace
+
 * Replace impossible bmi values found in wave 8 with missing ('.')
 replace bmi2 = . if bmi2 < 10
 replace bmi4 = . if bmi4 < 10
