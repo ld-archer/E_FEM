@@ -71,10 +71,13 @@ $(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)
 
 ### Reweighting
 
-reweight: $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) gen_pop_projections.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) education_proj.do
+reweight: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta
+	
+
+$(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta
 	cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_stock.do
+
+$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta
 	cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_repl.do
 
 
