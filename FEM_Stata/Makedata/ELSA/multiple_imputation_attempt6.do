@@ -33,11 +33,11 @@ replace drinkd6 = . if missing(drinkd6)
 replace drinkd7 = . if missing(drinkd7)
 replace drinkd8 = . if missing(drinkd8)
 
-replace drinkwn4 = . if missing(drinkwn4)
-replace drinkwn5 = . if missing(drinkwn5)
-replace drinkwn6 = . if missing(drinkwn6)
-replace drinkwn7 = . if missing(drinkwn7)
-replace drinkwn8 = . if missing(drinkwn8)
+*replace drinkwn4 = . if missing(drinkwn4)
+*replace drinkwn5 = . if missing(drinkwn5)
+*replace drinkwn6 = . if missing(drinkwn6)
+*replace drinkwn7 = . if missing(drinkwn7)
+*replace drinkwn8 = . if missing(drinkwn8)
 
 
 * Generate a few flags for imputed variables
@@ -50,9 +50,9 @@ forvalues wv = 1/8 {
 forvalues wv = 2/8 {
 	gen drinkd_imputed`wv' = 1 if missing(drinkd`wv')
 }
-forvalues wv = 4/8 {
-	gen drinkwn_imputed`wv' = 1 if missing(drinkwn`wv')
-}
+*forvalues wv = 4/8 {
+*	gen drinkwn_imputed`wv' = 1 if missing(drinkwn`wv')
+*}
 
 count
 
@@ -136,17 +136,17 @@ count
 
 * Now impute drinkwn separately again
 
-mi set wide
+*mi set wide
 
-local imputees3 drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8
+*local imputees3 drinkwn4 drinkwn5 drinkwn6 drinkwn7 drinkwn8
 
-mi register imputed `imputees3'
+*mi register imputed `imputees3'
 
-mi impute chained	(pmm, knn(`num_knn')) `imputees3' ///
+*mi impute chained	(pmm, knn(`num_knn')) `imputees3' ///
 					= i.raeducl bmi2 bmi4 bmi6 bmi8 `right_hand_vars' `imputees2' ///
 					, add(`num_imputations') chaindots rseed(`seed') force
 
 * Extract final imputation
-mi extract `num_imputations', clear
+*mi extract `num_imputations', clear
 
 save ../../../input_data/ELSA_post_impute_`num_imputations'.dta, replace
