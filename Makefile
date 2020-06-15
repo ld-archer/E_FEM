@@ -48,10 +48,10 @@ $(DATADIR)/cross_validation/crossvalidation.dta: $(DATADIR)/H_ELSA_f_2002-2016.d
 $(DATADIR)/ELSA_long.dta: $(DATADIR)/H_ELSA_f_2002-2016.dta $(MAKEDATA)/reshape_long.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
-$(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do
+$(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
 
-$(DATADIR)/ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta $(MAKEDATA)/generate_replenishing_pop.do
+$(DATADIR)/ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta $(MAKEDATA)/generate_replenishing_pop.do $(MAKEDATA)/kludge.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_replenishing_pop.do
 
 $(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_transition_pop.do
