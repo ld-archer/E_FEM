@@ -200,17 +200,35 @@ foreach var in
 
 save $outdata/H_ELSA_pre_reshape.dta, replace
 
+/*
+COMMENTING OUT THE IMPUTATION STEP FOR NOW 
+Going to try replacing missing BMI data with values taken from the imputation step in R
 * Replace impossible bmi values found in wave 8 with missing ('.')
+*replace bmi2 = . if bmi2 < 10
+*replace bmi4 = . if bmi4 < 10
+*replace bmi6 = . if bmi6 < 10
+*replace bmi8 = . if bmi8 < 10
+* Run multiple imputation script
+*do multiple_imputation_attempt6.do `seed' `num_imputations' `num_knn'
+* Still missing a single record for bmi2,4,6,8; drop it
+*drop if missing(bmi2)
+*/
+
+* Remove impossible BMI values before merging
 replace bmi2 = . if bmi2 < 10
 replace bmi4 = . if bmi4 < 10
 replace bmi6 = . if bmi6 < 10
 replace bmi8 = . if bmi8 < 10
 
-* Run multiple imputation script
-do multiple_imputation_attempt6.do `seed' `num_imputations' `num_knn'
+* SO instead of the multiple imputation script written in Stata, I used to R to run a multiple imputation
+* based on the variables used in the stata script (plus a few more)
+* Now going to try to replace the bmi2, bmi4, bmi6, & bmi8 vars with externally imputed data
+merge 1:1 idauniq using $outdata/bmi_imputed_R.dta, nogenerate
+replace bmi2 = bmi2_imp if missing(bmi2)
+replace bmi4 = bmi4_imp if missing(bmi4)
+replace bmi6 = bmi6_imp if missing(bmi6)
+replace bmi8 = bmi8_imp if missing(bmi8)
 
-* Still missing a single record for bmi2,4,6,8; drop it
-drop if missing(bmi2)
 
 * Reshape data from wide to long
 #d ;

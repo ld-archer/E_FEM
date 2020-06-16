@@ -156,6 +156,8 @@ replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
 
 replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat) & !missing(l2drinkd_stat)
 replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
+replace drinkd_stat = 2 if missing(drinkd_stat) /* Replace drinkd_stat with light drinker if still missing */
+replace l2drinkd_stat = 2 if missing(l2drinkd_stat)
 
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
 replace retemp = l2retemp if missing(retemp) & !missing(l2retemp)
@@ -163,3 +165,13 @@ replace retemp = 0 if missing(retemp) & age < 65
 replace retemp = 1 if missing(retemp) & age > 65
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
 
+/* replace logbmi = l2logbmi if missing(logbmi)
+replace l2logbmi = logbmi if missing(l2logbmi)
+
+summarize logbmi
+replace logbmi = r(mean) if missing(logbmi)
+
+summarize l2logbmi
+replace l2logbmi = r(mean) if missing(l2logbmi)
+
+codebook logbmi l2logbmi  */
