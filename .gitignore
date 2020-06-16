@@ -36,11 +36,9 @@ FEM_Stata/Estimates/ELSA/estimatesCV*
 FEM_Stata/Estimates/ELSA/estimatesELSA*
 
 # Input data (only need select files the rest are generated)
-input_data/detailed_output/
+input_data/detailed_output/*.dta
 input_data/*.dta
-input_data/WIP/
-input_data/validate/*
-#input_data/cross_validation/*.dta
+input_data/cross_validation/*.dta
 FEM_Stata/Makedata/ELSA/*.dta
 !input_data/census_pop_estimates_02-18.csv
 !input_data/CT0469_2011census_educ.csv
