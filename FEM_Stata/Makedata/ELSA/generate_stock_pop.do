@@ -37,4 +37,16 @@ replace l2age = age - 2 if missing(l2age)
 saveold $outdata/ELSA_stock_base.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_base.dta, replace v(12)
 
+
+* merge on transition ID for cross-validation
+merge m:1 idauniq using "$outdata/cross_validation/crossvalidation.dta", keepusing(simulation)
+tab _merge
+drop if _m==2
+drop _merge
+
+keep if simulation == 1
+
+saveold $outdata/ELSA_stock_base_CV.dta, replace v(12)
+*saveold ../../../input_data/ELSA_stock_base_CV.dta, replace v(12)
+
 capture log close
