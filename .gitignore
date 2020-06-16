@@ -51,7 +51,8 @@ analysis/techdoc_ELSA/ELSA_2002_2016.dta
 analysis/techdoc_ELSA/*.dta
 
 # Output files
-#!output/scripts/*
+output/*
+!output/scripts/*
 
 # Jetbrains
 .idea/
@@ -64,3 +65,5 @@ FEM_CPP_settings/summary_output_ELSA.txt
 analysis/techdoc_ELSA/*.dta
 FEM_CPP_settings/summary_output_ELSA_*
 
+# R files
+.Rhistory
