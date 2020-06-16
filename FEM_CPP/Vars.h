@@ -76,7 +76,7 @@ namespace Vars
 		doctim,                   ///< Times at a doctor Approx Range [0.0182607,80.70206], stored as Double
 		drink,						///< Whether drinks alcohol at all, stored asl Boolean
 		drinkd, 					///< How many days per week drinking alcohol, stored as Short
-		drinkwn,					///< Number of drinks per week, stored as Double
+		//drinkwn,					///< Number of drinks per week, stored as Double
 		drinkd1,					///< Drinkd 1 [0, 1], stored as Boolean
 		drinkd2,					///< Drinkd 2 [0, 1], stored as Boolean
 		drinkd3,					///< Drinkd 3 [0, 1], stored as Boolean
@@ -229,7 +229,7 @@ namespace Vars
 		l2died,                    ///< Lag of Died, [0, 1], stored as Boolean
 		l2drink,					///< Lag of whether drinks alcohol at all, stored as Boolean
 		l2drinkd,					///< Lag of how many days per week drinking alcohol, stored as Short
-		l2drinkwn,					///< Lag of number of drinks per week, stored as Double
+		//l2drinkwn,					///< Lag of number of drinks per week, stored as Double
 		l2drinkd1,					///< Lag of drinkd 1 [0, 1], stored as Boolean
 		l2drinkd2,					///< Lag of drinkd 2 [0, 1], stored as Boolean
 		l2drinkd3,					///< Lag of drinkd 3 [0, 1], stored as Boolean

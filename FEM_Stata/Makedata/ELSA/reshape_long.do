@@ -108,8 +108,6 @@ r*smoken
 r*smokef
 r*work
 r*hlthlm
-r*arthre
-r*psyche
 r*asthmae
 r*parkine
 r*retemp
