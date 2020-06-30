@@ -100,6 +100,27 @@ tab l2smkstat, missing
 * Drop cases if missing smkstat vars
 drop if missing(smkstat) & missing(l2smkstat)
 
+* Impute missing values for smoke_start and smoke_stop as 0 (didn't stop or start smoking)
+* Important to do this here and not in reshape_long.do
+replace smoke_start = 0 if missing(smoke_start)
+replace smoke_stop = 0 if missing(smoke_stop)
+/* CONSIDER TRYING TO IMPUTE THIS (or smoken and smokev before generating these vars)
+codebook smoke_start
+hotdeck smoke_start using ELSA_smoke_start_imp, store seed(`seed') keep(_all) impute(1)
+use ELSA_smoke_start_imp1.dta, clear
+codebook smoke_start
+
+codebook smoke_stop
+hotdeck smoke_stop using ELSA_smoke_stop_imp, store seed(`seed') keep(_all) impute(1)
+use ELSA_smoke_stop_imp1.dta, clear
+codebook smoke_stop
+
+replace smoken = 1 if smoke_start == 1 & smoken == 0
+replace smkstat = 3 if smoke_start == 1 & smoken == 1
+replace smoken = 0 if smoke_stop == 1 & smoken == 1
+replace smkstat = 2 if smoke_stop == 1 & smoken == 0 
+*/
+
 tab smkstat, missing
 tab l2smkstat, missing
 
@@ -175,3 +196,10 @@ summarize l2logbmi
 replace l2logbmi = r(mean) if missing(l2logbmi)
 
 codebook logbmi l2logbmi  */
+
+
+
+
+* smoke_start and smoke_stop
+
+
