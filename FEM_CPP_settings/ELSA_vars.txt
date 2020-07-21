@@ -330,7 +330,7 @@ all_pop = not(died)
 smokers = not(died) & smoken==1
 drinkers = not(died) & drink==1
 
-rdd_start_yr = 2012
+||rdd_start_yr = 2012
 
 
 | Public Health Intervention Scenarios (started Saturday 20th June)
