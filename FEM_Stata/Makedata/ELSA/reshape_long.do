@@ -409,6 +409,54 @@ label variable drinkd2 "Light Drinker"
 label variable drinkd3 "Moderate Drinker"
 label variable drinkd4 "Heavy Drinker"
 
+* Generate an exercise status variable to hold exercise info in single var
+* Three levels:
+*   1 - No exercise
+*   2 - Light exercise 1+ times per week
+*   3 - Moderate/Vigorous exercise 1+ times per week
+/*
+recode ltactx_e (4/5 = 1) (2/3 = 2), gen(exstat)
+replace exstat = 2 if mdactx_e == 4/5
+replace exstat = 3 if mdactx_e == 2/3
+replace exstat = 2 if vgactx_e == 4/5
+replace exstat = 3 if vgactx_e == 2/3
+*/
+
+/*
+* Second go at this
+gen exstat = 1 if ltactx_e == 4
+replace exstat = 1 if ltactx_e == 5
+replace exstat = 1 if mdactx_e == 4
+replace exstat = 1 if mdactx_e == 5
+replace exstat = 1 if vgactx_e == 4
+replace exstat = 1 if vgactx_e == 5
+
+replace exstat = 2 if ltactx_e == 2
+replace exstat = 2 if ltactx_e == 3
+
+replace exstat = 3 if mdactx_e == 2
+replace exstat = 3 if mdactx_e == 3
+replace exstat = 3 if vgactx_e == 2
+replace exstat = 3 if vgactx_e == 3
+*/
+
+* Third try now
+gen exstat = .
+replace exstat = 1 if (ltactx_e == 4 | ltactx_e == 5) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+replace exstat = 2 if (ltactx_e == 2 | ltactx_e == 3) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+replace exstat = 3 if (mdactx_e == 2 | mdactx_e == 3) | (vgactx_e == 2 | vgactx_e == 3)
+
+*replace exstat = 2 if missing(exstat) & (ltactx_e == 2 | ltactx_e == 3)
+*replace exstat = 3 if missing(exstat) & (mdactx_e == 2 | mdactx_e == 3) 
+
+* Now dummy categorical vars for including in transition models
+gen exstat1 = 1 if exstat == 1
+replace exstat1 = 0 if exstat != 1
+gen exstat2 = 1 if exstat == 2
+replace exstat2 = 0 if exstat != 2
+gen exstat3 = 1 if exstat == 3
+replace exstat3 = 0 if exstat != 3
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
@@ -463,6 +511,10 @@ foreach var in
 	drinkd2
 	drinkd3
 	drinkd4
+    exstat
+    exstat1
+    exstat2
+    exstat3
     {;
         gen l2`var' = L.`var';
     };
