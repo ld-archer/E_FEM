@@ -1,0 +1,406 @@
+---
+title: "Public Health Intervention Visualisation"
+output: html_notebook
+---
+
+This notebook will keep all visualisations for the English Future Elderly Model public health intervention scenarios.
+
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(haven)
+require(dplyr)
+require(ggplot2)
+```
+
+
+# Smoke Stop Cohort
+
+```{r}
+# Read in all the data
+cohort <- read_dta('output/ELSA_cohort/ELSA_cohort_summary.dta')
+t10 <- read_dta('output/TestC10/TestC10_summary.dta')
+t20 <- read_dta('output/TestC20/TestC20_summary.dta')
+t50 <- read_dta('output/TestC50/TestC50_summary.dta')
+t80 <- read_dta('output/TestC80/TestC80_summary.dta')
+t100 <- read_dta('output/TestC100/TestC100_summary.dta')
+
+# Generate age var
+cohort$age <- (cohort$year - 2012) + 50
+t10$age <- (cohort$year - 2012) + 50
+t20$age <- (cohort$year - 2012) + 50
+t50$age <- (cohort$year - 2012) + 50
+t80$age <- (cohort$year - 2012) + 50
+t100$age <- (cohort$year - 2012) + 50
+
+# Survival curve
+cohort$survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+t10$survival <- t10$m_endpop_all / t10$m_endpop_all[1]
+t20$survival <- t20$m_endpop_all / t20$m_endpop_all[1]
+t50$survival <- t50$m_endpop_all / t50$m_endpop_all[1]
+t80$survival <- t80$m_endpop_all / t80$m_endpop_all[1]
+t100$survival <- t100$m_endpop_all / t100$m_endpop_all[1]
+
+# Now plot all survival curves together
+ggplot(cohort, aes(x=age, y=survival)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=t10, size=0.3, col='green') +
+        geom_line(data=t50, size=0.3, col='blue') +
+        geom_line(data=t100, size=0.3, col='red') +
+        labs(title='Cohort Survival Over Time', y='Survival', x='Age')
+# Smoking variables and chronic diseases
+ggplot(cohort, aes(x=age, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=t10, size=0.3, col='green') +
+        geom_line(data=t50, size=0.3, col='blue') +
+        geom_line(data=t100, size=0.3, col='red') +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=t10, size=0.3, col='green') +
+        geom_line(data=t50, size=0.3, col='blue') +
+        geom_line(data=t100, size=0.3, col='red') +
+        labs(title='Prevalence of Smoking by Age', y='Prevalence of Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=t10, size=0.3, col='green') +
+        geom_line(data=t50, size=0.3, col='blue') +
+        geom_line(data=t100, size=0.3, col='red') +
+        labs(title='Prevalence of Lung Disease by Age', y='Prevalence of Lung Disease', x='Age')
+ggplot(cohort, aes(x=age, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=t10, size=0.3, col='green') +
+        geom_line(data=t50, size=0.3, col='blue') +
+        geom_line(data=t100, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+```
+
+
+# Smoke Stop Population
+
+```{r}
+# Read in all the data
+pop <- read_dta('output/ELSA_Baseline/ELSA_Baseline_summary.dta')
+tp10 <- read_dta('output/TestP10/TestP10_summary.dta')
+tp20 <- read_dta('output/TestP20/TestP20_summary.dta')
+tp50 <- read_dta('output/TestP50/TestP50_summary.dta')
+tp80 <- read_dta('output/TestP80/TestP80_summary.dta')
+tp100 <- read_dta('output/TestP100/TestP100_summary.dta')
+
+# Plot Average age at death
+ggplot(pop, aes(x=year, y=d_age_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=tp10, size=0.3, col='green') +
+        geom_line(data=tp50, size=0.3, col='blue') +
+        geom_line(data=tp100, size=0.3, col='red') +
+        labs(title='Average Age at Death over Time', y='Average age at death', x='Year')
+        
+# Smoking variables and chronic diseases
+ggplot(pop, aes(x=year, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=tp10, size=0.3, col='green') +
+        geom_line(data=tp50, size=0.3, col='blue') +
+        geom_line(data=tp100, size=0.3, col='red') +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Year')
+ggplot(pop, aes(x=year, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=tp10, size=0.3, col='green') +
+        geom_line(data=tp50, size=0.3, col='blue') +
+        geom_line(data=tp100, size=0.3, col='red') +
+        labs(title='Prevalence of Smoking over Time', y='Prevalence of Smoking', x='Year')
+ggplot(pop, aes(x=year, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=tp10, size=0.3, col='green') +
+        geom_line(data=tp50, size=0.3, col='blue') +
+        geom_line(data=tp100, size=0.3, col='red') +
+        labs(title='Prevalence of Lung Disease over Time', y='Prevalence of Lung Disease', x='Year')
+ggplot(pop, aes(x=year, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=tp10, size=0.3, col='green') +
+        geom_line(data=tp50, size=0.3, col='blue') +
+        geom_line(data=tp100, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer over Time', y='Prevalence of Cancer', x='Year')
+```
+
+
+# Drinking Cohort
+
+```{r}
+
+cohort <- read_dta('output/ELSA_cohort/ELSA_cohort_summary.dta')
+dc10 <- read_dta('output/DC10/DC10_summary.dta')
+dc20 <- read_dta('output/DC20/DC20_summary.dta')
+dc50 <- read_dta('output/DC50/DC50_summary.dta')
+dc80 <- read_dta('output/DC80/DC80_summary.dta')
+
+# Generate age var
+cohort$age <- (cohort$year - 2012) + 50
+dc10$age <- (cohort$year - 2012) + 50
+dc20$age <- (cohort$year - 2012) + 50
+dc50$age <- (cohort$year - 2012) + 50
+dc80$age <- (cohort$year - 2012) + 50
+
+# Survival curve
+cohort$survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+dc10$survival <- dc10$m_endpop_all / dc10$m_endpop_all[1]
+dc20$survival <- dc20$m_endpop_all / dc20$m_endpop_all[1]
+dc50$survival <- dc50$m_endpop_all / dc50$m_endpop_all[1]
+dc80$survival <- dc80$m_endpop_all / dc80$m_endpop_all[1]
+
+# Now plot all survival curves together
+ggplot(cohort, aes(x=age, y=survival)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Cohort Survival Over Time', y='Survival', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_drink_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Drinking by Age', y='Prevalence of Drinking', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_diabe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Diabetes by Age', y='Prevalence of Diabetes', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_hibpe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Hypertension by Age', y='Prevalence of Hypertension', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_hearte_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Heart Disease by Age', y='Prevalence of Heart Disease', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_stroke_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Stroke by Age', y='Prevalence of Stroke', x='Age')
+
+
+```
+
+
+# Drinking Population
+
+```{r}
+
+pop <- read_dta('output/ELSA_Baseline/ELSA_Baseline_summary.dta')
+dp10 <- read_dta('output/DP10/DP10_summary.dta')
+dp20 <- read_dta('output/DP20/DP20_summary.dta')
+dp50 <- read_dta('output/DP50/DP50_summary.dta')
+dp80 <- read_dta('output/DP80/DP80_summary.dta')
+
+# Plot Average age at death
+ggplot(pop, aes(x=year, y=d_age_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dp10, size=0.3, col='green') +
+        geom_line(data=dp50, size=0.3, col='blue') +
+        geom_line(data=dp80, size=0.3, col='red') +
+        labs(title='Average Age at Death over Time', y='Average age at death', x='Year')
+
+ggplot(pop, aes(x=year, y=p_drink_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dp10, size=0.3, col='green') +
+        geom_line(data=dp50, size=0.3, col='blue') +
+        geom_line(data=dp80, size=0.3, col='red') +
+        labs(title='Prevalence of Drinking by Age', y='Prevalence of Drinking', x='Age')
+
+ggplot(pop, aes(x=year, y=p_diabe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dp10, size=0.3, col='green') +
+        geom_line(data=dp50, size=0.3, col='blue') +
+        geom_line(data=dp80, size=0.3, col='red') +
+        labs(title='Prevalence of Diabetes by Age', y='Prevalence of Diabetes', x='Age')
+
+ggplot(pop, aes(x=year, y=p_hibpe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dp10, size=0.3, col='green') +
+        geom_line(data=dp50, size=0.3, col='blue') +
+        geom_line(data=dp80, size=0.3, col='red') +
+        labs(title='Prevalence of Hypertension by Age', y='Prevalence of Hypertension', x='Age')
+
+ggplot(pop, aes(x=year, y=p_hearte_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dp10, size=0.3, col='green') +
+        geom_line(data=dp50, size=0.3, col='blue') +
+        geom_line(data=dp80, size=0.3, col='red') +
+        labs(title='Prevalence of Heart Disease by Age', y='Prevalence of Heart Disease', x='Age')
+
+ggplot(pop, aes(x=year, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dp10, size=0.3, col='green') +
+        geom_line(data=dp50, size=0.3, col='blue') +
+        geom_line(data=dp80, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+
+ggplot(pop, aes(x=year, y=p_stroke_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dp10, size=0.3, col='green') +
+        geom_line(data=dp50, size=0.3, col='blue') +
+        geom_line(data=dp80, size=0.3, col='red') +
+        labs(title='Prevalence of Stroke by Age', y='Prevalence of Stroke', x='Age')
+
+
+```
+
+
+# Exercise Status Cohort
+
+```{r}
+
+cohort <- read_dta('output/ELSA_cohort/ELSA_cohort_summary.dta')
+ec10 <- read_dta('output/ExstatC10/ExstatC10_summary.dta')
+ec50 <- read_dta('output/ExstatC50/ExstatC50_summary.dta')
+ec80 <- read_dta('output/ExstatC80/ExstatC80_summary.dta')
+
+# Generate age var
+cohort$age <- (cohort$year - 2012) + 50
+ec10$age <- (cohort$year - 2012) + 50
+ec50$age <- (cohort$year - 2012) + 50
+ec80$age <- (cohort$year - 2012) + 50
+
+# Survival curve
+cohort$survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+ec10$survival <- ec10$m_endpop_all / ec10$m_endpop_all[1]
+ec50$survival <- ec50$m_endpop_all / ec50$m_endpop_all[1]
+ec80$survival <- ec80$m_endpop_all / ec80$m_endpop_all[1]
+
+# Now plot all survival curves together
+ggplot(cohort, aes(x=age, y=survival)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=ec10, size=0.3, col='green') +
+        geom_line(data=ec50, size=0.3, col='blue') +
+        geom_line(data=ec80, size=0.3, col='red') +
+        labs(title='Cohort Survival Over Time', y='Survival', x='Age')
+
+
+ggplot(cohort, aes(x=age, y=a_bmi_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Average BMI by Age', y='Average BMI', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_diabe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Diabetes by Age', y='Prevalence of Diabetes', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_hibpe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Hypertension by Age', y='Prevalence of Hypertension', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_hearte_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Heart Disease by Age', y='Prevalence of Heart Disease', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+
+ggplot(cohort, aes(x=age, y=p_stroke_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Stroke by Age', y='Prevalence of Stroke', x='Age')
+   
+
+```
+
+# Exercise Status Population
+
+```{r}
+
+pop <- read_dta('output/ELSA_cohort/ELSA_cohort_summary.dta')
+ep10 <- read_dta('output/ExstatP10/ExstatC10_summary.dta')
+ep50 <- read_dta('output/ExstatP50/ExstatC50_summary.dta')
+ep80 <- read_dta('output/ExstatP80/ExstatC80_summary.dta')
+
+# Now plot all survival curves together
+ggplot(pop, aes(x=year, y=survival)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=ep10, size=0.3, col='green') +
+        geom_line(data=ep50, size=0.3, col='blue') +
+        geom_line(data=ep80, size=0.3, col='red') +
+        labs(title='Cohort Survival Over Time', y='Survival', x='Age')
+
+
+ggplot(pop, aes(x=year, y=a_bmi_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Average BMI Over Time', y='Average BMI', x='Age')
+
+ggplot(pop, aes(x=year, y=p_diabe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Diabetes Over Time', y='Prevalence of Diabetes', x='Age')
+
+ggplot(pop, aes(x=year, y=p_hibpe_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Hypertension Over Time', y='Prevalence of Hypertension', x='Age')
+
+ggplot(pop, aes(x=year, y=p_hearte_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Heart Disease Over Time', y='Prevalence of Heart Disease', x='Age')
+
+ggplot(pop, aes(x=year, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer Over Time', y='Prevalence of Cancer', x='Age')
+
+ggplot(pop, aes(x=year, y=p_stroke_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=dc10, size=0.3, col='green') +
+        geom_line(data=dc50, size=0.3, col='blue') +
+        geom_line(data=dc80, size=0.3, col='red') +
+        labs(title='Prevalence of Stroke Over Time', y='Prevalence of Stroke', x='Age')
+   
+
+```

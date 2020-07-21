@@ -1,0 +1,215 @@
+---
+title: "Public Health Intervention Visualisation"
+output: html_notebook
+---
+
+This notebook will keep all visualisations for the English Future Elderly Model public health intervention scenarios.
+
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(haven)
+require(dplyr)
+require(ggplot2)
+```
+
+
+# COMMIT
+
+The commit smoking interventions are inspired by this paper. <!-- TODO: Add link to COMMIT paper here -->
+
+The intervention resulted in a 3% increase in the smoking quit rate for light/moderate smokers (anyone smoking less than 25 cigs/day).
+
+
+```{r}
+ # First read in the baseline cohort data file and the commit scenario outputs
+cohort <- read_dta('output/ELSA_cohort/ELSA_cohort_summary.dta')
+commit3 <- read_dta('output/COMMIT_cSmoken3/COMMIT_cSmoken3_summary.dta')
+
+# As these are all cohort datasets we can calculate their age by (year - 2012 + 50) 
+cohort$age <- (cohort$year - 2012) + 50
+commit3$age <- (cohort$year - 2012) + 50
+
+# Now calculate survival rates for all 3 (normalise pop_count to inital value)
+cohort$survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+commit3$survival <- commit3$m_endpop_all / commit3$m_endpop_all[1]
+
+# Plot survival curve
+ggplot(cohort, aes(x=age, y=survival)) +
+        geom_line(col='black', size=0.5) +
+        geom_line(data=commit3, col='red', size=0.5)
+
+# Smoking variables and chronic diseases
+ggplot(cohort, aes(x=age, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=commit3, size=0.3, col='red') +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=commit3, size=0.3, col='red') +
+        labs(title='Prevalence of Smoking by Age', y='Prevalence of Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=commit3, size=0.3, col='red') +
+        labs(title='Prevalence of Lung Disease by Age', y='Prevalence of Lung Disease', x='Age')
+ggplot(cohort, aes(x=age, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=commit3, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+```
+
+
+# Smoke Stop Cohort Interventions
+
+```{r}
+# First read in the baseline cohort data file and the commit scenario outputs
+cohort <- read_dta('output/ELSA_cohort/ELSA_cohort_summary.dta')
+x169 <- read_dta('output/Smoke_Stop_Cohort169/Smoke_Stop_Cohort169_summary.dta')
+
+# As these are all cohort datasets we can calculate their age by (year - 2012 + 50)
+cohort$age <- (cohort$year - 2012) + 50
+x169$age <- (cohort$year - 2012) + 50
+
+# Now calculate survival rates for all 3 (normalise pop_count to inital value)
+cohort$survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+x169$survival <- x169$m_endpop_all / x169$m_endpop_all[1]
+
+# Plot survival curve
+ggplot(cohort, aes(x=age, y=survival)) +
+        geom_line(col='black', size=0.5) +
+        geom_line(data=x169, col='red', size=0.5)
+
+# Smoking variables and chronic diseases
+ggplot(cohort, aes(x=age, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=x169, size=0.3, col='red') +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=x169, size=0.3, col='red') +
+        labs(title='Prevalence of Smoking by Age', y='Prevalence of Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=x169, size=0.3, col='red') +
+        labs(title='Prevalence of Lung Disease by Age', y='Prevalence of Lung Disease', x='Age')
+ggplot(cohort, aes(x=age, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=x169, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+```
+
+# Smoke Stop Population Interventions
+
+```{r}
+# First read in the baseline cohort data file and the commit scenario outputs
+pop <- read_dta('output/ELSA_Baseline/ELSA_Baseline_summary.dta')
+p169 <- read_dta('output/Smoke_Stop_Pop169/Smoke_Stop_Pop169_summary.dta')
+
+# No need to calculate year as this is population scenario (replenishing)
+# Also means can't calculate survival rates
+
+# Plot Average age at death
+ggplot(pop, aes(x=year, y=d_age_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=p169, size=0.3, col='red') +
+        labs(title='Average Age at Death over Time', y='Average age at death', x='Year')
+        
+# Smoking variables and chronic diseases
+ggplot(pop, aes(x=year, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=p169, size=0.3, col='red') +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Year')
+ggplot(pop, aes(x=year, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=p169, size=0.3, col='red') +
+        labs(title='Prevalence of Smoking over Time', y='Prevalence of Smoking', x='Year')
+ggplot(pop, aes(x=year, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=p169, size=0.3, col='red') +
+        labs(title='Prevalence of Lung Disease over Time', y='Prevalence of Lung Disease', x='Year')
+ggplot(pop, aes(x=year, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=p169, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer over Time', y='Prevalence of Cancer', x='Year')
+```
+
+
+# Custom Smoke Stop Interventions (Cohort)
+
+This is the custom intervention written in C++ - SmokeStopIntervention.cpp
+
+```{r}
+
+# Read in data
+cohort <- read_dta('output/ELSA_cohort/ELSA_cohort_summary.dta')
+SSPC <- read_dta('output/SmokeStopInterventionC/SmokeStopInterventionC_summary.dta')
+
+# Generate age var
+cohort$age <- (cohort$year - 2012) + 50
+SSPC$age <- (cohort$year - 2012) + 50
+
+# Survival curve
+cohort$survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+SSPC$survival <- SSPC$m_endpop_all / SSPC$m_endpop_all[1]
+
+# Now plot all survival curves together
+ggplot(cohort, aes(x=age, y=survival)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPC, size=0.3, col='red') +
+        labs(title='Cohort Survival Over Time', y='Survival', x='Age')
+# Smoking variables and chronic diseases
+ggplot(cohort, aes(x=age, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPC, size=0.3, col='red') +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPC, size=0.3, col='red') +
+        labs(title='Prevalence of Smoking by Age', y='Prevalence of Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPC, size=0.3, col='red') +
+        labs(title='Prevalence of Lung Disease by Age', y='Prevalence of Lung Disease', x='Age')
+ggplot(cohort, aes(x=age, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPC, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+
+```
+
+
+# Custom Smoke Stop Interventions (Population)
+
+```{r}
+
+# Load data
+pop <- read_dta('output/ELSA_Baseline/ELSA_Baseline_summary.dta')
+SSPP <- read_dta('output/SmokeStopInterventionP/SmokeStopInterventionP_summary.dta')
+
+# Plot Average age at death
+ggplot(pop, aes(x=year, y=d_age_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPP, size=0.3, col='red') +
+        labs(title='Average Age at Death over Time', y='Average age at death', x='Year')
+        
+# Smoking variables and chronic diseases
+ggplot(pop, aes(x=year, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPP, size=0.3, col='red') +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Year')
+ggplot(pop, aes(x=year, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPP, size=0.3, col='red') +
+        labs(title='Prevalence of Smoking over Time', y='Prevalence of Smoking', x='Year')
+ggplot(pop, aes(x=year, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPP, size=0.3, col='red') +
+        labs(title='Prevalence of Lung Disease over Time', y='Prevalence of Lung Disease', x='Year')
+ggplot(pop, aes(x=year, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=SSPP, size=0.3, col='red') +
+        labs(title='Prevalence of Cancer over Time', y='Prevalence of Cancer', x='Year')
+        
+```
