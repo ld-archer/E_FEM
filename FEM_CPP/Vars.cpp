@@ -530,7 +530,11 @@ VarsInfo::VarsInfo() {
 	info[Vars::smokev]               = VarInfo("smokev", "Ever smoked [0, 1]", VarTypes::Boolean, Vars::smkstat, 2);
 	info[Vars::smokef]				= VarInfo("smokef", "Number cigarettes/day", VarTypes::Double);
 	info[Vars::smoke_start]          = VarInfo("smoke_start", "Transition from not smoking to smoking", VarTypes::Boolean);
+	info[Vars::psmoke_start]		 = VarInfo("psmoke_start", "Probability of transition from not smoking to smoking", VarTypes::Float);
+	//info[Vars::l2smoke_start]		 = VarInfo("l2smoke_start", "Lag of transition from not smoking to smoking", VarTypes::Boolean);
 	info[Vars::smoke_stop]           = VarInfo("smoke_stop", "Transition from smoking to not smoking", VarTypes::Boolean);
+	info[Vars::psmoke_stop]			 = VarInfo("psmoke_stop", "Probability of transition from smoking to not smoking", VarTypes::Float);
+	//info[Vars::l2smoke_stop]		 = VarInfo("l2smoke_stop", "Lag of transition from smoking to not smoking", VarTypes::Boolean);
 	info[Vars::srh] 				 = VarInfo("srh", "Self-reported health (cross-sectional)", VarTypes::Short);
 	info[Vars::ssage]                = VarInfo("ssage", "Age started claiming SS benefits", VarTypes::Float);
 	info[Vars::ssamt]                = VarInfo("ssamt", "SS OASI benefits amount", VarTypes::Double);
@@ -597,6 +601,17 @@ VarsInfo::VarsInfo() {
 	info[Vars::vgactx_e]			= VarInfo("vgactx_e", "Number of times done vigorous exercise per week, stored as Short", VarTypes::Short);
 	info[Vars::mdactx_e]			= VarInfo("mdactx_e", "Number of times done moderate exercise per week, stored as Short", VarTypes::Short);
 	info[Vars::ltactx_e]			= VarInfo("ltactx_e", "Number of times done light exercise per week, stored as Short", VarTypes::Short);
+	info[Vars::exstat]				= VarInfo("exstat", "Exercise Status, Approx Range [1, 3] stored as Short", VarTypes::Short, true);
+	info[Vars::exstat1]				= VarInfo("exstat1", "exstat 1 [0, 1]", VarTypes::Boolean, Vars::exstat, 1);
+	info[Vars::exstat2]				= VarInfo("exstat2", "exstat 2 [0, 1]", VarTypes::Boolean, Vars::exstat, 2);
+	info[Vars::exstat3]				= VarInfo("exstat3", "exstat 3 [0, 1]", VarTypes::Boolean, Vars::exstat, 3);
+	info[Vars::l2exstat]			= VarInfo("l2exstat", "Lag of Exercise Status, Approx Range [1, 3] stored as Short", VarTypes:: Short, true);
+	info[Vars::l2exstat1]			= VarInfo("l2exstat1", "l2exstat 1 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 1);
+	info[Vars::l2exstat2]			= VarInfo("l2exstat2", "l2exstat 2 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 2);
+	info[Vars::l2exstat3]			= VarInfo("l2exstat3", "l2exstat 3 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 3);
+	info[Vars::pexstat1]			= VarInfo("pexstat1", "Probability of exstat==1", VarTypes::Float);
+	info[Vars::pexstat2]			= VarInfo("pexstat2", "Probability of exstat==2", VarTypes::Float);
+	info[Vars::pexstat3]			= VarInfo("pexstat3", "Probability of exstat==3", VarTypes::Float);
 	info[Vars::l2vgactx_e]			= VarInfo("l2vgactx_e", "Lag of Number of times done vigorous exercise per week, stored as Short", VarTypes::Short);
 	info[Vars::l2mdactx_e]			= VarInfo("l2mdactx_e", "Lag of Number of times done moderate exercise per week, stored as Short", VarTypes::Short);
 	info[Vars::l2ltactx_e]			= VarInfo("l2ltactx_e", "Lag of Number of times done light exercise per week, stored as Short", VarTypes::Short);
@@ -606,7 +621,9 @@ VarsInfo::VarsInfo() {
 	info[Vars::rdd_treated]			= VarInfo("rdd_treated", "Whether treated with ReduceDrinkDays intervention", VarTypes::Boolean);
 	info[Vars::l2rdd_treated]		= VarInfo("l2rdd_treated", "Lag of whether treated with ReduceDrinkDays intervention", VarTypes::Boolean);
 	info[Vars::mei_treated]         = VarInfo("mei_treated", "Whether treated with Moderate Exercise Increase intervention", VarTypes::Boolean);
-    info[Vars::l2mei_treated]         = VarInfo("l2mei_treated", "Lag of whether treated with Moderate Exercise Increase intervention", VarTypes::Boolean);
+    info[Vars::l2mei_treated]       = VarInfo("l2mei_treated", "Lag of whether treated with Moderate Exercise Increase intervention", VarTypes::Boolean);
+	info[Vars::ei_treated]			= VarInfo("ei_treated", "Whether treated with Exercise Intervention", VarTypes::Boolean);
+	info[Vars::l2ei_treated]		= VarInfo("l2ei_treated", "Lag of whether treated with Exercise Intervention", VarTypes::Boolean);
 
 	
 	// This is for vars that are transitioned each wave, not just assigned
@@ -742,6 +759,10 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::rdd_treated] = Vars::l2rdd_treated;
 	lag_map[Vars::ssi_treated] = Vars::l2ssi_treated;
 	lag_map[Vars::mei_treated] = Vars::l2mei_treated;
+	lag_map[Vars::exstat]	= Vars::l2exstat;
+	lag_map[Vars::ei_treated] = Vars::l2ei_treated;
+	//lag_map[Vars::smoke_start] = Vars::l2smoke_start;
+	//lag_map[Vars::smoke_stop] = Vars::l2smoke_stop;
 
 
 
@@ -773,6 +794,8 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::retemp] = 		Vars::pretemp;
 	prob_map[Vars::drink] =			Vars::pdrink;
 	prob_map[Vars::smoken] = 		Vars::psmoken;
+	prob_map[Vars::smoke_start] =	Vars::psmoke_start;
+	prob_map[Vars::smoke_stop] =	Vars::psmoke_stop;
 	// Ordered
 	prob_map[Vars::smokev] =		Vars::psmkstat2;
 	prob_map[Vars::smoken] =		Vars::psmkstat3;
@@ -785,6 +808,9 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::drinkd2] =		Vars::pdrinkd_stat2;
 	prob_map[Vars::drinkd3] =		Vars::pdrinkd_stat3;
 	prob_map[Vars::drinkd4] =		Vars::pdrinkd_stat4;
+	prob_map[Vars::exstat1] =		Vars::pexstat1;
+	prob_map[Vars::exstat2] =		Vars::pexstat2;
+	prob_map[Vars::exstat3] =		Vars::pexstat3;
 
 
 

@@ -485,7 +485,11 @@ namespace Vars
 		smokev,                   ///< Ever smoked [0, 1], stored as Boolean
 		smokef,						///< Number cigarettes/day, stored as Double
 		smoke_start,				///< Whether person transitions from not smoking to smoking
+		psmoke_start,				///< Probability of transition from not smoking to smoking
+		//l2smoke_start, 				///< Lag of transition from not smoking to smoking
 		smoke_stop,               ///< Whether person transitions from smoking to not smoking
+		psmoke_stop,				///< Probability of transition from smoking to not smoking
+		//l2smoke_stop, 				///< Lag of transition from smoking to not smoking
 		srh,											///< Self-reported health (cross-sectional)
 		ssage,                    ///< Year started claiming SS benefits, stored as Short
 		ssamt, 										///< SS OASI benefits, stored as Double
@@ -532,12 +536,25 @@ namespace Vars
 		l2vgactx_e,					///< Lag of Number of times done vigorous exercise per week, stored as Short
 		l2mdactx_e,					///< Lag of  Number of times done moderate exercise per week, stored as Short
 		l2ltactx_e,					///< Lag of  Number of times done light exercise per week, stored as Short
+		exstat,						///< Exercise Status, Approx. range [0, 1], stored as Short
+		l2exstat,					///< Lag of exercise Status, Approx. range [0, 1], stored as Short
+		exstat1,					///< exstat1 [0, 1]
+		exstat2,					///< exstat2 [0, 1]
+		exstat3,					///< exstat3 [0, 1]
+		l2exstat1,					///< l2exstat1 [0, 1]
+		l2exstat2,					///< l2exstat2 [0, 1]
+		l2exstat3,					///< l2exstat3 [0, 1]
+		pexstat1,					///< Probability of exstat==1
+		pexstat2,					///< Probability of exstat==2
+		pexstat3,					///< Probability of exstat==3
 		rdd_treated,				///< Whether treated with ReduceDrinkDays intervention
 		l2rdd_treated,				///< Lag of whether treated with ReduceDrinkDays intervention
 		ssi_treated,				///< Whether treated with SmokeStopIntervention
 		l2ssi_treated,				///< Lag of whether treated with SmokeStopIntervention
 		mei_treated,                ///< Whether treated with Moderate Exercise Increase intervention
 		l2mei_treated,              ///< Lag of whether treated with Moderate Exercise Increase intervention
+		ei_treated,					///< Whether treated with Exercise Intervention
+		l2ei_treated,				///< Lag of whether treated with Exercise Intervention
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
