@@ -14,6 +14,7 @@ SmokeStopIntervention::SmokeStopIntervention(unsigned int intervention_id, ITime
   Intervention(intervention_id, tp, vp)
 {
 	params_map["ssi_start_yr"] = "2012";
+	//elig_threshold = 0.831; // Should see an increase of 0.169
 	elig_threshold = 0.5;
 }
 
@@ -30,7 +31,7 @@ void SmokeStopIntervention::setScenario(Scenario* scen) {
 	if(atof(params_map[param_name].c_str()) == 0.0 && params_map[param_name] != "0") {
 		// User specified a time series name to use for the factor
 		// We arent setup to do this yet, so throw exception
-		throw fem_exception("Smoke stop intervention needs numbers for parameters (text given for rdd_pill_start_yr)!");
+		throw fem_exception("Smoke stop intervention needs numbers for parameters (text given for ssi_start_yr)!");
 	} else {
 		// User specified a number to use as a constant value
 		start_yr = atoi(params_map[param_name].c_str());
@@ -54,6 +55,12 @@ void SmokeStopIntervention::intervene(PersonVector& persons, unsigned int year, 
 		if(person->test(Vars::active) && !person->test(Vars::l2died)) {
 			//Are they eligible?
 			if(elig(person)) {
+				
+				//std::ostringstream ss2;
+				//ss << "Treating eligible person!" << std::endl;
+				//Logger::log(ss2.str(), FINE);
+				//ss.str("");
+
 				//  Yes, treat them
 				person->set(Vars::ssi_treated, true);
 				// Set smoke_stop to 1 for this wave
@@ -63,6 +70,8 @@ void SmokeStopIntervention::intervene(PersonVector& persons, unsigned int year, 
 				person->set(Vars::smkstat,2.0);
 				// Quit, so turn current off
 				person->set(Vars::smoken,0.0);
+				// Quit so smokef == 0
+				person->set(Vars::smokef,0.0);
 				// Maintain smokev status
 				person->set(Vars::smokev,person->get(Vars::l2smokev));
 				// Clean up other vars - didn't start, too
@@ -78,16 +87,16 @@ bool SmokeStopIntervention::elig(Person* p) const {
 	// we can "decide" who gets the intervention. i.e. check if 
 	// sample is above threshold (defined above) and then make eligible
 
-//	return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1;
+	return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1;
 
-    std::default_random_engine generator;
-    std::uniform_real_distribution<double> distribution(0.0,1.0);
+//    std::default_random_engine generator;
+//    std::uniform_real_distribution<double> distribution(0.0,1.0);
 
-    double sample = distribution(generator);
+//    double sample = distribution(generator);
 
 
 
-    return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1 && sample > elig_threshold;
+//    return !p->test(Vars::ssi_treated) && p->get(Vars::smoken) == 1 && sample > elig_threshold;
 
 
 	// Think about more complicated logic for eligibility

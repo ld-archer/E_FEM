@@ -10,6 +10,7 @@
 #include "ReduceDrinkDays.h"
 #include "SmokeStopIntervention.h"
 #include "ModExIncrease.h"
+//#include "ExerciseIntervention.h"
 
 InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvider* tp)
 {
@@ -71,7 +72,9 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::ssclaim,
 		Vars::smoken,
 		Vars::smokev,
-		Vars::drink
+		Vars::drink,
+		Vars::smoke_start,
+		Vars::smoke_stop
 	};
 
 
@@ -96,7 +99,8 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 	interventions[inter->name()] = inter;
 
 	Vars::Vars_t ordvars[] = {
-		Vars::painstat
+		Vars::painstat,
+		Vars::exstat
 	};
 
 	int nOrdVars = sizeof(ordvars)/sizeof(Vars::Vars_t);
@@ -121,6 +125,9 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 
 	SmokeStopIntervention* ssi = new SmokeStopIntervention(index++, tp, vp);
 	interventions[ssi->name()] = ssi;
+
+	//ExerciseIntervention* ei = new ExerciseIntervention(index++, tp, vp);
+	//interventions[ei->name()] = ei;
 
 
 }

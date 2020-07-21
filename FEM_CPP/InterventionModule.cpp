@@ -18,7 +18,7 @@ void InterventionModule::reset_intervetions() {
 
 /** \todo If someone accidentally puts the name of an initial intervention in the regular interventions column, throw an error or something.
 
-\todo If the parameters for an intervention are left blank, throw an error.
+	\todo If the parameters for an intervention are left blank, throw an error.
 */
 void InterventionModule::process(PersonVector& persons, unsigned int year, Random* random)
 {

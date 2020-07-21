@@ -6,6 +6,9 @@
 #include "GlobalVariable.h"
 #include "ProbitRegression.h"
 
+#include <iostream>
+using namespace std;
+
 #include <sstream>
 VarProbIntervention::VarProbIntervention(std::string name, Vars::Vars_t v, unsigned int intervention_id, ITimeSeriesProvider* tp, IVariableProvider* vp)  
   :  Intervention(intervention_id, tp, vp), _name(name), var(v)
@@ -106,7 +109,59 @@ void VarProbIntervention::intervene(PersonVector& persons, unsigned int year, Ra
 				double new_prob = std::max(std::min(mult*person->get(pvar), 1.0), 0.0);
 				person->set(pvar, new_prob);
 				var_model->predictWithProb(person, random, new_prob);
-		  }
+
+				// If the intervention is a smoke_stop intervention, do the accounting
+				if (VarsInfo::labelOf(var) == "smoke_stop") {
+					// Smoked in previous period
+					if(person->test(Vars::l2smoken)) {
+						// Stopped smoking
+						if(person->test(Vars::smoke_stop)) {
+							// Now a former smoker
+							person->set(Vars::smkstat,2.0);
+							// Quit, so turn current off
+							person->set(Vars::smoken,0.0);
+							// Quit so smokef == 0
+							person->set(Vars::smokef,0.0);
+							// Maintain smokev status
+							person->set(Vars::smokev,person->get(Vars::l2smokev));
+							// Clean up other vars - didn't start, too
+							person->set(Vars::smoke_start,0.0);
+						}	
+						else {
+							// Didn't stop, so maintain smkstat, smoken, smokev
+							person->set(Vars::smkstat,person->get(Vars::l2smkstat));
+							person->set(Vars::smoken,person->get(Vars::l2smoken));
+							person->set(Vars::smokev,person->get(Vars::l2smokev));
+							// Clean up other vars - didn't start, too
+							person->set(Vars::smoke_start,0.0);
+						}
+					}
+				}
+				if (VarsInfo::labelOf(var) == "smoke_start") {
+					// Didn't smoke in previous period
+					if(!person->test(Vars::l2smoken)) {
+						// Started smoking
+						if(person->test(Vars::smoke_start)) {
+							// Now a current smoker
+							person->set(Vars::smkstat,3.0);	
+							// Started, so current smoker
+							person->set(Vars::smoken,1.0);
+							// Also an ever smoker
+							person->set(Vars::smokev,1.0);
+							// Clean up other vars - didn't stop, too
+							person->set(Vars::smoke_stop,0.0);
+						}	
+						else {
+							// Didn't start, so maintain previous status for smkstat, smoken, smokev
+							person->set(Vars::smkstat,person->get(Vars::l2smkstat));
+							person->set(Vars::smoken,person->get(Vars::l2smoken));
+							person->set(Vars::smokev,person->get(Vars::l2smokev));
+							// Clean up other vars - didn't stop, too
+							person->set(Vars::smoke_stop,0.0);
+						}
+					}
+				}
+		    }
 		}
 	}
 }
