@@ -1,6 +1,6 @@
 *** Sample Selection Macros
 * Selection criteria for models that only rely on not being dead
-foreach v in adlstat iadlstat smkstat work retemp itearn atotf drink vgactx_e mdactx_e ltactx_e smoken smokev {
+foreach v in adlstat iadlstat work retemp itearn atotf drink vgactx_e mdactx_e ltactx_e exstat /*smkstat*/ {
     local select_`v' !died
 }
 
