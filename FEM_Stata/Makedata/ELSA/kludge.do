@@ -186,7 +186,7 @@ replace retemp = 0 if missing(retemp) & age < 65
 replace retemp = 1 if missing(retemp) & age > 65
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
 
-/* replace logbmi = l2logbmi if missing(logbmi)
+replace logbmi = l2logbmi if missing(logbmi)
 replace l2logbmi = logbmi if missing(l2logbmi)
 
 summarize logbmi
@@ -195,11 +195,12 @@ replace logbmi = r(mean) if missing(logbmi)
 summarize l2logbmi
 replace l2logbmi = r(mean) if missing(l2logbmi)
 
-codebook logbmi l2logbmi  */
+codebook logbmi l2logbmi
 
 
-
-
-* smoke_start and smoke_stop
+* Handle missing lagged exstat vars
+replace l2exstat1 = exstat1 if missing(l2exstat1)
+replace l2exstat2 = exstat2 if missing(l2exstat2)
+replace l2exstat3 = exstat3 if missing(l2exstat3)
 
 
