@@ -103,7 +103,6 @@ transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_tran
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA_minimal $(STATA) ELSA_init_transition.do
 
 
-
 ### Estimates and Summary
 
 estimates:
@@ -140,7 +139,6 @@ summary_out_minimal:
 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
 
 
-
 ### FEM Simulation
 
 simulation_base:
@@ -165,8 +163,6 @@ Ttests:
 	cd $(ANALYSIS) $(STATA) crossvalidation_ELSA.do
 
 
-
-
 ### Housekeeping and cleaning
 
 clean: clean_log clean_out
@@ -182,62 +178,3 @@ clean_out:
 	rm -f output/*/*/*.txt
 	rm -f output/graphs/*/*.png
 
-
-
-### OLD RULES SAVE FOR A BIT ###
-
-# cross_validation: $(MAKEDATA)/ID_selection_CV.do $(MAKEDATA)/reshape_long_CV.do $(MAKEDATA)/gen_stock_CV.do $(MAKEDATA)/gen_transition_CV.do $(MAKEDATA)/reweight_ELSA_stock_CV.do $(ESTIMATION)/ELSA_transition_CV.do
-# 	# ID selection, gen flags to split the population in half
-# 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
-# 	# Reshape original data 
-# 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) reshape_long_CV.do
-# 	# Generate stock and transition populations from separate halves of the original data
-# 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_stock_CV.do
-# 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_transition_CV.do
-# 	# Gen populations and reweight
-# 	cd $(MAKEDATA) $(STATA) gen_pop_projections.do
-# 	cd $(MAKEDATA) $(STATA) education_proj.do
-# 	cd $(MAKEDATA) && scen=CV $(STATA) reweight_ELSA_stock_CV.do
-# 	# Estimate transition models
-# 	cd $(ESTIMATION) && datain=$(DATADIR)/cross_validation dataout=$(ESTIMATES)/ELSA/crossvalidation $(STATA) ELSA_transition_CV.do
-# 	# Save transition models as .est files to be read by the model
-# 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
-# 	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
-# 	$(MPI) ELSA_cross-validation.settings.txt
-
-# minimal2: $(MAKEDATA)/ID_selection_CV.do $(MAKEDATA)/reshape_long_CV.do $(MAKEDATA)/gen_stock_CV.do $(MAKEDATA)/gen_transition_CV.do $(MAKEDATA)/reweight_ELSA_stock_CV.do $(ESTIMATION)/ELSA_transition_CV.do
-# 	# ID selection, gen flags to split the population in half
-# 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
-# 	# Reshape original data 
-# 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) reshape_long_CV.do
-# 	# Generate stock and transition populations from separate halves of the original data
-# 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_stock_CV.do
-# 	cd $(MAKEDATA) && datain=$(DATADIR)/cross_validation dataout=$(DATADIR)/cross_validation $(STATA) gen_transition_CV.do
-# 	# Gen populations and reweight
-# 	cd $(MAKEDATA) $(STATA) gen_pop_projections.do
-# 	cd $(MAKEDATA) $(STATA) education_proj.do
-# 	cd $(MAKEDATA) && scen=CV $(STATA) reweight_ELSA_stock_CV.do
-# 	# Estimate transition models
-# 	cd $(ESTIMATION) && datain=$(DATADIR)/cross_validation dataout=$(ESTIMATES)/ELSA/crossvalidation $(STATA) ELSA_transition_minimal.do
-# 	# Save transition models as .est files to be read by the model
-# 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
-# 	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
-# 	$(MPI) ELSA_cross-validation.settings.txt
-
-
-# minimal:
-# 	# Reshape original data 
-# 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
-# 	# Generate stock and transition populations from separate halves of the original data
-# 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
-# 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do
-# 	# Gen populations and reweight
-# 	cd $(MAKEDATA) $(STATA) gen_pop_projections.do
-# 	cd $(MAKEDATA) $(STATA) education_proj.do
-# 	cd $(MAKEDATA) && scen=base $(STATA) reweight_ELSA_stock.do
-# 	# Estimate transition models
-# 	cd $(ESTIMATION) && datain=$(DATADIR) dataout=$(ESTIMATES)/ELSA/minimal $(STATA) ELSA_transition_minimal.do
-# 	# Save transition models as .est files to be read by the model
-# 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
-# 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
-# 	$(MPI) ELSA_cross-validation.settings.txt
