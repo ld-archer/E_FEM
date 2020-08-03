@@ -14,9 +14,10 @@ local goal_yr : env GOAL_YR
 clear all
 
 *use ../../../input_data/ELSA_stock.dta, replace
-*use $outdata/ELSA_stock_base.dta, replace
-use $outdata/ELSA_long.dta, replace
+use $outdata/ELSA_stock_base.dta, replace
+*use $outdata/ELSA_long.dta, replace
 
+/*
 * Make sure no l2smkstat variables are missing (otherwise CrossSectionalModule/summary_output breaks(?))
 replace l2smkstat = smkstat if missing(l2smkstat) & !missing(smkstat)
 codebook l2smkstat
@@ -34,6 +35,7 @@ foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
 }
 
 replace l2age = age - 2 if missing(l2age)
+*/
 
 * Keep respondents in wave 4
 keep if inlist(year, 2010, 2012, 2014)
