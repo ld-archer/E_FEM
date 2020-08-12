@@ -83,11 +83,13 @@ local lvars_drink l2drink /*l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4*/
 *** Now specify the transition models ***
 
 *** For Mortality
-global allvars_died $dvars $lvars_age $lvars_hlth $lvars_econ $bmivars `lvars_drink' `lvars_exercise' l2smoken l2smokev
+*global allvars_died $dvars $lvars_age /*$lvars_hlth /*$lvars_econ $bmivars*/ `lvars_drink' `lvars_exercise' l2smoken l2smokev*/
+*global allvars_died $dvars $lvars_age l2cancre l2diabe l2hibpe l2hearte l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2logbmi
+global allvars_died male hsless college $lvars_age 
 
 
 *** Chronic Diseases
-global allvars_cancre       $dvars $lvars_age $bmivars /*`lvars_smoke'*/ `lvars_drink' l2smokev l2smoken
+global allvars_cancre       $dvars $lvars_age /*$bmivars /*`lvars_smoke'*/ `lvars_drink' l2smokev l2smoken*/
 global allvars_diabe        $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2psyche /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors*/
 global allvars_hearte       $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors*/
 global allvars_hibpe        $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure*/
