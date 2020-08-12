@@ -325,10 +325,11 @@ elig_stroke = not(male) & bmi > 28
 elig_cure_diabe = male
 
 | Interventions for paper scenarios (RESEARCH ASSISTANT JOB)
-all_pop = not(died)
 
-smokers = not(died) & smoken==1
-drinkers = not(died) & drink==1
+all_pop = not(l2died)
+
+smokers = not(l2died) & smoken==1
+drinkers = not(l2died) & drink==1
 
 ||rdd_start_yr = 2012
 
