@@ -98,5 +98,3 @@ chisq.test(H_ELSA$r5smoken, US_w2$b_smnow)
 
 
 smoke_df <- data.frame()
-
-smoke_df$ELSA <- H_ELSA$

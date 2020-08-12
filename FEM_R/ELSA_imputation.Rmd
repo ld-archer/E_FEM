@@ -1,0 +1,17 @@
+---
+title: "Multiple Imputation of Missing Data in ELSA"
+output: html_notebook
+---
+
+This document will run through the steps taken to impute large amounts of missing data in ELSA.
+
+Missing data in ELSA is a significant problem to running the FEM, as a number of key predictive variables have a high degree of missingness and/or are not missing at random. For example, BMI data is missing for every odd wave, and the even waves are missing a considerable proportion of that data. 
+
+First, the extent of missing information will be assessed, then a few methods for imputing these missing values will be trialled.
+
+```{r "setup", include=FALSE}
+
+
+
+```
+
