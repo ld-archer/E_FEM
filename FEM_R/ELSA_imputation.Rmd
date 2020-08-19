@@ -11,7 +11,260 @@ First, the extent of missing information will be assessed, then a few methods fo
 
 ```{r "setup", include=FALSE}
 
+require(haven)
+require(mice)
+require(lattice)
+require(tidyverse)
+require(Hmisc)
+
+FEM_dir <- "/home/luke/Documents/E_FEM_clean/E_FEM/input_data/"
+knitr::opts_knit$set(root.dir = FEM_dir)
+
+set.seed(500) # Set seed for reproducibility
+
+```
+
+First we set up the environment, changing the working directory and including the libraries we will be using for this task. We have also set the seed at '5000' to ensure reproducibility.
+
+Next step is to read in the harmonized ELSA data file.
+
+```{r}
+
+# Read in the data.
+H_ELSA_base <- read_dta('H_ELSA_f_2002-2016.dta')
+
+```
+
+Now let's describe the data using the describe function from the Hmisc package (takes some time and the output is LARGE):
+
+```{r}
+
+#describe(H_ELSA_base)
+
+```
+
+Now lets try to summarise some of the important variables, to see what extent they are missing values.
+
+```{r}
+
+bmi <- H_ELSA_base %>% select(matches('r[0-9]bmi$'))
+#summary(bmi)
+
+smokenVars <- H_ELSA_base %>% select(matches('r[0-9]smoken$'))
+#summary(smokenVars)
+
+smokevVars <- H_ELSA_base %>% select(matches('r[0-9]smokev$'))
+#summary(smokevVars)
+
+drinkVars <- H_ELSA_base %>% select(matches('r[0-9]drink$'))
+drinkdVars <- H_ELSA_base %>% select(matches('r[0-9]drinkd_e$'))
+```
+
+The output for this is too obtuse, and we are only really interested in the extent of missingness in a variable. Therefore, we are going to use a function specifically looking at how much data is missing.
+
+```{r}
+
+# Calculate percentage of missing cases
+pMiss <- function(x) {sum(is.na(x)) / length(x) * 100}
+
+apply(bmi, 2, pMiss) # Asses missing in BMI
+#apply(bmi, 1, pMiss)
+print(' ')
+apply(smokenVars, 2, pMiss)
+print(' ')
+apply(smokevVars, 2, pMiss)
+print(' ')
+apply(drinkVars, 2, pMiss)
+print(' ')
+apply(drinkdVars, 2, pMiss)
+
+cancreVars <- H_ELSA_base %>% select(matches('r[0-9]cancre$'))
+apply(cancreVars, 2, pMiss)
+```
+
+
+Let's just look at extracting important variables and looking for those with complete cases.
+
+```{r}
+
+# Select only the vars we want to impute, plus those to use in the imputation
+keyVars <- H_ELSA_base %>% select(contains(c('idauniq', 'iwindy', 'rabyear', 'ragender', 'raracem', 'raeducl', 'hlthlm', 'work', 'itearn', 'retemp',
+                                            'vgactx_e', 'mdactx_e', 'ltactx_e', 'ipubpen', 'drink', 'drinkd', 'bmi', 'smoken', 'smokev', 'smokef')))
+
+completeData <- complete.cases(keyVars)
+sum(completeData)
+
+
+someVars <- H_ELSA_base %>% select(contains(c('idauniq', 'rabyear', 'raeducl', 'drink', 'smoken', 'smokev')))
+completeSome <- complete.cases(someVars)
+sum(completeSome)
+
+```
+
+So that's **zero** complete cases when a relatively small group of important variables are chosen, and just over 1000 when we drop to 6 key variables. Not good.
+
+Now we've produced some numbers to explain just how bad the extent of missing data is in ELSA, we have to attempt to deal with it. First up is going to be a big and dirty multiple imputation model, but not how it is traditionally supposed to be used. Instead of using each new dataset to estimate a model and then pooling the results of that model to get an aggregate, we are going to pool the results of the datasets themselves and take an average, to impute the missing information in place.
+
+
+The next step is to add a few variables back in that we might want, namely iwstat and radyear. We need to make sure the mortality model is improved, as this was the whole reason for the imputation model in the first place.
+
+
+```{r}
+
+impVars2 <- H_ELSA_base %>% select(matches(c('idauniq', 'r[0-9]iwstat', 'rabyear$', 'radyear', 'ragender$', 'raeducl$', 'r[0-9]walkra$', 'r[0-9]dressa$', 'r[0-9]batha$', 
+                                            'r[0-9]eata$', 'r[0-9]beda$', 'r[0-9]toilta$', 'r[0-9]mapa$', 'r[0-9]phonea$', 'r[0-9]moneya$', 'r[0-9]medsa$', 'r[0-9]shopa$', 'r[0-9]mealsa$',
+                                            'r[0-9]housewka$', 'r[0-9]hibpe$', 'r[0-9]diabe$', 'r[0-9]cancre$', 'r[0-9]lunge$', 'r[0-9]hearte$', 'r[0-9]stroke$',
+                                            'r[0-9]bmi$', 'r[0-9]smokev$', 'r[0-9]smoken$', 'r[0-9]smokef$', 'r[0-9]drink$', 'r[0-9]vgactx_e$', 'r[0-9]mdactx_e$', 'r[0-9]ltactx_e$',
+                                            'r[0-9]drinkd_e$')))
+
+impVars2 <- impVars2 %>% select(-matches('s[0-9]idauniq'))
+
+colnames(impVars2)
+ncol(impVars2)
+
+# Assign impossible bmi values as missing (values with BMI < 10. Only happens in wave 8, 4 cases)
+impVars2$r8bmi[impVars2$r8bmi < 10] <- NA
+
+# Run the imputation
+# Tolerance had to be set to low as I kept getting the error:
+# Error in solve.default(xtx + diag(pen)) : system is computationally singular: reciprocal condition number = 4.00027e-17 (number changes when different vars are included)
+# Removed a number of variables also to try and get around this error, as it is saying that 1 or more of the variables are linearly dependant (or so small they are treated as zero - unlikely)
+impData2 <-mice(impVars2, m = 5, maxit=5, seed=500, tol=1e-25)
+
+saveRDS(impData2, file = "/home/luke/Documents/E_FEM_clean/E_FEM/input_data/ELSA_imputed_R.mids")
+
+```
+
+
+
+
+```{r}
+
+impData2 <- readRDS(file = "/home/luke/Documents/E_FEM_clean/E_FEM/input_data/ELSA_imputed_R.mids")
+
+# Now collect all imputed datasets in long format
+completedData <- complete(impData2, 'long')
+
+# Aggregate the data
+a<-aggregate(completedData , by = list(completedData$.id), FUN= mean)
+
+# Remove vars generated in imputation
+#colnames(a)
+final <- a %>% select(-c('Group.1', '.id', '.imp'))
+
+final_rename <- final
+colnames(final_rename) <- paste0(colnames(final_rename), '_imp')
+
+#colnames(final_rename)
+
+final_rename %>% rename(idauniq = idauniq_imp)
+
+#colnames(final_rename)
+
+write_path <- '/home/luke/Documents/E_FEM_clean/E_FEM/input_data/ELSA_imputed_R.dta'
+
+write_dta(final_rename, write_path)
+
+```
+
+Lots of processing still to be done on the imputed data file:
+- Round all binary vars to the nearest whole number. This will make sure everyone is either a 0 or 1
+- smokef var need to be rounded to the nearest whole number also, but we need to make sure that for anyone with smoken value of 0, smokef is also 0
+
+```{r}
+
+# Select all binary vars (and idauniq var)
+binVars <- final_rename %>% select(contains(c('walkra', 'dressa', 'batha', 'eata', 'beda', 'toilta', 'mapa', 'phonea', 'moneya', 'medsa', 'shopa', 'mealsa', 'housewka', 'hibpe', 'diabe', 'cancre',
+                                              )))
+
+# Now round all binary vars to nearest whole number
 
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OLD STUFF / DEVELOPMENT
+
+```{r}
+
+impVars <- H_ELSA_base %>% select(matches(c('idauniq', 'rabyear$', 'ragender$', 'raeducl$', 'r[0-9]walkra$', 'r[0-9]dressa$', 'r[0-9]batha$', 
+                                            'r[0-9]eata$', 'r[0-9]beda$', 'r[0-9]toilta$', 'r[0-9]mapa$', 'r[0-9]phonea$', 'r[0-9]moneya$', 'r[0-9]medsa$', 'r[0-9]shopa$', 'r[0-9]mealsa$',
+                                            'r[0-9]housewka$', 'r[0-9]hibpe$', 'r[0-9]diabe$', 'r[0-9]cancre$', 'r[0-9]lunge$', 'r[0-9]hearte$', 'r[0-9]stroke$',
+                                            'r[0-9]bmi$', 'r[0-9]smokev$', 'r[0-9]smoken$', 'r[0-9]smokef$', 'r[0-9]drink$', 'r[0-9]vgactx_e$', 'r[0-9]mdactx_e$', 'r[0-9]ltactx_e$',
+                                            'r[0-9]drinkd_e$')))
+
+# 'r[0-9]retemp$', 'r[0-9]psyche$', 'r[0-9]arthre$',
+# 'r[0-9]ipubpen$', 'r[0-9]itearn$', 'h[0-9]atotf$', 
+
+#colnames(impVars)
+ncol(impVars)
+
+# Assign impossible bmi values as missing (values with BMI < 10. Only happens in wave 8, 4 cases)
+impVars$r8bmi[impVars$r8bmi < 10] <- NA
+
+# Run the imputation
+# Tolerance had to be set to low as I kept getting the error:
+# Error in solve.default(xtx + diag(pen)) : system is computationally singular: reciprocal condition number = 4.00027e-17 (number changes when different vars are included)
+# Removed a number of variables also to try and get around this error, as it is saying that 1 or more of the variables are linearly dependant (or so small they are treated as zero - unlikely)
+impData <-mice(impVars, m = 5, maxit=5, seed=500, tol=1e-25)
+
+```
+Complete! Had to remove a couple of variables that we would rather have kept but at least it has worked. We can try to include these variables now iteratively and see where we fall down. 
+
+Next steps are to:
+- Check that all the information has actually been imputed in the output dataset 'impData'
+- Compare the distributions of the imputed data to the original data
+- Save a dataset with the newly imputed data
+  - Run this dataset through the FEM to see if it runs, and what difference it has produced
+- Iteratively include more variables in the imputation step, and see where it fails. Try to include as many variables as possible and identify those that break the models (linearly dependant)
+
+```{r}
+
+# Now collect all imputed datasets in long format
+completedData <- complete(impData, 'long')
+
+contVars <- impData %>% select(contains(c('id', 'bmi', 'smokef', 'drinkd_e')))
+
+# Aggregate the data
+a<-aggregate(contVars , by = list(contVars$.id), FUN= mean)
+
+# Remove vars generated in imputation
+colnames(a)
+#final <- a %>% select(-c('Group.1', '.id'))
+
+```
+
+Now try again but combining all variables, not just the continuous vars.
+
+```{r}
+
+# Now collect all imputed datasets in long format
+completedData2 <- complete(impData, 'long')
+
+# Aggregate the data
+a<-aggregate(completedData2 , by = list(completedData2$.id), FUN= mean)
+
+# Remove vars generated in imputation
+colnames(a)
+final <- a %>% select(-c('Group.1', '.id'))
+
+```
+
+
+
+
+
+
 

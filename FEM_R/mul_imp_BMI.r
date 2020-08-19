@@ -10,8 +10,8 @@ require(tidyverse)
 set.seed(500) # Set seed for reproducibility
 
 # Read in the reshaped_data and get a summary
-#H_ELSA_base <- read_dta('H_ELSA_pre_reshape.dta')
-H_ELSA_base <- read_dta('H_ELSA_f_2002-2016.dta')
+H_ELSA_base <- read_dta('H_ELSA_pre_reshape.dta')
+#H_ELSA_base <- read_dta('H_ELSA_f_2002-2016.dta')
 summary(H_ELSA_base)
 
 # Select only the vars we want to impute, plus those to use in the imputation
@@ -30,7 +30,7 @@ completedData <- complete(impData, 'long')
 # Extract only bmi vars
 bmiVars <- completedData %>% select(contains(c('id', 'bmi')))
 
-# Aggregate the data by 
+# Aggregate the data
 a<-aggregate(bmiVars , by = list(bmiVars$.id),FUN= mean)
 
 # Remove vars generated in imputation
