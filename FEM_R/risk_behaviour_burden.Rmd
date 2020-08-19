@@ -48,6 +48,31 @@ ggplot(cohort, aes(x=age, y=p_cancre_all)) +
 
 ```
 
+# Baseline plots (Population)
+
+```{r}
+
+pop <- read_dta('output/ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+# Plot Average age at death
+ggplot(pop, aes(x=year, y=d_age_all)) +
+        geom_line(col='black', size=0.3) +
+        labs(title='Average Age at Death over Time', y='Average age at death', x='Year')
+# Smoking variables and chronic diseases
+ggplot(pop, aes(x=year, y=n_smoke_stop_all)) +
+        geom_line(col='black', size=0.3) +
+        labs(title='Smoke Stop', y='# Stopped Smoking', x='Age')
+ggplot(pop, aes(x=year, y=p_smoken_all)) +
+        geom_line(col='black', size=0.3) +
+        labs(title='Prevalence of Smoking by Age', y='Prevalence of Smoking', x='Age')
+ggplot(pop, aes(x=year, y=p_lunge_all)) +
+        geom_line(col='black', size=0.3) +
+        labs(title='Prevalence of Lung Disease by Age', y='Prevalence of Lung Disease', x='Age')
+ggplot(pop, aes(x=year, y=p_cancre_all)) +
+        geom_line(col='black', size=0.3) +
+        labs(title='Prevalence of Cancer by Age', y='Prevalence of Cancer', x='Age')
+
+```
 
 # No Smoking Scenario (Cohort)
 
