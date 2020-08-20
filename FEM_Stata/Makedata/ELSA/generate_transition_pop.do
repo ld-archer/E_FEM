@@ -33,6 +33,11 @@ label var l2age6574 "Min(Max(0, two-year lag age - 63), 73 - 63)"
 gen l2age75p = max(0, l2`age_var' - 73) if l2`age_var' < .
 label var l2age75p "Max(0, two-year lag age - 73)"
 
+* Age sex
+gen male_l2age65l = male * l2age65l
+gen male_l2age6574 = male * l2age6574
+gen male_l2age75p = male * l2age75p
+
 * Age squared
 gen l2agesq = l2`age_var'*l2`age_var'
 

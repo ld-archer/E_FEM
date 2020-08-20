@@ -50,3 +50,50 @@ saveold $outdata/ELSA_stock_base_CV.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_base_CV.dta, replace v(12)
 
 capture log close
+
+
+* Preserve the data so we can create a couple of variants
+preserve
+
+* Now generate non-smoking and non-drinking populations to run the risk assessment scenarios
+* Non-smoking
+replace smoken = 0
+replace l2smoken = 0
+replace smoke_start = 0
+replace l2smoke_start = 0
+replace smoke_stop = 0
+replace l2smoke_stop = 0
+replace smokef = 0
+replace l2smokef = 0
+saveold $outdata/ELSA_stock_base_nosmoke.dta, replace v(12)
+
+* Restore original and do the next one
+restore
+
+* Non-drinking
+replace drink = 0
+replace l2drink = 0
+replace drinkd = 0
+replace l2drinkd = 0
+replace drinkd_stat = 1 /* drinkd_stat == 1 is teetotal */
+replace l2drinkd_stat = 1
+replace drinkd1 = 1
+replace l2drinkd1 = 1
+replace drinkd2 = 0
+replace l2drinkd2 = 0
+replace drinkd3 = 0
+replace l2drinkd3 = 0
+replace drinkd4 = 0
+replace l2drinkd4 = 0
+saveold $outdata/ELSA_stock_base_nodrink.dta, replace v(12)
+
+
+
+
+
+
+
+
+
+
+
