@@ -54,6 +54,10 @@ global dvars male white hsless college
 *** Lagged Age splines
 global lvars_age l2age65l l2age6574 l2age75p
 
+
+* For age and gender interactions
+global lvars_age_sex male_l2age65l male_l2age6574 male_l2age75p
+
 *** Health variables at t-1
 global lvars_hlth l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
 *** Econ vars at t-1
@@ -83,13 +87,13 @@ local lvars_drink l2drink /*l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4*/
 *** Now specify the transition models ***
 
 *** For Mortality
-*global allvars_died $dvars $lvars_age /*$lvars_hlth /*$lvars_econ $bmivars*/ `lvars_drink' `lvars_exercise' l2smoken l2smokev*/
-*global allvars_died $dvars $lvars_age l2cancre l2diabe l2hibpe l2hearte l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2logbmi
-global allvars_died male hsless college $lvars_age 
+*global allvars_died $dvars $lvars_age $lvars_hlth /*$lvars_econ `lvars_exercise'*/ $bmivars `lvars_drink'  l2smoken l2smokev
+global allvars_died $dvars $lvars_age l2cancre l2diabe l2hibpe l2hearte l2lunge l2stroke l2adl1 l2adl2 l2adl3p /*l2logbmi*/
+*global allvars_died male $lvars_age 
 
 
 *** Chronic Diseases
-global allvars_cancre       $dvars $lvars_age /*$bmivars /*`lvars_smoke'*/ `lvars_drink' l2smokev l2smoken*/
+global allvars_cancre       $dvars $lvars_age /*`lvars_smoke' $bmivars `lvars_drink'*/ l2smokev l2smoken
 global allvars_diabe        $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2psyche /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors*/
 global allvars_hearte       $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors*/
 global allvars_hibpe        $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure*/
