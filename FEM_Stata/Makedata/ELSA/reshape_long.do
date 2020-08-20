@@ -316,6 +316,8 @@ and 9 (non-response, unkown if dead or alive) */
 keep if inlist(iwstat,1,4,5)
 count
 
+tab wave died
+
 * FEM uses hhidpn as the person ID
 gen hhidpn = idauniq
 replace hhid = hhidpn
@@ -457,6 +459,8 @@ replace exstat2 = 0 if exstat != 2
 gen exstat3 = 1 if exstat == 3
 replace exstat3 = 0 if exstat != 3
 
+tab wave died
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
@@ -533,7 +537,7 @@ gen any_iadl = 1 if iadlcount > 0
 replace any_iadl = 0 if iadlcount == 0
 
 * One record missing data for education
-drop if missing(educ)
+*drop if missing(educ)
 * Education doesn't vary over time so can safely replace missing lag with current
 replace l2educ = educ if missing(l2educ) & !missing(educ)
 
@@ -560,7 +564,7 @@ replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
 
 replace drink = l2drink if missing(drink) & !missing(l2drink)
 replace l2drink = drink if missing(l2drink) & !missing(drink)
-drop if missing(drink) /*Only 1 missing case*/
+*drop if missing(drink) /*Only 1 missing case*/
 
 replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
 
@@ -576,5 +580,7 @@ replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
 
 *save ../../../input_data/ELSA_long.dta, replace
 save $outdata/ELSA_long.dta, replace
+
+tab wave died
 
 capture log close

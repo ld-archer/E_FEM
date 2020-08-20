@@ -172,6 +172,10 @@ replace l2asthmae = asthmae if missing(l2asthmae) & !missing(asthmae)
 replace parkine = l2parkine if missing(parkine) & !missing(l2parkine)
 replace l2parkine = parkine if missing(l2parkine) & !missing(parkine)
 
+replace drink = l2drink if missing(drink) & !missing(l2drink)
+replace l2drink = drink if missing(l2drink) & !missing(drink)
+replace l2drink = 0 if missing(l2drink)
+
 replace drinkd = l2drinkd if missing(drinkd) & !missing(l2drinkd)
 replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
 
@@ -186,6 +190,7 @@ replace retemp = 0 if missing(retemp) & age < 65
 replace retemp = 1 if missing(retemp) & age > 65
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
 
+/*
 replace logbmi = l2logbmi if missing(logbmi)
 replace l2logbmi = logbmi if missing(l2logbmi)
 
@@ -196,7 +201,7 @@ summarize l2logbmi
 replace l2logbmi = r(mean) if missing(l2logbmi)
 
 codebook logbmi l2logbmi
-
+*/
 
 * Handle missing lagged exstat vars
 replace l2exstat1 = exstat1 if missing(l2exstat1)
