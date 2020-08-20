@@ -66,4 +66,5 @@ analysis/techdoc_ELSA/*.dta
 FEM_CPP_settings/summary_output_ELSA_*
 
 # R files
+FEM_R/*.nb.html
 .Rhistory
