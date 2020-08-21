@@ -9,7 +9,7 @@ foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkin
     local select_`v' !l2`v' & !died
 }
 
-local select_died !l2died & wave > 1 & wave < 6
+local select_died !l2died & wave > 1 & wave <= 6
 
 * Selection criteria for models with specific requirements
 local select_smoke_start !died & l2smoken == 0
