@@ -86,6 +86,10 @@ ggplot(cohort, aes(x=age, y=n_smoke_stop_all)) +
         geom_line(col='black', size=0.3) +
         geom_line(data=x169, size=0.3, col='red') +
         labs(title='Smoke Stop', y='# Stopped Smoking', x='Age')
+ggplot(cohort, aes(x=age, y=n_smoke_start_all)) +
+        geom_line(col='black', size=0.3) +
+        geom_line(data=x169, size=0.3, col='red') +
+        labs(title='Smoke Start', y='# Started Smoking', x='Age')
 ggplot(cohort, aes(x=age, y=p_smoken_all)) +
         geom_line(col='black', size=0.3) +
         geom_line(data=x169, size=0.3, col='red') +

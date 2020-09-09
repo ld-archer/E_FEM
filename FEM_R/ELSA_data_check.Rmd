@@ -50,7 +50,28 @@ print(' ')
 # Diabetes
 diabe <- H_ELSA_base %>% select(matches('r[0-9]diabe$'))
 apply(diabe, 2, pMiss)
+print(' ')
 
+# Lung Disease
+lunge <- H_ELSA_base %>% select(matches('r[0-9]lunge$'))
+apply(lunge, 2, pMiss)
+print(' ')
+
+# smoken and smokev and smokef
+smoken <- H_ELSA_base %>% select(matches('r[0-9]smoken$'))
+apply(smoken, 2, pMiss)
+print(' ')
+smokev <- H_ELSA_base %>% select(matches('r[0-9]smokev$'))
+apply(smokev, 2, pMiss)
+print(' ')
+smokef <- H_ELSA_base %>% select(matches('r[0-9]smokef$'))
+apply(smokef, 2, pMiss)
+print(' ')
+
+# drink
+drink <- H_ELSA_base %>% select(matches('r[0-9]drink$'))
+apply(drink, 2, pMiss)
+print(' ')
 
 ```
 
