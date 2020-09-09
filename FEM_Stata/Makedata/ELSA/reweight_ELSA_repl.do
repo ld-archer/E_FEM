@@ -1,12 +1,14 @@
 clear all
 
-log using reweight_ELSA_repl.log, replace
-
 quietly include ../../../fem_env.do
 
+local scen : env scen
+
+log using reweight_ELSA_repl_`scen'.log, replace
 
 *use ../../../input_data/ELSA_repl_base.dta, clear
-use $outdata/ELSA_repl_base.dta, clear
+*use $outdata/ELSA_repl_base.dta, clear
+use $outdata/ELSA_repl_`scen'.dta, clear
 
 * Merge the stock population with the projections by sex, age and year
 *merge m:1 male age year using ../../../input_data/pop_projections.dta, keep(matched)
@@ -64,7 +66,18 @@ tab rbyr educ [aw=weight] if inrange(rbyr, 1963, 1982), row
 
 
 *saveold ../../../input_data/ELSA_repl.dta, replace v(12)
-saveold $outdata/ELSA_repl.dta, replace v(12)
+*saveold $outdata/ELSA_repl.dta, replace v(12)
 
+if "`scen'" == "base" {
+	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
+	saveold $outdata/ELSA_repl.dta, replace v(12)
+}
+else if "`scen'" == "base_nosmoke" {
+	*saveold ../../../input_data/ELSA_stock_CV.dta, replace v(12)
+	saveold $outdata/ELSA_repl_nosmoke.dta, replace v(12)
+}
+else if "`scen'" == "base_nodrink" {
+	saveold $outdata/ELSA_repl_nodrink.dta, replace v(12)
+}
 
 capture log close 

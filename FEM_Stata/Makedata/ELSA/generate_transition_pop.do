@@ -35,8 +35,11 @@ label var l2age75p "Max(0, two-year lag age - 73)"
 
 * Age sex
 gen male_l2age65l = male * l2age65l
+label var male_l2age65l "Male and Min(63, two-year lag of age)"
 gen male_l2age6574 = male * l2age6574
+label var male_l2age6574 "Male and Min(Max(0, two-year lag age - 63), 73 - 63)"
 gen male_l2age75p = male * l2age75p
+label var male_l2age75p "Male and Max(0, two-year lag age - 73)"
 
 * Age squared
 gen l2agesq = l2`age_var'*l2`age_var'

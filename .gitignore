@@ -70,3 +70,6 @@ FEM_R/*.nb.html
 .Rhistory
 input_data/.RData
 input_data/*.mids
+
+# hotdeck intermediate data files
+FEM_Stata/Makedata/hotdeck_data/*.dta

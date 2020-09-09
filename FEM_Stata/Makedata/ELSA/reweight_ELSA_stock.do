@@ -9,7 +9,7 @@ log using reweight_ELSA_stock_`scen'.log, replace
 *use $outdata/ELSA_stock_base.dta, clear
 *use ../../../input_data/ELSA_stock_base.dta, clear
 use $outdata/ELSA_stock_`scen'.dta, clear
-use ../../../input_data/ELSA_stock_`scen'.dta, clear
+*use ../../../input_data/ELSA_stock_`scen'.dta, clear
 
 drop if age < 51
 
@@ -38,6 +38,7 @@ forvalues age = 51/`max_age' {
 	}
 }
 
+* Save all the different variants
 if "`scen'" == "base" {
 	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
 	saveold $outdata/ELSA_stock.dta, replace v(12)
@@ -45,6 +46,12 @@ if "`scen'" == "base" {
 else if "`scen'" == "base_CV" {
 	*saveold ../../../input_data/ELSA_stock_CV.dta, replace v(12)
 	saveold $outdata/ELSA_stock_CV.dta, replace v(12)
+}
+else if "`scen'" == "base_nosmoke" {
+	saveold $outdata/ELSA_stock_nosmoke.dta, replace v(12)
+}
+else if "`scen'" == "base_nodrink" {
+	saveold $outdata/ELSA_stock_nodrink.dta, replace v(12)
 }
 
 

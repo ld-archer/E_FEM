@@ -26,10 +26,12 @@ drop if died == 1
 *** KLUDGE ***
 do kludge.do
 
+/*
 foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
     replace `var' = 0 if missing(`var')
     replace l2`var' = 0 if missing(l2`var')
 }
+*/
 
 replace l2age = age - 2 if missing(l2age)
 
@@ -37,6 +39,8 @@ replace l2age = age - 2 if missing(l2age)
 saveold $outdata/ELSA_stock_base.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_base.dta, replace v(12)
 
+* Preserve the data so we can create a couple of variants
+preserve
 
 * merge on transition ID for cross-validation
 merge m:1 idauniq using "$outdata/cross_validation/crossvalidation.dta", keepusing(simulation)
@@ -49,10 +53,9 @@ keep if simulation == 1
 saveold $outdata/ELSA_stock_base_CV.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_base_CV.dta, replace v(12)
 
-capture log close
 
-
-* Preserve the data so we can create a couple of variants
+* Restore and preserve again to generate new pops
+restore
 preserve
 
 * Now generate non-smoking and non-drinking populations to run the risk assessment scenarios
@@ -60,9 +63,7 @@ preserve
 replace smoken = 0
 replace l2smoken = 0
 replace smoke_start = 0
-replace l2smoke_start = 0
 replace smoke_stop = 0
-replace l2smoke_stop = 0
 replace smokef = 0
 replace l2smokef = 0
 saveold $outdata/ELSA_stock_base_nosmoke.dta, replace v(12)
@@ -89,7 +90,7 @@ saveold $outdata/ELSA_stock_base_nodrink.dta, replace v(12)
 
 
 
-
+capture log close
 
 
 

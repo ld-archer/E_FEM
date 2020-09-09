@@ -330,7 +330,8 @@ gen age = agey
 gen year = 2000 + wave*2
 
 * Age is top-coded at 90 in ELSA data. Therefore calculate correct age from birthyear
-replace age = year - rbyr
+*replace age = year - rbyr
+replace age = (year - rbyr) if age >= 90
 
 codebook age year rbyr agey
 
@@ -541,6 +542,7 @@ replace any_iadl = 0 if iadlcount == 0
 * Education doesn't vary over time so can safely replace missing lag with current
 replace l2educ = educ if missing(l2educ) & !missing(educ)
 
+/*
 * Hotdeck drinkd and check for logical inconsistencies
 tab drink drinkd if drink==0
 * Going to hotdeck for the time being
@@ -553,15 +555,6 @@ tab drink drinkd if drink==0
 replace drinkd = 0 if drink==0
 tab drink drinkd
 
-* Handle missing smkstat data
-replace smkstat = l2smkstat if missing(smkstat)
-replace l2smkstat = smkstat if missing(l2smkstat)
-
-gen smoke_start = 1 if l2smoken == 0 & smoken == 1
-replace smoke_start = 0 if l2smoken == 0 & smoken == 0
-gen smoke_stop = 1 if l2smoken == 1 & smoken == 0
-replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
-
 replace drink = l2drink if missing(drink) & !missing(l2drink)
 replace l2drink = drink if missing(l2drink) & !missing(drink)
 *drop if missing(drink) /*Only 1 missing case*/
@@ -572,11 +565,60 @@ replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
 replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat)
 replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat)
 
+*/
+
+* Try to hotdeck all the chronic disease vars
+foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
+    hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
+    use hotdeck_data/`var'_imp1.dta, clear
+}
+
+* Try to handle missing drink and smoking data
+foreach var of varlist drink drinkd smoken smokev exstat {
+    hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
+    use hotdeck_data/`var'_imp1.dta, clear
+}
+
+* Now handle logical accounting with drinking and smoking
+replace drinkd = 0 if drink == 0
+replace smokev = 1 if smoken == 1
+
+* Now replace lag with current if missing lag for all hotdecked vars
+foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
+    replace l2`var' = `var' if missing(l2`var')
+}
+foreach var of varlist drink drinkd smoken smokev exstat {
+    replace l2`var' = `var' if missing(l2`var')
+}
+
+* Handle missing smkstat data
+replace smkstat = l2smkstat if missing(smkstat)
+replace l2smkstat = smkstat if missing(l2smkstat)
+
+* Generate smoke_start and smoke_stop vars
+gen smoke_start = 1 if l2smoken == 0 & smoken == 1
+replace smoke_start = 0 if l2smoken == 0 & smoken == 0
+gen smoke_stop = 1 if l2smoken == 1 & smoken == 0
+replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
+
+
+* Update drinkd_stat after hotdecking
+replace drinkd_stat = 1 if drinkd == 0
+replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
+replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
+replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
+
+replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
+
 * Now handle missing drinkd# data
 replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
 replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
 replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
 replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
+replace l2drinkd1 = l2drinkd_stat==1 if missing(l2drinkd1)
+replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
+replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
+replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
 
 *save ../../../input_data/ELSA_long.dta, replace
 save $outdata/ELSA_long.dta, replace
