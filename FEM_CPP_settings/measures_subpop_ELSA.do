@@ -49,9 +49,7 @@ local measures
 					p_drink		i_drink		n_drink
 					p_drinkd1	p_drinkd2	p_drinkd3	p_drinkd4
 					a_drinkd 	a_drinkd_stat
-					p_mdactx_e	a_mdactx_e  n_mdactx_e
-					p_ltactx_e	a_ltactx_e  n_ltactx_e
-					p_vgactx_e	a_vgactx_e  n_vgactx_e
+					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 			
 										
 ;
@@ -74,4 +72,4 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 5564 6574 65p 7584 85p
+local subpop all m f 5564 6574 65p 7584 85p drinkd1 drinkd2 drinkd3 drinkd4

@@ -122,6 +122,34 @@ forvalues x = 1/`measures_l' {
 			local sel "& college == 1"
 			local samp "College"
 		}
+		else if "`b'" == "drinkd1" {
+			local sel "& drinkd_stat == 1"
+			local samp "Drinkd1"
+		}
+		else if "`b'" == "drinkd2" {
+			local sel "& drinkd_stat == 2"
+			local samp "Drinkd2"
+		}
+		else if "`b'" == "drinkd3" {
+			local sel "& drinkd_stat == 3"
+			local samp "Drinkd3"
+		}
+		else if "`b'" == "drinkd4" {
+			local sel "& drinkd_stat == 4"
+			local samp "Drinkd4"
+		}
+		else if "`b'" == "exstat1" {
+			local sel "& exstat == 1"
+			local samp "exstat1"
+		}
+		else if "`b'" == "exstat2" {
+			local sel "& exstat == 2"
+			local samp "exstat2"
+		}
+		else if "`b'" == "exstat3" {
+			local sel "& exstat == 3"
+			local samp "exstat3"
+		}
 		
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {
