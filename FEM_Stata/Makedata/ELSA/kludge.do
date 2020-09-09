@@ -7,9 +7,11 @@ gen iearnuc = 0
 gen iearnx = 0
 
 * handle missing work vals
-replace work = 0 if missing(work)
+replace work = 0 if missing(work) & age > 65
+replace work = 1 if missing(work) & age < 65
 replace l2work = work if missing(l2work)
-replace l2work = 0 if missing(l2work)
+replace l2work = 0 if missing(l2work) & age > 67
+replace l2work = 1 if missing(l2work) & age > 67
 
 * For marital status
 gen married = 0
@@ -83,11 +85,11 @@ drop if missing(age)
 gen rbmonth = 7
 
 * Smoking vars
-replace smoken = 0 if missing(smoken)
-replace l2smoken = 0 if missing(l2smoken)
+*replace smoken = 0 if missing(smoken)
+*replace l2smoken = 0 if missing(l2smoken)
 
-replace smokev = 0 if missing(smokev)
-replace l2smokev = 0 if missing(l2smokev)
+*replace smokev = 0 if missing(smokev)
+*replace l2smokev = 0 if missing(l2smokev)
 
 * Medicare vars
 gen mcare_pta = 0
@@ -98,7 +100,7 @@ tab smkstat, missing
 tab l2smkstat, missing
 
 * Drop cases if missing smkstat vars
-drop if missing(smkstat) & missing(l2smkstat)
+*drop if missing(smkstat) & missing(l2smkstat)
 
 * Impute missing values for smoke_start and smoke_stop as 0 (didn't stop or start smoking)
 * Important to do this here and not in reshape_long.do
@@ -120,9 +122,6 @@ replace smkstat = 3 if smoke_start == 1 & smoken == 1
 replace smoken = 0 if smoke_stop == 1 & smoken == 1
 replace smkstat = 2 if smoke_stop == 1 & smoken == 0 
 */
-
-tab smkstat, missing
-tab l2smkstat, missing
 
 * Handle health limits work missing values
 * If missing, first try to infer from lagged value (is this a good idea?)
@@ -146,7 +145,7 @@ replace l2asthmae = asthmae if missing(l2asthmae)
 * Handle missing lag parkinson data, same as above
 replace l2parkine = parkine if missing(l2parkine)
 
-
+/*
 * Handle missing vgactx_e && mdactx_e data **THIS IS BAD!!!
 replace l2vgactx_e = vgactx_e if missing(l2vgactx_e) & !missing(vgactx_e)
 replace vgactx_e = l2vgactx_e if missing(vgactx_e) & !missing(l2vgactx_e)
@@ -157,6 +156,7 @@ replace vgactx_e = 5 if missing(vgactx_e)
 replace l2vgactx_e = 5 if missing(l2vgactx_e)
 replace mdactx_e = 5 if missing(mdactx_e)
 replace l2mdactx_e = 5 if missing(l2mdactx_e)
+*/
 
 * Handle missing atotf data
 replace atotf = l2atotf if missing(atotf) & !missing(l2atotf)
@@ -172,17 +172,17 @@ replace l2asthmae = asthmae if missing(l2asthmae) & !missing(asthmae)
 replace parkine = l2parkine if missing(parkine) & !missing(l2parkine)
 replace l2parkine = parkine if missing(l2parkine) & !missing(parkine)
 
-replace drink = l2drink if missing(drink) & !missing(l2drink)
-replace l2drink = drink if missing(l2drink) & !missing(drink)
-replace l2drink = 0 if missing(l2drink)
+*replace drink = l2drink if missing(drink) & !missing(l2drink)
+*replace l2drink = drink if missing(l2drink) & !missing(drink)
+*replace l2drink = 0 if missing(l2drink)
 
-replace drinkd = l2drinkd if missing(drinkd) & !missing(l2drinkd)
-replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
+*replace drinkd = l2drinkd if missing(drinkd) & !missing(l2drinkd)
+*replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
 
-replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat) & !missing(l2drinkd_stat)
-replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
-replace drinkd_stat = 2 if missing(drinkd_stat) /* Replace drinkd_stat with light drinker if still missing */
-replace l2drinkd_stat = 2 if missing(l2drinkd_stat)
+*replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat) & !missing(l2drinkd_stat)
+*replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
+*replace drinkd_stat = 2 if missing(drinkd_stat) /* Replace drinkd_stat with light drinker if still missing */
+*replace l2drinkd_stat = 2 if missing(l2drinkd_stat)
 
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
 replace retemp = l2retemp if missing(retemp) & !missing(l2retemp)
@@ -207,5 +207,6 @@ codebook logbmi l2logbmi
 replace l2exstat1 = exstat1 if missing(l2exstat1)
 replace l2exstat2 = exstat2 if missing(l2exstat2)
 replace l2exstat3 = exstat3 if missing(l2exstat3)
+
 
 

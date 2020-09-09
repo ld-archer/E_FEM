@@ -41,13 +41,16 @@ ELSA: $(DATADIR)/H_ELSA_f_2002-2016.dta
 
 populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
+$(DATADIR)/ELSA_long_imputed.dta: $(MAKEDATA)/reshape_long_new.do $(DATADIR)/H_ELSA_f_2002-2016.dta 
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long_new.do
+
 $(DATADIR)/H_ELSA_f_2002-2016.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 	
-$(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do $(DATADIR)/H_ELSA_f_2002-2016.dta
+$(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
 
-$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_f_2002-2016.dta
+$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 $(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
@@ -73,16 +76,28 @@ $(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)
 
 ### Reweighting
 
-reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta
+reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta $(DATADIR)/ELSA_stock_nosmoke.dta $(DATADIR)/ELSA_stock_nodrink.dta $(DATADIR)/ELSA_repl_nosmoke.dta $(DATADIR)/ELSA_repl_nodrink.dta
 
-$(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta
+$(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
 
-$(DATADIR)/ELSA_stock_CV.dta: $(DATADIR)/ELSA_stock_base_CV.dta $(DATADIR)/pop_projections.dta
+$(DATADIR)/ELSA_stock_CV.dta: $(DATADIR)/ELSA_stock_base_CV.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_CV $(STATA) reweight_ELSA_stock.do
 
-$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta
+$(DATADIR)/ELSA_stock_nosmoke.dta: $(DATADIR)/ELSA_stock_base_nosmoke.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nosmoke $(STATA) reweight_ELSA_stock.do
+
+$(DATADIR)/ELSA_stock_nodrink.dta: $(DATADIR)/ELSA_stock_base_nodrink.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nodrink $(STATA) reweight_ELSA_stock.do
+
+$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
+
+$(DATADIR)/ELSA_repl_nosmoke.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nosmoke $(STATA) reweight_ELSA_repl.do
+
+$(DATADIR)/ELSA_repl_nodrink.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nodrink $(STATA) reweight_ELSA_repl.do
 
 
 ### Transitions
