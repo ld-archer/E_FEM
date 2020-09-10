@@ -79,7 +79,7 @@ local age_var agey
 * Exercise vars
 local lvars_exercise l2exstat1 l2exstat2 /*l2exstat3*/
 * Smoking
-local lvars_smoke l2smokev l2smoken l2smokef
+local lvars_smoke l2smokev l2smoken
 * Drinking
 local lvars_drink l2drink l2drinkd2 l2drinkd3 l2drinkd4
 
