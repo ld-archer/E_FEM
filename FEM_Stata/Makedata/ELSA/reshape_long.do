@@ -198,22 +198,7 @@ foreach var in
     } ;
 #d cr
 
-save $outdata/H_ELSA_pre_reshape.dta, replace
-
 /*
-COMMENTING OUT THE IMPUTATION STEP FOR NOW 
-Going to try replacing missing BMI data with values taken from the imputation step in R
-* Replace impossible bmi values found in wave 8 with missing ('.')
-*replace bmi2 = . if bmi2 < 10
-*replace bmi4 = . if bmi4 < 10
-*replace bmi6 = . if bmi6 < 10
-*replace bmi8 = . if bmi8 < 10
-* Run multiple imputation script
-*do multiple_imputation_attempt6.do `seed' `num_imputations' `num_knn'
-* Still missing a single record for bmi2,4,6,8; drop it
-*drop if missing(bmi2)
-*/
-
 * Remove impossible BMI values before merging
 replace bmi2 = . if bmi2 < 10
 replace bmi4 = . if bmi4 < 10
@@ -228,6 +213,7 @@ replace bmi2 = bmi2_imp if missing(bmi2)
 replace bmi4 = bmi4_imp if missing(bmi4)
 replace bmi6 = bmi6_imp if missing(bmi6)
 replace bmi8 = bmi8_imp if missing(bmi8)
+*/
 
 
 * Reshape data from wide to long
@@ -303,20 +289,15 @@ gen male = (ragender == 1) if !missing(ragender)
 label variable male "Male"
 
 * Label white
-gen white = raracem == 1
+gen white = (raracem == 1) if !missing(raracem)
 label var white "White"
 
 * Find if dead with iwstat var
 gen died = (iwstat == 5) if !missing(iwstat)
 * Keep only those alive or recently deceased
-count
-tab iwstat, m
 /* Dropping the 0 (inap.? Unknown code) 6 (previously deceased), 7 (dropped from sample) 
 and 9 (non-response, unkown if dead or alive) */
 keep if inlist(iwstat,1,4,5)
-count
-
-tab wave died
 
 * FEM uses hhidpn as the person ID
 gen hhidpn = idauniq
@@ -332,8 +313,6 @@ gen year = 2000 + wave*2
 * Age is top-coded at 90 in ELSA data. Therefore calculate correct age from birthyear
 *replace age = year - rbyr
 replace age = (year - rbyr) if age >= 90
-
-codebook age year rbyr agey
 
 * No birth month in ELSA data (unlike HRS, KLoSA) so cannot calculate exact age
 * Therefore keep agey as age variable (in years)
@@ -368,13 +347,7 @@ gen iadl2p = iadlstat==3 if !missing(iadlstat)
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
 replace bmi = bmi_ipolate if missing(bmi)
 
-** Now to add some noise to the BMI imputation **
-* generate a random number between -1 & 1 for waves 1,3,5,7
-*gen rand = runiform(-3, 3) if wave==1 | wave==3 | wave==5 | wave==7
-* Add the random number to the interpolated BMI
-*replace bmi = bmi + rand if !missing(rand)
-
-* Trying another method of adding noise to BMI imputation
+** Now add some noise to the BMI interpolation **
 * Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
 gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
 replace bmi = bmi + rand if !missing(rand)
@@ -383,7 +356,7 @@ replace bmi = bmi + rand if !missing(rand)
 gen logbmi = log(bmi) if !missing(bmi)
 
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
-count if smokev==0 & smoken==1
+*count if smokev==0 & smoken==1
 replace smokev = 1 if smoken==1 & smokev==0
 
 *Categorical smoking variable
@@ -395,13 +368,14 @@ label values smkstat smkstat
 
 * Calculate drinkwn from drinkn for waves 2 and 3
 
-count if missing(drinkd)
+*count if missing(drinkd)
 * Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
 recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
 label define drinkd_stat 1 "Teetotal" 2 "Light drinker" 3 "Moderate drinker" 4 "Heavy drinker"
 label values drinkd_stat drinkd_stat
-count if missing(drinkd_stat)
+*count if missing(drinkd_stat)
 
+* No create some dummy categorical vars from drinkd_stat for estimating other transition models
 gen drinkd1 = drinkd_stat==1 if !missing(drinkd_stat)
 gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
 gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
@@ -417,40 +391,11 @@ label variable drinkd4 "Heavy Drinker"
 *   1 - No exercise
 *   2 - Light exercise 1+ times per week
 *   3 - Moderate/Vigorous exercise 1+ times per week
-/*
-recode ltactx_e (4/5 = 1) (2/3 = 2), gen(exstat)
-replace exstat = 2 if mdactx_e == 4/5
-replace exstat = 3 if mdactx_e == 2/3
-replace exstat = 2 if vgactx_e == 4/5
-replace exstat = 3 if vgactx_e == 2/3
-*/
-
-/*
-* Second go at this
-gen exstat = 1 if ltactx_e == 4
-replace exstat = 1 if ltactx_e == 5
-replace exstat = 1 if mdactx_e == 4
-replace exstat = 1 if mdactx_e == 5
-replace exstat = 1 if vgactx_e == 4
-replace exstat = 1 if vgactx_e == 5
-
-replace exstat = 2 if ltactx_e == 2
-replace exstat = 2 if ltactx_e == 3
-
-replace exstat = 3 if mdactx_e == 2
-replace exstat = 3 if mdactx_e == 3
-replace exstat = 3 if vgactx_e == 2
-replace exstat = 3 if vgactx_e == 3
-*/
-
 * Third try now
 gen exstat = .
 replace exstat = 1 if (ltactx_e == 4 | ltactx_e == 5) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
 replace exstat = 2 if (ltactx_e == 2 | ltactx_e == 3) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
 replace exstat = 3 if (mdactx_e == 2 | mdactx_e == 3) | (vgactx_e == 2 | vgactx_e == 3)
-
-*replace exstat = 2 if missing(exstat) & (ltactx_e == 2 | ltactx_e == 3)
-*replace exstat = 3 if missing(exstat) & (mdactx_e == 2 | mdactx_e == 3) 
 
 * Now dummy categorical vars for including in transition models
 gen exstat1 = 1 if exstat == 1
@@ -459,8 +404,6 @@ gen exstat2 = 1 if exstat == 2
 replace exstat2 = 0 if exstat != 2
 gen exstat3 = 1 if exstat == 3
 replace exstat3 = 0 if exstat != 3
-
-tab wave died
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
@@ -526,6 +469,12 @@ foreach var in
 ;
 #d cr
 
+* Generate smoke_start and smoke_stop vars
+gen smoke_start = 1 if l2smoken == 0 & smoken == 1
+replace smoke_start = 0 if l2smoken == 0 & smoken == 0
+gen smoke_stop = 1 if l2smoken == 1 & smoken == 0
+replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
+
 *** Imputation Section ***
 * Be aware of what this section is doing, particularly for missing cases!
 * We want to assess how many people are missing and being assigned mean value on
@@ -542,87 +491,7 @@ replace any_iadl = 0 if iadlcount == 0
 * Education doesn't vary over time so can safely replace missing lag with current
 replace l2educ = educ if missing(l2educ) & !missing(educ)
 
-/*
-* Hotdeck drinkd and check for logical inconsistencies
-tab drink drinkd if drink==0
-* Going to hotdeck for the time being
-replace drinkd = . if missing(drinkd)
-hotdeck drinkd using ELSA_drinkd_imp, store seed(`seed') keep(_all) impute(1)
-* Load in imputed dataset
-use ELSA_drinkd_imp1.dta, clear
-tab drink drinkd if drink==0
-* Now handle logical inconsistencies from hotdecking
-replace drinkd = 0 if drink==0
-tab drink drinkd
-
-replace drink = l2drink if missing(drink) & !missing(l2drink)
-replace l2drink = drink if missing(l2drink) & !missing(drink)
-*drop if missing(drink) /*Only 1 missing case*/
-
-replace l2drinkd = drinkd if missing(l2drinkd) & !missing(drinkd)
-
-* Handle missing drinkd_stat data
-replace drinkd_stat = l2drinkd_stat if missing(drinkd_stat)
-replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat)
-
-*/
-
-* Try to hotdeck all the chronic disease vars
-foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
-    hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
-    use hotdeck_data/`var'_imp1.dta, clear
-}
-
-* Try to handle missing drink and smoking data
-foreach var of varlist drink drinkd smoken smokev exstat {
-    hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
-    use hotdeck_data/`var'_imp1.dta, clear
-}
-
-* Now handle logical accounting with drinking and smoking
-replace drinkd = 0 if drink == 0
-replace smokev = 1 if smoken == 1
-
-* Now replace lag with current if missing lag for all hotdecked vars
-foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
-    replace l2`var' = `var' if missing(l2`var')
-}
-foreach var of varlist drink drinkd smoken smokev exstat {
-    replace l2`var' = `var' if missing(l2`var')
-}
-
-* Handle missing smkstat data
-replace smkstat = l2smkstat if missing(smkstat)
-replace l2smkstat = smkstat if missing(l2smkstat)
-
-* Generate smoke_start and smoke_stop vars
-gen smoke_start = 1 if l2smoken == 0 & smoken == 1
-replace smoke_start = 0 if l2smoken == 0 & smoken == 0
-gen smoke_stop = 1 if l2smoken == 1 & smoken == 0
-replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
-
-
-* Update drinkd_stat after hotdecking
-replace drinkd_stat = 1 if drinkd == 0
-replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
-replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
-replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
-
-replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
-
-* Now handle missing drinkd# data
-replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
-replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
-replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
-replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
-replace l2drinkd1 = l2drinkd_stat==1 if missing(l2drinkd1)
-replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
-replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
-replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
-
 *save ../../../input_data/ELSA_long.dta, replace
 save $outdata/ELSA_long.dta, replace
-
-tab wave died
 
 capture log close
