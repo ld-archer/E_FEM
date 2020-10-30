@@ -310,8 +310,9 @@ gen age = agey
 * Year variable derived from wave (wave 1: 2002-3, wave 2: 2004-5...)
 gen year = 2000 + wave*2
 
-* Age is top-coded at 90 in ELSA data. Therefore calculate correct age from birthyear
+* Age is top-coded at 90 in ELSA data. Therefore calculate correct age from birthyear (also calculate if missing age but not birth year)
 *replace age = year - rbyr
+replace age = (year - rbyr) if missing(age) & !missing(rbyr)
 replace age = (year - rbyr) if age >= 90
 
 * No birth month in ELSA data (unlike HRS, KLoSA) so cannot calculate exact age
@@ -354,6 +355,10 @@ replace bmi = bmi + rand if !missing(rand)
 
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
+
+* Generate dummy for obesity
+* This is already generated in generate_transition_pop.do. TODO: change gen_trans_pop.do to replace instead of generate
+gen obese = (bmi > 30.0) if !missing(bmi)
 
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
 *count if smokev==0 & smoken==1
@@ -463,6 +468,7 @@ foreach var in
     exstat1
     exstat2
     exstat3
+    obese
     {;
         gen l2`var' = L.`var';
     };
@@ -485,6 +491,9 @@ gen any_adl = 1 if adlcount > 0
 replace any_adl = 0 if adlcount == 0
 gen any_iadl = 1 if iadlcount > 0
 replace any_iadl = 0 if iadlcount == 0
+
+* Generate a missing education variable
+
 
 * One record missing data for education
 *drop if missing(educ)

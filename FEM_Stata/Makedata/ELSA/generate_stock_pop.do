@@ -23,10 +23,12 @@ codebook l2smkstat
 * Drop the deceased - TO DO: Fix this, as we want deceased in first year of simulation
 drop if died == 1
 
+replace l2age = age - 2 if missing(l2age)
+
+saveold $outdata/ELSA_stock_base_noImpute.dta, replace v(12)
+
 *** KLUDGE ***
 do kludge.do
-
-replace l2age = age - 2 if missing(l2age)
 
 * Save the file
 saveold $outdata/ELSA_stock_base.dta, replace v(12)

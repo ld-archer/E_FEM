@@ -213,3 +213,4 @@ replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
 replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
 replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
 
+* Handle missing education
