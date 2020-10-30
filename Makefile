@@ -76,7 +76,7 @@ $(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)
 
 ### Reweighting
 
-reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta $(DATADIR)/ELSA_stock_nosmoke.dta $(DATADIR)/ELSA_stock_nodrink.dta $(DATADIR)/ELSA_repl_nosmoke.dta $(DATADIR)/ELSA_repl_nodrink.dta
+reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta $(DATADIR)/ELSA_stock_nosmoke.dta $(DATADIR)/ELSA_stock_nodrink.dta $(DATADIR)/ELSA_repl_nosmoke.dta $(DATADIR)/ELSA_repl_nodrink.dta $(DATADIR)/ELSA_stock_noImpute.dta
 
 $(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
@@ -98,6 +98,9 @@ $(DATADIR)/ELSA_repl_nosmoke.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_p
 
 $(DATADIR)/ELSA_repl_nodrink.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nodrink $(STATA) reweight_ELSA_repl.do
+
+$(DATADIR)/ELSA_stock_noImpute.dta: $(DATADIR)/ELSA_stock_base_noImpute.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_noImpute $(STATA) reweight_ELSA_stock.do
 
 
 ### Transitions
@@ -175,7 +178,13 @@ BMI_valid2:
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate2.do
 
 Ttests: 
-	cd $(ANALYSIS) $(STATA) crossvalidation_ELSA.do
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ $(STATA) crossvalidation_ELSA.do
+
+
+### 
+
+detailed_append:
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/detailed_output $(STATA) detailed_output_append.do
 
 
 ### Housekeeping and cleaning
@@ -185,6 +194,7 @@ clean: clean_log clean_out
 clean_log:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
+	rm -f FEM_Stata/Estimation/*.log
 
 clean_out:
 	rm -f output/*/*.dta
