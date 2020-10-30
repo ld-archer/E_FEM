@@ -18,7 +18,7 @@ use $outdata/ELSA_stock_base.dta, replace
 *use $outdata/ELSA_long.dta, replace
 
 
-* Keep respondents in wave 4
+* Keep respondents in wave 6
 keep if inlist(year, 2010, 2012, 2014)
 keep if inlist(age, 51, 52)
 * Fix birth year variable for additional input years
@@ -26,7 +26,7 @@ replace rbyr = rbyr + 2 if year == 2010
 replace rbyr = rbyr - 2 if year == 2014
 
 /*
-* Keep respondents in wave 4
+* Keep respondents in wave 6
 keep if year == 2012
 keep if inlist(age, 51, 52)
 */

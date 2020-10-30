@@ -77,6 +77,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::adl2]                 = VarInfo("adl2", "ADL 2 [0, 1]", VarTypes::Boolean, Vars::adlstat, 3);
 	info[Vars::adl3p]                = VarInfo("adl3p", "ADL 3 or more [0, 1]", VarTypes::Boolean, Vars::adlstat, 4);
 	info[Vars::adlstat]                 = VarInfo("adlstat", "ADL Status", VarTypes::Short, true);
+	info[Vars::anyadl]					= VarInfo("anyadl", "Whether simulant has any difficulties with ADLs", VarTypes::Boolean);
+	info[Vars::anyiadl]					= VarInfo("anyiadl", "Whether simulant has any difficulties with IADLs", VarTypes::Boolean);
 	info[Vars::admin_ssi]            = VarInfo("admin_ssi", "SSI Claiming Adjustment", VarTypes::Double);
 	info[Vars::afibe]                = VarInfo("afibe", "Non-valvular AFib", VarTypes::Boolean);
 	info[Vars::age]                  = VarInfo("age", "Exact age on July 1st, (year - rbyr) + (7-rbmonth)/12", VarTypes::Float);

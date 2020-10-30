@@ -72,4 +72,8 @@ input_data/.RData
 input_data/*.mids
 
 # hotdeck intermediate data files
-FEM_Stata/Makedata/hotdeck_data/*.dta
+FEM_Stata/Makedata/ELSA/hotdeck_data/*.dta
+FEM_Stata/Makedata/ELSA/hotdeck_data/
+
+# Some scripts for detailed_output
+input_data/detailed_output/*

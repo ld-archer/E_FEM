@@ -45,7 +45,7 @@ label var male_l2age75p "Male and Max(0, two-year lag age - 73)"
 gen l2agesq = l2`age_var'*l2`age_var'
 
 * BMI dummies for obese (BMI > 25.0) or not
-gen l2obese = (l2bmi > 25.0) if !missing(l2bmi)
+replace l2obese = (l2bmi > 30.0) if !missing(l2bmi)
 
 * Label the variables to use for technical appendix
 label variable male "Male"
