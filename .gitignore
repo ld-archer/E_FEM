@@ -45,6 +45,10 @@ FEM_Stata/Makedata/ELSA/*.dta
 !input_data/psid_incoming_cut_points.dta
 !input_data/psid_incoming_means.dta
 !input_data/psid_incoming_vcmatrix.dta
+input_data/*.csv
+!input_data/ukevo.xls
+input_data/detailed_output/*
+input_data/detailed_output/
 
 # Cross validation data
 analysis/techdoc_ELSA/ELSA_2002_2016.dta
@@ -72,4 +76,9 @@ input_data/.RData
 input_data/*.mids
 
 # hotdeck intermediate data files
-FEM_Stata/Makedata/hotdeck_data/*.dta
+FEM_Stata/Makedata/ELSA/hotdeck_data/*.dta
+FEM_Stata/Makedata/ELSA/hotdeck_data/
+
+
+
+
