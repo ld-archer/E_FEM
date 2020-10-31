@@ -150,7 +150,23 @@ forvalues x = 1/`measures_l' {
 			local sel "& exstat == 3"
 			local samp "exstat3"
 		}
-		
+		else if "`b'" == "obese" {
+			local sel "& obese == 1"
+			local samp "obese"
+		}
+		else if "`b'" == "notObese" {
+			local sel "& obese == 0"
+			local samp "notObese"
+		}
+		else if "`b'" == "anyadl" {
+			local sel "& anyadl == 1"
+			local samp "anyadl"
+		}
+		else if "`b'" == "noadl" {
+			local sel "& anyadl == 0"
+			local samp "noadl"
+		}
+
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {
 			file write sumfile "`a'_`b',Prevalence of `vname': Sample= `samp',`vname',mean,1,weight,l2died==0`sel'" _n

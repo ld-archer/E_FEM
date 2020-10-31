@@ -344,6 +344,24 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 					// USE LAG VARIABLE
 				}
 			}
+
+			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correclty
+			if (elsa_data) {
+				// If no ADLs last wave...
+				if (person->get(Vars::l2adlstat) == 1) {
+					// ... and ADLs in current wave (1 or more) ...
+					if (person->get(Vars::adlstat) > 1) {
+						// ... set anyadl to true
+						person->set(Vars::anyadl, 1.0);
+					}
+				}
+				// Now do the same for IADLs
+				if (person->get(Vars::l2iadlstat) == 1) {
+					if (person->get(Vars::iadlstat) > 1) {
+						person->set(Vars::anyiadl, 1.0);
+					}
+				}
+			}
 					
 			// Do partner/spouse mortality for PSID simulation
 			if(psid_data && person->get(Vars::l2mstat_new) != 1) {

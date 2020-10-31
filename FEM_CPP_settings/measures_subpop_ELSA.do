@@ -33,6 +33,8 @@ local measures
 						p_adl1	  p_adl2    p_adl3p
 						p_iadl1   p_iadl2p
 						a_adlstat a_iadlstat
+						a_anyadl  n_anyadl  p_anyadl
+						a_anyiadl n_anyiadl p_anyiadl
 						a_age     d_age
 						p_smoken  i_smoken  n_smoken
 						p_smokev  i_smokev  n_smokev
@@ -72,4 +74,4 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 5564 6574 65p 7584 85p drinkd1 drinkd2 drinkd3 drinkd4
+local subpop all m f 5564 6574 65p 7584 85p obese notObese anyadl noadl

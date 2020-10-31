@@ -12,6 +12,8 @@ namespace Vars
 		adl2,                     ///< ADL 2 [0, 1], stored as Boolean
 		adl3p,                    ///< ADL 3 or more [0, 1], stored as Boolean
 		adlstat,                     ///< ADL status (1=0 ADLS, 2=1 ADL, 3=2 ADLs, 4=3+ ADLs)
+		anyadl,						///< Whether simulant has any difficulties with ADLs
+		anyiadl,					///< Whether simulant has any difficulties with IADLs
 		admin_ssi,                ///< SSI Claiming Adjustment, Stored as Double
 		afibe,			  ///< Non-valvular AFib [0, 1]
 		age,                      ///< Exact age on July 1st, (year - rbyr) + (7-rbmonth)/12, stored as Double

@@ -1,0 +1,514 @@
+---
+title: "Visualisations for FEM IJM paper 1"
+output: html_notebook
+---
+
+This notebook will contain all the visualisations for the first paper on the FEM, to be submitted to the International Journal of Microsimulation.
+
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(reshape2)
+require(ggplot2)
+require(gridExtra)
+
+```
+
+Setup is complete, working directory is set as the output dir, and the necessary packages have been loaded.
+
+# Disability Prevalence
+
+```{r}
+
+# This code block will handle calculating the proportion of respondents that are disabled at baseline and at the year 2040 (28 years, 14 waves into simulation)
+# We will calculate this information for each repetition so we can produce confidence intervals or some other extra information
+
+# First read in the output datasets (by rep)
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_by_rep.dta')
+cancre100 <- read_dta('ELSA_pcancre100/ELSA_pcancre100_by_rep.dta')
+
+```
+
+Below we define a function to get the prevalence of anyadl both at 2012 and 2040. The prevalence of anyadl will always be the same in 2012, as this information is produced straight from the stock population which is the same for every scenario. The 2040 prevalence will change however, so we should report the relative change via a graph or table (or both). As we have the XXXXX_by_rep.dta files also, we can calculate the confidence intervals for the 2040 prevalence (the 2012 confint's will always be 0).
+
+```{r}
+
+get_disability_prev <- function(data) {
+  
+  # Select only the columns we want, and filter to have a separate dataset for 2012 and 2040
+  adl <- select(data, year, rep, a_anyadl_all)
+  adl_2012 <- filter(adl, year == 2012)
+  adl_2040 <- filter(adl, year == 2040)
+  
+  # Calculate mean, standard deviation and size of the samples for later
+  m_12 <- mean(adl_2012$a_anyadl_all)
+  sd_12 <- sd(adl_2012$a_anyadl_all)
+  n_12 <- length(adl_2012$a_anyadl_all)
+  
+  m_40 <- mean(adl_2040$a_anyadl_all)
+  sd_40 <- sd(adl_2040$a_anyadl_all)
+  n_40 <- length(adl_2040$a_anyadl_all)
+  
+  # Now calculate the error and confidence intervals for both 2012 and then 2040
+  error_12 <- qnorm(0.975) * sd_12 / sqrt(n_12)
+  left_12 <- m_12 - error_12
+  right_12 <- m_12 + error_12
+  
+  error_40 <- qnorm(0.975) * sd_40 / sqrt(n_40)
+  left_40 <- m_40 - error_40
+  right_40 <- m_40 + error_40
+  
+  # Collect information into vectors to add to a dataframe
+  avg <- c(m_12, m_40)
+  error <- c(error_12, error_40)
+  left <- c(left_12, left_40)
+  right <- c(right_12, right_40)
+  
+  df <- data.frame(avg, error, left, right)
+  
+  rownames(df) <- c('2012', '2040')
+  
+  return(df)
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_by_rep.dta')
+cancre100 <- read_dta('ELSA_pcancre100/ELSA_pcancre100_by_rep.dta')
+diabe100 <- read_dta('ELSA_pdiabe100/ELSA_pdiabe100_by_rep.dta')
+hearte100 <- read_dta('ELSA_phearte100/ELSA_phearte100_by_rep.dta')
+
+df_base <- get_disability_prev(baseline)
+df_cancre100 <- get_disability_prev(cancre100)
+df_diabe100 <- get_disability_prev(diabe100)
+df_hearte100 <- get_disability_prev(hearte100)
+
+```
+
+```{r}
+
+# Now collect all the information into a single dataset for visualisation
+# Columns are going to be: prev_2012, error_2012, prev_2040, error_2040
+prev_2012 <- c(df_base$avg[1], df_cancre100$avg[1], df_diabe100$avg[1], df_hearte100$avg[1])
+prev_2040 <- c(df_base$avg[2], df_cancre100$avg[2], df_diabe100$avg[2], df_hearte100$avg[2])
+error_2012 <- c(df_base$error[1], df_cancre100$error[1], df_diabe100$error[1], df_hearte100$error[1])
+error_2040 <- c(df_base$error[2], df_cancre100$error[2], df_diabe100$error[2], df_hearte100$error[2])
+
+full_df <- data.frame(prev_2012, error_2012, prev_2040, error_2040)
+full_df$scenario <- c('Baseline', 'Cancer-100', 'Diabetes-100', 'Heart Disease-100')
+
+```
+
+Going to have another go at the get_disability_prev() function to get the output in a better format. We don't need to report the 2012 prevalence or error as it will always be the same. Instead, have 1 function to calculate the 2040 prevalence, then another function that calculates the 2012 and finds the difference between the 2.
+
+```{r}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_by_rep.dta')
+cancre100 <- read_dta('ELSA_pcancre100/ELSA_pcancre100_by_rep.dta')
+diabe100 <- read_dta('ELSA_pdiabe100/ELSA_pdiabe100_by_rep.dta')
+
+b_adl <- select(baseline, year, rep, a_anyadl_all)
+#c_adl <- select(baseline, year, rep, a_anyadl_all)
+
+b_2012 <- filter(b_adl, year == 2012)
+b_2040 <- filter(b_adl, year == 2040)
+
+m <- mean(b_2040$a_anyadl_all)
+sd <- sd(b_2040$a_anyadl_all)
+n <- length(b_2040$a_anyadl_all)
+
+error <- qnorm(0.975) * sd / sqrt(n)
+
+res <- c(mean(b_2012$a_anyadl_all), mean(b_2040$a_anyadl_all), error)
+
+```
+
+Now collect the above into a function and run it on a list with lapply.
+
+```{r}
+
+get_dis_prev3 <- function(data, target_year=2040) {
+  
+  adl <- select(data, year, rep, a_anyadl_all)
+  
+  a_2012 <- filter(adl, year == 2012)
+  a_ty <- filter(adl, year == target_year)
+  
+  sd <- sd(a_ty$a_anyadl_all)
+  n <- length(a_ty$a_anyadl_all)
+  
+  error <- qnorm(0.975) * sd / sqrt(n)
+  
+  res <- c(mean(a_2012$a_anyadl_all), mean(a_ty$a_anyadl_all), error)
+  
+  return(res)
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_by_rep.dta')
+cancre100 <- read_dta('ELSA_pcancre100/ELSA_pcancre100_by_rep.dta')
+diabe100 <- read_dta('ELSA_pdiabe100/ELSA_pdiabe100_by_rep.dta')
+hearte100 <- read_dta('ELSA_phearte100/ELSA_phearte100_by_rep.dta')
+
+base <- get_dis_prev3(baseline, 2050)
+cancre_100 <- get_dis_prev3(cancre100, 2050)
+diabe_100 <- get_dis_prev3(diabe100, 2050)
+hearte_100 <- get_dis_prev3(hearte100, 2050)
+
+df <- data.frame(rbind(base, cancre_100, diabe_100, hearte_100))
+colnames(df) <- c('p2012', 'p2040', 'error_2040')
+
+df$scenario <- c('Baseline', 'Cancer-100', 'Diabetes-100', 'Heart Disease-100')
+df$diff_to_baseline <- df$p2040 - df$p2040[1]
+
+
+```
+
+
+```{r}
+
+p1 <- ggplot(df) +
+        geom_bar(aes(x=scenario, y=p2040), stat="identity", fill='blue', alpha=0.7) +
+        geom_errorbar(aes(x=scenario, ymin=p2040 - error_2040, ymax=p2040 + error_2040), width=0.4, colour='red', alpha=0.9, size=0.5)
+
+
+p2 <- ggplot(df) +
+        geom_bar(aes(x=scenario, y=diff_to_baseline), stat="identity", fill='blue', alpha=0.7) +
+        geom_errorbar(aes(x=scenario, ymin = diff_to_baseline - error_2040, ymax = diff_to_baseline + error_2040), width=0.4, colour='red', alpha=0.9, size=0.5)
+
+#multiplot(p1, p2, cols=2)
+
+grid.arrange(p1, p2, nrow=2)
+```
+
+
+
+
+# Chronic Disease Prevalence (Base)
+## Projections
+
+```{r}
+
+visPop_chronDis2 <- function(base, ten, fifty, hundred, disease) {
+  
+  # Construct some varnames using argument to keep function generic
+  scen_base <- paste0(disease, '_base')
+  scen10 <- paste0(disease, '_10')
+  scen50 <- paste0(disease, '_50')
+  scen100 <- paste0(disease, '_100')
+  
+  # Define colours for graphing
+  if (disease == 'cancre') {
+    colours <- c('cancre_base' = 'black', 'cancre_10' = 'blue', 'cancre_50' = 'dark green', 'cancre_100' = 'red')
+    chronDis <- 'Cancer'
+  } else if (disease == 'diabe') {
+    colours <- c('diabe_base' = 'black', 'diabe_10' = 'blue', 'diabe_50' = 'dark green', 'diabe_100' = 'red')
+    chronDis <- 'Diabetes'
+  } else if (disease == 'hearte') {
+    colours <- c('hearte_base' = 'black', 'hearte_10' = 'blue', 'hearte_50' = 'dark green', 'hearte_100' = 'red')
+    chronDis <- 'Heart Disease'
+  } else {
+    print('The disease entered is wrong, please pick one of cancer, diabetes, heart disease.')
+  }
+  
+  # These are the variables we want to visualise here
+  var_select <- c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')
+  
+  # Select only the vars we want to see
+  dis_base <- select(base, all_of(var_select))
+  dis_10 <- select(ten, all_of(var_select))
+  dis_50 <- select(fifty, all_of(var_select))
+  dis_100 <- select(hundred, all_of(var_select))
+  
+  # Rename for unique colnames when merging
+  dis_base <- rename(dis_base, 'cancre_base' = p_cancre_all, 'diabe_base' = p_diabe_all, 'hearte_base' = p_hearte_all)
+  dis_10 <- rename(dis_10, 'cancre_10' = p_cancre_all, 'diabe_10' = p_diabe_all, 'hearte_10' = p_hearte_all)
+  dis_50 <- rename(dis_50, 'cancre_50' = p_cancre_all, 'diabe_50' = p_diabe_all, 'hearte_50' = p_hearte_all)
+  dis_100 <- rename(dis_100, 'cancre_100' = p_cancre_all, 'diabe_100' = p_diabe_all, 'hearte_100' = p_hearte_all)
+  # Collect in a list to facilitate merge with multiple df's
+  df_list <- list(dis_base, dis_10, dis_50, dis_100)
+  
+  # Merge on year var
+  combined <- df_list %>% reduce(inner_join, by = 'year')
+  
+  # Reshape the data to long, can then extract the scenarios we want and visualise
+  melted <- melt(combined, id.var = 'year', variable.name = 'scenario')
+  
+  scen_subset <- filter(melted, scenario == scen_base | scenario == scen10 | scenario == scen50 | scenario == scen100)
+  scen_subset$scenario <- factor(as.character(scen_subset$scenario),
+                                 levels = c(scen_base, scen10, scen50, scen100))
+  
+  #plot1 <- 
+  ggplot(scen_subset, aes(x=year, y=value, group = scenario, colour = scenario)) +
+              geom_line() +
+              labs(title = chronDis, 
+                  y = 'Prevalence',
+                  x = 'Year') +
+              scale_colour_manual(name = "Scenario", labels = c('Baseline', '10%', '50%', '100%'), values = colours)
+  
+  #outfile <- paste0('/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/ChronDisease/', disease, '/cancre_prev_reduc.png')
+  #ggsave(plot=plot1, filename=outfile, height=5, width=10)
+}
+
+```
+
+## Baseline Projections
+
+```{r}
+
+visProjectedBaselineCD <- function(base, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/') {
+  
+  # Extract vars, rename, and melt to put it in better format for graphing with ggplot2
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                melt(id.var='year', value.name = 'Prevalence')
+  
+  # Create the tiled plot of disease prevalence
+  tiled <- ggplot(data=cdMelted, aes(x=year, y=Prevalence)) +
+            geom_line() +
+            facet_grid(. ~ variable) +
+            theme(panel.spacing.x = unit(1.5, 'lines')) +
+            labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = 'baseline_prevalence.png', 
+         plot = tiled,
+         path = path,
+         width = 10,
+         height = 5)
+  
+  # Show plot
+  tiled
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visProjectedBaselineCD(baseline)
+
+```
+
+Now we have the baseline chronDis projections, we want to show this split by different groups. I.e. split into obese/not obese, or by age splines.
+
+```{r}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+
+
+hearteMelt <- baseline %>%
+              select(c('year','p_hearte_all', 'p_hearte_obese', 'p_hearte_notObese')) %>%
+              rename('Total' = p_hearte_all, 'Obese' = p_hearte_obese, 'Healthy Weight' = p_hearte_notObese) %>%
+              melt(id.var='year', value.name = 'Prevalence')
+
+
+
+#ggplot(data=hearteMelt, aes(x=year, y=Prevalence, color=variable)) +
+#  geom_line()
+
+visProjectedBySubpop <- function(base, cd, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/') {
+  
+  # Generate varnames
+  all <- paste0('p_', cd, '_all')
+  obese <- paste0('p_', cd, '_obese')
+  notObese <- paste0('p_', cd, '_notObese')
+  adl <- paste0('p_', cd, '_anyadl')
+  noadl <- paste0('p_', cd, '_noadl')
+  
+  obeseMelt <- base %>%
+              select(c('year', all, obese, notObese)) %>%
+              rename('All' = all, 'Obese' = obese, 'Healthy Weight' = notObese) %>%
+              melt(id.var='year', value.name = 'Prevalence')
+  
+  adlMelt <- base %>%
+              select(c('year', all, adl, noadl)) %>%
+              rename('All' = all, 'Disabled' = adl, 'Able' = noadl) %>%
+              melt(id.var='year', value.name = 'Prevalence')
+  
+  p1 <- ggplot(data=obeseMelt, aes(x=year, y=Prevalence, color = variable)) +
+          geom_line()
+  
+  f1 <- paste0(cd, '_prev_by_obesity.png')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = f1, 
+         plot = p1,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p2 <- ggplot(data=adlMelt, aes(x=year, y=Prevalence, color = variable)) +
+          geom_line()
+  
+  f2 <- paste0(cd, '_prev_by_disability.png')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = f2, 
+         plot = p2,
+         path = path,
+         width = 6,
+         height = 5)
+  
+}
+
+visProjectedBySubpop(baseline, cd = 'cancre')
+visProjectedBySubpop(baseline, cd = 'diabe')
+visProjectedBySubpop(baseline, cd = 'hearte')
+
+
+```
+
+
+## Initial prevalence
+
+```{r}
+
+visInitBasePrev <- function(base, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/') {
+  
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                filter(year == 2012) %>%
+                melt(id.var = 'year', value.name = 'Prevalence') %>%
+                subset(select = -year)
+  
+  bar <- ggplot(data=cdMelted, aes(x=variable, y=Prevalence)) +
+          geom_bar(stat = 'identity') +
+          labs(title='Initial Prevalence', x='Prevalence', y='Chronic Disease')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = 'init_baseline_prevalence.png', 
+         plot = bar,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  bar
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visInitBasePrev(baseline)
+
+```
+
+Now the initial prevalence for the 'all' group is visualised, let's look into some of the subgroups. i.e. obese, maybe an age comparison
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# OLD WORK (Depracated)
+
+The code below is depracated. It is the first try at a function to visualise cohort population outputs. 
+
+```{r}
+
+visPop_chronDis <- function(base, ten, fifty, hundred, disease) {
+  
+  # Construct some varnames using argument to keep function generic
+  scen_base <- paste0(disease, '_base')
+  scen_10 <- paste0(disease, '_10')
+  scen_50 <- paste0(disease, '_50')
+  scen_100 <- paste0(disease, '_100')
+  
+  # Define colours for graphing
+  if (disease == 'cancre') {
+    colours <- c('cancre_base' = 'black', 'cancre_10' = 'blue', 'cancre_50' = 'dark green', 'cancre_100' = 'red')
+    chronDis <- 'Cancer'
+  } else if (disease == 'diabe') {
+    colours <- c('diabe_base' = 'black', 'diabe_10' = 'blue', 'diabe_50' = 'dark green', 'diabe_100' = 'red')
+    chronDis <- 'Diabetes'
+  } else if (disease == 'hearte') {
+    colours <- c('hearte_base' = 'black', 'hearte_10' = 'blue', 'hearte_50' = 'dark green', 'hearte_100' = 'red')
+    chronDis <- 'Heart Disease'
+  } else {
+    print('The disease entered is wrong, please pick one of cancer, diabetes, heart disease.')
+  }
+  
+  # These are the variables we want to visualise here
+  var_select <- c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')
+  
+  # Select only the vars we want to see
+  dis_base <- select(base, all_of(var_select))
+  dis_10 <- select(ten, all_of(var_select))
+  dis_50 <- select(fifty, all_of(var_select))
+  dis_100 <- select(hundred, all_of(var_select))
+  
+  # Rename for unique colnames when merging
+  dis_base <- rename(dis_base, 'cancre_base' = p_cancre_all, 'diabe_base' = p_diabe_all, 'hearte_base' = p_hearte_all)
+  dis_10 <- rename(dis_10, 'cancre_10' = p_cancre_all, 'diabe_10' = p_diabe_all, 'hearte_10' = p_hearte_all)
+  dis_50 <- rename(dis_50, 'cancre_50' = p_cancre_all, 'diabe_50' = p_diabe_all, 'hearte_50' = p_hearte_all)
+  dis_100 <- rename(dis_100, 'cancre_100' = p_cancre_all, 'diabe_100' = p_diabe_all, 'hearte_100' = p_hearte_all)
+  # Collect in a list to facilitate merge with multiple df's
+  df_list <- list(dis_base, dis_10, dis_50, dis_100)
+  
+  # Merge on year var
+  combined <- df_list %>% reduce(inner_join, by = 'year')
+  
+  scen_gather <- gather(combined, key = Scenario, value = Rate, c(all_of(scen_base), all_of(scen_10), all_of(scen_50), all_of(scen_100)))
+  
+  ggplot(scen_gather, aes(x=year, y=Rate, group = Scenario, colour = Scenario)) +
+    geom_line() +
+    labs(title = chronDis, 
+         y = 'Prevalence',
+         x = 'Year') +
+    scale_colour_manual(name = "Scenario", labels = c('Baseline', '10%', '50%', '100%'), values = colours)
+
+}
+
+
+pop <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+cancre10 <- read_dta('ELSA_pCancer10/ELSA_pCancer10_summary.dta')
+cancre50 <- read_dta('ELSA_pCancer50/ELSA_pCancer50_summary.dta')
+cancre100 <- read_dta('ELSA_pCancer100/ELSA_pCancer100_summary.dta')
+
+visPop_chronDis(pop, cancre10, cancre50, cancre100, 'cancre')
+visPop_chronDis(pop, cancre10, cancre50, cancre100, 'diabe')
+visPop_chronDis(pop, cancre10, cancre50, cancre100, 'hearte')
+
+
+pop <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+diabe10 <- read_dta('ELSA_pDiabe10/ELSA_pDiabe10_summary.dta')
+diabe50 <- read_dta('ELSA_pDiabe50/ELSA_pDiabe50_summary.dta')
+diabe100 <- read_dta('ELSA_pDiabe100/ELSA_pDiabe100_summary.dta')
+
+visPop_chronDis(pop, diabe10, diabe50, diabe100, 'cancre')
+visPop_chronDis(pop, diabe10, diabe50, diabe100, 'diabe')
+visPop_chronDis(pop, diabe10, diabe50, diabe100, 'hearte')
+
+
+pop <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+hearte10 <- read_dta('ELSA_pHearte10/ELSA_pHearte10_summary.dta')
+hearte50 <- read_dta('ELSA_pHearte50/ELSA_pHearte50_summary.dta')
+hearte100 <- read_dta('ELSA_pHearte100/ELSA_pHearte100_summary.dta')
+
+visPop_chronDis(pop, hearte10, hearte50, hearte100, 'cancre')
+visPop_chronDis(pop, hearte10, hearte50, hearte100, 'diabe')
+visPop_chronDis(pop, hearte10, hearte50, hearte100, 'hearte')
+
+```
