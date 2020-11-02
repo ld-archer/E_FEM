@@ -31,13 +31,15 @@ summ age
 local max_age = r(max)
 
 * Nested for loops to calculate the denominator and in turn the weight value
-forvalues age = 50/`max_age' {
+forvalues age = 51/`max_age' {
 	forvalues male = 0/1 {
 		sum cwtresp if age == `age' & male == `male'
 		scalar denom = r(sum)
 		replace weight = (cwtresp * v)/denom if age == `age' & male == `male'
 	}
 }
+
+replace weight = 0 if cwtresp == 0 | v == 0 
 
 * Save all the different variants
 if "`scen'" == "base" {
