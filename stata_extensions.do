@@ -14,6 +14,7 @@ ssc install tabout, replace
 ssc install descsave, replace
 ssc install hotdeck, replace
 ssc install listtab, replace
+ssc install nrow, replace
 do FEM_Stata/utilities/cmp.mata
 
 shell touch stata_extensions.txt
