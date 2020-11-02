@@ -79,3 +79,5 @@ input_data/*.mids
 FEM_Stata/Makedata/ELSA/hotdeck_data/*.dta
 FEM_Stata/Makedata/ELSA/hotdeck_data/
 
+# stata_extensions
+stata_extensions.txt

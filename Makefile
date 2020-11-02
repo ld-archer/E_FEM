@@ -30,9 +30,15 @@ minimal: start_data transitions_minimal est_minimal summary_out_minimal
 
 ### Combined rules
 
-start_data: populations projections reweight
+start_data: stata_extensions.txt populations projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
+
+
+### Install required Stata extensions
+
+stata_extensions.txt: stata_extensions.do
+	$(STATA) stata_extensions.do
 
 
 ### Populations
