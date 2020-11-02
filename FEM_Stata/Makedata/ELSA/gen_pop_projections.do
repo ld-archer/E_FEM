@@ -2,13 +2,16 @@ clear all
 
 quietly include ../../../fem_env.do
 
-*import delimited using "../../../input_data/census_pop_estimates_02-18.csv", varnames(8)
-import delimited using "$outdata/census_pop_estimates_02-18.csv", varnames(8)
+* Prepare midyear estimates for people aged 90 and over in England
+quietly do prepare_engevo.do
+
+import delimited using "../../../input_data/census_pop_estimates_02-18.csv", varnames(8) clear
+*import delimited using "$outdata/census_pop_estimates_02-18.csv", varnames(8) clear
 
 * Loop through lettered vars and replace name with year label (plus v for type reasons)
 foreach v of varlist (v2-v18) {
 	local x : variable label `v'
-	rename `v' v`x'
+	rename `v' yr`x'
 }
 
 * Save modified file before dropping female
@@ -66,20 +69,27 @@ drop if missing(age)
 sort male age
 
 * Make string into num, only this var (weird)
-destring v2002, replace
+destring yr2002, replace
 
-* Temp save population estimates from 2002 to 2018
+* Drop aggregate 90+ data to be replaced with engevo2019 data
+drop if age == 90
+
+append using ../../../input_data/engevo2019.dta
+*append using $outdata/engevo2019.dta
+
+* Sort and save
+sort male age
 tempfile pop0218
 save `pop0218'
 
 * Import population projection data from 2016 onwards
-*import excel using ../../../input_data/en_ppp_opendata2016.xlsx, clear firstrow
-import excel using $outdata/en_ppp_opendata2016.xlsx, clear firstrow
+import excel using ../../../input_data/en_ppp_opendata2016.xlsx, clear firstrow
+*import excel using $outdata/en_ppp_opendata2016.xlsx, clear firstrow
 
 * Loop through lettered vars and replace name with year label (plus v for type reasons)
 foreach v of varlist (C-CY) {
 	local x : variable label `v'
-	rename `v' v`x'
+	rename `v' yr`x'
 }
 
 * Rename Age to age and Sex to male for merging later
@@ -98,29 +108,29 @@ tempfile all_data
 save `all_data'
 
 * Keep only 90 and above for collapsing
-keep if age_code > 90
+keep if age_code > 105
 
 * Combine by sex
-collapse (sum) v*, by (male)
+collapse (sum) yr*, by (male)
 
 * Give back age var
-gen age = "90"
+gen age = "105"
 
 * reorder for appending
 order male age
 
 * Temp save 90plus
-tempfile 90p
-save `90p'
+tempfile 105p
+save `105p'
 
 * Back to all data
 use `all_data', clear
 
 * Drop data for ages 90+
-drop if age_code > 90
+drop if age_code > 105
 
 * Add 90plus aggregate data in
-append using `90p'
+append using `105p'
 
 * Make age numeric
 destring age, replace
@@ -131,7 +141,7 @@ sort male age
 drop age_code
 
 * Keep actual estimate data instead of using projections from 2016, more accurate?
-drop v2016 v2017 v2018
+drop yr2016 yr2017 yr2018
 * Save modified projections
 tempfile clean_proj
 save `clean_proj'
@@ -147,7 +157,9 @@ tab _merge
 drop _merge
 
 * reshape data to make single year variable
-reshape long v, i(male age) j(year)
+reshape long yr, i(male age) j(year)
+
+rename yr v
 
 * reorder data for readability
 order year age male
@@ -155,5 +167,5 @@ order year age male
 * Sort by year first, then age then male
 sort year age male
 
-*save ../../../input_data/pop_projections.dta, replace
-save $outdata/pop_projections.dta, replace
+save ../../../input_data/pop_projections.dta, replace
+*save $outdata/pop_projections.dta, replace
