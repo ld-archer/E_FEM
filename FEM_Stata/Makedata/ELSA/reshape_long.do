@@ -360,6 +360,10 @@ gen logbmi = log(bmi) if !missing(bmi)
 * This is already generated in generate_transition_pop.do. TODO: change gen_trans_pop.do to replace instead of generate
 gen obese = (bmi > 30.0) if !missing(bmi)
 
+* Generate a categorical variable for BMI to get summary stats by group
+* cut() has to include both the lower and upper limits (which is why both 0 and 100 are included)
+egen bmi_cat = cut(bmi), at(0, 25, 30)
+
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
 *count if smokev==0 & smoken==1
 replace smokev = 1 if smoken==1 & smokev==0
