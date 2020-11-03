@@ -362,7 +362,7 @@ gen obese = (bmi > 30.0) if !missing(bmi)
 
 * Generate a categorical variable for BMI to get summary stats by group
 * cut() has to include both the lower and upper limits (which is why both 0 and 100 are included)
-egen bmi_cat = cut(bmi), at(0, 25, 30)
+egen bmi_cat = cut(bmi), at(0, 18.5, 25, 30, 40)
 
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
 *count if smokev==0 & smoken==1
