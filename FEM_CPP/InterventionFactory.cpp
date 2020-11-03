@@ -10,7 +10,7 @@
 #include "ReduceDrinkDays.h"
 #include "SmokeStopIntervention.h"
 #include "ModExIncrease.h"
-//#include "ExerciseIntervention.h"
+#include "ReduceBMI.h"
 
 InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvider* tp)
 {
@@ -126,8 +126,8 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 	SmokeStopIntervention* ssi = new SmokeStopIntervention(index++, tp, vp);
 	interventions[ssi->name()] = ssi;
 
-	//ExerciseIntervention* ei = new ExerciseIntervention(index++, tp, vp);
-	//interventions[ei->name()] = ei;
+	ReduceBMI* rbmi = new ReduceBMI(index++, tp, vp);
+	interventions[rbmi->name()] = rbmi;
 
 
 }
