@@ -54,13 +54,13 @@ void ReduceBMI::intervene(PersonVector& persons, unsigned int year, Random* rand
 			//Are they eligible?
 			if(elig(person)) {
 				// Yes, treat them
-                person->set(Vars::logbmi), person->get(Vars::logbmi) - log(5.0); // Reduce BMI by 5 points (reduce logbmi by log(5))
+                person->set(Vars::logbmi, person->get(Vars::logbmi) - log(5.0)); // Reduce BMI by 5 points (reduce logbmi by log(5))
 			}
 		}
 	}
 }
 
-bool SmokeStopIntervention::elig(Person* p) const {
+bool ReduceBMI::elig(Person* p) const {
 	// Eligible for treatment if BMI > 35
 	return p->get(Vars::l2logbmi) > log(35.0);
 }
