@@ -93,8 +93,7 @@ global allvars_died $dvars $lvars_age `lvars_smoke' l2cancre l2diabe l2hibpe l2h
 
 
 *** Chronic Diseases
-*global allvars_cancre       $dvars $lvars_age /*`lvars_smoke' $bmivars `lvars_drink'*/ l2smoken
-global allvars_cancre       $dvars $lvars_age /*`lvars_smoke' $bmivars `lvars_drink'*/ l2smoken l2logbmi l2drink
+global allvars_cancre       $dvars $lvars_age l2smoken l2logbmi l2drink
 global allvars_diabe        $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2psyche /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors*/
 global allvars_hearte       $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors*/
 global allvars_hibpe        $dvars $lvars_age $bmivars `lvars_smoke' `lvars_exercise' `lvars_drink' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure*/
@@ -109,25 +108,17 @@ global allvars_parkine      $dvars $lvars_age $bmivars `lvars_smoke' `lvars_drin
 
 *** Smoking 
 * Look at Hymovitz et. al (1997) for justification for some of the vars as smoking predictors (Could also add var for self-reported health measures as paper says its important)
-*global allvars_smoke_start  $dvars $lvars_age $bmivars $lvars_hlth $lvars_econ `lvars_drink'  /* l2psyche*/
-*global allvars_smoke_stop   $dvars $lvars_age $bmivars $lvars_hlth $lvars_econ `lvars_drink'  /* l2psyche*/
-*global allvars_smoke_start  $dvars $lvars_age $bmivars `lvars_drink' $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
-*global allvars_smoke_stop   $dvars $lvars_age $bmivars `lvars_drink' $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
 global allvars_smoke_start  $dvars $lvars_age l2work l2retemp l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
 global allvars_smoke_stop   $dvars $lvars_age l2work l2retemp l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
-*global allvars_smoken       $dvars $lvars_age $bmivars `lvars_drink' $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
-*global allvars_smokev       $dvars $lvars_age $bmivars `lvars_drink' $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
 * smokef is xsectional so don't use lags of chronic diseases/choices as right hand variables
 global allvars_smokef       $dvars $lvars_age logbmi drink drinkd2 drinkd3 drinkd4 atotf itearn adl1 adl2 adl3p iadl1 iadl2p psyche
-*global allvars_smokef       $dvars $lvars_age l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke
-*global allvars_smkstat      $dvars $lvars_age $bmivars `lvars_drink' $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae
+
 
 
 *** Drinking
 global allvars_drink        $dvars $lvars_age $bmivars `lvars_smoke' l2psyche
 global allvars_drinkd_stat  $dvars $lvars_age $bmivars $lvars_hlth l2psyche l2arthre l2asthmae l2parkine
 global allvars_drinkd       $dvars $lvars_age $bmivars $lvars_hlth l2psyche l2arthre l2asthmae l2parkine
-*global allvars_drinkwn      $dvars $lvars_age $bmivars $lvars_hlth l2psyche l2arthre l2asthmae l2parkine l2drinkd1 l2drinkd2 l2drinkd3 l2drinkd4
 
 
 *** Logbmi & other health
@@ -152,7 +143,4 @@ global allvars_itearn       $dvars $lvars_age $bmivars $lvars_hlth $lvars_econ `
 
 
 *** Exercise
-*global allvars_vgactx_e     $dvars $lvars_age $bmivars $lvars_hlth `lvars_smoke' l2psyche l2arthre l2asthmae l2parkine
-*global allvars_mdactx_e     $dvars $lvars_age $bmivars $lvars_hlth `lvars_smoke' l2psyche l2arthre l2asthmae l2parkine
-*global allvars_ltactx_e     $dvars $lvars_age $bmivars $lvars_hlth `lvars_smoke' l2psyche l2arthre l2asthmae l2parkine
 global allvars_exstat       $dvars $lvars_age $bmivars l2psyche l2arthre l2asthmae /*$lvars_hlth `lvars_smoke'*/
