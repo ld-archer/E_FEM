@@ -397,6 +397,37 @@ Now the initial prevalence for the 'all' group is visualised, let's look into so
 
 
 
+# REDUCE BMI Intervention
+
+```{r}
+
+base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+cohort <- read_dta('ELSA_cohort/ELSA_cohort_summary.dta')
+pop_rbmi <- read_dta('ELSA_pop_BMI_reduc_obese/ELSA_pop_BMI_reduc_obese_summary.dta')
+coh_rbmi <- read_dta('ELSA_coh_BMI_reduc_obese/ELSA_coh_BMI_reduc_obese_summary.dta')
+
+ggplot(data = base, aes(x=year, y=a_bmi_all)) +
+  geom_line()
+
+ggplot(data = pop_rbmi, aes(x=year, y=a_bmi_all)) +
+  geom_line()
+
+ggplot(data=base, aes(x=year, y=p_cancre_all)) +
+  geom_line()
+ggplot(data=pop_rbmi, aes(x=year, y=p_cancre_all)) +
+  geom_line()
+
+ggplot(data=base, aes(x=year, y=p_diabe_all)) +
+  geom_line()
+ggplot(data=pop_rbmi, aes(x=year, y=p_diabe_all)) +
+  geom_line()
+
+ggplot(data=base, aes(x=year, y=p_hearte_all)) +
+  geom_line()
+ggplot(data=pop_rbmi, aes(x=year, y=p_hearte_all)) +
+  geom_line()
+
+```
 
 
 
