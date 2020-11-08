@@ -66,15 +66,6 @@ global lvars_econ l2work l2retemp l2itearn l2ipubpen l2atotf
 *** BMI variable at t-1
 global bmivars l2logbmi
 
-*** For Chronic Conditions and Ordinal Outcomes
-global allvars_hlth $dvars $lvars_age $lvars_hlth $bmivars
-
-*** For Economic Outcomes
-global allvars_econ $dvars $lvars_age $lvars_hlth $lvars_econ
-
-* Single year of age
-local age_var agey
-
 *** Custom groups
 * Exercise vars
 local lvars_exercise l2exstat1 l2exstat2 /*l2exstat3*/
