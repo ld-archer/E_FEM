@@ -12,8 +12,8 @@ use $outdata/ELSA_long.dta, clear
 *use ../../../input_data/ELSA_long.dta, clear
 
 * Keep respondents from wave 4, but set entry as 2002 for cross-validation
-keep if wave == 4
-gen entry = 2002 
+keep if wave == 3
+gen entry = 2002
 
 * Make sure no l2smkstat variables are missing (otherwise CrossSectionalModule/summary_output breaks(?))
 replace l2smkstat = smkstat if missing(l2smkstat) & !missing(smkstat)
@@ -26,7 +26,7 @@ drop if died == 1
 replace l2age = age - 2 if missing(l2age)
 
 *** KLUDGE ***
-do kludge.do
+do kludge_CV.do
 
 * merge on transition ID for cross-validation
 merge m:1 idauniq using "$outdata/cross_validation/crossvalidation.dta", keepusing(simulation)

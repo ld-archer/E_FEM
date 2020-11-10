@@ -14,8 +14,8 @@ log using ID_selection_CV.log, replace
 use $outdata/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 
-keep idauniq r4iwstat
-sum idauniq if r4iwstat == 1
+keep idauniq r3iwstat
+sum idauniq if r3iwstat == 1
 * 11,050 ID's, so use roughly 5525 for simulation (=11050/2) (this true for wave 4 at least)
 
 * keep 1 record per person
@@ -31,7 +31,7 @@ sum idauniq if r4iwstat == 1
 * Start simulation from 2016 and see if there is big jumps from ELSA to FEM
 
 * Create random numbers from uniform distribution
-gen rand = runiform() if r4iwstat == 1
+gen rand = runiform() if r3iwstat == 1
 
 gen simulation = .
 replace simulation = 1 if rand > 0.5 & !missing(rand)

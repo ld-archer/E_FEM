@@ -169,10 +169,10 @@ replace smokev = 1 if smoken == 1
 
 * Now replace lag with current if missing lag for all hotdecked vars
 foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
-    replace l2`var' = `var' if missing(l2`var')
+    replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
 foreach var of varlist drink drinkd smoken smokev exstat {
-    replace l2`var' = `var' if missing(l2`var')
+    replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
 
 replace smkstat = 1 if smokev == 0 & smoken == 0 & missing(smkstat)
@@ -212,5 +212,11 @@ replace l2drinkd1 = l2drinkd_stat==1 if missing(l2drinkd1)
 replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
 replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
 replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
+
+* Handle missing drinkd and drinkd_stat for cross-validation
+*replace drinkd = 3 if missing(drinkd)
+*replace drinkd_stat = 3 if missing(drinkd_stat) & drinkd == 3
+*replace l2retemp = 1 if l2work == 0 & l2age > 65
+*replace l2retemp = 0 if l2work == 1 | l2age < 65
 
 * Handle missing education

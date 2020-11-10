@@ -18,7 +18,7 @@ drop if age < 51
 *merge m:1 male age year using ../../../input_data/pop_projections.dta, keep(matched)
 merge m:1 male age year using $outdata/pop_projections.dta, keep(matched)
 
-keep if year == 2008
+keep if year == 2006
 
 * Check the merge
 tab _merge
