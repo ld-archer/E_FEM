@@ -9,6 +9,8 @@ set seed 5000
 
 quietly include ../../../fem_env.do
 
+log using ID_selection_CV.log, replace
+
 use $outdata/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 
@@ -43,3 +45,5 @@ replace transition = 0 if simulation == 1 & !missing(rand)
 
 save $outdata/cross_validation/crossvalidation.dta, replace
 *save ../../../input_data/cross_validation/crossvalidation.dta, replace
+
+capture log close
