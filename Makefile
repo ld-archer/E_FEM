@@ -45,7 +45,7 @@ stata_extensions.txt: stata_extensions.do
 
 ELSA: $(DATADIR)/H_ELSA_f_2002-2016.dta
 
-populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
+populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta  $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
 $(DATADIR)/ELSA_long_imputed.dta: $(MAKEDATA)/reshape_long_new.do $(DATADIR)/H_ELSA_f_2002-2016.dta 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long_new.do
@@ -61,6 +61,9 @@ $(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do ELSA
 
 $(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
+
+$(DATADIR)/ELSA_stock_base_CV.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/gen_stock_CV.do $(MAKEDATA)/kludge.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) gen_stock_CV.do
 
 $(DATADIR)/ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta $(MAKEDATA)/generate_replenishing_pop.do $(MAKEDATA)/kludge.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_replenishing_pop.do
@@ -87,8 +90,8 @@ reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA
 $(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
 
-$(DATADIR)/ELSA_stock_CV.dta: $(DATADIR)/ELSA_stock_base_CV.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_CV $(STATA) reweight_ELSA_stock.do
+$(DATADIR)/ELSA_stock_CV.dta: $(DATADIR)/ELSA_stock_base_CV.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock_CV.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reweight_ELSA_stock_CV.do
 
 $(DATADIR)/ELSA_stock_nosmoke.dta: $(DATADIR)/ELSA_stock_base_nosmoke.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nosmoke $(STATA) reweight_ELSA_stock.do
@@ -124,7 +127,7 @@ transitions_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transitio
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV $(STATA) ELSA_init_transition.do
 
 transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do
-	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA_minimal $(STATA) ELSA_init_transition.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=minimal $(STATA) ELSA_init_transition.do
 
 
 ### Estimates and Summary
