@@ -34,6 +34,7 @@ FEM_Stata/Estimates/ELSA/crossvalidation/
 FEM_Stata/Estimates/ELSA/estim_parameters*
 FEM_Stata/Estimates/ELSA/estimatesCV*
 FEM_Stata/Estimates/ELSA/estimatesELSA*
+FEM_Stata/Estimates/minimal/crossvalidation/*.ster
 
 # Input data (only need select files the rest are generated)
 input_data/detailed_output/*.dta
