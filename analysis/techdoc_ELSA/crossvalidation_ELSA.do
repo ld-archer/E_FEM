@@ -233,7 +233,7 @@ clear all
 
 ********************************
 * Process simulation output
-* iter = 5 numbers of reps
+* iter = numbers of reps
 ********************************
 forvalues i = 1/`iter' {
 	forvalues yr = 2002 (2) 2016 {

@@ -45,8 +45,11 @@ if !missing("`defmod'") {
 	if "`defmod'" == "CV" {
 		local ster "$local_path/Estimates/ELSA"
 	}
-	else {
-		local ster "$local_path/Estimates/`defmod'"
+	else if "`defmod'" == "ELSA" {
+		local ster "$local_path/Estimates/ELSA"
+	}
+	else if "`defmod'" == "minimal" {
+		local ster "$local_path/Estimates/ELSA_minimal"
 	}
 }
 else {

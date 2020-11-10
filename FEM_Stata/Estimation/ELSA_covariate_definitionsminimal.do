@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn smokef
-global order adlstat iadlstat drinkd drinkd_stat vgactx_e mdactx_e ltactx_e smkstat
+global order adlstat iadlstat drinkd drinkd_stat exstat /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
 #d ;
@@ -35,17 +35,14 @@ global ols_names
     "Public Pension Income (All types)"
     "Net Value of Non-housing Financial Wealth"
     "Individual Employment Earnings (annual, after tax)"
-    "Average # cigs/day"
+    "Number cigs/day"
 ;
 global order_names 
     "ADL status"
     "IADL status"
     "# days per week R drinks alcohol"
     "Days/week drinking status"
-    "# days/week doing vigorous exercise"
-    "# days/week doing moderate exercise"
-    "# days/week doing light exercise"
-    "Smoking status"
+    "Exercise status"
 ;
 #d cr
 
