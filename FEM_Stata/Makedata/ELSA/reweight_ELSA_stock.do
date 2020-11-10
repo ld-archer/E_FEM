@@ -39,7 +39,9 @@ forvalues age = 51/`max_age' {
 	}
 }
 
+count if weight > 0
 replace weight = 0 if cwtresp == 0 | v == 0 
+count if weight > 0
 
 * Save all the different variants
 if "`scen'" == "base" {
