@@ -80,6 +80,9 @@ r*agey
 ragender
 raeduc_e
 raeducl
+s*educl
+ramomeduage
+radadeduage
 raracem
 r*walkra
 r*dressa
@@ -198,23 +201,10 @@ foreach var in
     } ;
 #d cr
 
-/*
-* Remove impossible BMI values before merging
-replace bmi2 = . if bmi2 < 10
-replace bmi4 = . if bmi4 < 10
-replace bmi6 = . if bmi6 < 10
-replace bmi8 = . if bmi8 < 10
-
-* SO instead of the multiple imputation script written in Stata, I used to R to run a multiple imputation
-* based on the variables used in the stata script (plus a few more)
-* Now going to try to replace the bmi2, bmi4, bmi6, & bmi8 vars with externally imputed data
-merge 1:1 idauniq using $outdata/bmi_imputed_R.dta, nogenerate
-replace bmi2 = bmi2_imp if missing(bmi2)
-replace bmi4 = bmi4_imp if missing(bmi4)
-replace bmi6 = bmi6_imp if missing(bmi6)
-replace bmi8 = bmi8_imp if missing(bmi8)
-*/
-
+* Seperate for renaming spousal vars
+forvalues wv = $firstwave/$lastwave {
+    rename s`wv'educl educl`wv'
+}
 
 * Reshape data from wide to long
 #d ;
@@ -222,7 +212,7 @@ reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata be
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd 
+    drink drinkd educl
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -271,6 +261,9 @@ label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
 label variable drinkd "# Days/week has a drink"
+label variable educl "Spouse Harmonised Education Level"
+label variable ramomeduage "Age mother left education"
+label variable radadeduage "Age father left education"
 
 
 * Use harmonised education var
@@ -283,6 +276,7 @@ drop raeducl
 * Create separate variables for hsless (less than secondary school) and college (university)
 gen hsless = (educ == 1)
 gen college = (educ == 3)
+gen missing_educ = missing(educ)
 
 * Label males
 gen male = (ragender == 1) if !missing(ragender)
