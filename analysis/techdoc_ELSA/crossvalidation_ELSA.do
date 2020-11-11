@@ -17,7 +17,7 @@ local output "../../output/ELSA_CrossValidation"
 local input "../../input_data"
 
 * For processing simulation output
-local iter 5
+local iter 10
 
 * For processing ELSA
 local minwave 1
