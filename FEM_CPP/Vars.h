@@ -87,7 +87,8 @@ namespace Vars
 		educ_t1, 									///< Transition variable from educlvl1
 		educ_t2, 									///< Transition variable from educlvl2
 		educ_t3, 									///< Transition variable from educlvl3
-		educ_t4, 									///< Transition variable from educlvl4						
+		educ_t4, 									///< Transition variable from educlvl4	
+		missing_educ,				///< Dummy variable for missing education data					
 		entry,                    ///< Year of entry into the model, stored as Short
 		era,                      ///< RECODE of rdb_ea_c (RECODE of eage_db (Early ret age for curren... Approx Range [0, 60], stored as Short
 		everm,                    ///< Ever married? [0, 1], stored as Boolean
