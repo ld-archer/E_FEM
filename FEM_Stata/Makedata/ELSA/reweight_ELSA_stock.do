@@ -48,16 +48,6 @@ if "`scen'" == "base" {
 	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
 	saveold $outdata/ELSA_stock.dta, replace v(12)
 }
-else if "`scen'" == "base_CV" {
-	*saveold ../../../input_data/ELSA_stock_CV.dta, replace v(12)
-	saveold $outdata/ELSA_stock_CV.dta, replace v(12)
-}
-else if "`scen'" == "base_nosmoke" {
-	saveold $outdata/ELSA_stock_nosmoke.dta, replace v(12)
-}
-else if "`scen'" == "base_nodrink" {
-	saveold $outdata/ELSA_stock_nodrink.dta, replace v(12)
-}
 else if "`scen'" == "base_noImpute" {
 	saveold $outdata/ELSA_stock_noImpute.dta, replace v(12)
 }
