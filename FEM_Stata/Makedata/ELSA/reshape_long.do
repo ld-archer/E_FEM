@@ -276,7 +276,6 @@ drop raeducl
 * Create separate variables for hsless (less than secondary school) and college (university)
 gen hsless = (educ == 1)
 gen college = (educ == 3)
-gen missing_educ = missing(educ)
 
 * Label males
 gen male = (ragender == 1) if !missing(ragender)
@@ -484,14 +483,8 @@ replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
 * We want to assess how many people are missing and being assigned mean value on
 * lines 289-293
 
-* Create any_adl and any_iadl
-gen any_adl = 1 if adlcount > 0
-replace any_adl = 0 if adlcount == 0
-gen any_iadl = 1 if iadlcount > 0
-replace any_iadl = 0 if iadlcount == 0
-
 * Generate a missing education variable
-
+generate missing_educ = missing(educ)
 
 * One record missing data for education
 *drop if missing(educ)
