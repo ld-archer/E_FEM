@@ -175,6 +175,16 @@ foreach var of varlist drink drinkd smoken smokev exstat {
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
 
+* Still missing some l2drink
+replace l2drink = 1 if missing(l2drink)
+* Still missing 2 l2smoken
+replace l2smoken = 0 if missing(l2smoken)
+* Missing 140 odd l2smokev
+replace l2smokev = 0 if missing(l2smokev)
+
+* Still 1 person missing arthre and l2arthre for some reason
+drop if missing(arthre) & missing(l2arthre)
+
 replace smkstat = 1 if smokev == 0 & smoken == 0 & missing(smkstat)
 replace smkstat = 2 if smokev == 1 & smoken == 0 & missing(smkstat)
 replace smkstat = 3 if smoken == 1 & missing(smkstat)
@@ -212,11 +222,5 @@ replace l2drinkd1 = l2drinkd_stat==1 if missing(l2drinkd1)
 replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
 replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
 replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
-
-* Handle missing drinkd and drinkd_stat for cross-validation
-*replace drinkd = 3 if missing(drinkd)
-*replace drinkd_stat = 3 if missing(drinkd_stat) & drinkd == 3
-*replace l2retemp = 1 if l2work == 0 & l2age > 65
-*replace l2retemp = 0 if l2work == 1 | l2age < 65
 
 * Handle missing education
