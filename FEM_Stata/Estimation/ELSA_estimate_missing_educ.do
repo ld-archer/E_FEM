@@ -46,7 +46,7 @@ if r(N)>0 {
     oprobit educ `predict_vars'
     ch_est_title "Education (educ) coefficients"
     mfx2, stub(o_educ) nose
-    est save "`ster'/educ_pred.ster", replace
+    est save "`ster'/educ.ster", replace
     est restore o_educ_mfx
         ch_est_title "Education (educ) marginal effects"
         est store o_educ_mfx
@@ -55,4 +55,4 @@ if r(N)>0 {
 predict educ_pred
 sum educ educ_pred if !died [aw=cwtresp]
 
- capture log close
+capture log close
