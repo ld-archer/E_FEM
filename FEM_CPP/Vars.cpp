@@ -146,6 +146,9 @@ VarsInfo::VarsInfo() {
 	info[Vars::educ_t3]							 = VarInfo("educ_t3", "Transition variable from educlvl3", VarTypes::Short);
 	info[Vars::educ_t4]							 = VarInfo("educ_t4", "Transition variable from educlvl4", VarTypes::Short);
 	info[Vars::missing_educ]		= VarInfo("missing_educ", "Dummy variable for missing education data", VarTypes::Boolean);
+	info[Vars::educl]				= VarInfo("educl", "Spouses Harmonized Education Level", VarTypes::Short);
+	info[Vars::ramomeduage]			= VarInfo("ramomeduage", "Age mother finished education", VarTypes::Short);
+	info[Vars::radadeduage]			= VarInfo("radadeduage", "Age father finished education", VarTypes::Short);
 	info[Vars::entry]                = VarInfo("entry", "Year of entry into the model", VarTypes::Short);
 	info[Vars::era]                  = VarInfo("era", "RECODE of rdb_ea_c (RECODE of eage_db (Early ret age for curren... Approx Range [0, 60]", VarTypes::Short);
 	info[Vars::everm]								 = VarInfo("everm", "Ever married", VarTypes::Boolean);
