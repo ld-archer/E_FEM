@@ -91,7 +91,8 @@ namespace Vars
 		missing_educ,				///< Dummy variable for missing education data		
 		educl,						///< Spouses Harmonized Education Level
 		ramomeduage,				///< Age mother finished education
-		radadeduage,				///< Age father finished education			
+		radadeduage,				///< Age father finished education
+		educ_pred,					///< Model for predicting missing education values			
 		entry,                    ///< Year of entry into the model, stored as Short
 		era,                      ///< RECODE of rdb_ea_c (RECODE of eage_db (Early ret age for curren... Approx Range [0, 60], stored as Short
 		everm,                    ///< Ever married? [0, 1], stored as Boolean
