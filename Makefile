@@ -100,12 +100,6 @@ $(DATADIR)/ELSA_stock_noImpute.dta: $(DATADIR)/ELSA_stock_base_noImpute.dta $(DA
 
 ### Transitions
 
-transitions: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_transition.do
-	cd FEM_Stata/Estimation && datain=$(DATADIR) && dataout=$(DATADIR) $(STATA) ELSA_transition.do
-
-transitions_bmi:
-	cd $(ESTIMATION) $(STATA) ELSA_bmi_trans.do
-
 transitions_base: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
 
