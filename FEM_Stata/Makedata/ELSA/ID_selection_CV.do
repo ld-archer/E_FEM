@@ -25,7 +25,7 @@ sum idauniq if r3iwstat == 1
 * would have more people in transition than simulation
 
 * OR/AND
-* Use full sample for both transitions and simulation up to wave x, simulate from wave x onwards
+* Use full sample for transitions up to wave x, simulate from wave x onwards
 
 * ALSO
 * Start simulation from 2016 and see if there is big jumps from ELSA to FEM
