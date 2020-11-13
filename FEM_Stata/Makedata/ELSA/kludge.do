@@ -186,6 +186,7 @@ replace l2hearte = 0 if missing(hearte) & missing(l2hearte)
 replace l2hibpe = 0 if missing(hibpe) & missing(l2hibpe)
 replace l2lunge = 0 if missing(lunge) & missing(l2lunge)
 replace l2psyche = 0 if missing(psyche) & missing(l2psyche)
+replace l2stroke = 0 if missing(stroke) & missing(l2stroke)
 
 * Handle missing smkstat data
 replace smkstat = 1 if smokev == 0 & smoken == 0 & missing(smkstat)
