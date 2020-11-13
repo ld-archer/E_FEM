@@ -156,47 +156,43 @@ foreach var of varlist logbmi white {
 replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)
 gen flogbmi50 = l2logbmi
 
-/*
-* Try to handle missing drink and smoking data
-* Removed: drink 
-foreach var of varlist drinkd smoken smokev exstat {
-    hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
-    use hotdeck_data/`var'_imp1.dta, clear
-}
-*/
-
 * Now handle logical accounting with drinking and smoking
 replace drinkd = 0 if drink == 0
 replace smokev = 1 if smoken == 1
 
 * Now replace lag with current if missing lag for all hotdecked vars
-foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
-    replace l2`var' = `var' if missing(l2`var') & !missing(`var')
-}
-foreach var of varlist drink drinkd smoken smokev exstat {
+foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev exstat {
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
 
 * Still missing some l2drink
-*replace l2drink = 1 if missing(l2drink)
+replace drink = 1 if missing(drink)
+replace l2drink = 1 if missing(l2drink)
 * Still missing 2 l2smoken
-*replace l2smoken = 0 if missing(l2smoken)
+replace l2smoken = 0 if missing(l2smoken)
 * Missing 140 odd l2smokev
-*replace l2smokev = 0 if missing(l2smokev)
+replace l2smokev = 0 if missing(l2smokev)
 
 * Still 1 person missing arthre and l2arthre for some reason
 *drop if missing(arthre) & missing(l2arthre)
 replace arthre = 0 if missing(arthre) & missing(l2arthre)
 replace l2arthre = 0 if missing(arthre) & missing(l2arthre)
+replace l2arthre = 0 if missing(l2arthre)
 
+* Still missing chron disease information for 1 person
+replace l2cancre = 0 if missing(cancre) & missing(l2cancre)
+replace l2diabe = 0 if missing(diabe) & missing(l2diabe)
+replace l2hearte = 0 if missing(hearte) & missing(l2hearte)
+replace l2hibpe = 0 if missing(hibpe) & missing(l2hibpe)
+replace l2lunge = 0 if missing(lunge) & missing(l2lunge)
+replace l2psyche = 0 if missing(psyche) & missing(l2psyche)
+
+* Handle missing smkstat data
 replace smkstat = 1 if smokev == 0 & smoken == 0 & missing(smkstat)
 replace smkstat = 2 if smokev == 1 & smoken == 0 & missing(smkstat)
 replace smkstat = 3 if smoken == 1 & missing(smkstat)
-
-* Handle missing smkstat data
 replace smkstat = l2smkstat if missing(smkstat)
 replace l2smkstat = smkstat if missing(l2smkstat)
-
 replace smkstat = 2 if missing(smkstat)
 replace l2smkstat = 2 if missing(l2smkstat)
 
