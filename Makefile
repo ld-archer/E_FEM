@@ -17,7 +17,7 @@ RSCRIPT = Rscript
 
 ### Model runs
 
-complete: base cross-validation minimal
+complete: ELSA base cross-validation minimal
 
 base: start_data transitions_base est_base summary_out_base simulation_base
 
@@ -28,7 +28,7 @@ minimal: start_data transitions_minimal est_minimal summary_out_minimal
 
 ### Combined rules
 
-start_data: stata_extensions.txt populations projections reweight
+start_data: ELSA stata_extensions.txt populations projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
 
@@ -101,15 +101,29 @@ $(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projectio
 
 
 ### Transitions
+# Use the died.est model as the target for the transitions rules, as this model is always required and won't be removed by accident
 
-transitions_base: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do
+#transitions_base: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do
+#	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
+
+transitions_base: $(ESTIMATES)/ELSA/died.est
+
+transitions_CV: $(ESTIMATES)/ELSA/crossvalidation1/died.est $(ESTIMATES)/ELSA/crossvalidation2/died.est
+
+$(ESTIMATES)/ELSA/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
 
-transitions_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do
+$(ESTIMATES)/ELSA/crossvalidation1/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV1 $(STATA) ELSA_init_transition.do
+
+$(ESTIMATES)/ELSA/crossvalidation2/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV2 $(STATA) ELSA_init_transition.do
 
-transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do
+#transitions_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
+#	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV1 $(STATA) ELSA_init_transition.do
+#	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV2 $(STATA) ELSA_init_transition.do
+
+transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=minimal $(STATA) ELSA_init_transition.do
 
 
@@ -119,9 +133,9 @@ est_base:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
 
-est_CV: 
-	#cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
+est_CV:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation1/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation2/models $(STATA) save_est_cpp.do
 
 est_minimal:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
@@ -130,7 +144,8 @@ summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
 
 summary_out_CV:
-	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 $(STATA) summary_output_gen.do
 
 summary_out_minimal:
 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
