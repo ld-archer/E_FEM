@@ -27,10 +27,14 @@ FEM_CPP_settings/ELSA_cross-validation/models/*.est
 FEM_CPP_settings/ELSA_minimal/models/*.est
 FEM_Stata/Estimates/ELSA/*.ster
 FEM_Stata/Estimates/minimal/*.ster
-FEM_Stata/Estimates/ELSA/crossvalidation/*.ster
+FEM_Stata/Estimates/ELSA/crossvalidation1/*.ster
+FEM_Stata/Estimates/ELSA/crossvalidation1/*.xml
+FEM_Stata/Estimates/ELSA/crossvalidation2/*.xls
+FEM_Stata/Estimates/ELSA/crossvalidation2/*.ster
+FEM_Stata/Estimates/ELSA/crossvalidation2/*.xml
+FEM_Stata/Estimates/ELSA/crossvalidation2/*.xls
 FEM_Stata/Estimates/ELSA_minimal/*.ster
 FEM_Stata/Estimates/ELSA/FEM_estimates_table.xml
-FEM_Stata/Estimates/ELSA/crossvalidation/
 FEM_Stata/Estimates/ELSA/estim_parameters*
 FEM_Stata/Estimates/ELSA/estimatesCV*
 FEM_Stata/Estimates/ELSA/estimatesELSA*
