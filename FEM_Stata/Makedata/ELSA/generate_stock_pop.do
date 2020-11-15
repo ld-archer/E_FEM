@@ -63,7 +63,7 @@ drop _merge
 
 keep if simulation == 1
 
-saveold $outdata/ELSA_stock_base_CV.dta, replace v(12)
+saveold $outdata/ELSA_stock_base_CV1.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_base_CV.dta, replace v(12)
 
 
@@ -76,8 +76,8 @@ restore
 *   Save pop for re-weighting
 
 * Keep respondents from wave 5, and set entry as 2010 for cross-validation
-keep if wave == 3
-gen entry = 2002
+keep if wave == 5
+gen entry = 2010
 
 * Drop the deceased - TO DO: Fix this, as we want deceased in first year of simulation
 drop if died == 1
