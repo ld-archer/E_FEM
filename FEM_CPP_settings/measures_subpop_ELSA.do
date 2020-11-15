@@ -74,4 +74,4 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 5564 6574 65p 7584 85p obese notObese anyadl noadl
+local subpop all m f
