@@ -22,8 +22,8 @@ FEM_Stata/Estimation/test.xml
 
 # Model files (built in workflow)
 FEM_CPP_settings/ELSA/models/*.est
-FEM_CPP_settings/ELSA/models/crossvalidation/*.est
-FEM_CPP_settings/ELSA_cross-validation/models/*.est
+FEM_CPP_settings/ELSA_cross-validation1/models/*.est
+FEM_CPP_settings/ELSA_cross-validation2/models/*.est
 FEM_CPP_settings/ELSA_minimal/models/*.est
 FEM_Stata/Estimates/ELSA/*.ster
 FEM_Stata/Estimates/minimal/*.ster
