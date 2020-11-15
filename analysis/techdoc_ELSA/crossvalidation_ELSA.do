@@ -12,7 +12,7 @@ log using crossvalidation_ELSA.log, replace
 
 * Path to files
 *local output "$output_dir/ELSA_CrossValidation"
-local output "../../output/ELSA_CrossValidation"
+local output "../../output/ELSA_CrossValidation1"
 *local input "$outdata"
 local input "../../input_data"
 
