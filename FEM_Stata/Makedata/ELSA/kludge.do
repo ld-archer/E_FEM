@@ -2,6 +2,9 @@
 
 * Kludge section -  these are all variables that will be either eliminated from the simulation or developed in the data.
 
+* Set up var for deciding between base and CV1/CV2 
+local scen `1'
+
 * For earnings
 gen iearnuc = 0
 gen iearnx = 0
@@ -89,79 +92,65 @@ gen mcare_pta = 0
 gen mcare_ptb = 0
 gen medicare_elig = 0
 
-* Drop cases if missing smkstat vars
-*drop if missing(smkstat) & missing(l2smkstat)
+if "`scen'" == "base" {
+    local hotdeck_vars logbmi white
+}
+else if "`scen'" == "CV1" | "`scen'" == "CV2" {
+    local hotdeck_vars logbmi 
+}
+else {
+    di "Something has gone wrong with kludge.do, this error should not be reachable"
+}
 
-* Handle health limits work missing values
-* If missing, first try to infer from lagged value (is this a good idea?)
-replace hlthlm = l2hlthlm if missing(hlthlm)
-replace l2hlthlm = hlthlm if missing(l2hlthlm)
-* If still missing, going to assume patient is either not currently 
-* working (so can't say if health limited) or simply is not limited by health
-* THIS COULD BE PROBLEMATIC, NEED TO UNDERSTAND WHY MISSING
-replace hlthlm = 0 if missing(hlthlm)
-replace l2hlthlm = 0 if missing(l2hlthlm)
+*** ELSA Specific Imputation ***
+* Current vars missing info should be hotdecked before any other imputation
+* Removed: cancre diabe hearte hibpe lunge stroke arthre psyche
+foreach var of varlist `hotdeck_vars' {
+    hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
+    use hotdeck_data/`var'_imp1.dta, clear
+}
 
-* Handle missing atotf data
-replace atotf = l2atotf if missing(atotf) & !missing(l2atotf)
-replace l2atotf = atotf if missing(l2atotf) & !missing(atotf)
+* Impute some vars by simply copying lag to current and/or vice versa
+foreach var of varlist atotf itearn asthmae hlthlm parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev {
+    replace `var' = l2`var' if missing(`var') & !missing(l2`var')
+    replace l2`var' = `var' if missing(l2`var') & !missing(`var')
+}
 
-* Handle missing itearn data
-replace itearn = l2itearn if missing(itearn) & !missing(l2itearn)
-replace l2itearn = itearn if missing(l2itearn) & !missing(itearn)
+* Some vars still missing values so best to set most of these to 0
+foreach var of varlist asthmae hlthlm parkine {
+    replace `var' = 0 if missing(`var')
+    replace l2`var' = 0 if missing(l2`var')
+}
 
-replace asthmae = l2asthmae if missing(asthmae) & !missing(l2asthmae)
-replace l2asthmae = asthmae if missing(l2asthmae) & !missing(asthmae)
-replace asthmae = 0 if missing(asthmae)
-replace l2asthmae = 0 if missing(l2asthmae)
 
-replace parkine = l2parkine if missing(parkine) & !missing(l2parkine)
-replace l2parkine = parkine if missing(l2parkine) & !missing(parkine)
-
-replace parkine = 0 if missing(parkine)
-replace l2parkine = 0 if missing(l2parkine)
-
-replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
-replace retemp = l2retemp if missing(retemp) & !missing(l2retemp)
+* Retemp slightly more complicated
 replace retemp = 0 if missing(retemp) & age < 65
 replace retemp = 1 if missing(retemp) & age > 65
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
-
-replace exstat = l2exstat if missing(exstat)
-replace l2exstat = exstat if missing(l2exstat)
-
+* Exstat more complicated still due to dummy variables
+* Exstat == 3 is most common value, 3 is moderate/heavy exercise more than once a week
 replace exstat = 3 if missing(exstat)
 replace l2exstat = 3 if missing(l2exstat)
-
 replace exstat1 = l2exstat1 if missing(exstat1)
 replace exstat2 = l2exstat2 if missing(exstat2)
 replace exstat3 = l2exstat3 if missing(exstat3)
-
 * Handle missing lagged exstat vars
 replace l2exstat1 = exstat1 if missing(l2exstat1)
 replace l2exstat2 = exstat2 if missing(l2exstat2)
 replace l2exstat3 = exstat3 if missing(l2exstat3)
 
-
-*** Cut from reshape_long to only impute these values for stock and repl population ***
-** Part of trying to run FEM model with no imputation in transition model datasets. Only using COMPLETE CASES **
-* Try to hotdeck all the chronic disease vars
-* Removed: cancre diabe hearte hibpe lunge stroke arthre psyche
-foreach var of varlist logbmi white {
-    hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
-    use hotdeck_data/`var'_imp1.dta, clear
-}
-
 * Now replace any missing lag with current, and assign the lag as the value for flogbmi50
 replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)
 gen flogbmi50 = l2logbmi
 
+
+/*
 * Now handle logical accounting with drinking and smoking
 replace drinkd = 0 if drink == 0
 replace smokev = 1 if smoken == 1
 
 * Now replace lag with current if missing lag for all hotdecked vars
-foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev exstat {
+foreach var of varlist  {
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
 

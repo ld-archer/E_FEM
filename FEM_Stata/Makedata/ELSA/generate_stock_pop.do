@@ -11,28 +11,83 @@ local out_file : env OUTPUT
 use $outdata/ELSA_long.dta, clear
 *use ../../../input_data/ELSA_long.dta, clear
 
+
+*** Need to produce multiple stock populations for cross-validation
+preserve
+
 * Keep respondents in wave 6
 keep if wave == 6
 gen entry = 2012 /* First wave is 2002 so 6th is 2012 */
-
-* Make sure no l2smkstat variables are missing (otherwise CrossSectionalModule/summary_output breaks(?))
-replace l2smkstat = smkstat if missing(l2smkstat) & !missing(smkstat)
-codebook l2smkstat
-*drop if missing(l2smkstat)
 
 * Drop the deceased - TO DO: Fix this, as we want deceased in first year of simulation
 drop if died == 1
 
 replace l2age = age - 2 if missing(l2age)
 
-saveold $outdata/ELSA_stock_base_noImpute.dta, replace v(12)
-
 *** KLUDGE ***
-do kludge.do
+do kludge.do base
 
 * Save the file
 saveold $outdata/ELSA_stock_base.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_base.dta, replace v(12)
 
+
+*** Now generate cross-validation population 1 (CV1)
+restore
+preserve
+
+* For CV1 pop:
+*   Keep wave 3
+*   Do processing and kludge.do
+*   Merge with crossvalidation.dta (keepusing simulation))
+*   Keep only simulation == 1
+*   Save pop for re-weighting
+
+* Keep respondents from wave 3, but set entry as 2002 for cross-validation
+keep if wave == 3
+gen entry = 2002
+
+* Drop the deceased - TO DO: Fix this, as we want deceased in first year of simulation
+drop if died == 1
+
+replace l2age = age - 2 if missing(l2age)
+
+*** KLUDGE ***
+do kludge.do CV1
+
+* merge on transition ID for cross-validation
+merge m:1 idauniq using "$outdata/cross_validation/crossvalidation.dta", keepusing(simulation)
+tab _merge
+drop if _m==2
+drop _merge
+
+keep if simulation == 1
+
+saveold $outdata/ELSA_stock_base_CV.dta, replace v(12)
+*saveold ../../../input_data/ELSA_stock_base_CV.dta, replace v(12)
+
+
+*** Now cross-validation population 2 (CV2)
+restore
+
+* For CV2 pop:
+*   Keep wave 5
+*   Do processing and kludge.do
+*   Save pop for re-weighting
+
+* Keep respondents from wave 5, and set entry as 2010 for cross-validation
+keep if wave == 3
+gen entry = 2002
+
+* Drop the deceased - TO DO: Fix this, as we want deceased in first year of simulation
+drop if died == 1
+
+replace l2age = age - 2 if missing(l2age)
+
+*** KLUDGE ***
+do kludge.do CV2
+
+saveold $outdata/ELSA_stock_base_CV2.dta, replace v(12)
+*saveold ../../../input_data/ELSA_stock_base_CV2.dta, replace v(12)
 
 capture log close
