@@ -19,7 +19,7 @@ local scen : env measures_suffix
 local filename summary_output_`scen'.txt
 
 * Measures and subpopulations are defined here
-include measures_subpop_`scen'.do
+include measures_subpop_ELSA.do
 
 
 * Setup the file, header, and required outcomes ...
