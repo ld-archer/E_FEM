@@ -116,12 +116,10 @@ foreach var of varlist atotf itearn asthmae hlthlm parkine retemp exstat cancre 
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
 
-* Some vars still missing values so best to set most of these to 0
-foreach var of varlist asthmae hlthlm parkine {
-    replace `var' = 0 if missing(`var')
-    replace l2`var' = 0 if missing(l2`var')
+* Some lags still missing stuff
+foreach var of varlist arthre asthmae cancre diabe hearte hibpe lunge psyche stroke hlthlm parkine {
+    replace l2`var' = 0 if missing(`var') & missing(l2`var')
 }
-
 
 * Retemp slightly more complicated
 replace retemp = 0 if missing(retemp) & age < 65
@@ -143,16 +141,9 @@ replace l2exstat3 = exstat3 if missing(l2exstat3)
 replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)
 gen flogbmi50 = l2logbmi
 
-
-/*
 * Now handle logical accounting with drinking and smoking
 replace drinkd = 0 if drink == 0
 replace smokev = 1 if smoken == 1
-
-* Now replace lag with current if missing lag for all hotdecked vars
-foreach var of varlist  {
-    replace l2`var' = `var' if missing(l2`var') & !missing(`var')
-}
 
 * Still missing some l2drink
 replace drink = 1 if missing(drink)
@@ -162,20 +153,13 @@ replace l2smoken = 0 if missing(l2smoken)
 * Missing 140 odd l2smokev
 replace l2smokev = 0 if missing(l2smokev)
 
-* Still 1 person missing arthre and l2arthre for some reason
-*drop if missing(arthre) & missing(l2arthre)
-replace arthre = 0 if missing(arthre) & missing(l2arthre)
-replace l2arthre = 0 if missing(arthre) & missing(l2arthre)
-replace l2arthre = 0 if missing(l2arthre)
-
-* Still missing chron disease information for 1 person
-replace l2cancre = 0 if missing(cancre) & missing(l2cancre)
-replace l2diabe = 0 if missing(diabe) & missing(l2diabe)
-replace l2hearte = 0 if missing(hearte) & missing(l2hearte)
-replace l2hibpe = 0 if missing(hibpe) & missing(l2hibpe)
-replace l2lunge = 0 if missing(lunge) & missing(l2lunge)
-replace l2psyche = 0 if missing(psyche) & missing(l2psyche)
-replace l2stroke = 0 if missing(stroke) & missing(l2stroke)
+* Replace smoke_start and smoke_stop vars
+replace smoke_start = 1 if l2smoken == 0 & smoken == 1 & missing(smoke_start)
+replace smoke_start = 0 if l2smoken == 0 & smoken == 0 & missing(smoke_start)
+replace smoke_stop = 1 if l2smoken == 1 & smoken == 0 & missing(smoke_stop)
+replace smoke_stop = 0 if l2smoken == 1 & smoken == 1 & missing(smoke_stop)
+replace smoke_start = 0 if missing(smoke_start)
+replace smoke_stop = 0 if missing(smoke_stop)
 
 * Handle missing smkstat data
 replace smkstat = 1 if smokev == 0 & smoken == 0 & missing(smkstat)
@@ -185,23 +169,6 @@ replace smkstat = l2smkstat if missing(smkstat)
 replace l2smkstat = smkstat if missing(l2smkstat)
 replace smkstat = 2 if missing(smkstat)
 replace l2smkstat = 2 if missing(l2smkstat)
-
-* Replace smoke_start and smoke_stop vars
-replace smoke_start = 1 if l2smoken == 0 & smoken == 1 & missing(smoke_start)
-replace smoke_start = 0 if l2smoken == 0 & smoken == 0 & missing(smoke_start)
-replace smoke_stop = 1 if l2smoken == 1 & smoken == 0 & missing(smoke_stop)
-replace smoke_stop = 0 if l2smoken == 1 & smoken == 1 & missing(smoke_stop)
-replace smoke_start = 0 if missing(smoke_start)
-replace smoke_stop = 0 if missing(smoke_stop)
-
-
-* Update drinkd_stat after hotdecking
-replace drinkd_stat = 1 if drinkd == 0
-replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
-replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
-replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
-
-replace l2drinkd_stat = drinkd_stat if missing(l2drinkd_stat) & !missing(drinkd_stat)
 
 * Now handle missing drinkd# data
 replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
@@ -213,4 +180,8 @@ replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
 replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
 replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
 
-* Handle missing education
+* Update drinkd_stat after hotdecking
+replace drinkd_stat = 1 if drinkd == 0
+replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
+replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
+replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
