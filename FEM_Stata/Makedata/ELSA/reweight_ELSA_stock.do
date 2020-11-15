@@ -56,6 +56,9 @@ count if weight > 0
 replace weight = 0 if cwtresp == 0 | v == 0 
 count if weight > 0
 
+* Some people (for CV scenarios) are missing cwtresp variable. Can't use these, must replace weight = 0
+replace weight = 0 if missing(cwtresp)
+
 * Save all the different variants
 if "`scen'" == "base" {
 	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)

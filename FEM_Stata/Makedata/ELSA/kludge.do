@@ -95,8 +95,11 @@ gen medicare_elig = 0
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white
 }
-else if "`scen'" == "CV1" | "`scen'" == "CV2" {
-    local hotdeck_vars logbmi 
+else if "`scen'" == "CV1" |  {
+    local hotdeck_vars logbmi
+}
+else if "`scen'" == "CV2" {
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre smokef psyche asthmae parkine atotf drinkd ipubpen itearn retage
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -122,9 +125,11 @@ foreach var of varlist arthre asthmae cancre diabe hearte hibpe lunge psyche str
 }
 
 * Retemp slightly more complicated
-replace retemp = 0 if missing(retemp) & age < 65
+replace retemp = 0 if missing(retemp) & age <= 65
 replace retemp = 1 if missing(retemp) & age > 65
 replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
+replace l2retemp = 0 if missing(l2retemp) & age <= 67
+replace l2retemp = 1 if missing(l2retemp) & age > 67
 * Exstat more complicated still due to dummy variables
 * Exstat == 3 is most common value, 3 is moderate/heavy exercise more than once a week
 replace exstat = 3 if missing(exstat)
@@ -170,6 +175,14 @@ replace l2smkstat = smkstat if missing(l2smkstat)
 replace smkstat = 2 if missing(smkstat)
 replace l2smkstat = 2 if missing(l2smkstat)
 
+* Update drinkd_stat after hotdecking
+replace drinkd_stat = 1 if drinkd == 0
+replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
+replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
+replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
+* Set to low - moderate if still missing
+replace drinkd_stat = 2 if missing(drinkd_stat)
+
 * Now handle missing drinkd# data
 replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
 replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
@@ -180,8 +193,3 @@ replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
 replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
 replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
 
-* Update drinkd_stat after hotdecking
-replace drinkd_stat = 1 if drinkd == 0
-replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
-replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
-replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
