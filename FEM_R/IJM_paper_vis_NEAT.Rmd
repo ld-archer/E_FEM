@@ -1,0 +1,772 @@
+---
+title: "IJM Paper Visualisations NEAT"
+output: html_notebook
+---
+
+This notebook will hold the finished visualisation functions written in IJM_paper1_vis_WIP.Rmd. 
+
+This is just so we can come to a single notebook and rerun ALL visualisations that will go into the IJM FEM paper. 
+
+Start with setup.
+
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(reshape2)
+require(ggplot2)
+require(plyr)
+require(data.table)
+
+```
+
+# Validation Stuff
+
+## Cross-validation 2
+
+In this scenario, transition models were estimated from waves 1-4, and the stock population was based on wave 5, with a view to simulating from wave 5-8 (2010-2016). We want to check whether there is a big difference as the model takes over from ELSA data from 2008-2010, in terms of chronic disease prevalence etc.
+
+```{r}
+
+vis_CV2_prev <- function(long, CV2, path) {
+  
+  # Keep only waves 1 - 4
+  longC <- subset(long, wave < 5)
+  longC <- as.data.table(longC)
+  
+  # Replace all NA with 0
+  longC[is.na(longC)] <- 0
+  
+  # Have to drop r*clust vars as they contain strings
+  longC <- select(longC, -contains('clust'))
+  
+  # Now get the weighted mean by wave of every column based on cwtresp
+  l2 <- longC[ , lapply(.SD,weighted.mean,w=cwtresp), by = list(wave)]
+  
+  # ELSA_long is now processed to the point where we can start extracting and combining variables
+  # Better start by adding year to l2 and reordering the columns
+  l2$year <- seq(from=2002, to = 2008, by = 2)
+  setcolorder(l2, c('year', 'wave'))
+  
+  # Now lets extract chronic disease variables from both dataframes and do a row combine
+  # Start with cancre, diabe, hearte
+  cd_l2 <- select(l2, c(year, cancre, diabe, hearte, lunge, smoken, bmi, work, anyadl, anyiadl)) #, adl1, adl2, adl3p))
+  cd_CV2 <- select(CV2, c(year, p_cancre_all, p_diabe_all, 
+                            p_hearte_all, p_lunge_all, p_smoken_all, 
+                            a_bmi_all, p_work_all,  p_anyadl_all, p_anyiadl_all))
+                            #p_adl1_all, p_adl2_all, p_adl3p_all))
+  
+  CV2_rename <- cd_CV2 %>% dplyr::rename('cancre' = p_cancre_all, 
+                                        'diabe' = p_diabe_all, 
+                                        'hearte' = p_hearte_all,
+                                        'lunge' = p_lunge_all,
+                                        'smoken' = p_smoken_all,
+                                        'bmi' = a_bmi_all,
+                                        'work' = p_work_all,
+                                        'anyadl' = p_anyadl_all,
+                                        'anyiadl' = p_anyiadl_all)
+                                        #'adl1' = p_adl1_all,
+                                        #'adl2' = p_adl2_all,
+                                        #'adl3p' = p_adl3p_all)
+  
+  combine <- rbind(cd_l2, CV2_rename)
+  
+  melted <- melt(combine, id.var = 'year', value.name = 'Prevalence')
+  
+  ggplot(data = melted, aes(x = year, y = Prevalence, color = variable)) +
+          geom_line() +
+          facet_wrap(. ~ variable, scales = "free")
+          #theme(panel.spacing.x = unit(1.5, 'lines')) +
+          #labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
+}
+
+# Load in whole stock pop, plus the CV2 summary output file
+long <- read_dta('../input_data/ELSA_long.dta')
+CV2 <- read_dta('ELSA_CrossValidation2/ELSA_CrossValidation2_summary.dta')
+
+vis_CV2_prev(long, CV2, path = 'path')
+
+```
+
+
+# ReduceBMI (NEW SCENARIO I - FULL POPULATION)
+
+## Baseline Initial Prevalence
+
+```{r}
+### visInitBasePrev
+# Inputs:   base
+#           path
+#
+# Output:   bar - 
+#
+# This function... 
+visInitBasePrev <- function(base, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                filter(year == 2012) %>%
+                melt(id.var = 'year', value.name = 'Prevalence') %>%
+                subset(select = -year)
+  
+  bar <- ggplot(data=cdMelted, aes(x=variable, y=Prevalence)) +
+          geom_bar(stat = 'identity') +
+          labs(title='Initial Prevalence', x='Prevalence', y='Chronic Disease')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = 'init_baseline_prevalence.png', 
+         plot = bar,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  bar
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visInitBasePrev(baseline)
+
+```
+
+## Baseline Projections
+
+```{r}
+### visProjectedBaselineCD
+# Inputs:   base - summary output file from the ELSA_Baseline scenario
+#           path - path to the directory where the resulting plot will be saved
+#
+# Output:   tiled - A 3 column tiled plot with the projected prevalence of Cancer, Diabetes, and Heart Disease on the same x axis, with year on the y
+#
+# This function visualises the prevalence of Cancer, Diabetes, and Heart Disease in the Baseline projection of the FEM
+visProjectedBaselineCD <- function(base, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  # Extract vars, rename, and melt to put it in better format for graphing with ggplot2
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                melt(id.var='year', value.name = 'Prevalence')
+  
+  # Create the tiled plot of disease prevalence
+  tiled <- ggplot(data=cdMelted, aes(x=year, y=Prevalence)) +
+            geom_line() +
+            facet_grid(. ~ variable) +
+            theme(panel.spacing.x = unit(1.5, 'lines')) +
+            labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = 'baseline_prevalence.png', 
+         plot = tiled,
+         path = path,
+         width = 10,
+         height = 5)
+  
+  # Show plot
+  tiled
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visProjectedBaselineCD(baseline)
+
+```
+
+## ChronDisease Prevalence Comparison
+
+```{r}
+
+visCDComparison <- function(base, int, cd, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  # For file naming and stuff
+  if(cd == 'cancre') {
+    dis <- 'Cancer'
+  } else if(cd == 'diabe') {
+    dis <- 'Diabetes'
+  } else if(cd == 'hearte') {
+    dis <- 'Heart Disease'
+  }
+  
+  var <- paste0('p_', cd, '_all')
+
+  selBase <- baseline %>%
+              select(c('year', all_of(var))) %>%
+              rename('Baseline' = var)
+  
+  selInt <- int %>%
+              select(c('year', all_of(var))) %>%
+              rename('Intervention' = var)
+  
+  melted <- merge(selBase, selInt, by = 'year') %>%
+              melt(id.var = 'year', value.name = 'Scenario')
+
+  p <- ggplot(data = melted, aes(x = year, y = Scenario, color = variable)) +
+          geom_line() +
+          labs(title = dis, x = 'Year', y = 'Prevalence')
+  
+  f <- paste0(dis, '_prev_intervention.png')
+  
+  ggsave(filename = f, 
+           plot = p,
+           path = path,
+           width = 6,
+           height = 5)
+  
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+int <- read_dta('ELSA_pop_BMI_reduc_obese/ELSA_pop_BMI_reduc_obese_summary.dta')
+
+visCDComparison(baseline, int, 'cancre')
+visCDComparison(baseline, int, 'diabe')
+visCDComparison(baseline, int, 'hearte')
+
+```
+
+## Disability Prevalence Comparison
+
+```{r}
+
+# First do % change from 2012 - 2050
+
+visDisabilityChange <- function(base, int, targetYear, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  selBase <- base %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('Baseline' = p_anyadl_all) %>%
+                filter(year == '2012' | year == targetYear)
+  
+  selInt <- int %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('Intervention' = p_anyadl_all) %>%
+                filter(year == '2012' | year == targetYear)
+  
+  # Merge base and intervention df's
+  selected <- inner_join(selBase, selInt, by = 'year')
+
+  # Calculate the difference between targetYear prev and initial prev
+  newline <- sapply(selected, function(x) x[2] - x[1])
+  
+  # Add the difference as a new row, then transpose and sort out the column names
+  selected <- rbind(selected, newline)
+  new <- data.frame(t(selected))
+  colnames(new) <- c('y2012', 'y2050', 'Difference')
+  
+  # Calculate % change, add onto the df and move rownames into their own row
+  new$change <- (new$Difference / new$y2012) * 100
+  new <- cbind(Scenario = rownames(new), new)
+  rownames(new) <- 1:nrow(new)
+  
+  # Delete first row, artifacts from the previous preparation
+  new <- slice(new, -1)
+  
+  p <- ggplot(data = new, aes(x = Scenario, y = change)) +
+      geom_bar(stat = 'identity') +
+      labs(title = '% Change in Disability Prevalence 2012 - 2050', x = 'Scenario',y = '% Change')
+  
+  ggsave(filename = 'disability_prev_change.png', 
+           plot = p,
+           path = path,
+           width = 6,
+           height = 5)
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+int <- read_dta('ELSA_pop_BMI_reduc_obese/ELSA_pop_BMI_reduc_obese_summary.dta')
+
+visDisabilityChange(baseline, int, 2050)
+
+```
+
+```{r}
+
+visDisabilityChangeOverTime <- function(base, int, targetYear, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  selBase <- base %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('Baseline' = p_anyadl_all)
+  
+  selInt <- int %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('Intervention' = p_anyadl_all)
+  
+  # Merge base and intervention df's
+  selected <- inner_join(selBase, selInt, by = 'year') %>%
+                melt(id.var = 'year', value.name = 'Prevalence')
+  
+  p <- ggplot(data = selected, aes(x = year, y = Prevalence, color = variable)) +
+      geom_line() +
+      labs(title = 'Change in Prevalence of Disability 2012 - 2060', x = 'Year', y = 'Prevalence')
+  
+  ggsave(filename = 'disability_prev_change_overTime.png', 
+           plot = p,
+           path = path,
+           width = 6,
+           height = 5)
+  
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+int <- read_dta('ELSA_pop_BMI_reduc_obese/ELSA_pop_BMI_reduc_obese_summary.dta')
+
+visDisabilityChangeOverTime(baseline, int, 2050)
+
+```
+
+
+
+
+
+
+
+
+
+# Smoking Cessation (SCENARIO II - COHORT) 
+
+## Baseline CD prevalence and survival curve
+
+```{r}
+
+visCohortBase <- function(cohort, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_2/') {
+  # Generate age var
+  cohort$Age <- (cohort$year - 2012) + 50
+  # Survival curve
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  
+  cdMelt <- cohort %>%
+              select(c('Age', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+              rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+              melt(id.var='Age', value.name='Prevalence')
+  
+  p1 <- ggplot(data=cohort, aes(x=Age, y=Survival)) +
+          geom_line() +
+          labs(title = 'Survival Curve')
+  
+  ggsave(filename = 'cohort_survival_curve.png', 
+         plot = p1,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p2 <- ggplot(data=cdMelt, aes(x=Age, y=Prevalence)) +
+          geom_line() +
+          facet_grid(. ~ variable) +
+          theme(panel.spacing.x = unit(1.5, 'lines')) +
+          labs(title = 'Chronic Disease Prevalence in Cohort')
+  
+  ggsave(filename = 'cohort_base_prev.png', 
+         plot = p2,
+         path = path,
+         width = 10,
+         height = 5)
+  
+  p1
+  p2
+  
+}
+
+cohort <- read_dta('ELSA_cohort/ELSA_cohort_summary.dta')
+
+visCohortBase(cohort)
+
+```
+
+## Intervention CD prev and survival curve comparison
+
+```{r}
+
+cohort <- read_dta('ELSA_cohort/ELSA_cohort_summary.dta')
+noSmoke <- read_dta('ELSA_CnoSmoke/ELSA_CnoSmoke_summary.dta')
+
+visSmokIntervention <- function(cohort, intervention, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_2/') {
+  
+  # Calculate age and survival curves
+  cohort$Age <- (cohort$year - 2012) + 50
+  intervention$Age <- (intervention$year - 2012) + 50
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
+  
+  survivals <- data.frame(cohort$Age, cohort$Survival, intervention$Survival)
+  
+  survivals <- survivals %>%
+                 rename('Age' = cohort.Age, 'Baseline' = cohort.Survival, 'No Smoking' = intervention.Survival) %>%
+                 melt(id.var = 'Age', value.name = 'Survival')
+  
+  p1 <-ggplot(data = survivals, aes(x=Age, y=Survival, color = variable)) +
+        geom_line() +
+        labs(title = 'Baseline vs Non-smoking', x = 'Age', y = 'Survival')
+  
+  ggsave(filename = 'cohort_and_intervention_survival_curve.png', 
+         plot = p1,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  # Now do the chronic disease comparison graphs
+  # Collect data for each disease separately
+  cancre <- data.frame(cohort$Age, cohort$p_cancre_all, noSmoke$p_cancre_all)
+  diabe <- data.frame(cohort$Age, cohort$p_diabe_all, noSmoke$p_diabe_all)
+  hearte <- data.frame(cohort$Age, cohort$p_hearte_all, noSmoke$p_hearte_all)
+  lunge <- data.frame(cohort$Age, cohort$p_lunge_all, noSmoke$p_lunge_all)
+  
+  cancre <- cancre %>%
+              rename('Age' = cohort.Age, 'Baseline' = cohort.p_cancre_all, 'No Smoking' = noSmoke.p_cancre_all) %>%
+              melt(id.var = 'Age', value.name = 'Prevalence')
+  
+  diabe <- diabe %>%
+              rename('Age' = cohort.Age, 'Baseline' = cohort.p_diabe_all, 'No Smoking' = noSmoke.p_diabe_all) %>%
+              melt(id.var = 'Age', value.name = 'Prevalence')
+  
+  hearte <- hearte %>%
+              rename('Age' = cohort.Age, 'Baseline' = cohort.p_hearte_all, 'No Smoking' = noSmoke.p_hearte_all) %>%
+              melt(id.var = 'Age', value.name = 'Prevalence')
+  
+  lunge <- lunge %>%
+              rename('Age' = cohort.Age, 'Baseline' = cohort.p_lunge_all, 'No Smoking' = noSmoke.p_lunge_all) %>%
+              melt(id.var = 'Age', value.name = 'Prevalence')
+  
+  p2 <- ggplot(data = cancre, aes(x = Age, y = Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = 'Cancer', x = 'Age', y = 'Prevalence')
+  
+  ggsave(filename = 'cancre_cohort_intervention.png', 
+         plot = p2,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p3 <- ggplot(data = diabe, aes(x = Age, y = Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = 'Diabetes', x = 'Age', y = 'Prevalence')
+  
+  ggsave(filename = 'diabe_cohort_intervention.png', 
+         plot = p3,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p4 <- ggplot(data = hearte, aes(x = Age, y = Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = 'Heart Disease', x = 'Age', y = 'Prevalence')
+  
+  ggsave(filename = 'hearte_cohort_intervention.png', 
+         plot = p4,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p5 <- ggplot(data = lunge, aes(x = Age, y = Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = 'Lung Disease', x = 'Age', y = 'Prevalence')
+  
+  ggsave(filename = 'lunge_cohort_intervention.png', 
+         plot = p5,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p1
+  p2
+  p3
+  p4
+  p5
+  
+}
+
+visSmokIntervention(cohort, noSmoke)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# OLD - DEFUNKT CHUNKS
+
+# Chronic Disease Prevalence (OLD SCENARIO I - FULL POPULATION)
+
+## Baseline Initial Prevalence
+
+```{r}
+### visInitBasePrev
+# Inputs:   base
+#           path
+#
+# Output:   bar - 
+#
+# This function... 
+visInitBasePrev <- function(base, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                filter(year == 2012) %>%
+                melt(id.var = 'year', value.name = 'Prevalence') %>%
+                subset(select = -year)
+  
+  bar <- ggplot(data=cdMelted, aes(x=variable, y=Prevalence)) +
+          geom_bar(stat = 'identity') +
+          labs(title='Initial Prevalence', x='Prevalence', y='Chronic Disease')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = 'init_baseline_prevalence.png', 
+         plot = bar,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  bar
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visInitBasePrev(baseline)
+
+```
+
+## Baseline Projections
+
+```{r}
+### visProjectedBaselineCD
+# Inputs:   base - summary output file from the ELSA_Baseline scenario
+#           path - path to the directory where the resulting plot will be saved
+#
+# Output:   tiled - A 3 column tiled plot with the projected prevalence of Cancer, Diabetes, and Heart Disease on the same x axis, with year on the y
+#
+# This function visualises the prevalence of Cancer, Diabetes, and Heart Disease in the Baseline projection of the FEM
+visProjectedBaselineCD <- function(base, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  # Extract vars, rename, and melt to put it in better format for graphing with ggplot2
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                melt(id.var='year', value.name = 'Prevalence')
+  
+  # Create the tiled plot of disease prevalence
+  tiled <- ggplot(data=cdMelted, aes(x=year, y=Prevalence)) +
+            geom_line() +
+            facet_grid(. ~ variable) +
+            theme(panel.spacing.x = unit(1.5, 'lines')) +
+            labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = 'baseline_prevalence.png', 
+         plot = tiled,
+         path = path,
+         width = 10,
+         height = 5)
+  
+  # Show plot
+  tiled
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visProjectedBaselineCD(baseline)
+
+```
+
+```{r}
+### visProjectedBySubpop
+# Inputs:   base - 
+#           path - 
+#           cd - chronic disease to visualise
+#
+# Output:   None
+#
+# This function visualises the baseline prevalence of a chronic disease broken down by subpopulations. Currently, the subpopulations included are: 
+# - obese/not obese 
+# - disabled (anyadl==1)/not disabled 
+# - age splines (55-64,65-74,75-84,85p)
+visProjectedBySubpop <- function(base, cd, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  if(cd == 'cancre') {
+    dis <- 'Cancer'
+  } else if(cd == 'diabe') {
+    dis <- 'Diabetes'
+  } else if(cd == 'hearte') {
+    dis <- 'Heart Disease'
+  }
+  
+  # Generate varnames
+  all <- paste0('p_', cd, '_all')
+  # obesity
+  obese <- paste0('p_', cd, '_obese')
+  notObese <- paste0('p_', cd, '_notObese')
+  # disability
+  adl <- paste0('p_', cd, '_anyadl')
+  noadl <- paste0('p_', cd, '_noadl')
+  # age
+  a5564 <- paste0('p_', cd, '_5564')
+  a6574 <- paste0('p_', cd, '_6574')
+  a7584 <- paste0('p_', cd, '_7584')
+  a85p <- paste0('p_', cd, '_85p')
+  
+  obeseMelt <- base %>%
+              select(c('year', all_of(all), all_of(obese), all_of(notObese))) %>%
+              rename('All' = all, 'Obese' = obese, 'Healthy Weight' = notObese) %>%
+              melt(id.var='year', value.name = 'Prevalence')
+  
+  adlMelt <- base %>%
+              select(c('year', all_of(all), adl, noadl)) %>%
+              rename('All' = all, 'Disabled' = adl, 'Able' = noadl) %>%
+              melt(id.var='year', value.name = 'Prevalence')
+  
+  ageMelt <- base %>%
+              select(c('year', a5564, a6574, a7584, a85p)) %>%
+              rename('55 to 64' = a5564, '65 to 74' = a6574, '75 to 64' = a7584, '85+' = a85p) %>%
+              melt(id.var = 'year', value.name = 'Prevalence')
+  
+  p1 <- ggplot(data=obeseMelt, aes(x=year, y=Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = dis, x = 'Year', y = 'Prevalence')
+  
+  f1 <- paste0(cd, '_prev_by_obesity.png')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = f1, 
+         plot = p1,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p2 <- ggplot(data=adlMelt, aes(x=year, y=Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = dis, x = 'Year', y = 'Prevalence')
+  
+  f2 <- paste0(cd, '_prev_by_disability.png')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = f2, 
+         plot = p2,
+         path = path,
+         width = 6,
+         height = 5)
+  
+  p3 <- ggplot(data=ageMelt, aes(x=year, y=Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = dis, x = 'Year', y = 'Prevalence')
+  
+  f3 <- paste0(cd, '_prev_by_age.png')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = f3, 
+         plot = p3,
+         path = path,
+         width = 6,
+         height = 5)
+  p1
+  p2
+  p3
+
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visProjectedBySubpop(baseline, cd = 'cancre')
+visProjectedBySubpop(baseline, cd = 'diabe')
+visProjectedBySubpop(baseline, cd = 'hearte')
+
+```
+
+
+## Disability Comparison 2012 - 2040
+
+This one is slightly more tricky to think about so need a plan. 
+
+I want to compare the prevalence of anyadl in 2012 and 2050 (or 2040, or 2060). So first I need to extract the prevalence of anyadl from all scenarios I want to compare. 
+
+```{r}
+
+visDisabilityComparison <- function(base, ten, fifty, hundred, targetYear, cd,  path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  selBase <- base %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('Baseline' = p_anyadl_all) %>%
+                filter(year == '2012' | year == targetYear)
+  
+  selC10 <- ten %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('10%' = p_anyadl_all) %>%
+                filter(year == '2012' | year == targetYear)
+  
+  selC50 <- fifty %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('50%' = p_anyadl_all) %>%
+                filter(year == '2012' | year == targetYear)
+  
+  selC100 <- hundred %>%
+                select(c('year', 'p_anyadl_all')) %>%
+                rename('100%' = p_anyadl_all) %>%
+                filter(year == '2012' | year == targetYear)
+  
+  selected <- inner_join(selBase, selC10)
+  selected <- inner_join(selected, selC50)
+  selected <- inner_join(selected, selC100)
+  selected <- select(selected, -year)
+  
+  newline <- sapply(selected, function(x) x[2] - x[1])
+
+  selected <- rbind(selected, newline)
+  new <- data.frame(t(selected))
+  colnames(new) <- c('y2012', 'y2050', 'Difference')
+  
+  new$change <- (new$Difference / new$y2012) * 100
+  #new <- rename(new, '%Increase' = change)
+  
+  new <- cbind(Scenario = rownames(new), new)
+  rownames(new) <- 1:nrow(new)
+  new$Scenario <- factor(new$Scenario, levels = c('Baseline', '10%', '50%', '100%'))
+  
+  x_name <- paste0(cd, ' Reduction Scenario')
+  
+  p <-ggplot(data = new, aes(x = Scenario, y = change)) +
+        geom_bar(stat = 'identity') +
+        labs(title = 'Increase in Prevalence of Disability (2012 - 2050)', x = x_name, y = '% Increase')
+  
+  fname <- paste0(cd, '_reduc_disability_prev.png')
+  
+  ggsave(filename = fname, 
+         plot = p,
+         path = path,
+         width = 6,
+         height = 5)
+  
+  p
+  
+}
+
+base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+cancre10 <- read_dta('ELSA_pcancre10/ELSA_pcancre10_summary.dta')
+cancre50 <- read_dta('ELSA_pcancre50/ELSA_pcancre50_summary.dta')
+cancre100 <- read_dta('ELSA_pcancre100/ELSA_pcancre100_summary.dta')
+
+diabe10 <- read_dta('ELSA_pdiabe10/ELSA_pdiabe10_summary.dta')
+diabe50 <- read_dta('ELSA_pdiabe50/ELSA_pdiabe50_summary.dta')
+diabe100 <- read_dta('ELSA_pdiabe100/ELSA_pdiabe100_summary.dta')
+
+hearte10 <- read_dta('ELSA_phearte10/ELSA_phearte10_summary.dta')
+hearte50 <- read_dta('ELSA_phearte50/ELSA_phearte50_summary.dta')
+hearte100 <- read_dta('ELSA_phearte100/ELSA_phearte100_summary.dta')
+
+visDisabilityComparison(base, cancre10, cancre50, cancre100, 2050, 'Cancer')
+visDisabilityComparison(base, diabe10, diabe50, diabe100, 2050, 'Diabetes')
+visDisabilityComparison(base, hearte10, hearte50, hearte100, 2050, 'Heart Disease')
+
+
+```
