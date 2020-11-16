@@ -79,6 +79,7 @@ imputation: $(ESTIMATES)/ELSA/educ.ster
 $(ESTIMATES)/ELSA/educ.ster: $(ESTIMATION)/ELSA_estimate_missing_educ.do $(DATADIR)/ELSA_long.dta
 	cd $(ESTIMATION) && datain=$(DATADIR) && dataout=$(ESTIMATES)/ELSA $(STATA) ELSA_estimate_missing_educ.do
 
+
 ### Producing the reweighting data (pop. projection and education)
 
 projections: $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta
@@ -92,7 +93,7 @@ $(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)
 
 ### Reweighting
 
-reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta $(DATADIR)/ELSA_stock_nosmoke.dta $(DATADIR)/ELSA_stock_nodrink.dta $(DATADIR)/ELSA_repl_nosmoke.dta $(DATADIR)/ELSA_repl_nodrink.dta $(DATADIR)/ELSA_stock_noImpute.dta
+reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta
 
 $(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
@@ -100,23 +101,8 @@ $(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_project
 $(DATADIR)/ELSA_stock_CV.dta: $(DATADIR)/ELSA_stock_base_CV.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock_CV.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reweight_ELSA_stock_CV.do
 
-$(DATADIR)/ELSA_stock_nosmoke.dta: $(DATADIR)/ELSA_stock_base_nosmoke.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nosmoke $(STATA) reweight_ELSA_stock.do
-
-$(DATADIR)/ELSA_stock_nodrink.dta: $(DATADIR)/ELSA_stock_base_nodrink.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nodrink $(STATA) reweight_ELSA_stock.do
-
 $(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
-
-$(DATADIR)/ELSA_repl_nosmoke.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nosmoke $(STATA) reweight_ELSA_repl.do
-
-$(DATADIR)/ELSA_repl_nodrink.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_nodrink $(STATA) reweight_ELSA_repl.do
-
-$(DATADIR)/ELSA_stock_noImpute.dta: $(DATADIR)/ELSA_stock_base_noImpute.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_noImpute $(STATA) reweight_ELSA_stock.do
 
 
 ### Transitions
