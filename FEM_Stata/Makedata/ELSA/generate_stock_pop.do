@@ -37,14 +37,14 @@ restore
 preserve
 
 * For CV1 pop:
-*   Keep wave 3
+*   Keep wave 4
 *   Do processing and kludge.do
 *   Merge with crossvalidation.dta (keepusing simulation))
 *   Keep only simulation == 1
 *   Save pop for re-weighting
 
 * Keep respondents from wave 3, but set entry as 2002 for cross-validation
-keep if wave == 3
+keep if wave == 2
 gen entry = 2002
 
 * Drop the deceased - TO DO: Fix this, as we want deceased in first year of simulation
