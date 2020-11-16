@@ -96,7 +96,7 @@ if "`scen'" == "base" {
     local hotdeck_vars logbmi white
 }
 else if "`scen'" == "CV1" |  {
-    local hotdeck_vars logbmi
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken smokef arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre smokef psyche asthmae parkine atotf drinkd ipubpen itearn retage

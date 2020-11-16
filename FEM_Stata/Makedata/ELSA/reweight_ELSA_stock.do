@@ -27,7 +27,7 @@ if "`scen'" == "base" {
 	keep if year == 2012	
 }
 else if "`scen'" == "CV1" {
-	keep if year == 2006
+	keep if year == 2004
 }
 else if "`scen'" == "CV2" {
 	keep if year == 2010
