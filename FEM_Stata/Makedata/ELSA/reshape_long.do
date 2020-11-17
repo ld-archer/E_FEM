@@ -26,7 +26,9 @@ Person unique ID; CoupleID number; Spouse unique ID;
 Interview status (morbidity); Stratification variable; 
 Clustering variable; Person-level cross-sectional weight; 
 Individual interview year; Individual interview month; Birth year; 
-Death year; Age at interview (years); Gender; Education (categ).
+Death year; Age at interview (years); Gender; Education (categ);
+Spouse's Harmonized Education (categ); Mother and Father age left
+education; Marriage status.
 
 Section B: Health::
 ADLs. Some difficulty:
@@ -123,6 +125,7 @@ r*mdactx_e
 r*ltactx_e
 r*drink
 r*drinkd_e
+r*mstat
 ;
 #d cr
 
@@ -191,6 +194,7 @@ foreach var in
     ltactx_e
     drink
     drinkd
+    mstat
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -212,7 +216,7 @@ reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata be
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl
+    drink drinkd educl mstat
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -264,6 +268,7 @@ label variable drinkd "# Days/week has a drink"
 label variable educl "Spouse Harmonised Education Level"
 label variable ramomeduage "Age mother left education"
 label variable radadeduage "Age father left education"
+label variable mstat "Marriage Status"
 
 
 * Use harmonised education var
@@ -291,6 +296,17 @@ gen died = (iwstat == 5) if !missing(iwstat)
 /* Dropping the 0 (inap.? Unknown code) 6 (previously deceased), 7 (dropped from sample) 
 and 9 (non-response, unkown if dead or alive) */
 keep if inlist(iwstat,1,4,5)
+
+* Generate partnership status vars
+* mstat values: 1 - Married
+*               3 - Partnered
+*               4 - Separated
+*               5 - Divorced
+*               7 - Widowed
+*               8 - Never Married
+gen married = mstat == 1
+gen single = inlist(mstat,4,5,8)
+gen widowed = mstat == 7
 
 * FEM uses hhidpn as the person ID
 gen hhidpn = idauniq
@@ -466,6 +482,9 @@ foreach var in
     exstat2
     exstat3
     obese
+    married
+    single
+    widowed
     {;
         gen l2`var' = L.`var';
     };

@@ -12,12 +12,12 @@ replace l2work = 0 if missing(l2work) & age > 67
 replace l2work = 1 if missing(l2work) & age > 67
 
 * For marital status
-gen married = 0
-gen l2married = married
-gen single = 0
-gen l2single = single
-gen widowed = 0
-gen l2widowed = widowed
+*gen married = 0
+*gen l2married = married
+*gen single = 0
+*gen l2single = single
+*gen widowed = 0
+*gen l2widowed = widowed
 
 * for nursing home status
 gen nhmliv = 0

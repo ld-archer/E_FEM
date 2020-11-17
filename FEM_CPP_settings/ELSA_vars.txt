@@ -338,3 +338,8 @@ drinkers = not(l2died) & drink==1
 | Public Health Intervention Scenarios (started Saturday 20th June)
 
 l2m_smokers = not(died) & smoken==1 & smokef < 25
+
+|| IJM Methodological paper
+
+| Variables for education estimation model (used for imputing missing_educ)
+married_educl_interaction = married * educl : Interaction between married and spouse education, value = 0 if not married, value = educl if married : short
