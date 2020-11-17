@@ -19,8 +19,6 @@ RSCRIPT = Rscript
 
 complete: base cross-validation minimal
 
-old: start_data transitions estimates summary_out
-
 base: start_data transitions_base est_base summary_out_base simulation_base
 
 cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV Ttests
@@ -125,14 +123,6 @@ transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_tran
 
 ### Estimates and Summary
 
-estimates:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_bmi1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_bmi1/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_bmi2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_bmi2/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
-
 est_base:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
@@ -142,12 +132,6 @@ est_CV:
 
 est_minimal:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
-
-summary_out:
-	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=validate_ELSA $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
 
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
@@ -172,12 +156,6 @@ simulation_CV:
 
 handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
-
-BMI_valid: 
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate.do
-
-BMI_valid2:
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/validate $(STATA) BMI_impute_validate2.do
 
 Ttests: 
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ $(STATA) crossvalidation_ELSA.do

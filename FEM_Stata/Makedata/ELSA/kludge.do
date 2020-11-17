@@ -102,8 +102,6 @@ replace l2hlthlm = hlthlm if missing(l2hlthlm)
 replace hlthlm = 0 if missing(hlthlm)
 replace l2hlthlm = 0 if missing(l2hlthlm)
 
-gen flogbmi50 = l2logbmi
-
 * Handle missing atotf data
 replace atotf = l2atotf if missing(atotf) & !missing(l2atotf)
 replace l2atotf = atotf if missing(l2atotf) & !missing(atotf)
@@ -154,6 +152,10 @@ foreach var of varlist logbmi white {
     use hotdeck_data/`var'_imp1.dta, clear
 }
 
+* Now replace any missing lag with current, and assign the lag as the value for flogbmi50
+replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)
+gen flogbmi50 = l2logbmi
+
 /*
 * Try to handle missing drink and smoking data
 * Removed: drink 
@@ -176,14 +178,16 @@ foreach var of varlist drink drinkd smoken smokev exstat {
 }
 
 * Still missing some l2drink
-replace l2drink = 1 if missing(l2drink)
+*replace l2drink = 1 if missing(l2drink)
 * Still missing 2 l2smoken
-replace l2smoken = 0 if missing(l2smoken)
+*replace l2smoken = 0 if missing(l2smoken)
 * Missing 140 odd l2smokev
-replace l2smokev = 0 if missing(l2smokev)
+*replace l2smokev = 0 if missing(l2smokev)
 
 * Still 1 person missing arthre and l2arthre for some reason
-drop if missing(arthre) & missing(l2arthre)
+*drop if missing(arthre) & missing(l2arthre)
+replace arthre = 0 if missing(arthre) & missing(l2arthre)
+replace l2arthre = 0 if missing(arthre) & missing(l2arthre)
 
 replace smkstat = 1 if smokev == 0 & smoken == 0 & missing(smkstat)
 replace smkstat = 2 if smokev == 1 & smoken == 0 & missing(smkstat)
