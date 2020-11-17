@@ -21,9 +21,9 @@ complete: ELSA base cross-validation minimal
 
 base: start_data transitions_base est_base summary_out_base simulation_base
 
-cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 Ttests
+cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 Ttests_CV
 
-minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal
+minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
 
 ### Combined rules
@@ -152,8 +152,11 @@ simulation_minimal:
 handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
 
-Ttests: 
-	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ $(STATA) crossvalidation_ELSA.do
+Ttests_CV: 
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=CV1 $(STATA) crossvalidation_ELSA.do
+
+Ttests_minimal:
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA.do
 
 
 ### 

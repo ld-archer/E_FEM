@@ -8,13 +8,21 @@ clear all
 set maxvar 10000
 include ../../fem_env.do
 
-log using crossvalidation_ELSA.log, replace
+local scen: env scen
+
+log using crossvalidation_ELSA_`scen'.log, replace
 
 * Path to files
-*local output "$output_dir/ELSA_CrossValidation"
-local output "../../output/ELSA_CrossValidation1"
-*local input "$outdata"
-local input "../../input_data"
+if "`scen'" == "CV1" {
+	*local output "../../output/ELSA_CrossValidation1"
+	local output "$output_dir/ELSA_CrossValidation1"
+}
+else if "`scen'" == "minimal" {
+	*local output "../../output/ELSA_minimal"
+	local output "$output_dir/output/ELSA_minimal"
+}
+*local input "../../input_data"
+local input "$outdata"
 
 * For processing simulation output
 local iter 10
