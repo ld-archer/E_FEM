@@ -30,6 +30,8 @@ FEM_Stata/Estimates/minimal/*.ster
 FEM_Stata/Estimates/ELSA/crossvalidation1/*.ster
 FEM_Stata/Estimates/ELSA/crossvalidation1/*.xml
 FEM_Stata/Estimates/ELSA/crossvalidation1/*.xls
+FEM_Stata/Estimates/ELSA/crossvalidation1/*.csv
+FEM_Stata/Estimates/ELSA/crossvalidation2/*.csv
 FEM_Stata/Estimates/ELSA/crossvalidation2/*.ster
 FEM_Stata/Estimates/ELSA/crossvalidation2/*.xml
 FEM_Stata/Estimates/ELSA/crossvalidation2/*.xls
