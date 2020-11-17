@@ -50,7 +50,7 @@ global order_names
 *** Set up globals for predictor groups ***
 
 *** Demographics
-global dvars male white hsless college /*missing_educ NEED TO ADD THIS IN AT SOME POINT SOON*/
+global dvars male white hsless college missing_educ
 *** Lagged Age splines
 global lvars_age l2age65l l2age6574 l2age75p
 

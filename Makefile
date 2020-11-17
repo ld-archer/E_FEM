@@ -28,7 +28,7 @@ minimal: start_data transitions_minimal est_minimal summary_out_minimal
 
 ### Combined rules
 
-start_data: stata_extensions.txt populations projections reweight
+start_data: stata_extensions.txt populations imputation projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
 
@@ -70,6 +70,14 @@ $(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_tr
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do
 
 
+### Imputation (Imputing educ variable in GlobalPreInitializationModule, this rule produces the oprobit model for imputing)
+
+imputation: $(ESTIMATES)/ELSA/educ.ster
+
+$(ESTIMATES)/ELSA/educ.ster: $(ESTIMATION)/ELSA_estimate_missing_educ.do $(DATADIR)/ELSA_long.dta
+	cd $(ESTIMATION) && datain=$(DATADIR) && dataout=$(ESTIMATES)/ELSA $(STATA) ELSA_estimate_missing_educ.do
+
+
 ### Producing the reweighting data (pop. projection and education)
 
 projections: $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta
@@ -83,7 +91,7 @@ $(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)
 
 ### Reweighting
 
-reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta $(DATADIR)/ELSA_stock_noImpute.dta
+reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta
 
 $(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
@@ -93,9 +101,6 @@ $(DATADIR)/ELSA_stock_CV.dta: $(DATADIR)/ELSA_stock_base_CV.dta $(DATADIR)/pop_p
 
 $(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
-
-$(DATADIR)/ELSA_stock_noImpute.dta: $(DATADIR)/ELSA_stock_base_noImpute.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base_noImpute $(STATA) reweight_ELSA_stock.do
 
 
 ### Transitions

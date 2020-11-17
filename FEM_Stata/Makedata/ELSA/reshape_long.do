@@ -26,7 +26,9 @@ Person unique ID; CoupleID number; Spouse unique ID;
 Interview status (morbidity); Stratification variable; 
 Clustering variable; Person-level cross-sectional weight; 
 Individual interview year; Individual interview month; Birth year; 
-Death year; Age at interview (years); Gender; Education (categ).
+Death year; Age at interview (years); Gender; Education (categ);
+Spouse's Harmonized Education (categ); Mother and Father age left
+education; Marriage status.
 
 Section B: Health::
 ADLs. Some difficulty:
@@ -80,6 +82,9 @@ r*agey
 ragender
 raeduc_e
 raeducl
+s*educl
+ramomeduage
+radadeduage
 raracem
 r*walkra
 r*dressa
@@ -120,6 +125,7 @@ r*mdactx_e
 r*ltactx_e
 r*drink
 r*drinkd_e
+r*mstat
 ;
 #d cr
 
@@ -188,6 +194,7 @@ foreach var in
     ltactx_e
     drink
     drinkd
+    mstat
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -198,23 +205,10 @@ foreach var in
     } ;
 #d cr
 
-/*
-* Remove impossible BMI values before merging
-replace bmi2 = . if bmi2 < 10
-replace bmi4 = . if bmi4 < 10
-replace bmi6 = . if bmi6 < 10
-replace bmi8 = . if bmi8 < 10
-
-* SO instead of the multiple imputation script written in Stata, I used to R to run a multiple imputation
-* based on the variables used in the stata script (plus a few more)
-* Now going to try to replace the bmi2, bmi4, bmi6, & bmi8 vars with externally imputed data
-merge 1:1 idauniq using $outdata/bmi_imputed_R.dta, nogenerate
-replace bmi2 = bmi2_imp if missing(bmi2)
-replace bmi4 = bmi4_imp if missing(bmi4)
-replace bmi6 = bmi6_imp if missing(bmi6)
-replace bmi8 = bmi8_imp if missing(bmi8)
-*/
-
+* Seperate for renaming spousal vars
+forvalues wv = $firstwave/$lastwave {
+    rename s`wv'educl educl`wv'
+}
 
 * Reshape data from wide to long
 #d ;
@@ -222,7 +216,7 @@ reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata be
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd 
+    drink drinkd educl mstat
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -271,6 +265,10 @@ label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
 label variable drinkd "# Days/week has a drink"
+label variable educl "Spouse Harmonised Education Level"
+label variable ramomeduage "Age mother left education"
+label variable radadeduage "Age father left education"
+label variable mstat "Marriage Status"
 
 
 * Use harmonised education var
@@ -298,6 +296,17 @@ gen died = (iwstat == 5) if !missing(iwstat)
 /* Dropping the 0 (inap.? Unknown code) 6 (previously deceased), 7 (dropped from sample) 
 and 9 (non-response, unkown if dead or alive) */
 keep if inlist(iwstat,1,4,5)
+
+* Generate partnership status vars
+* mstat values: 1 - Married
+*               3 - Partnered
+*               4 - Separated
+*               5 - Divorced
+*               7 - Widowed
+*               8 - Never Married
+gen married = mstat == 1
+gen single = inlist(mstat,4,5,8)
+gen widowed = mstat == 7
 
 * FEM uses hhidpn as the person ID
 gen hhidpn = idauniq
@@ -473,6 +482,9 @@ foreach var in
     exstat2
     exstat3
     obese
+    married
+    single
+    widowed
     {;
         gen l2`var' = L.`var';
     };
@@ -490,14 +502,10 @@ replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
 * We want to assess how many people are missing and being assigned mean value on
 * lines 289-293
 
-* Create any_adl and any_iadl
-gen any_adl = 1 if adlcount > 0
-replace any_adl = 0 if adlcount == 0
-gen any_iadl = 1 if iadlcount > 0
-replace any_iadl = 0 if iadlcount == 0
-
 * Generate a missing education variable
-
+generate missing_educ = missing(educ)
+* Now replace all special missing codes with simple missing (.) This is because the imputation model will only impute records with simple missing
+replace educ = . if missing(educ)
 
 * One record missing data for education
 *drop if missing(educ)

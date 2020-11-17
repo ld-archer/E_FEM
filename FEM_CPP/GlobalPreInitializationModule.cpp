@@ -141,11 +141,16 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 			  p->set(Vars::l2afibe, p->get(Vars::afibe));
 
 			// Predict missing education
-			//if(p->is_missing(Vars::educ)) {
-			//	educ_pred_model->predict(p, random);
-			//	// Accounting for hsless and college
-			//	
-			//}
+			if(p->is_missing(Vars::educ) && educ_model != NULL) {
+				educ_model->predict(p, random);
+				// Accounting for hsless and college
+				if(p->get(Vars::educ) == 1) {
+					p->set(Vars::hsless, 1.0);
+				}
+				else if(p->get(Vars::educ) == 3) {
+					p->set(Vars::college, 1.0);
+				}
+			}
 
 			// Do not do the following for persons that are dead already
 			if (!p->test(Vars::died)) {
@@ -278,12 +283,12 @@ void GlobalPreInitializationModule::setModelProvider(IModelProvider* mp) {
 	  Logger::log("Global Pre-Initialization Module could not find the afibe_prev model\n", WARNING);
   	}
 
-	//try {
-	//  educ_pred_model = mp->get("educ_pred");
-	//} catch (const fem_exception & e) {
-	//  educ_pred_model = NULL;
-	//  Logger::log("Global Pre-Initialization Module could not find the educ_pred model\n", WARNING);
-  	//}
+	try {
+	  educ_model = mp->get("educ");
+	} catch (const fem_exception & e) {
+	  educ_model = NULL;
+	  Logger::log("Global Pre-Initialization Module could not find the educ model\n", WARNING);
+  	}
 
 	if(ss.str().length() > 0)
 	  throw fem_exception(ss.str().c_str());
