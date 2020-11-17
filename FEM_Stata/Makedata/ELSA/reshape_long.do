@@ -504,6 +504,8 @@ replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
 
 * Generate a missing education variable
 generate missing_educ = missing(educ)
+* Now replace all special missing codes with simple missing (.) This is because the imputation model will only impute records with simple missing
+replace educ = . if missing(educ)
 
 * One record missing data for education
 *drop if missing(educ)
