@@ -427,6 +427,11 @@ ggplot(data=base, aes(x=year, y=p_hearte_all)) +
 ggplot(data=pop_rbmi, aes(x=year, y=p_hearte_all)) +
   geom_line()
 
+ggplot(data=base, aes(x=year, y=p_anyadl_all)) +
+  geom_line()
+ggplot(data=pop_rbmi, aes(x=year, y=p_anyadl_all)) +
+  geom_line()
+
 ```
 
 

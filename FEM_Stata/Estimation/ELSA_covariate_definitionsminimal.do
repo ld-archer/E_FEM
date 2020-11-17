@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop
 global bin_econ work hlthlm retemp
-global ols logbmi retage ipubpen atotf itearn smokef
+global ols logbmi retage ipubpen atotf itearn
 global order adlstat iadlstat drinkd drinkd_stat exstat /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
@@ -35,7 +35,6 @@ global ols_names
     "Public Pension Income (All types)"
     "Net Value of Non-housing Financial Wealth"
     "Individual Employment Earnings (annual, after tax)"
-    "Number cigs/day"
 ;
 global order_names 
     "ADL status"
@@ -48,7 +47,7 @@ global order_names
 
 
 *** DEMOGRAPHICS
-global dvars male white hsless college
+global dvars male /*white hsless college*/
 *** Lagged Age splines
 global lvars_age l2age65l l2age6574 l2age75p
 

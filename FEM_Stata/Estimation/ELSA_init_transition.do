@@ -41,11 +41,11 @@ local datain: env DATAIN
 *local extval: env EXTVAL
 
 log using "./init_transition_`defmod'.log", replace
+
+* Use the `scen` argument from Makefile to pick the ster directory
 if !missing("`defmod'") {
-	if "`defmod'" == "CV" {
-		local ster "$local_path/Estimates/ELSA"
-	}
-	else if "`defmod'" == "ELSA" {
+	* Either baseline or one of cross validation models
+	if "`defmod'" == "ELSA" | "`defmod'" == "CV1" | "`defmod'" == "CV2" {
 		local ster "$local_path/Estimates/ELSA"
 	}
 	else if "`defmod'" == "minimal" {
@@ -73,7 +73,7 @@ merge m:1 idauniq using "$outdata/cross_validation/crossvalidation.dta", keepusi
 tab _merge
 drop if _m==2
 
-if "`defmod'" == "CV" {
+if "`defmod'" == "CV1" | "`defmod'" == "CV2" {
 	include ELSA_covariate_definitionsELSA.do
 }
 else {
@@ -81,7 +81,6 @@ else {
 }
 
 include ELSA_sample_selections.do
-*include define_models`defmod'.do
 
 set more off
 
@@ -113,10 +112,17 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
             ch_est_title "`mfx_name'"
             est store b_`n'_mfx
         
-        * For cross validation
-        if "`defmod'" == "CV" {
+        * For cross validation 1
+        if "`defmod'" == "CV1" {
             probit `n' $`x' if `select_`n'' & transition==1
-            est save `ster'/crossvalidation/`n'.ster, replace
+            est save `ster'/crossvalidation1/`n'.ster, replace
+            eststo cv_`n'
+        }
+
+		* For cross validation 2
+        if "`defmod'" == "CV2" {
+            probit `n' $`x' if `select_`n''
+            est save `ster'/crossvalidation2/`n'.ster, replace
             eststo cv_`n'
         }
     }
@@ -126,8 +132,11 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
 esttab mod_* using `ster'/estim_parameters`defmod'.csv, replace
 
 * For cross validation
-if "`defmod'" == "CV" {
-    esttab cv_* using `ster'/crossvalidation/estim_parameters`defmod'.csv, replace
+if "`defmod'" == "CV1" {
+    esttab cv_* using `ster'/crossvalidation1/estim_parameters`defmod'.csv, replace
+}
+else if "`defmod'" == "CV2" {
+	esttab cv_* using `ster'/crossvalidation2/estim_parameters`defmod'.csv, replace
 }
 
 /*********************************************************************/
@@ -152,10 +161,16 @@ foreach n in $ols {
 			ch_est_title "`mfx_name'"
 			est store ols_`n'_mfx
 			
-    	*for cross validation
-    	if "`defmod'" == "CV" {
+    	*for cross validation 1
+    	if "`defmod'" == "CV1" {
     		reg `n' $`x' if `select_`n'' & transition==1
-    		est save `ster'/crossvalidation/`n'.ster, replace
+    		est save `ster'/crossvalidation1/`n'.ster, replace
+		}
+
+		*for cross validation 2
+    	if "`defmod'" == "CV2" {
+    		reg `n' $`x' if `select_`n''
+    		est save `ster'/crossvalidation2/`n'.ster, replace
 		}
 	}
     local i = `i'+1
@@ -186,9 +201,15 @@ foreach n in $order {
 			est store o_`n'_mfx
 			
     	*for cross validation
-    	if "`defmod'" == "CV" {
+    	if "`defmod'" == "CV1" {
 	  	  oprobit `n' $`x' if `select_`n'' & transition==1
-          est save `ster'/crossvalidation/`n'.ster, replace
+          est save `ster'/crossvalidation1/`n'.ster, replace
+		}
+
+		*for cross validation 2
+    	if "`defmod'" == "CV2" {
+	  	  oprobit `n' $`x' if `select_`n''
+          est save `ster'/crossvalidation2/`n'.ster, replace
 		}
 	}
     local i = `i'+1
@@ -207,13 +228,31 @@ else {
 */
 
 *** Output models
-xml_tab b_*, save("`ster'/estimates`defmod'.xls") replace sheet(binaries) pvalue
-xml_tab o_*, save("`ster'/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
-xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
-
 * also write default estimates as a sheet in the file to be distributed with tech appendix
-if("`defmod'" == "ELSA") {
+if "`defmod'" == "ELSA" {
+	xml_tab b_*, save("`ster'/estimates`defmod'.xls") replace sheet(binaries) pvalue
+	xml_tab o_*, save("`ster'/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
+	xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
+
 	xml_tab b_*, save("`ster'/FEM_estimates_table.xml") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/FEM_estimates_table.xml") append sheet(ols) pvalue
+}
+else if "`defmod'" == "CV1" {
+	xml_tab b_*, save("`ster'/crossvalidation1/estimates`defmod'.xls") replace sheet(binaries) pvalue
+	xml_tab o_*, save("`ster'/crossvalidation1/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
+	xml_tab ols_*, save("`ster'/crossvalidation1/estimates`defmod'.xls") append sheet(ols) pvalue
+
+	xml_tab b_*, save("`ster'/crossvalidation1/FEM_estimates_table.xml") replace sheet(binaries) pvalue
+	xml_tab o_*, save("`ster'/crossvalidation1/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
+	xml_tab ols_*, save("`ster'/crossvalidation1/FEM_estimates_table.xml") append sheet(ols) pvalue
+}
+else if "`defmod'" == "CV2" {
+	xml_tab b_*, save("`ster'/crossvalidation2/estimates`defmod'.xls") replace sheet(binaries) pvalue
+	xml_tab o_*, save("`ster'/crossvalidation2/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
+	xml_tab ols_*, save("`ster'/crossvalidation2/estimates`defmod'.xls") append sheet(ols) pvalue
+
+	xml_tab b_*, save("`ster'/crossvalidation2/FEM_estimates_table.xml") replace sheet(binaries) pvalue
+	xml_tab o_*, save("`ster'/crossvalidation2/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
+	xml_tab ols_*, save("`ster'/crossvalidation2/FEM_estimates_table.xml") append sheet(ols) pvalue
 }

@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop
 global bin_econ work hlthlm retemp
-global ols logbmi retage ipubpen atotf itearn smokef
+global ols logbmi retage ipubpen atotf itearn
 global order adlstat iadlstat drinkd drinkd_stat exstat /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
@@ -35,7 +35,6 @@ global ols_names
     "Public Pension Income (All types)"
     "Net Value of Non-housing Financial Wealth"
     "Individual Employment Earnings (annual, after tax)"
-    "Number cigs/day"
 ;
 global order_names 
     "ADL status"
@@ -98,9 +97,6 @@ global allvars_parkine      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drin
 * Look at Hymovitz et. al (1997) for justification for some of the vars as smoking predictors (Could also add var for self-reported health measures as paper says its important)
 global allvars_smoke_start  $dvars $lvars_age l2work l2retemp l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
 global allvars_smoke_stop   $dvars $lvars_age l2work l2retemp l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
-* smokef is xsectional so don't use lags of chronic diseases/choices as right hand variables
-global allvars_smokef       $dvars $lvars_age logbmi drink drinkd2 drinkd3 drinkd4 atotf itearn adl1 adl2 adl3p iadl1 iadl2p psyche
-
 
 
 *** Drinking
@@ -111,7 +107,7 @@ global allvars_drinkd       $dvars $lvars_age l2logbmi $lvars_hlth l2psyche l2ar
 
 *** Logbmi & other health
 global allvars_logbmi       $dvars $lvars_age l2logbmi l2smokev l2smoken `lvars_exercise'
-global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre hibpe diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smokev smoken smokef arthre psyche asthmae parkine drink drinkd1 drinkd2 drinkd3 drinkd4
+global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre hibpe diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smokev smoken arthre psyche asthmae parkine drink drinkd1 drinkd2 drinkd3 drinkd4
 
 
 *** Disabilities

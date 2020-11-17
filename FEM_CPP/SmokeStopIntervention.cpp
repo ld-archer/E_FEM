@@ -71,7 +71,7 @@ void SmokeStopIntervention::intervene(PersonVector& persons, unsigned int year, 
 				// Quit, so turn current off
 				person->set(Vars::smoken,0.0);
 				// Quit so smokef == 0
-				person->set(Vars::smokef,0.0);
+				//person->set(Vars::smokef,0.0);
 				// Maintain smokev status
 				person->set(Vars::smokev,person->get(Vars::l2smokev));
 				// Clean up other vars - didn't start, too

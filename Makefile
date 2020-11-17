@@ -17,18 +17,18 @@ RSCRIPT = Rscript
 
 ### Model runs
 
-complete: base cross-validation minimal
+complete: ELSA base cross-validation minimal
 
 base: start_data transitions_base est_base summary_out_base simulation_base
 
-cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV Ttests
+cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 Ttests_CV
 
-minimal: start_data transitions_minimal est_minimal summary_out_minimal
+minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
 
 ### Combined rules
 
-start_data: stata_extensions.txt populations imputation projections reweight
+start_data: ELSA stata_extensions.txt populations projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
 
@@ -43,10 +43,7 @@ stata_extensions.txt: stata_extensions.do
 
 ELSA: $(DATADIR)/H_ELSA_f_2002-2016.dta
 
-populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta  $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
-
-$(DATADIR)/ELSA_long_imputed.dta: $(MAKEDATA)/reshape_long_new.do $(DATADIR)/H_ELSA_f_2002-2016.dta 
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long_new.do
+populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
 $(DATADIR)/H_ELSA_f_2002-2016.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
@@ -57,13 +54,10 @@ $(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do
 $(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_f_2002-2016.dta
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
-$(DATADIR)/ELSA_stock_base.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
+$(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_stock_pop.do
 
-$(DATADIR)/ELSA_stock_base_CV.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/gen_stock_CV.do $(MAKEDATA)/kludge_CV.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) gen_stock_CV.do
-
-$(DATADIR)/ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta $(MAKEDATA)/generate_replenishing_pop.do $(MAKEDATA)/kludge.do
+$(DATADIR)/ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta $(MAKEDATA)/generate_replenishing_pop.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_replenishing_pop.do
 
 $(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_transition_pop.do
@@ -91,33 +85,34 @@ $(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)
 
 ### Reweighting
 
-reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV.dta $(DATADIR)/ELSA_repl.dta
+reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV2.dta $(DATADIR)/ELSA_repl.dta
 
-$(DATADIR)/ELSA_stock.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
+$(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV2.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
-
-$(DATADIR)/ELSA_stock_CV.dta: $(DATADIR)/ELSA_stock_base_CV.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock_CV.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reweight_ELSA_stock_CV.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=CV1 $(STATA) reweight_ELSA_stock.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=CV2 $(STATA) reweight_ELSA_stock.do
 
 $(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
 
 
 ### Transitions
+# Use the died.est model as the target for the transitions rules, as this model is always required and won't be removed by accident
 
-transitions: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_transition.do
-	cd FEM_Stata/Estimation && datain=$(DATADIR) && dataout=$(DATADIR) $(STATA) ELSA_transition.do
+transitions_base: $(ESTIMATES)/ELSA/died.est
 
-transitions_bmi:
-	cd $(ESTIMATION) $(STATA) ELSA_bmi_trans.do
+transitions_CV: $(ESTIMATES)/ELSA/crossvalidation1/died.est $(ESTIMATES)/ELSA/crossvalidation2/died.est
 
-transitions_base: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do
+$(ESTIMATES)/ELSA/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
 
-transitions_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do
-	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV $(STATA) ELSA_init_transition.do
+$(ESTIMATES)/ELSA/crossvalidation1/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV1 $(STATA) ELSA_init_transition.do
 
-transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do
+$(ESTIMATES)/ELSA/crossvalidation2/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV2 $(STATA) ELSA_init_transition.do
+
+transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=minimal $(STATA) ELSA_init_transition.do
 
 
@@ -127,8 +122,9 @@ est_base:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
 
-est_CV: 
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation/models $(STATA) save_est_cpp.do
+est_CV:
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation1/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation2/models $(STATA) save_est_cpp.do
 
 est_minimal:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
@@ -137,7 +133,8 @@ summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
 
 summary_out_CV:
-	cd FEM_CPP_settings && measures_suffix=ELSA_CV $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 $(STATA) summary_output_gen.do
 
 summary_out_minimal:
 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
@@ -148,8 +145,14 @@ summary_out_minimal:
 simulation_base:
 	$(MPI) ELSA_example.settings.txt
 
-simulation_CV:
-	$(MPI) ELSA_cross-validation.settings.txt
+simulation_CV1:
+	$(MPI) ELSA_cross-validation1.settings.txt
+
+simulation_CV2:
+	$(MPI) ELSA_cross-validation2.settings.txt
+
+simulation_minimal:
+	$(MPI) ELSA_minimal.settings.txt
 
 
 ### Handovers and Validation
@@ -157,8 +160,11 @@ simulation_CV:
 handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
 
-Ttests: 
-	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ $(STATA) crossvalidation_ELSA.do
+Ttests_CV: 
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=CV1 $(STATA) crossvalidation_ELSA.do
+
+Ttests_minimal:
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA.do
 
 
 ### 
@@ -169,14 +175,14 @@ detailed_append:
 
 ### Housekeeping and cleaning
 
-clean: clean_log clean_out
+clean_all: clean clean_total
 
-clean_log:
+clean:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
 
-clean_out:
+clean_total:
 	rm -f output/*/*.dta
 	rm -f output/*/*/*.dta
 	rm -f output/*/*/*.csv

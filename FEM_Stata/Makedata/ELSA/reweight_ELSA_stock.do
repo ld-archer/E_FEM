@@ -6,10 +6,14 @@ local scen : env scen
 
 log using reweight_ELSA_stock_`scen'.log, replace
 
-*use $outdata/ELSA_stock_base.dta, clear
+
+use $outdata/ELSA_stock_base.dta, clear
 *use ../../../input_data/ELSA_stock_base.dta, clear
-use $outdata/ELSA_stock_`scen'.dta, clear
-*use ../../../input_data/ELSA_stock_`scen'.dta, clear
+
+* If not base, one of the 2 cross-validation populations
+if "`scen'" != "base" {
+	use $outdata/ELSA_stock_base_`scen'.dta, clear
+}
 
 * Changed this from 51. Previously dropping ~110 50 YO's
 drop if age < 51
@@ -18,7 +22,16 @@ drop if age < 51
 *merge m:1 male age year using ../../../input_data/pop_projections.dta, keep(matched)
 merge m:1 male age year using $outdata/pop_projections.dta, keep(matched)
 
-keep if year == 2012
+* Different populations are based on different years
+if "`scen'" == "base" {
+	keep if year == 2012	
+}
+else if "`scen'" == "CV1" {
+	keep if year == 2004
+}
+else if "`scen'" == "CV2" {
+	keep if year == 2010
+}
 
 * Check the merge
 tab _merge
@@ -43,13 +56,19 @@ count if weight > 0
 replace weight = 0 if cwtresp == 0 | v == 0 
 count if weight > 0
 
+* Some people (for CV scenarios) are missing cwtresp variable. Can't use these, must replace weight = 0
+replace weight = 0 if missing(cwtresp)
+
 * Save all the different variants
 if "`scen'" == "base" {
 	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
 	saveold $outdata/ELSA_stock.dta, replace v(12)
 }
-else if "`scen'" == "base_noImpute" {
-	saveold $outdata/ELSA_stock_noImpute.dta, replace v(12)
+else if "`scen'" == "CV1" {
+	saveold $outdata/ELSA_stock_CV1.dta, replace v(12)
+}
+else if "`scen'" == "CV2" {
+	saveold $outdata/ELSA_stock_CV2.dta, replace v(12)
 }
 
 
