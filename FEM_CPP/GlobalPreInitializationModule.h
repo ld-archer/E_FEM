@@ -28,7 +28,7 @@ protected:
 	IModel* afibe_prev_model;
 
 	/** Model for imputing missing education information (ELSA) **/
-	IModel* educ_pred_model;
+	IModel* educ_model;
 
 	/** Variable for calculating if the person is eligible for Medicare */
 	IVariable* medicare_elig_var;
