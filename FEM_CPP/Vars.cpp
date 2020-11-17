@@ -358,7 +358,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2smkstat]             = VarInfo("l2smkstat", "Lag of Smoking status, Approx Range [1, 3]", VarTypes::Short);
 	info[Vars::l2smoken]              = VarInfo("l2smoken", "Lag of Current smoking, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2smokev]              = VarInfo("l2smokev", "Lag of Ever Smoked, [0, 1]", VarTypes::Boolean);
-	info[Vars::l2smokef]			= VarInfo("l2smokef", "Lag of number cigarettes/day", VarTypes::Double);
+	//info[Vars::l2smokef]			= VarInfo("l2smokef", "Lag of number cigarettes/day", VarTypes::Double);
 	info[Vars::l2ssclaim]             = VarInfo("l2ssclaim", "Lag of Claiming OASI, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2ssiclaim]            = VarInfo("l2ssiclaim", "Lag of Claiming SSI, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2stroke]              = VarInfo("l2stroke", "Lag of Stroke, [0, 1]", VarTypes::Boolean);
@@ -528,7 +528,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::smkstat]              = VarInfo("smkstat", "Smoking status Approx Range [1, 3]", VarTypes::Short, true);
 	info[Vars::smoken]               = VarInfo("smoken", "Current smoking [0, 1]", VarTypes::Boolean, Vars::smkstat, 3);
 	info[Vars::smokev]               = VarInfo("smokev", "Ever smoked [0, 1]", VarTypes::Boolean, Vars::smkstat, 2);
-	info[Vars::smokef]				= VarInfo("smokef", "Number cigarettes/day", VarTypes::Double);
+	//info[Vars::smokef]				= VarInfo("smokef", "Number cigarettes/day", VarTypes::Double);
 	info[Vars::smoke_start]          = VarInfo("smoke_start", "Transition from not smoking to smoking", VarTypes::Boolean);
 	info[Vars::psmoke_start]		 = VarInfo("psmoke_start", "Probability of transition from not smoking to smoking", VarTypes::Float);
 	//info[Vars::l2smoke_start]		 = VarInfo("l2smoke_start", "Lag of transition from not smoking to smoking", VarTypes::Boolean);
@@ -724,7 +724,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::smkstat] = Vars::l2smkstat;
 	lag_map[Vars::smoken] = Vars::l2smoken;
 	lag_map[Vars::smokev] = Vars::l2smokev;
-	lag_map[Vars::smokef] = Vars::l2smokef;
+	//lag_map[Vars::smokef] = Vars::l2smokef;
 	lag_map[Vars::ssclaim] = Vars::l2ssclaim;
 	lag_map[Vars::ssiclaim] = Vars::l2ssiclaim;
 	lag_map[Vars::stroke] = Vars::l2stroke;

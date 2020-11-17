@@ -22,7 +22,7 @@ local select_died !l2died & wave > 1 & wave <= 6 `CV2'
 * Selection criteria for models with specific requirements
 local select_smoke_start !died & l2smoken == 0 `CV2' /*INCIDENCE*/
 local select_smoke_stop !died & l2smoken == 1 `CV2' /*INCIDENCE*/
-local select_smokef !died & smoken==1 `CV2'
+*local select_smokef !died & smoken==1 `CV2'
 local select_hlthlm !died & wave > 1 `CV2' /*PREVALENCE*/
 local select_ipubpen !died & work == 0 `CV2' 
 local select_retage !died & retemp == 1 `CV2' /*INCIDENCE*/

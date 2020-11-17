@@ -35,7 +35,6 @@ global ols_names
     "Public Pension Income (All types)"
     "Net Value of Non-housing Financial Wealth"
     "Individual Employment Earnings (annual, after tax)"
-    "Number cigs/day"
 ;
 global order_names 
     "ADL status"

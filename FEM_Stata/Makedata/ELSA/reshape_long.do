@@ -105,7 +105,6 @@ r*arthre
 r*bmi 
 r*smokev
 r*smoken
-r*smokef
 r*work
 r*hlthlm
 r*asthmae
@@ -172,7 +171,6 @@ foreach var in
     bmi
     smokev
     smoken
-    smokef
     hhid
     work
     hlthlm
@@ -220,7 +218,7 @@ replace bmi8 = bmi8_imp if missing(bmi8)
 #d ;
 reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre bmi smokev smoken smokef hhid work hlthlm 
+    hearte stroke psyche arthre bmi smokev smoken /*smokef*/ hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd 
 , i(idauniq) j(wave)
@@ -255,7 +253,7 @@ label variable arthre "Arthritis ever"
 label variable bmi "BMI"
 label variable smokev "Smoke ever"
 label variable smoken "Smoke now"
-label variable smokef "Average cigs/day"
+*label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
 label variable work "Working for pay"
 label variable hlthlm "Health limits work"
@@ -439,7 +437,6 @@ foreach var in
     logbmi
     smokev
     smoken
-    smokef
     died
     adlcount
     adlstat
