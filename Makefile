@@ -23,9 +23,7 @@ base: start_data transitions_base est_base summary_out_base simulation_base
 
 cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 Ttests
 
-CV-sidestep: start_data est_CV summary_out_CV simulation_CV1 simulation_CV2
-
-minimal: start_data transitions_minimal est_minimal summary_out_minimal
+minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal
 
 
 ### Combined rules
@@ -144,6 +142,9 @@ simulation_CV1:
 
 simulation_CV2:
 	$(MPI) ELSA_cross-validation2.settings.txt
+
+simulation_minimal:
+	$(MPI) ELSA_minimal.settings.txt
 
 
 ### Handovers and Validation
