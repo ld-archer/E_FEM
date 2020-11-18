@@ -1,7 +1,7 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop chole hipe
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn
 global order adlstat iadlstat drinkd drinkd_stat exstat /*vgactx_e mdactx_e ltactx_e smkstat*/
@@ -23,6 +23,8 @@ global bin_hlth_names
     "Drinks Alcohol"
     "Started Smoking"
     "Stopped Smoking"
+    "High Cholesterol"
+    "Hip Fracture"
 ;
 global bin_econ_names
     "R working for pay"
