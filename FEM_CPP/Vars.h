@@ -45,7 +45,7 @@ namespace Vars
 		chfe,											///< Congestive heart failure {0,1}, stored as Boolean
 		deprsymp,										///< CESD 5+ depression symptoms
 		chldsrh,											///< Self-reported health as a child
-		chole,                      ///< High Cholesterol Ever, stored as Boolean
+		hchole,                      ///< High Cholesterol Ever, stored as Boolean
 		clmwv,                    ///< Approx Range [1, 7], stored as Short
 		cogstate1,                ///< cogstate 1 [0, 1], stored as Boolean
 		cogstate2,                ///< cogstate 2 [0, 1], stored as Boolean
@@ -223,7 +223,7 @@ namespace Vars
 		l2bs_treated,              ///< Lag of treated with bariatric surgery, stored as Boolean
 		l2cancre,                  ///< Lag of Cancer, [0, 1], stored as Boolean
 		l2chfe,										 ///< Lag of Congestive heart failure {0,1}, stored as Boolean
-		l2chole,                    ///< Lag of High Cholesterol, stored as Boolean
+		l2hchole,                    ///< Lag of High Cholesterol, stored as Boolean
 		l2cogstate1,                ///< Lag of cogstate 1 [0, 1], stored as Boolean
 		l2cogstate2,                ///< Lag of cogstate 2 [0, 1], stored as Boolean
 		l2cogstate3,                ///< Lag of cogstate 3 or more [0, 1], stored as Boolean
@@ -405,7 +405,7 @@ namespace Vars
 		pparkine, 					///< Probability of Parkinsons disease, stored as Float
 		paternity,                ///< Count of children fathered (0,1,2), stored as Short
 		pcancre,			      ///< Probability of cancer, stored as Double
-		pchole,                     ///< Probability of High Cholesterol, stored as Float
+		phchole,                     ///< Probability of High Cholesterol, stored as Float
 		pcogstate1,               // Probability cogstate == 1
 		pcogstate2,               // Probability cogstate == 2
 		pcogstate3,               // Probability cogstate == 3

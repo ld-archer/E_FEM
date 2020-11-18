@@ -1,7 +1,7 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop chole hipe
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn
 global order adlstat iadlstat drinkd drinkd_stat exstat /*vgactx_e mdactx_e ltactx_e smkstat*/
@@ -83,17 +83,17 @@ global allvars_died $dvars $lvars_age `lvars_smoke' l2cancre l2diabe l2hibpe l2h
 
 *** Chronic Diseases
 global allvars_cancre       $dvars $lvars_age l2smoken l2logbmi l2drink
-global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
-global allvars_hearte       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2diabe l2psyche /*https://www.bhf.org.uk/informationsupport/risk-factors  https://www.nhsggc.org.uk/your-health/health-services/hsd-patient-carers/heart-disease/risk-factors-for-heart-disease/#*/
-global allvars_hibpe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' `lvars_drink' l2psyche /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure https://cks.nice.org.uk/topics/hypertension-not-diabetic/background-information/risk-factors/ */
+global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe l2hchole /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
+global allvars_hearte       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' `lvars_drink' l2hibpe l2diabe l2psyche l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors  https://www.nhsggc.org.uk/your-health/health-services/hsd-patient-carers/heart-disease/risk-factors-for-heart-disease/#*/
+global allvars_hibpe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' `lvars_drink' l2psyche l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure https://cks.nice.org.uk/topics/hypertension-not-diabetic/background-information/risk-factors/ */
 global allvars_lunge        $dvars $lvars_age l2logbmi `lvars_smoke' /*https://www.healthline.com/health/understanding-idiopathic-pulmonary-fibrosis/chronic-lung-diseases-causes-and-risk-factors#1 https://cks.nice.org.uk/topics/chronic-obstructive-pulmonary-disease/background-information/risk-factors/ */
-global allvars_stroke       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2hearte l2cancre l2hibpe l2diabe
+global allvars_stroke       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2hearte l2cancre l2hibpe l2diabe l2hchole
 
-global allvars_arthre       $dvars $lvars_age l2logbmi `lvars_smoke' l2hearte l2stroke l2hibpe l2diabe l2work
+global allvars_arthre       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' /*https://www.verywellhealth.com/arthritis-causes-and-risk-factors-2549243*/
 global allvars_psyche       $dvars $lvars_age l2logbmi `lvars_smoke' l2hearte l2stroke l2cancre l2hibpe l2diabe l2work
 global allvars_asthmae      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2lunge
 global allvars_parkine      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2diabe l2stroke
-global allvars_chole        $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
+global allvars_hchole        $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
 global allvars_hibpe        $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' `lvars_drink' l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
 
 

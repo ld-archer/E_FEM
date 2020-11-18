@@ -125,7 +125,7 @@ r*ltactx_e
 r*drink
 r*drinkd_e
 r*mstat
-r*chole
+r*hchole
 r*hipe
 ;
 #d cr
@@ -195,7 +195,7 @@ foreach var in
     drink
     drinkd
     mstat
-    chole
+    hchole
     hipe
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
@@ -218,7 +218,7 @@ reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata be
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken /*smokef*/ hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat chole hipe
+    drink drinkd educl mstat hchole hipe
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -271,7 +271,7 @@ label variable educl "Spouse Harmonised Education Level"
 label variable ramomeduage "Age mother left education"
 label variable radadeduage "Age father left education"
 label variable mstat "Marriage Status"
-label variable chole "High Cholesterol Ever"
+label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
 
 
@@ -488,7 +488,7 @@ foreach var in
     married
     single
     widowed
-    chole
+    hchole
     hipe
     {;
         gen l2`var' = L.`var';

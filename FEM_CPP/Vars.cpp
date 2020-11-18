@@ -110,7 +110,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::chfe]					= VarInfo("chfe", "Congestive heart failure {0,1}", VarTypes::Boolean);
 	info[Vars::deprsymp]				= VarInfo("deprsymp", "CESD 5+ depression symptoms", VarTypes::Boolean);
 	info[Vars::chldsrh]                 = VarInfo("chldsrh", "Self-reported health as a child", VarTypes::Short);
-	info[Vars::chole]                   = VarInfo("chole", "High Cholesterol Ever", VarTypes::Boolean);
+	info[Vars::hchole]                   = VarInfo("hchole", "High Cholesterol Ever", VarTypes::Boolean);
 	info[Vars::clmwv]                = VarInfo("clmwv", "Approx Range [1, 7]", VarTypes::Short);
 	info[Vars::cogstate]             = VarInfo("cogstate", "Cognitive Impairment state, (1, 2, 3) = (Demented, CIND, Normal)", VarTypes::Short);
 	info[Vars::cogstate1]            = VarInfo("cogstate1", "Cogstate demented [0, 1]", VarTypes::Boolean, Vars::cogstate, 1);
@@ -284,7 +284,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2bpcontrol]           = VarInfo("l2bpcontrol", "Lag of bpcontrol", VarTypes::Boolean);
 	info[Vars::l2cancre]              = VarInfo("l2cancre", "Lag of Cancer, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2chfe]							  = VarInfo("l2chfe", "Lag of congestive heart failure {0,1}", VarTypes::Boolean);
-	info[Vars::l2chole]               = VarInfo("l2chole", "Lag of High Cholesterol Ever", VarTypes::Boolean);
+	info[Vars::l2hchole]               = VarInfo("l2hchole", "Lag of High Cholesterol Ever", VarTypes::Boolean);
 	info[Vars::l2cogstate1]                 = VarInfo("l2cogstate1", "Lag of cogstate demented [0, 1]", VarTypes::Boolean, Vars::l2cogstate, 1);
 	info[Vars::l2cogstate2]                 = VarInfo("l2cogstate2", "Lag of cogstate CIND [0, 1]", VarTypes::Boolean, Vars::l2cogstate, 2);
 	info[Vars::l2cogstate3]                = VarInfo("l2cogstate3", "Lag of cogstate normal [0, 1]", VarTypes::Boolean, Vars::l2cogstate, 3);
@@ -458,7 +458,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::pparkine]			= VarInfo("pparkine", "Prob(parkinsons disease)", VarTypes::Float);
 	info[Vars::paternity]              = VarInfo("paternity", "Count of children fathered", VarTypes::Short,true);
 	info[Vars::pcancre]              = VarInfo("pcancre", "Prob(cancer)", VarTypes::Float);
-	info[Vars::pchole]              = VarInfo("pchole", "Prob(High Cholesterol)", VarTypes::Float);
+	info[Vars::phchole]              = VarInfo("phchole", "Prob(High Cholesterol)", VarTypes::Float);
 	info[Vars::pcogstate1]           = VarInfo("pcogstate1", "Prob(cogstate = 1)", VarTypes::Float);
 	info[Vars::pcogstate2]           = VarInfo("pcogstate2", "Prob(cogstate = 2)", VarTypes::Float);
 	info[Vars::pcogstate3]           = VarInfo("pcogstate3", "Prob(cogstate = 3)", VarTypes::Float);
@@ -669,7 +669,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::bpcontrol] = Vars::l2bpcontrol;
 	lag_map[Vars::cancre] = Vars::l2cancre;
 	lag_map[Vars::chfe] = Vars::l2chfe;
-	lag_map[Vars::chole] = Vars::l2chole;
+	lag_map[Vars::hchole] = Vars::l2hchole;
 	lag_map[Vars::cogstate1] = Vars::l2cogstate1;
 	lag_map[Vars::cogstate2] = Vars::l2cogstate2;
 	lag_map[Vars::cogstate3] = Vars::l2cogstate3;
@@ -809,7 +809,7 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::smoken] = 		Vars::psmoken;
 	prob_map[Vars::smoke_start] =	Vars::psmoke_start;
 	prob_map[Vars::smoke_stop] =	Vars::psmoke_stop;
-	prob_map[Vars::chole] =         Vars::pchole;
+	prob_map[Vars::hchole] =         Vars::phchole;
 	// Ordered
 	prob_map[Vars::smokev] =		Vars::psmkstat2;
 	prob_map[Vars::smoken] =		Vars::psmkstat3;
