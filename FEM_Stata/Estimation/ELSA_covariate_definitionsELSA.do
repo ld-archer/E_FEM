@@ -93,8 +93,8 @@ global allvars_arthre       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exer
 global allvars_psyche       $dvars $lvars_age l2logbmi `lvars_smoke' l2hearte l2stroke l2cancre l2hibpe l2diabe l2work
 global allvars_asthmae      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2lunge
 global allvars_parkine      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2diabe l2stroke
-global allvars_hchole        $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
-global allvars_hibpe        $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' `lvars_drink' l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
+global allvars_hchole       $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
+global allvars_hipe         $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' `lvars_drink' l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
 
 
 *** Smoking 
