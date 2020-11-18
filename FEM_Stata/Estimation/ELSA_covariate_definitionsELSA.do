@@ -1,7 +1,7 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop chole hipe
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn
 global order adlstat iadlstat drinkd drinkd_stat exstat /*vgactx_e mdactx_e ltactx_e smkstat*/
@@ -23,6 +23,8 @@ global bin_hlth_names
     "Drinks Alcohol"
     "Started Smoking"
     "Stopped Smoking"
+    "High Cholesterol"
+    "Hip Fracture"
 ;
 global bin_econ_names
     "R working for pay"
@@ -91,6 +93,8 @@ global allvars_arthre       $dvars $lvars_age l2logbmi `lvars_smoke' l2hearte l2
 global allvars_psyche       $dvars $lvars_age l2logbmi `lvars_smoke' l2hearte l2stroke l2cancre l2hibpe l2diabe l2work
 global allvars_asthmae      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2lunge
 global allvars_parkine      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' l2diabe l2stroke
+global allvars_chole        $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
+global allvars_hibpe        $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' `lvars_drink' l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
 
 
 *** Smoking 
