@@ -66,7 +66,7 @@ Individual employment earnings; Public pension income;
 drop r*lwtresp
 
 * Keep these variables from the harmonized ELSA
-* REMOVED: r*strat, r*clust
+* REMOVED: r*strat, r*clust, raeduc_e
 #d ;
 keep idauniq
 h*coupid
@@ -78,7 +78,6 @@ rabyear
 radyear
 r*agey
 ragender
-raeduc_e
 raeducl
 s*educl
 ramomeduage
@@ -211,10 +210,11 @@ forvalues wv = $firstwave/$lastwave {
 }
 
 * Reshape data from wide to long
+* REMOVED: strat smokef
 #d ;
-reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
+reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre bmi smokev smoken /*smokef*/ hhid work hlthlm 
+    hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd educl mstat hchole hipe
 , i(idauniq) j(wave)
@@ -287,10 +287,12 @@ gen college = (educ == 3)
 * Label males
 gen male = (ragender == 1) if !missing(ragender)
 label variable male "Male"
+drop ragender
 
 * Label white
 gen white = (raracem == 1) if !missing(raracem)
 label var white "White"
+drop raracem
 
 * Find if dead with iwstat var
 gen died = (iwstat == 5) if !missing(iwstat)
@@ -318,6 +320,7 @@ replace hhid = hhidpn
 * generate birth year and age variable for naming conventions
 gen rbyr = rabyear
 gen age = agey
+drop agey
 
 * Year variable derived from wave (wave 1: 2002-3, wave 2: 2004-5...)
 gen year = 2000 + wave*2

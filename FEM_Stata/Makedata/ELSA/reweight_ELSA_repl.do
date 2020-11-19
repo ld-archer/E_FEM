@@ -64,6 +64,8 @@ drop weight2
 * seen in education_data.dta
 tab rbyr educ [aw=weight] if inrange(rbyr, 1963, 1982), row
 
+* Now drop cwtresp and v as no longer needed
+drop cwtresp v
 
 *saveold ../../../input_data/ELSA_repl.dta, replace v(12)
 *saveold $outdata/ELSA_repl.dta, replace v(12)
