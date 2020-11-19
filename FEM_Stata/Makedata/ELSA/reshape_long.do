@@ -23,8 +23,7 @@ local num_knn 5
 
 Section A: Demographics, Identifiers, and Weights::
 Person unique ID; CoupleID number; Spouse unique ID;
-Interview status (morbidity); Stratification variable; 
-Clustering variable; Person-level cross-sectional weight; 
+Interview status (morbidity); Person-level cross-sectional weight; 
 Individual interview year; Individual interview month; Birth year; 
 Death year; Age at interview (years); Gender; Education (categ);
 Spouse's Harmonized Education (categ); Mother and Father age left
@@ -67,12 +66,11 @@ Individual employment earnings; Public pension income;
 drop r*lwtresp
 
 * Keep these variables from the harmonized ELSA
+* REMOVED: r*strat, r*clust
 #d ;
 keep idauniq
 h*coupid
 r*iwstat
-r*strat 
-r*clust
 r*cwtresp
 r*iwindy
 r*iwindm
@@ -147,10 +145,10 @@ forvalues wv = $firstwave/$lastwave {
 
 * Rename variables to make reshape easier and have names consistent with US FEM
 * Respondent?
+* REMOVED: strat,
 #d ;
 foreach var in 
     iwstat
-    strat
     cwtresp
     iwindy
     iwindm
@@ -301,7 +299,7 @@ gen died = (iwstat == 5) if !missing(iwstat)
 and 9 (non-response, unkown if dead or alive) */
 keep if inlist(iwstat,1,4,5)
 
-* Generate partnership status vars
+* Generate partnership status vars, then drop mstat
 * mstat values: 1 - Married
 *               3 - Partnered
 *               4 - Separated
@@ -311,8 +309,9 @@ keep if inlist(iwstat,1,4,5)
 gen married = mstat == 1
 gen single = inlist(mstat,4,5,8)
 gen widowed = mstat == 7
+drop mstat
 
-* FEM uses hhidpn as the person ID
+* FEM uses hhidpn as the person ID, so can drop idauniq
 gen hhidpn = idauniq
 replace hhid = hhidpn
 
@@ -334,7 +333,7 @@ replace age = (year - rbyr) if age >= 90
 * Label cross-sectional sampling weight var
 label variable cwtresp "Cross-Sectional sampling weight"
 
-* ADL/IADL
+*** ADL/IADL
 egen adlcount = rowtotal(walkra dressa batha eata beda toilta)
 egen iadlcount = rowtotal(mapa phonea moneya medsa shopa mealsa housewka)
 recode adlcount (0=1) (1=2) (2=3) (3/7 = 4), gen(adlstat)
@@ -355,16 +354,23 @@ gen adl2 = adlstat==3 if !missing(adlstat)
 gen adl3p = adlstat==4 if !missing(adlstat)
 
 gen iadl1 = iadlstat==2 if !missing(iadlstat)
-gen iadl2p = iadlstat==3 if !missing(iadlstat) 
+gen iadl2p = iadlstat==3 if !missing(iadlstat)
+
+* Now drop vars if no longer needed
+drop adlcount iadlcount
+drop walkra dressa batha eata beda toilta
+drop mapa phonea moneya medsa shopa mealsa housewka
 
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
 replace bmi = bmi_ipolate if missing(bmi)
+drop bmi_ipolate
 
 ** Now add some noise to the BMI interpolation **
 * Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
 gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
 replace bmi = bmi + rand if !missing(rand)
+drop rand
 
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
@@ -435,10 +441,10 @@ replace smokev = 1 if L.smokev == 1 & smokev == 0
 * L.***, L is lag operator; can use L2 for 2 waves prior also
 * can use this as xtset tells stata that data is panel data
 
+* REMOVED: adlcount, iadlcount, agey, bmi, hlthlm
 #d ;
 foreach var in
     iwstat
-    agey
 	age
     hibpe
     diabe
@@ -448,21 +454,16 @@ foreach var in
     stroke
     psyche
     arthre
-    bmi
     logbmi
     smokev
     smoken
     died
-    adlcount
     adlstat
     anyadl
-    iadlcount
     iadlstat
     anyiadl
     smkstat
-    educ
     work
-    hlthlm
     asthmae
     parkine
     retemp
@@ -512,10 +513,9 @@ generate missing_educ = missing(educ)
 * Now replace all special missing codes with simple missing (.) This is because the imputation model will only impute records with simple missing
 replace educ = . if missing(educ)
 
-* One record missing data for education
-*drop if missing(educ)
-* Education doesn't vary over time so can safely replace missing lag with current
-replace l2educ = educ if missing(l2educ) & !missing(educ)
+*** Drop Vars That Are Not Necessary ***
+drop r*scwtresp
+drop r*fagey
 
 *save ../../../input_data/ELSA_long.dta, replace
 save $outdata/ELSA_long.dta, replace

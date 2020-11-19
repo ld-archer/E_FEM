@@ -122,11 +122,11 @@ global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth
 
 *** Economic
 global allvars_work         $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_exercise' l2psyche l2arthre
-global allvars_retemp       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae l2hlthlm 
-global allvars_retage       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' l2hlthlm l2arthre l2psyche l2asthmae
-global allvars_ipubpen      $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' l2hlthlm l2arthre l2psyche l2asthmae
-global allvars_atotf        $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' l2hlthlm l2arthre l2psyche l2asthmae
-global allvars_itearn       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_drink' `lvars_smoke' l2hlthlm l2arthre l2psyche l2asthmae
+global allvars_retemp       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ l2psyche l2arthre l2asthmae hlthlm 
+global allvars_retage       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae
+global allvars_ipubpen      $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae
+global allvars_atotf        $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae
+global allvars_itearn       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_drink' `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae
 
 
 *** Exercise

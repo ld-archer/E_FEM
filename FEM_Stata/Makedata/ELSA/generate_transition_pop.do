@@ -25,7 +25,7 @@ gen l2iadl1 = (l2iadlstat == 2) if !missing(l2iadlstat)
 gen l2iadl2p = (l2iadlstat == 3) if !missing(l2iadlstat)
 
 * Age splines
-local age_var agey
+local age_var age
 gen l2age65l = min(63, l2`age_var') if l2`age_var' < .
 label var l2age65l "Min(63, two-year lag of age)"
 gen l2age6574 = min(max(0, l2`age_var' - 63), 73-63) if l2`age_var' < .
@@ -45,7 +45,7 @@ label var male_l2age75p "Male and Max(0, two-year lag age - 73)"
 gen l2agesq = l2`age_var'*l2`age_var'
 
 * BMI dummies for obese (BMI > 25.0) or not
-replace l2obese = (l2bmi > 30.0) if !missing(l2bmi)
+replace l2obese = (l2logbmi > log(30.0)) if !missing(l2logbmi)
 
 * Label the variables to use for technical appendix
 label variable male "Male"
