@@ -13,7 +13,7 @@ foreach v in adlstat iadlstat work retemp itearn atotf drink exstat /*smkstat vg
 
 * Selection criteria for models that only rely on lag value and not being dead
 * These are all INCIDENCE models - estimate for people who have not previously got the disease and also not dead
-foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine anyadl anyiadl hipe {
+foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine anyadl anyiadl {
     local select_`v' !l2`v' & !died `CV2'
 }
 
@@ -31,4 +31,4 @@ local select_drinkd_stat !died & drink == 1 & wave > 1 `CV2'
 *local select_drinkwn !died & drink == 1 & wave > 3 /* Estimate model if not dead, is a drinker and wave 4 or higher */
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8) `CV2' /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */
 local select_hchole !died & l2hchole == 0 & wave > 1 /*INCIDENCE*/
-
+local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture question only asked if respondent is aged 60+ */
