@@ -42,8 +42,11 @@ local predict_vars male white l2age65l l2age6574 l2age75p work retemp married_ed
 * ramomeduage   - Age mother stopped education
 * radadeduage   - Age father stopped education
 
-* Set ster directory as the normal ster dir
-local ster "$local_path/Estimates/ELSA"
+* Set multiple ster directories for baseline, cross validation 1&2, and minimal runs
+local ster1 "$local_path/Estimates/ELSA"
+local ster2 "$local_path/Estimates/ELSA/crossvalidation1"
+local ster3 "$local_path/Estimates/ELSA/crossvalidation2"
+local ster4 "$local_path/Estimates/ELSA_minimal"
 
 dis "oprobit educ `predict_vars'
 
@@ -55,7 +58,10 @@ if r(N)>0 {
     oprobit educ `predict_vars'
     ch_est_title "Education (educ) coefficients"
     mfx2, stub(o_educ) nose
-    est save "`ster'/educ.ster", replace
+    est save "`ster1'/educ.ster", replace
+    est save "`ster2'/educ.ster", replace
+    est save "`ster3'/educ.ster", replace
+    est save "`ster4'/educ.ster", replace
     est restore o_educ_mfx
         ch_est_title "Education (educ) marginal effects"
         est store o_educ_mfx
