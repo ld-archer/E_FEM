@@ -114,7 +114,7 @@ foreach var of varlist `hotdeck_vars' {
 }
 
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist atotf itearn asthmae hlthlm parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev {
+foreach var of varlist atotf itearn asthmae hlthlm parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev hchole {
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
