@@ -45,6 +45,7 @@ namespace Vars
 		chfe,											///< Congestive heart failure {0,1}, stored as Boolean
 		deprsymp,										///< CESD 5+ depression symptoms
 		chldsrh,											///< Self-reported health as a child
+		hchole,                      ///< High Cholesterol Ever, stored as Boolean
 		clmwv,                    ///< Approx Range [1, 7], stored as Short
 		cogstate1,                ///< cogstate 1 [0, 1], stored as Boolean
 		cogstate2,                ///< cogstate 2 [0, 1], stored as Boolean
@@ -162,6 +163,7 @@ namespace Vars
 		hicap_real,              ///< Household Capital Income (not inflation adjusted)		
 		hicap_nonzero,           ///< Household Capital Income not zero
 		hibpe,                    ///< Hypertension [0, 1], stored as Boolean
+		hipe,                       ///< Hip Fracture Ever, stored as Boolean
 		hispan,                   ///< Hispanic [0, 1], stored as Boolean
 		hmed,                     ///< Household Medicare tax, stored as Double
 		hoasi,                    ///< Household OASI tax, stored as Double
@@ -221,6 +223,7 @@ namespace Vars
 		l2bs_treated,              ///< Lag of treated with bariatric surgery, stored as Boolean
 		l2cancre,                  ///< Lag of Cancer, [0, 1], stored as Boolean
 		l2chfe,										 ///< Lag of Congestive heart failure {0,1}, stored as Boolean
+		l2hchole,                    ///< Lag of High Cholesterol, stored as Boolean
 		l2cogstate1,                ///< Lag of cogstate 1 [0, 1], stored as Boolean
 		l2cogstate2,                ///< Lag of cogstate 2 [0, 1], stored as Boolean
 		l2cogstate3,                ///< Lag of cogstate 3 or more [0, 1], stored as Boolean
@@ -251,6 +254,7 @@ namespace Vars
 		l2hibpe,                   ///< Lag of Hypertension, [0, 1], stored as Boolean
 		l2hicap,                   ///< Lag of hicap
 		l2hicap_nonzero,           ///< Lag of hicap_nonzero
+		l2hipe,                     ///< Lag of Hip Fracture Ever, stored as Boolean
 		l2iadl1,                   ///< Lag of IADL 1, [0, 1], stored as Boolean
 		l2iadl2p,                  ///< Lag of IADL 2 or more, [0, 1], stored as Boolean
 		l2iadlstat,                   ///< Lag of number of IADLs
@@ -401,6 +405,7 @@ namespace Vars
 		pparkine, 					///< Probability of Parkinsons disease, stored as Float
 		paternity,                ///< Count of children fathered (0,1,2), stored as Short
 		pcancre,			      ///< Probability of cancer, stored as Double
+		phchole,                     ///< Probability of High Cholesterol, stored as Float
 		pcogstate1,               // Probability cogstate == 1
 		pcogstate2,               // Probability cogstate == 2
 		pcogstate3,               // Probability cogstate == 3
@@ -416,6 +421,7 @@ namespace Vars
 		phearte,                  ///< Probability of heart disease, stored as Double
 		phibpe,                   ///< Probability of hypertension, stored as Double
 		phicap_nonzero,           ///< Probability of nonzero household capital income, Double
+		phipe,                      ///< Probability of Hip Fracture Ever, Float
         piadlstat1,                  ///< Probability of iadlstat==1
 		piadlstat2,                  ///< Probability of iadlstat==2
 		piadlstat3,                  ///< Probability of iadlstat==3

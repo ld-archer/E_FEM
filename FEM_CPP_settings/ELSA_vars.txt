@@ -334,3 +334,7 @@ drinkers = not(l2died) & drink==1
 
 ||rdd_start_yr = 2012
 
+|| IJM Methodological paper
+
+| Variables for education estimation model (used for imputing missing_educ)
+married_educl_interaction = married * educl : Interaction between married and spouse education, value = 0 if not married, value = educl if married : short

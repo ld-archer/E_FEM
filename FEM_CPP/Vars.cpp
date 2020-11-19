@@ -110,6 +110,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::chfe]					= VarInfo("chfe", "Congestive heart failure {0,1}", VarTypes::Boolean);
 	info[Vars::deprsymp]				= VarInfo("deprsymp", "CESD 5+ depression symptoms", VarTypes::Boolean);
 	info[Vars::chldsrh]                 = VarInfo("chldsrh", "Self-reported health as a child", VarTypes::Short);
+	info[Vars::hchole]                   = VarInfo("hchole", "High Cholesterol Ever", VarTypes::Boolean);
 	info[Vars::clmwv]                = VarInfo("clmwv", "Approx Range [1, 7]", VarTypes::Short);
 	info[Vars::cogstate]             = VarInfo("cogstate", "Cognitive Impairment state, (1, 2, 3) = (Demented, CIND, Normal)", VarTypes::Short);
 	info[Vars::cogstate1]            = VarInfo("cogstate1", "Cogstate demented [0, 1]", VarTypes::Boolean, Vars::cogstate, 1);
@@ -219,6 +220,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::hicap]                = VarInfo("hicap", "Household Capital Income", VarTypes::Double);
 	info[Vars::hicap_real]           = VarInfo("hicap_real", "Household Capital Income (not inflation adjusted)", VarTypes::Double);
 	info[Vars::hicap_nonzero]        = VarInfo("hicap_nonzero", "Household Capital Income not zero", VarTypes::Boolean);
+	info[Vars::hipe]                = VarInfo("hipe", "Hip Fracture Ever", VarTypes::Boolean);
 	info[Vars::hispan]               = VarInfo("hispan", "Hispanic [0, 1]", VarTypes::Boolean);
 	info[Vars::hlthlm]					= VarInfo("hlthlm", "Health Limited Work", VarTypes::Boolean);
 	info[Vars::hmed]                 = VarInfo("hmed", "Medicare Tax", VarTypes::Double);
@@ -282,6 +284,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2bpcontrol]           = VarInfo("l2bpcontrol", "Lag of bpcontrol", VarTypes::Boolean);
 	info[Vars::l2cancre]              = VarInfo("l2cancre", "Lag of Cancer, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2chfe]							  = VarInfo("l2chfe", "Lag of congestive heart failure {0,1}", VarTypes::Boolean);
+	info[Vars::l2hchole]               = VarInfo("l2hchole", "Lag of High Cholesterol Ever", VarTypes::Boolean);
 	info[Vars::l2cogstate1]                 = VarInfo("l2cogstate1", "Lag of cogstate demented [0, 1]", VarTypes::Boolean, Vars::l2cogstate, 1);
 	info[Vars::l2cogstate2]                 = VarInfo("l2cogstate2", "Lag of cogstate CIND [0, 1]", VarTypes::Boolean, Vars::l2cogstate, 2);
 	info[Vars::l2cogstate3]                = VarInfo("l2cogstate3", "Lag of cogstate normal [0, 1]", VarTypes::Boolean, Vars::l2cogstate, 3);
@@ -304,6 +307,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2hibpe]               = VarInfo("l2hibpe", "Lag of Hypertension, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2hicap]                = VarInfo("l2hicap", "Lag of Household Capital Income", VarTypes::Double);
 	info[Vars::l2hicap_nonzero]        = VarInfo("l2hicap_nonzero", "Lag of Household Capital Income not zero", VarTypes::Boolean);
+	info[Vars::l2hipe]                  = VarInfo("l2hipe", "Lag of Hip Fracture Ever", VarTypes::Boolean);
 	info[Vars::l2iadl1]                = VarInfo("l2iadl1", "Lag of IADL 1 [0, 1]", VarTypes::Boolean, Vars::l2iadlstat, 2);
 	info[Vars::l2iadl2p]               = VarInfo("l2iadl2p", "Lag of IADL 2+ [0, 1]", VarTypes::Boolean, Vars::l2iadlstat, 3);
 	info[Vars::l2iadlstat]                = VarInfo("l2iadlstat", "Lag of IADL Status", VarTypes::Short);
@@ -454,6 +458,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::pparkine]			= VarInfo("pparkine", "Prob(parkinsons disease)", VarTypes::Float);
 	info[Vars::paternity]              = VarInfo("paternity", "Count of children fathered", VarTypes::Short,true);
 	info[Vars::pcancre]              = VarInfo("pcancre", "Prob(cancer)", VarTypes::Float);
+	info[Vars::phchole]              = VarInfo("phchole", "Prob(High Cholesterol)", VarTypes::Float);
 	info[Vars::pcogstate1]           = VarInfo("pcogstate1", "Prob(cogstate = 1)", VarTypes::Float);
 	info[Vars::pcogstate2]           = VarInfo("pcogstate2", "Prob(cogstate = 2)", VarTypes::Float);
 	info[Vars::pcogstate3]           = VarInfo("pcogstate3", "Prob(cogstate = 3)", VarTypes::Float);
@@ -466,6 +471,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::pinpatient_ever]      = VarInfo("pinpatient_ever", "Prob(inpatient_ever)", VarTypes::Float);
 	info[Vars::phibpe]               = VarInfo("phibpe", "Prob(hypertension)", VarTypes::Float);
 	info[Vars::phicap_nonzero]       = VarInfo("phicap_nonzero", "Prob(non zero household capital income)", VarTypes::Float);
+	info[Vars::phipe]               = VarInfo("phipe", "Prob(Hip Fracture)", VarTypes::Float);
 	info[Vars::piadlstat1]               = VarInfo("piadlstat1", "Probability of iadlstat==0", VarTypes::Float);
 	info[Vars::piadlstat2]               = VarInfo("piadlstat2", "Probability of iadlstat==1", VarTypes::Float);
 	info[Vars::piadlstat3]               = VarInfo("piadlstat3", "Probability of iadlstat>=2", VarTypes::Float);
@@ -663,6 +669,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::bpcontrol] = Vars::l2bpcontrol;
 	lag_map[Vars::cancre] = Vars::l2cancre;
 	lag_map[Vars::chfe] = Vars::l2chfe;
+	lag_map[Vars::hchole] = Vars::l2hchole;
 	lag_map[Vars::cogstate1] = Vars::l2cogstate1;
 	lag_map[Vars::cogstate2] = Vars::l2cogstate2;
 	lag_map[Vars::cogstate3] = Vars::l2cogstate3;
@@ -685,6 +692,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::hibpe] = Vars::l2hibpe;
 	lag_map[Vars::hicap] = Vars::l2hicap;
 	lag_map[Vars::hicap_nonzero] = Vars::l2hicap_nonzero;
+	lag_map[Vars::hipe] = Vars::l2hipe;
 	lag_map[Vars::iadl1] = Vars::l2iadl1;
 	lag_map[Vars::iadl2p] = Vars::l2iadl2p;
 	lag_map[Vars::iadlstat] = Vars::l2iadlstat;
@@ -784,6 +792,7 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::hearta] =		Vars::phearta;
 	prob_map[Vars::hibpe] =			Vars::phibpe;
 	prob_map[Vars::hicap_nonzero] = Vars::phicap_nonzero;
+	prob_map[Vars::hipe] =          Vars::phipe;
 	prob_map[Vars::k6severe] =		Vars::pk6severe;
 	prob_map[Vars::lunge] =			Vars::plunge;
 	prob_map[Vars::ssclaim] =		Vars::pssclaim;
@@ -800,6 +809,7 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::smoken] = 		Vars::psmoken;
 	prob_map[Vars::smoke_start] =	Vars::psmoke_start;
 	prob_map[Vars::smoke_stop] =	Vars::psmoke_stop;
+	prob_map[Vars::hchole] =         Vars::phchole;
 	// Ordered
 	prob_map[Vars::smokev] =		Vars::psmkstat2;
 	prob_map[Vars::smoken] =		Vars::psmkstat3;

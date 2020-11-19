@@ -28,7 +28,7 @@ Clustering variable; Person-level cross-sectional weight;
 Individual interview year; Individual interview month; Birth year; 
 Death year; Age at interview (years); Gender; Education (categ);
 Spouse's Harmonized Education (categ); Mother and Father age left
-education; Marriage status.
+education; Marriage status, High Cholesterol, Hip Fracture.
 
 Section B: Health::
 ADLs. Some difficulty:
@@ -125,6 +125,8 @@ r*ltactx_e
 r*drink
 r*drinkd_e
 r*mstat
+r*hchole
+r*hipe
 ;
 #d cr
 
@@ -193,6 +195,8 @@ foreach var in
     drink
     drinkd
     mstat
+    hchole
+    hipe
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -214,7 +218,7 @@ reshape long iwstat strat cwtresp iwindy iwindm agey walkra dressa batha eata be
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken /*smokef*/ hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat
+    drink drinkd educl mstat hchole hipe
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -267,6 +271,8 @@ label variable educl "Spouse Harmonised Education Level"
 label variable ramomeduage "Age mother left education"
 label variable radadeduage "Age father left education"
 label variable mstat "Marriage Status"
+label variable hchole "High Cholesterol Ever"
+label variable hipe "Hip Fracture Ever"
 
 
 * Use harmonised education var
@@ -482,6 +488,8 @@ foreach var in
     married
     single
     widowed
+    hchole
+    hipe
     {;
         gen l2`var' = L.`var';
     };
