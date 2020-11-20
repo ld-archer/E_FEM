@@ -18,7 +18,7 @@ use $outdata/ELSA_long.dta, clear
 
 
 * Generate Age splines
-local age_var agey
+local age_var age
 gen l2age65l = min(63, l2`age_var') if l2`age_var' < .
 label var l2age65l "Min(63, two-year lag of age)"
 gen l2age6574 = min(max(0, l2`age_var' - 63), 73-63) if l2`age_var' < .

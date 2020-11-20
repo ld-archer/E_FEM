@@ -28,7 +28,7 @@ minimal: start_data transitions_minimal est_minimal summary_out_minimal simulati
 
 ### Combined rules
 
-start_data: ELSA stata_extensions.txt populations projections reweight
+start_data: ELSA stata_extensions.txt populations imputation projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
 
@@ -69,7 +69,7 @@ $(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_tr
 imputation: $(ESTIMATES)/ELSA/educ.ster
 
 $(ESTIMATES)/ELSA/educ.ster: $(ESTIMATION)/ELSA_estimate_missing_educ.do $(DATADIR)/ELSA_long.dta
-	cd $(ESTIMATION) && datain=$(DATADIR) && dataout=$(ESTIMATES)/ELSA $(STATA) ELSA_estimate_missing_educ.do
+	cd $(ESTIMATION) && datain=$(DATADIR) $(STATA) ELSA_estimate_missing_educ.do
 
 
 ### Producing the reweighting data (pop. projection and education)
