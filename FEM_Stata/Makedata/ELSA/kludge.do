@@ -99,7 +99,7 @@ else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage /*smokef*/
 }
 else if "`scen'" == "CV2" {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe /*smokef*/
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl /*smokef*/
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"

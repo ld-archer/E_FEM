@@ -71,5 +71,3 @@ predict educ_pred
 sum educ educ_pred if !died [aw=cwtresp]
 
 capture log close
-
-save $outdata/ELSA_long_test.dta, replace
