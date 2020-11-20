@@ -370,6 +370,12 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2ssclaim]             = VarInfo("l2ssclaim", "Lag of Claiming OASI, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2ssiclaim]            = VarInfo("l2ssiclaim", "Lag of Claiming SSI, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2stroke]              = VarInfo("l2stroke", "Lag of Stroke, [0, 1]", VarTypes::Boolean);
+	info[Vars::l2srh]               = VarInfo("l2srh", "Lag of Self-Reported Health Status", VarTypes::Short);
+    info[Vars::l2srh1]                 = VarInfo("l2srh1", "Lag of Excellent Self-Reported Health", VarTypes::Short, Vars::l2srh, 1);
+    info[Vars::l2srh2]                 = VarInfo("l2srh2", "Lag of Very Good Self-Reported Health", VarTypes::Short, Vars::l2srh, 2);
+    info[Vars::l2srh3]                 = VarInfo("l2srh3", "Lag of Good Self-Reported Health", VarTypes::Short, Vars::l2srh, 3);
+    info[Vars::l2srh4]                 = VarInfo("l2srh4", "Lag of Fair Self-Reported Health", VarTypes::Short, Vars::l2srh, 4);
+    info[Vars::l2srh5]                 = VarInfo("l2srh5", "Lag of Poor Self-Reported Health", VarTypes::Short, Vars::l2srh, 5);
 	info[Vars::l2htcamt]               = VarInfo("l2htcamt", "Lag of household transfers", VarTypes::Double);
 	info[Vars::l2tcamt_cpl]           = VarInfo("l2tcamt_cpl", "Lag of couples tcamt", VarTypes::Double);
     info[Vars::lipidrx]              = VarInfo("lipidrx", "Currently taking lipid drug, [0, 1]", VarTypes::Boolean);
@@ -494,6 +500,11 @@ VarsInfo::VarsInfo() {
 	info[Vars::psmkstat3]            = VarInfo("psmkstat3", "Probaility of smoking", VarTypes::Float);
 	info[Vars::psyche]				= VarInfo("psyche", "Psychiatric problems ever", VarTypes::Boolean);
 	info[Vars::ppsyche]				= VarInfo("ppsyche", "Prob(psychiatric problems)", VarTypes::Float);
+	info[Vars::psrh1]               = VarInfo("psrh1", "Prob(srh1)", VarTypes::Float);
+    info[Vars::psrh2]               = VarInfo("psrh2", "Prob(srh2)", VarTypes::Float);
+    info[Vars::psrh3]               = VarInfo("psrh3", "Prob(srh3)", VarTypes::Float);
+    info[Vars::psrh4]               = VarInfo("psrh4", "Prob(srh4)", VarTypes::Float);
+    info[Vars::psrh5]               = VarInfo("psrh5", "Prob(srh5)", VarTypes::Float);
 	info[Vars::qaly]                 = VarInfo("qaly", "Quality Adjusted Life Year", VarTypes::Boolean);
 	info[Vars::rabyear]              = VarInfo("rabyear", "Approx Range [1896, 1972]", VarTypes::Short);
 	info[Vars::racegrp]              = VarInfo("racegrp", "Approx Range [1, 4]", VarTypes::Short);
@@ -546,6 +557,11 @@ VarsInfo::VarsInfo() {
 	info[Vars::psmoke_stop]			 = VarInfo("psmoke_stop", "Probability of transition from smoking to not smoking", VarTypes::Float);
 	//info[Vars::l2smoke_stop]		 = VarInfo("l2smoke_stop", "Lag of transition from smoking to not smoking", VarTypes::Boolean);
 	info[Vars::srh] 				 = VarInfo("srh", "Self-reported health (cross-sectional)", VarTypes::Short);
+	info[Vars::srh1]                 = VarInfo("srh1", "Excellent Self-Reported Health", VarTypes::Short, Vars::srh, 1);
+    info[Vars::srh2]                 = VarInfo("srh2", "Very Good Self-Reported Health", VarTypes::Short, Vars::srh, 2);
+    info[Vars::srh3]                 = VarInfo("srh3", "Good Self-Reported Health", VarTypes::Short, Vars::srh, 3);
+    info[Vars::srh4]                 = VarInfo("srh4", "Fair Self-Reported Health", VarTypes::Short, Vars::srh, 4);
+    info[Vars::srh5]                 = VarInfo("srh5", "Poor Self-Reported Health", VarTypes::Short, Vars::srh, 5);
 	info[Vars::ssage]                = VarInfo("ssage", "Age started claiming SS benefits", VarTypes::Float);
 	info[Vars::ssamt]                = VarInfo("ssamt", "SS OASI benefits amount", VarTypes::Double);
 	info[Vars::ssben]                = VarInfo("ssben", "SS Benefits", VarTypes::Double);
@@ -775,6 +791,12 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::ei_treated] = Vars::l2ei_treated;
 	//lag_map[Vars::smoke_start] = Vars::l2smoke_start;
 	//lag_map[Vars::smoke_stop] = Vars::l2smoke_stop;
+	lag_map[Vars::srh] = Vars::l2srh;
+	lag_map[Vars::srh1] = Vars::l2srh1;
+    lag_map[Vars::srh2] = Vars::l2srh2;
+    lag_map[Vars::srh3] = Vars::l2srh3;
+    lag_map[Vars::srh4] = Vars::l2srh4;
+    lag_map[Vars::srh5] = Vars::l2srh5;
 
 
 
@@ -825,6 +847,11 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::exstat1] =		Vars::pexstat1;
 	prob_map[Vars::exstat2] =		Vars::pexstat2;
 	prob_map[Vars::exstat3] =		Vars::pexstat3;
+	prob_map[Vars::srh1] =          Vars::psrh1;
+    prob_map[Vars::srh2] =          Vars::psrh2;
+    prob_map[Vars::srh3] =          Vars::psrh3;
+    prob_map[Vars::srh4] =          Vars::psrh4;
+    prob_map[Vars::srh5] =          Vars::psrh5;
 
 
 

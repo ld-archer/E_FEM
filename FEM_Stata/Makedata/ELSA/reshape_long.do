@@ -27,7 +27,8 @@ Interview status (morbidity); Person-level cross-sectional weight;
 Individual interview year; Individual interview month; Birth year; 
 Death year; Age at interview (years); Gender; Education (categ);
 Spouse's Harmonized Education (categ); Mother and Father age left
-education; Marriage status, High Cholesterol, Hip Fracture.
+education; Marriage status; High Cholesterol; Hip Fracture;
+self-reported health.
 
 Section B: Health::
 ADLs. Some difficulty:
@@ -124,6 +125,7 @@ r*drinkd_e
 r*mstat
 r*hchole
 r*hipe
+r*shlt
 ;
 #d cr
 
@@ -194,6 +196,7 @@ foreach var in
     mstat
     hchole
     hipe
+    shlt
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -216,7 +219,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe
+    drink drinkd educl mstat hchole hipe shlt
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -271,6 +274,7 @@ label variable radadeduage "Age father left education"
 label variable mstat "Marriage Status"
 label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
+label variable shlt "Self Reported Health Status"
 
 
 * Use harmonised education var
@@ -363,6 +367,26 @@ gen iadl2p = iadlstat==3 if !missing(iadlstat)
 drop adlcount iadlcount
 drop walkra dressa batha eata beda toilta
 drop mapa phonea moneya medsa shopa mealsa housewka
+
+
+*** Self Reported Health
+* Rename as 'stat' var
+rename shlt srh
+label define srh 1 "Excellent" 2 "Very Good" 3 "Good" 4 "Fair" 5 "Poor"
+label values srh srh
+
+* Create dummys for transition models
+gen srh1 = srh == 1 if !missing(srh)
+gen srh2 = srh == 2 if !missing(srh)
+gen srh3 = srh == 3 if !missing(srh)
+gen srh4 = srh == 4 if !missing(srh)
+gen srh5 = srh == 5 if !missing(srh)
+* Label
+label variable srh1 "Self Reported Health Status: Excellent"
+label variable srh2 "Self Reported Health Status: Very Good"
+label variable srh3 "Self Reported Health Status: Good"
+label variable srh4 "Self Reported Health Status: Fair"
+label variable srh5 "Self Reported Health Status: Poor"
 
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
@@ -494,6 +518,12 @@ foreach var in
     widowed
     hchole
     hipe
+    srh
+    srh1
+    srh2
+    srh3
+    srh4
+    srh5
     {;
         gen l2`var' = L.`var';
     };

@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn
-global order adlstat iadlstat drinkd drinkd_stat exstat /*vgactx_e mdactx_e ltactx_e smkstat*/
+global order adlstat iadlstat drinkd drinkd_stat exstat srh /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
 #d ;
@@ -44,6 +44,7 @@ global order_names
     "# days per week R drinks alcohol"
     "Days/week drinking status"
     "Exercise status"
+    "Self-Reported Health Status"
 ;
 #d cr
 
@@ -73,14 +74,16 @@ local lvars_smoke l2smokev l2smoken
 local lvars_drink l2drink l2drinkd2 l2drinkd3 l2drinkd4
 * Functional Limitations
 local lvars_funclimit l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
+* Self Reported Health Status
+local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 
 
 *** Now specify the transition models ***
 
 *** For Mortality
 *global allvars_died $dvars $lvars_age $lvars_hlth /*$lvars_econ `lvars_exercise'*/ l2logbmi `lvars_drink'  l2smoken l2smokev
-global allvars_died $dvars $lvars_age `lvars_smoke' l2cancre l2diabe l2hibpe l2hearte l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2logbmi
-*global allvars_died male $lvars_age 
+*global allvars_died $dvars $lvars_age `lvars_smoke' l2cancre l2diabe l2hibpe l2hearte l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2logbmi
+global allvars_died male $lvars_age l2cancre l2hearte l2lunge l2logbmi l2smoken l2stroke `lvars_srh'
 
 
 *** Chronic Diseases

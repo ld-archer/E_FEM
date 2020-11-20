@@ -314,6 +314,12 @@ namespace Vars
 		l2smoken,                  ///< Lag of Current smoking, [0, 1], stored as Boolean
 		l2smokev,					///< Lag of ever smoked
 		//l2smokef,					///< Lag of number cigarettes/day
+		l2srh,                      ///< Lag of Self Reported Health
+		l2srh1,                     ///< Lag of Excellent Self Reported Health
+        l2srh2,                     ///< Lag of Very Good Self Reported Health
+        l2srh3,                     ///< Lag of Good Self Reported Health
+        l2srh4,                     ///< Lag of Fair Self Reported Health
+        l2srh5,                     ///< Lag of Poor Self Reported Health
 		l2ssclaim,                 ///< Lag of Claiming OASI, [0, 1], stored as Boolean
 		l2ssiclaim,                ///< Lag of Claiming SSI, [0, 1], stored as Boolean
 		l2stroke,                  ///< Lag of Stroke, [0, 1], stored as Boolean
@@ -445,6 +451,11 @@ namespace Vars
 		psmkstat2,				  ///< Probability of second smoking state (smoke ever), stored as Float
 		psmkstat3,				  ///< Probability of third smoking state (smoke now), stored as Float
 		psmoken,				///< Probability of smoking now, stored as Float
+		psrh1,                  ///< Probability of Excellent Self Reported Health
+        psrh2,                  ///< Probability of Very Good Self Reported Health
+        psrh3,                  ///< Probability of Good Self Reported Health
+        psrh4,                  ///< Probability of Fair Self Reported Health
+        psrh5,                  ///< Probability of Poor Self Reported Health
 		period,                   ///< Approx Range [1, 1], stored as Short
 		qaly,                     ///< Quality Adjusted Life Year, stored as Double
 		hlthlm,					///< Health Limited Work, stored as Boolean
@@ -501,6 +512,11 @@ namespace Vars
 		psmoke_stop,				///< Probability of transition from smoking to not smoking
 		//l2smoke_stop, 				///< Lag of transition from smoking to not smoking
 		srh,											///< Self-reported health (cross-sectional)
+		srh1,                       ///< Excellent Self Reported Health
+        srh2,                       ///< Very Good Self Reported Health
+        srh3,                       ///< Good Self Reported Health
+        srh4,                       ///< Fair Self Reported Health
+        srh5,                       ///< Poor Self Reported Health
 		ssage,                    ///< Year started claiming SS benefits, stored as Short
 		ssamt, 										///< SS OASI benefits, stored as Double
 		ssdiamt,                  ///< SS OASI Benefits for PSID regression model, stored as Double
