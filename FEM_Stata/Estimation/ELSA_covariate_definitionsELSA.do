@@ -83,7 +83,8 @@ local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 *** For Mortality
 *global allvars_died $dvars $lvars_age $lvars_hlth /*$lvars_econ `lvars_exercise'*/ l2logbmi `lvars_drink'  l2smoken l2smokev
 *global allvars_died $dvars $lvars_age `lvars_smoke' l2cancre l2diabe l2hibpe l2hearte l2lunge l2stroke l2adl1 l2adl2 l2adl3p l2logbmi
-global allvars_died male $lvars_age l2cancre l2hearte l2lunge l2logbmi l2smoken l2stroke l2srh2 l2srh3 l2srh4 l2srh5
+*global allvars_died male $lvars_age l2cancre l2hearte l2lunge l2logbmi l2smoken l2stroke l2srh2 l2srh3 l2srh4 l2srh5
+global allvars_died male $lvars_age l2srh4 l2srh5
 
 
 *** Chronic Diseases
