@@ -30,7 +30,8 @@ namespace Vars
 		anyrx_meps,								///< Any prescriptions from MEPS model
 		arthre,					///< Arthritis ever, stored as Boolean
 		asthmae,				///< Asthma ever, stored as Boolean
-		atotf,					///< Not value of non-housing financial wealth
+		atotf,					///< Net value of non-housing financial wealth
+		atotb,                  ///< Total Family Wealth
 		births,                   ///< Count of childbirth events (0,1,2), stored as Short
 		black,                    ///< Non-Hispanic black [0, 1], stored as Boolean
 		bornus,                   ///< Born in the U.S.? [0, 1], stored as Boolean
@@ -219,6 +220,7 @@ namespace Vars
 		l2arthre,					///< Lag of arthritis ever, stored as Boolean
 		l2asthmae,					///< Lag of asthma ever, stored as Boolean
 		l2atotf,					///< Lag of net value of non-housing financial wealth
+		l2atotb,                    ///< Lag of Total Family Wealth
 		l2bpcontrol,               ///< Lag of bpcontrol
 		l2bs_treated,              ///< Lag of treated with bariatric surgery, stored as Boolean
 		l2cancre,                  ///< Lag of Cancer, [0, 1], stored as Boolean

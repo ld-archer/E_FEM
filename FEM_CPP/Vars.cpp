@@ -96,6 +96,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::arthre]				= VarInfo("arthre", "Arthritis ever", VarTypes::Boolean);
 	info[Vars::asthmae]				= VarInfo("asthmae", "Asthma ever", VarTypes::Boolean);
 	info[Vars::atotf]				= VarInfo("atotf", "Net value of non-housing financial wealth", VarTypes::Float);
+	info[Vars::atotb]               = VarInfo("atotb", "Total Family Wealth", VarTypes::Float);
 	info[Vars::births]                = VarInfo("births", "Count of childbirth events", VarTypes::Short,true);
 	info[Vars::black]                = VarInfo("black", "Non-Hispanic black [0, 1]", VarTypes::Boolean);
 	info[Vars::bornus]               = VarInfo("bornus", "Born in U.S.? [0, 1]", VarTypes::Boolean);
@@ -280,6 +281,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2arthre]			= VarInfo("l2arthre", "Lag of Arthritis ever", VarTypes::Boolean);
 	info[Vars::l2asthmae]			= VarInfo("l2asthmae", "Lag of Asthma ever", VarTypes::Boolean);
 	info[Vars::l2atotf]				= VarInfo("l2atotf", "Lag of net value of non-housing financial wealth", VarTypes::Float);
+	info[Vars::l2atotb]             = VarInfo("l2atotb", "Lag of Total Family Wealth", VarTypes::Float);
 	info[Vars::l2bs_treated]          = VarInfo("l2bs_treated", "Lag of treated with bariatric surgery", VarTypes::Boolean);
 	info[Vars::l2bpcontrol]           = VarInfo("l2bpcontrol", "Lag of bpcontrol", VarTypes::Boolean);
 	info[Vars::l2cancre]              = VarInfo("l2cancre", "Lag of Cancer, [0, 1]", VarTypes::Boolean);
@@ -773,6 +775,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::parkine] = Vars::l2parkine;
 	lag_map[Vars::retemp] = Vars::l2retemp;
 	lag_map[Vars::atotf] = Vars::l2atotf;
+	lag_map[Vars::atotb] = Vars::l2atotb;
 	lag_map[Vars::drink] = Vars::l2drink;
 	lag_map[Vars::drinkd] = Vars::l2drinkd;
 	//lag_map[Vars::drinkwn] = Vars::l2drinkwn;

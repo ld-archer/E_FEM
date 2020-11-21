@@ -126,6 +126,7 @@ r*mstat
 r*hchole
 r*hipe
 r*shlt
+h*atotb
 ;
 #d cr
 
@@ -133,6 +134,7 @@ r*shlt
 forvalues wv = $firstwave/$lastwave {
     rename h`wv'coupid r`wv'hhid
     rename h`wv'atotf r`wv'atotf
+    rename h`wv'atotb r`wv'atotb
 }
 
 * Rename drink vars to more readable (and pleasant) form - r*drinkd
@@ -197,6 +199,7 @@ foreach var in
     hchole
     hipe
     shlt
+    atotb
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -219,7 +222,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe shlt
+    drink drinkd educl mstat hchole hipe shlt atotb
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -275,6 +278,7 @@ label variable mstat "Marriage Status"
 label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
 label variable shlt "Self Reported Health Status"
+label variable atotb "Total Family Wealth"
 
 
 * Use harmonised education var
@@ -530,6 +534,7 @@ foreach var in
     srh3
     srh4
     srh5
+    atotb
     {;
         gen l2`var' = L.`var';
     };

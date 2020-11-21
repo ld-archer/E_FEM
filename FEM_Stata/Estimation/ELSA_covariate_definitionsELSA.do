@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
 global bin_econ work hlthlm retemp
-global ols logbmi retage ipubpen atotf itearn
+global ols logbmi retage ipubpen atotf itearn atotb
 global order adlstat iadlstat drinkd drinkd_stat exstat srh /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
@@ -37,6 +37,7 @@ global ols_names
     "Public Pension Income (All types)"
     "Net Value of Non-housing Financial Wealth"
     "Individual Employment Earnings (annual, after tax)"
+    "Total Family Wealth"
 ;
 global order_names 
     "ADL status"
@@ -97,7 +98,7 @@ global allvars_stroke       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drin
 
 global allvars_arthre       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' /*https://www.verywellhealth.com/arthritis-causes-and-risk-factors-2549243*/
 global allvars_psyche       $dvars $lvars_age `lvars_smoke' `lvars_drink' l2ipubpen l2itearn l2atotf l2work l2cancre l2diabe l2stroke l2hibpe /*https://www.healthyplace.com/other-info/mental-illness-overview/what-causes-mental-illness-genetics-environment-risk-factors*/
-global allvars_asthmae      $dvars $lvars_age l2logbmi `lvars_smoke' /* l2atotb      https://cks.nice.org.uk/topics/asthma/background-information/risk-factors/ */
+global allvars_asthmae      $dvars $lvars_age l2logbmi `lvars_smoke' l2atotb /* https://cks.nice.org.uk/topics/asthma/background-information/risk-factors/ */
 global allvars_parkine      $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_drink' /*https://parkinsonsdisease.net/basics/risk-factors-causes/ */
 global allvars_hchole       $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
 global allvars_hipe         $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' `lvars_drink' l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
@@ -105,18 +106,18 @@ global allvars_srh          $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exer
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age l2work l2retemp l2smokev l2psyche l2itearn l2atotf l2ipubpen /* l2atotb*/
-global allvars_smoke_stop   $dvars $lvars_age l2work l2retemp l2psyche l2itearn l2atotf l2ipubpen /* l2atotb*/
+global allvars_smoke_start  $dvars $lvars_age l2work l2retemp l2smokev l2psyche l2itearn l2atotf l2ipubpen l2atotb
+global allvars_smoke_stop   $dvars $lvars_age l2work l2retemp l2psyche l2itearn l2atotf l2ipubpen l2atotb
 
 
 *** Drinking
-global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2work /*https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
+global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2work l2atotb /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 global allvars_drinkd_stat  $dvars $lvars_age l2logbmi l2psyche l2work
 global allvars_drinkd       $dvars $lvars_age l2logbmi l2psyche l2work
 
 
 *** Logbmi & other health
-global allvars_logbmi       $dvars $lvars_age l2logbmi l2married l2atotf l2smokev l2smoken `lvars_exercise' /* l2atotb */
+global allvars_logbmi       $dvars $lvars_age l2logbmi l2married l2atotf l2smokev l2smoken `lvars_exercise' l2atotb
 global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smoken smokev drink drinkd1 drinkd3 drinkd4
 
 
@@ -126,12 +127,13 @@ global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth
 
 
 *** Economic
-global allvars_work         $dvars $lvars_age l2work l2psyche l2cancre l2diabe l2hearte l2stroke /* atotb */
+global allvars_work         $dvars $lvars_age l2work l2psyche l2cancre l2diabe l2hearte l2stroke l2atotb
 *global allvars_itearn       $dvars $lvars_age l2logbmi $lvars_econ `lvars_drink' `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae
-global allvars_itearn       $dvars $lvars_age l2atotf l2itearn
-global allvars_atotf        $dvars $lvars_age l2atotf l2itearn l2work l2retemp
-global allvars_retemp       $dvars $lvars_age l2psyche l2cancre l2diabe l2hearte l2stroke /* atotb https://www.theamericancollege.edu/news-center/6-factors-affecting-actual-retirement-age*/
-global allvars_ipubpen      $dvars $lvars_age l2atotf /* atotb; retage (when fixed and functional)*/
+global allvars_itearn       $dvars $lvars_age l2atotb l2itearn
+global allvars_atotf        $dvars $lvars_age l2atotb l2itearn l2work l2retemp
+global allvars_atotb        $dvars $lvars_age l2atotf l2itearn l2work l2retemp
+global allvars_retemp       $dvars $lvars_age l2psyche l2cancre l2diabe l2hearte l2stroke l2atotb /* https://www.theamericancollege.edu/news-center/6-factors-affecting-actual-retirement-age*/
+global allvars_ipubpen      $dvars $lvars_age l2atotf l2atotb /* retage (when fixed and functional)*/
 global allvars_retage       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae /*REMOVING THIS MODEL SOON*/
 
 

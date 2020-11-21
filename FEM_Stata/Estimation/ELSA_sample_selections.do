@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat work retemp atotf drink exstat /*smkstat vgactx_e mdactx_e ltactx_e*/ {
+foreach v in adlstat iadlstat work retemp atotf drink exstat atotb /*smkstat vgactx_e mdactx_e ltactx_e*/ {
     local select_`v' !died 
 }
 

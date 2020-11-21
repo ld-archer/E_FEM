@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
 global bin_econ work hlthlm retemp
-global ols logbmi retage ipubpen atotf itearn
+global ols logbmi retage ipubpen atotf itearn atotb
 global order adlstat iadlstat drinkd drinkd_stat exstat srh /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
@@ -37,6 +37,7 @@ global ols_names
     "Public Pension Income (All types)"
     "Net Value of Non-housing Financial Wealth"
     "Individual Employment Earnings (annual, after tax)"
+    "Total Family Wealth"
 ;
 global order_names 
     "ADL status"
