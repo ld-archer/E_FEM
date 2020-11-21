@@ -381,6 +381,12 @@ gen srh2 = srh == 2 if !missing(srh)
 gen srh3 = srh == 3 if !missing(srh)
 gen srh4 = srh == 4 if !missing(srh)
 gen srh5 = srh == 5 if !missing(srh)
+* Replace missing with 0
+replace srh1 = 0 if srh != 1 & !missing(srh)
+replace srh2 = 0 if srh != 2 & !missing(srh)
+replace srh3 = 0 if srh != 3 & !missing(srh)
+replace srh4 = 0 if srh != 4 & !missing(srh)
+replace srh5 = 0 if srh != 5 & !missing(srh)
 * Label
 label variable srh1 "Self Reported Health Status: Excellent"
 label variable srh2 "Self Reported Health Status: Very Good"

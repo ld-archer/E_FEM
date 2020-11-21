@@ -113,8 +113,16 @@ foreach var of varlist `hotdeck_vars' {
     use hotdeck_data/`var'_imp1.dta, clear
 }
 
+* Handle missing srh data (~400 without srh data). Set to 3 (good) if still missing, median
+replace srh = 3 if missing(srh)
+replace srh3 = 1 if missing(srh1, srh2, srh3, srh4, srh5)
+replace srh1 = 0 if srh3 == 1
+replace srh2 = 0 if srh3 == 1
+replace srh4 = 0 if srh3 == 1
+replace srh5 = 0 if srh3 == 1
+
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev hchole {
+foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 srh3 srh4 srh5 {
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
