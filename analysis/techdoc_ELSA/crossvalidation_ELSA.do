@@ -38,11 +38,13 @@ local maxwave 8
 use `input'/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 
-* Keep only those used in the simulation (simulation==1)
-merge 1:1 idauniq using `input'/cross_validation/crossvalidation.dta, keepusing(simulation)
-tab _merge
-keep if simulation == 1
-drop _merge
+if "`scen'" == "CV1" {
+	* Keep only those used in the simulation (simulation==1)
+	merge 1:1 idauniq using `input'/cross_validation/crossvalidation.dta, keepusing(simulation)
+	tab _merge
+	keep if simulation == 1
+	drop _merge
+}
 
 #d ;
 keep 
@@ -420,7 +422,7 @@ foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 	keep variable fem_mean* elsa_mean* p_value*
 		
 	keep variable fem_mean* elsa_mean* p_value*
-	outsheet using "`output'/T-tests/crossval_`tabl'.csv", comma replace
+	outsheet using "`output'/T-tests/`scen'_`tabl'.csv", comma replace
 	//*/
 }
 
@@ -453,7 +455,7 @@ foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 	keep variable fem_mean* elsa_mean* p_value*
 		
 	keep variable fem_mean* elsa_mean* p_value*
-	outsheet using "`output'/T-tests/crossval_all_waves_`tabl'.csv", comma replace
+	outsheet using "`output'/T-tests/`scen'_all_waves_`tabl'.csv", comma replace
 }
 
 capture log close
