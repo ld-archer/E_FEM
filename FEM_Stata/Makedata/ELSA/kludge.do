@@ -122,7 +122,7 @@ replace srh4 = 0 if srh3 == 1
 replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 srh3 srh4 srh5 {
+foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 srh3 srh4 srh5 atotb {
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
@@ -131,6 +131,11 @@ foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe h
 foreach var of varlist arthre asthmae cancre diabe hearte hibpe lunge psyche stroke parkine {
     replace l2`var' = 0 if missing(`var') & missing(l2`var')
 }
+
+* Still missing atotb, so impute with mean
+quietly summ atotb
+replace atotb = r(mean) if missing(atotb)
+replace l2atotb = atotb if missing(l2atotb) & !missing(atotb)
 
 * Retemp slightly more complicated
 replace retemp = 0 if missing(retemp) & age <= 65
