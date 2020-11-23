@@ -1,0 +1,150 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This notebook is for debugging purposes. The current plan is to write a Make rule for running this notebook automatically at the end of a model run.
+
+The purpose of this notebook is:
+- Present the T-tests altogether in one document.
+- Present all transition models in same document.
+- Add visualisation for cross-validation 2 output
+
+Do all this for both minimal models and cross-validation.
+
+```{r setup, include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(formattable)
+#require(haven)
+#require(reshape2)
+#require(ggplot2)
+#require(gridExtra)
+
+```
+
+```{r include=FALSE}
+
+# Specify a function to rename the dataframes, so we can run in an sapply()
+rename_first_var <- function(testCSV, prefix) {
+  testCSV[,1] <- paste0(testCSV[,1], '_', prefix)
+  return(testCSV)
+}
+
+```
+
+
+First, we will collect and present all the T-tests together. We will add the prefix 'min_' or 'cv_' onto the variable names so we don't get mixed up.
+
+```{r}
+# names for T-tests directory and filename stem
+min <- "ELSA_minimal/T-tests/"
+stem <- "minimal_all_waves_"
+
+# Read in all the T-test csv files
+min_uw <- read.csv(paste0(min, stem, "unweighted.csv"))
+min_demog <- read.csv(paste0(min, stem, "demog.csv"))
+min_binhlth <- read.csv(paste0(min, stem, "binhlth.csv"))
+min_binecon <- read.csv(paste0(min, stem, "binecon.csv"))
+min_risk <- read.csv(paste0(min, stem, "risk.csv"))
+
+# Collect in a list to run a list apply
+min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_risk)
+# Add prefix 'min_' onto every variable name for clarity
+min_list <- lapply(min_list, rename_first_var, prefix='min')
+
+```
+
+```{r}
+# names for T-tests directory and filename stem
+CV1 <- "ELSA_CrossValidation1/T-tests/"
+stem <- "CV1_all_waves_"
+# Read in files
+cv_uw <- read.csv(paste0(CV1, stem, "unweighted.csv"))
+cv_demog <- read.csv(paste0(CV1, stem, "demog.csv"))
+cv_binhlth <- read.csv(paste0(CV1, stem, "binhlth.csv"))
+cv_binecon <- read.csv(paste0(CV1, stem, "binecon.csv"))
+cv_risk <- read.csv(paste0(CV1, stem, "risk.csv"))
+# Now collect into list and rename vars for clarity
+cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_risk)
+cv_list <- lapply(cv_list, rename_first_var, prefix='CV')
+```
+
+Both Minimal and Cross-validation T-tests are now renamed and collected into a separate list object each. We will now combine like tests together (i.e. demog with demog, binhlth with binhlth).
+
+```{r include=FALSE}
+# Set up vector with all p-value column names. Require these for table formatting
+pValNames <- c('p_value_wave3', 'p_value_wave4', 'p_value_wave5', 'p_value_wave6', 'p_value_wave7', 'p_value_wave8')
+```
+
+
+### Unweighted (died)
+```{r echo = FALSE, results = 'asis'}
+# Row bind to collect both dfs together
+uw <- rbind(min_list[[1]], cv_list[[1]])
+# Reorder rows in alphabetical order. This ensures that like variables are clumped together
+uw <- arrange(uw, variable)
+#uw
+formattable(uw, 
+            align = c('l', rep('r', ncol(uw) - 1)),
+            list(area(col=pValNames) 
+                  ~ proportion_bar(color='green', 0.01)))
+```
+### Demographics
+```{r echo = FALSE, results = 'asis'}
+# Row bind to collect both dfs together
+demog <- rbind(min_list[[2]], cv_list[[2]])
+# Reorder rows in alphabetical order. This ensures that like variables are clumped together
+demog <- arrange(demog, variable)
+formattable(demog, 
+            align = c('l', rep('r', ncol(demog) - 1)),
+            list(area(col=pValNames) 
+                  ~ proportion_bar(color='green', 0.01)))
+```
+### Binary Health
+```{r echo = FALSE, results = 'asis'}
+# Row bind to collect both dfs together
+binhlth <- rbind(min_list[[3]], cv_list[[3]])
+# Reorder rows in alphabetical order. This ensures that like variables are clumped together
+binhlth <- arrange(binhlth, variable)
+formattable(binhlth, 
+            align = c('l', rep('r', ncol(binhlth) - 1)),
+            list(area(col=pValNames) 
+                  ~ proportion_bar(color='green', 0.01)))
+```
+### Binary Economic
+```{r echo = FALSE, results = 'asis'}
+# Row bind to collect both dfs together
+binecon <- rbind(min_list[[4]], cv_list[[4]])
+# Reorder rows in alphabetical order. This ensures that like variables are clumped together
+binecon <- arrange(binecon, variable)
+formattable(binecon, 
+            align = c('l', rep('r', ncol(binecon) - 1)),
+            list(area(col=pValNames) 
+                  ~ proportion_bar(color='green', 0.01)))
+```
+### Risk Behaviours
+```{r echo = FALSE, results = 'asis'}
+# Row bind to collect both dfs together
+risk <- rbind(min_list[[5]], cv_list[[5]])
+# Reorder rows in alphabetical order. This ensures that like variables are clumped together
+risk <- arrange(risk, variable)
+formattable(risk, 
+            align = c('l', rep('r', ncol(risk) - 1)),
+            list(area(col=pValNames) 
+                  ~ proportion_bar(color='green', 0.01)))
+```
+
+```{r echo = FALSE, results = 'asis'}
+# Row bind to collect both dfs together
+risk <- rbind(min_list[[5]], cv_list[[5]])
+# Reorder rows in alphabetical order. This ensures that like variables are clumped together
+risk <- arrange(risk, variable)
+formattable(risk, 
+            align = c('l', rep('r', ncol(risk) - 1)),
+            list(area(col=pValNames) ~ color_tile('transparent', 'red')))
+```
+
