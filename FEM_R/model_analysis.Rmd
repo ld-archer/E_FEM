@@ -13,7 +13,7 @@ The purpose of this notebook is:
 Do all this for both minimal models and cross-validation.
 
 ```{r setup, include=FALSE}
-# Need to set up the environment
+# Need to set up the working directory
 workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
 knitr::opts_knit$set(root.dir = workingDir)
 
@@ -54,10 +54,9 @@ shorten_columns <- function(testCSV) {
 
 ```
 
+<!-- First, we will collect and present all the T-tests together. We will add the prefix 'min_' or 'cv_' onto the variable names so we don't get mixed up. -->
 
-First, we will collect and present all the T-tests together. We will add the prefix 'min_' or 'cv_' onto the variable names so we don't get mixed up.
-
-```{r}
+```{r include=FALSE}
 # names for T-tests directory and filename stem
 min <- "ELSA_minimal/T-tests/"
 stem <- "minimal_all_waves_"
@@ -75,10 +74,12 @@ min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_risk)
 min_list <- lapply(min_list, rename_first_var, prefix='min')
 # Rename columns to be more succinct
 min_list <- lapply(min_list, shorten_columns)
+# Replace na with 0
+min_list <- lapply(min_list, function(x) { x[is.na(x)] <- 0; x} )
 
 ```
 
-```{r}
+```{r include=FALSE}
 # names for T-tests directory and filename stem
 CV1 <- "ELSA_CrossValidation1/T-tests/"
 stem <- "CV1_all_waves_"
@@ -92,16 +93,147 @@ cv_risk <- read.csv(paste0(CV1, stem, "risk.csv"))
 cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_risk)
 cv_list <- lapply(cv_list, rename_first_var, prefix='CV')
 cv_list <- lapply(cv_list, shorten_columns)
+cv_list <- lapply(cv_list, function(x) { x[is.na(x)] <- 0; x} )
 ```
 
-Both Minimal and Cross-validation T-tests are now renamed and collected into a separate list object each. We will now combine like tests together (i.e. demog with demog, binhlth with binhlth).
+<!-- Both Minimal and Cross-validation T-tests are now renamed and collected into a separate list object each. We will now combine like tests together (i.e. demog with demog, binhlth with binhlth). -->
 
 ```{r include=FALSE}
 # Set up vector with all p-value column names. Require these for table formatting
 pValNames <- c('P_Value_3', 'P_Value_4', 'P_Value_5', 'P_Value_6', 'P_Value_7', 'P_Value_8')
 ```
 
+<!-- Lets build the combined tables now. -->
 
+```{r include=FALSE}
+# Row bind to collect both dfs together
+uw <- rbind(min_list[[1]], cv_list[[1]])
+# Reorder rows in alphabetical order. This ensures that like variables are clumped together
+uw <- arrange(uw, Variable)
+
+# demog
+demog <- rbind(min_list[[2]], cv_list[[2]])
+demog <- arrange(demog, Variable)
+
+# binhlth
+binhlth <- rbind(min_list[[3]], cv_list[[3]])
+binhlth <- arrange(binhlth, Variable)
+
+# binecon
+binecon <- rbind(min_list[[4]], cv_list[[4]])
+binecon <- arrange(binecon, Variable)
+
+# risk
+risk <- rbind(min_list[[5]], cv_list[[5]])
+risk <- arrange(risk, Variable)
+```
+
+
+# Reactable Tables
+
+The [reactable](https://glin.github.io/reactable/index.html) package has the ability to include lots of complex styling, such as additional colour, formatting and even inline graphs built dynamically from the input data.
+
+For the purpose of this document, we are going to include a sticky first column (so we can always see the variable names whilst scrolling), a colour gradient from white to green based on the P Value (low = white, high = green), and a red cell background for any P values of 0.
+
+```{r echo = FALSE}
+## This block will define the logic for creating the tables with Reactable
+# The tables are formatted exaclty the same for each group of vars so makes sense to define this only once
+
+# createTTT - create T-Test Table
+# Have a default column definition, to handle the basic formatting, then specific formatting for the first column (Variable) and P Val cols
+createTTT <- function(t) {
+  # To enable a 'sticky' first column, that always shows as you scroll across the table
+  stickyStyle <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
+                      borderRight = "1px solid #eee")
+  
+  # Define a colour ramp to use for P Value cell gradients
+  greenPal <- function(x) rgb(colorRamp(c("#ffffff", "#008000"))(x), maxColorValue = 255)
+  
+  # Add in the green colour gradient for P Value cells. Also add a red block for value of 0
+  pValColDef <- colDef(
+    style = function(value) {
+      color <- greenPal(value)
+      if (value == 0) {
+        color <- "#ff4c4c"
+      }
+      list(background = color)
+    },
+    minWidth = 110
+  )
+  
+  res <- reactable(t,
+            defaultColDef = colDef(
+              header = function(value) gsub('_', ' ', value, fixed=TRUE),
+              cell = function(value) format(value, nsmall = 2),
+              align='center',
+              style = function(value) {
+                
+              }
+              #headerStyle = list(background = "#f7f7f8")
+            ),
+            columns = list(
+              Variable = colDef(
+                  minWidth = 160,
+                  style = stickyStyle,
+                  headerStyle = stickyStyle),
+              P_Value_3 = pValColDef,
+              P_Value_4 = pValColDef,
+              P_Value_5 = pValColDef,
+              P_Value_6 = pValColDef,
+              P_Value_7 = pValColDef,
+              P_Value_8 = pValColDef
+            ),
+            bordered = TRUE,
+            highlight = TRUE,
+            striped = TRUE)
+  
+  return(res)
+}
+
+```
+
+### Unweighted (Died)
+
+```{r echo = FALSE}
+# Create the actual table!
+uwTab <- createTTT(uw)
+uwTab
+```
+
+### Demographics
+
+```{r echo = FALSE}
+# Create the actual table!
+demogTab <- createTTT(demog)
+demogTab
+```
+
+### Binary Health
+```{r echo = FALSE}
+# Create the actual table!
+binhlthTab <- createTTT(binhlth)
+binhlthTab
+```
+### Binary Economic
+```{r echo = FALSE}
+# Create the actual table!
+bineconTab <- createTTT(binecon)
+bineconTab
+```
+### Risk Behaviours
+```{r echo = FALSE}
+# Create the actual table!
+riskTab <- createTTT(risk)
+riskTab
+```
+
+
+
+
+
+
+
+# DEFUNKT
 ### Unweighted (died)
 ```{r echo = FALSE, results = 'asis'}
 # Row bind to collect both dfs together
@@ -168,40 +300,3 @@ formattable(risk,
             align = c('l', rep('r', ncol(risk) - 1)),
             list(area(col=pValNames) ~ color_tile('transparent', 'red')))
 ```
-
-# Reactable Package
-
-```{r}
-
-stickyStyle <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
-                    borderRight = "1px solid #eee")
-
-reactable(risk,
-          defaultColDef = colDef(
-            header = function(value) gsub('_', ' ', value, fixed=TRUE),
-            cell = function(value) format(value, nsmall = 2),
-            align='center',
-            headerStyle = list(background = "#f7f7f8")
-          ),
-          columns = list(
-            Variable = colDef(minWidth = 160,
-                              style = stickyStyle,
-                              headerStyle = stickyStyle)
-          ),
-          bordered = TRUE,
-          highlight = TRUE,
-          striped = TRUE)
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
