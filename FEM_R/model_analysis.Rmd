@@ -19,6 +19,7 @@ knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
 require(formattable)
+require(reactable)
 #require(haven)
 #require(reshape2)
 #require(ggplot2)
@@ -28,10 +29,27 @@ require(formattable)
 
 ```{r include=FALSE}
 
-# Specify a function to rename the dataframes, so we can run in an sapply()
+# Need this code block for reactable tables to be rendered properly in HTML
+# Fix from here: https://www.gitmemory.com/issue/glin/reactable/43/618802061
+htmltools::tagList(
+  reactR::html_dependency_react(),
+  reactR::html_dependency_reacttools(),
+  reactable::reactable(iris)
+)
+
+# function to rename the dataframes, so we can run in an sapply()
 rename_first_var <- function(testCSV, prefix) {
   testCSV[,1] <- paste0(testCSV[,1], '_', prefix)
   return(testCSV)
+}
+
+# function for shortening column names
+shorten_columns <- function(testCSV) {
+  testCSV <- testCSV %>%
+                rename_at(vars(starts_with('fem_mean_wave')), funs(sub('fem_mean_wave', 'FEM_', .))) %>%
+                rename_at(vars(starts_with('elsa_mean_wave')), funs(sub('elsa_mean_wave', 'ELSA_', .))) %>%
+                rename_at(vars(starts_with('p_value_wave')), funs(sub('p_value_wave', 'P_Value_', .))) %>%
+                rename('Variable' = variable)
 }
 
 ```
@@ -51,10 +69,12 @@ min_binhlth <- read.csv(paste0(min, stem, "binhlth.csv"))
 min_binecon <- read.csv(paste0(min, stem, "binecon.csv"))
 min_risk <- read.csv(paste0(min, stem, "risk.csv"))
 
-# Collect in a list to run a list apply
+# Collect in a list to do some formatting
 min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_risk)
 # Add prefix 'min_' onto every variable name for clarity
 min_list <- lapply(min_list, rename_first_var, prefix='min')
+# Rename columns to be more succinct
+min_list <- lapply(min_list, shorten_columns)
 
 ```
 
@@ -68,16 +88,17 @@ cv_demog <- read.csv(paste0(CV1, stem, "demog.csv"))
 cv_binhlth <- read.csv(paste0(CV1, stem, "binhlth.csv"))
 cv_binecon <- read.csv(paste0(CV1, stem, "binecon.csv"))
 cv_risk <- read.csv(paste0(CV1, stem, "risk.csv"))
-# Now collect into list and rename vars for clarity
+# Now collect into list and rename vars and cols for clarity
 cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_risk)
 cv_list <- lapply(cv_list, rename_first_var, prefix='CV')
+cv_list <- lapply(cv_list, shorten_columns)
 ```
 
 Both Minimal and Cross-validation T-tests are now renamed and collected into a separate list object each. We will now combine like tests together (i.e. demog with demog, binhlth with binhlth).
 
 ```{r include=FALSE}
 # Set up vector with all p-value column names. Require these for table formatting
-pValNames <- c('p_value_wave3', 'p_value_wave4', 'p_value_wave5', 'p_value_wave6', 'p_value_wave7', 'p_value_wave8')
+pValNames <- c('P_Value_3', 'P_Value_4', 'P_Value_5', 'P_Value_6', 'P_Value_7', 'P_Value_8')
 ```
 
 
@@ -86,7 +107,7 @@ pValNames <- c('p_value_wave3', 'p_value_wave4', 'p_value_wave5', 'p_value_wave6
 # Row bind to collect both dfs together
 uw <- rbind(min_list[[1]], cv_list[[1]])
 # Reorder rows in alphabetical order. This ensures that like variables are clumped together
-uw <- arrange(uw, variable)
+uw <- arrange(uw, Variable)
 #uw
 formattable(uw, 
             align = c('l', rep('r', ncol(uw) - 1)),
@@ -98,7 +119,7 @@ formattable(uw,
 # Row bind to collect both dfs together
 demog <- rbind(min_list[[2]], cv_list[[2]])
 # Reorder rows in alphabetical order. This ensures that like variables are clumped together
-demog <- arrange(demog, variable)
+demog <- arrange(demog, Variable)
 formattable(demog, 
             align = c('l', rep('r', ncol(demog) - 1)),
             list(area(col=pValNames) 
@@ -109,7 +130,7 @@ formattable(demog,
 # Row bind to collect both dfs together
 binhlth <- rbind(min_list[[3]], cv_list[[3]])
 # Reorder rows in alphabetical order. This ensures that like variables are clumped together
-binhlth <- arrange(binhlth, variable)
+binhlth <- arrange(binhlth, Variable)
 formattable(binhlth, 
             align = c('l', rep('r', ncol(binhlth) - 1)),
             list(area(col=pValNames) 
@@ -120,7 +141,7 @@ formattable(binhlth,
 # Row bind to collect both dfs together
 binecon <- rbind(min_list[[4]], cv_list[[4]])
 # Reorder rows in alphabetical order. This ensures that like variables are clumped together
-binecon <- arrange(binecon, variable)
+binecon <- arrange(binecon, Variable)
 formattable(binecon, 
             align = c('l', rep('r', ncol(binecon) - 1)),
             list(area(col=pValNames) 
@@ -131,7 +152,7 @@ formattable(binecon,
 # Row bind to collect both dfs together
 risk <- rbind(min_list[[5]], cv_list[[5]])
 # Reorder rows in alphabetical order. This ensures that like variables are clumped together
-risk <- arrange(risk, variable)
+risk <- arrange(risk, Variable)
 formattable(risk, 
             align = c('l', rep('r', ncol(risk) - 1)),
             list(area(col=pValNames) 
@@ -142,9 +163,45 @@ formattable(risk,
 # Row bind to collect both dfs together
 risk <- rbind(min_list[[5]], cv_list[[5]])
 # Reorder rows in alphabetical order. This ensures that like variables are clumped together
-risk <- arrange(risk, variable)
+risk <- arrange(risk, Variable)
 formattable(risk, 
             align = c('l', rep('r', ncol(risk) - 1)),
             list(area(col=pValNames) ~ color_tile('transparent', 'red')))
 ```
+
+# Reactable Package
+
+```{r}
+
+stickyStyle <- list(position = "sticky", left = 0, background = "#fff", zIndex = 1,
+                    borderRight = "1px solid #eee")
+
+reactable(risk,
+          defaultColDef = colDef(
+            header = function(value) gsub('_', ' ', value, fixed=TRUE),
+            cell = function(value) format(value, nsmall = 2),
+            align='center',
+            headerStyle = list(background = "#f7f7f8")
+          ),
+          columns = list(
+            Variable = colDef(minWidth = 160,
+                              style = stickyStyle,
+                              headerStyle = stickyStyle)
+          ),
+          bordered = TRUE,
+          highlight = TRUE,
+          striped = TRUE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
