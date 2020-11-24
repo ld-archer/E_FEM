@@ -6,6 +6,7 @@ ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
 RAW_ELSA = /home/luke/Documents/E_FEM/UKDA-5050-stata/stata/stata11_se
 ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
+R = $(CURID)/FEM_R
 
 include fem.makefile
 
@@ -24,6 +25,8 @@ base: start_data transitions_base est_base summary_out_base simulation_base
 cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 Ttests_CV
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
+
+debug: complete debug_doc
 
 
 ### Combined rules
@@ -167,10 +170,34 @@ Ttests_minimal:
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA.do
 
 
-### 
+### Dealing with detailed output
 
 detailed_append:
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/detailed_output $(STATA) detailed_output_append.do
+
+
+### Debugging
+
+# assign a time stamp var for naming directories
+# This is a bit of an experiment
+TIMESTAMP = $(shell date +%m-%d_%T)
+
+debug_doc: $(R)/model_analysis.nb.html
+
+$(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CrossValidation1/ELSA_CrossValidation1_summary.dta
+	# Knit the document
+	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis.Rmd')"
+	# Create debug dir if not already
+	mkdir -p $(ROOT)/debug
+	# Create dir with current time
+	mkdir -p debug/$(TIMESTAMP)
+	# Move the html analysis file as well as all outputs, .ster and .est files
+	mv FEM_R/model_analysis.nb.html debug/$(TIMESTAMP)
+	cp -r output/ debug/$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_cross-validation1/ FEM_CPP_settings/ELSA_cross-validation2/ FEM_CPP_settings/ELSA_minimal/ debug/$(TIMESTAMP)
+	# Finally, open html file in firefox
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(TIMESTAMP)/model_analysis.nb.html
 
 
 ### Housekeeping and cleaning
@@ -181,6 +208,7 @@ clean:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
+	rm -f FEM_R/*.nb.html
 
 clean_total:
 	rm -f output/*/*.dta
@@ -189,3 +217,5 @@ clean_total:
 	rm -f output/*/*/*.txt
 	rm -f output/graphs/*/*.png
 
+clean_debug:
+	rm -f debug/*
