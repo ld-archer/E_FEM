@@ -14,6 +14,9 @@ FEM_CPP/optimized/*.o
 # log files
 log_*.txt
 
+# Debugging
+debug/
+
 # Compiled FEM
 FEM
 
