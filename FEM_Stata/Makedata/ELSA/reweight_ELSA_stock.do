@@ -32,7 +32,7 @@ else if "`scen'" == "CV1" {
 else if "`scen'" == "CV2" {
 	keep if year == 2010
 }
-else if "`scen'" == "minimal" {
+else if "`scen'" == "min" {
 	keep if year == 2002
 }
 
@@ -73,7 +73,7 @@ else if "`scen'" == "CV1" {
 else if "`scen'" == "CV2" {
 	saveold $outdata/ELSA_stock_CV2.dta, replace v(12)
 }
-else if "`scen'" == "minimal" {
+else if "`scen'" == "min" {
 	saveold $outdata/ELSA_stock_min.dta, replace v(12)
 }
 

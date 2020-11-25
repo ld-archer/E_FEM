@@ -94,7 +94,7 @@ $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=CV1 $(STATA) reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=CV2 $(STATA) reweight_ELSA_stock.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=minimal $(STATA) reweight_ELSA_stock.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=min $(STATA) reweight_ELSA_stock.do
 
 $(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
