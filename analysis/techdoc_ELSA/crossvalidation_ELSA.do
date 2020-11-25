@@ -45,6 +45,13 @@ if "`scen'" == "CV1" {
 	keep if simulation == 1
 	drop _merge
 }
+else if "`scen'" == "minimal" {
+	* Keep the same people from minimal run
+	merge 1:1 idauniq using `input'/ELSA_stock_min.dta
+	tab _merge
+	keep if _merge == 3
+	drop _merge
+}
 
 #d ;
 keep 

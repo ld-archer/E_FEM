@@ -32,6 +32,9 @@ else if "`scen'" == "CV1" {
 else if "`scen'" == "CV2" {
 	keep if year == 2010
 }
+else if "`scen'" == "minimal" {
+	keep if year == 2002
+}
 
 * Check the merge
 tab _merge
@@ -69,6 +72,9 @@ else if "`scen'" == "CV1" {
 }
 else if "`scen'" == "CV2" {
 	saveold $outdata/ELSA_stock_CV2.dta, replace v(12)
+}
+else if "`scen'" == "minimal" {
+	saveold $outdata/ELSA_stock_min.dta, replace v(12)
 }
 
 
