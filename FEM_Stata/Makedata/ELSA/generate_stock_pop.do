@@ -46,7 +46,7 @@ drop if died == 1
 replace l2age = age - 2 if missing(l2age)
 
 *** KLUDGE ***
-do kludge.do base
+do kludge.do min
 
 * Save data file
 saveold $outdata/ELSA_stock_base_min.dta, replace v(12)
