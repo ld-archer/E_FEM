@@ -46,8 +46,8 @@ if "`scen'" == "CV1" {
 	drop _merge
 }
 else if "`scen'" == "minimal" {
-	* Keep the same people from minimal run
-	merge 1:1 idauniq using `input'/ELSA_stock_min.dta
+	* Keep the same people from minimal run. Use flag var created in generate_stock_pop.do
+	merge 1:1 idauniq using `input'/ELSA_stock_min_flag.dta /*, keep(match) nogenerate*/
 	tab _merge
 	keep if _merge == 3
 	drop _merge

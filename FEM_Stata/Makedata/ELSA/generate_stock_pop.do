@@ -48,8 +48,13 @@ replace l2age = age - 2 if missing(l2age)
 *** KLUDGE ***
 do kludge.do base
 
-* Save
+* Save data file
 saveold $outdata/ELSA_stock_base_min.dta, replace v(12)
+
+* Create a datafile with just idauniq & flag == 1. Use this to select the correct population in T-tests (minimal)
+keep idauniq 
+gen flag = 1
+saveold $outdata/ELSA_stock_min_flag.dta, replace v(12)
 
 *** Now generate cross-validation population 1 (CV1)
 restore
