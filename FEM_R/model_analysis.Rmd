@@ -21,6 +21,7 @@ require(tidyverse)
 require(formattable)
 require(reactable)
 require(haven)
+require(data.table)
 #require(reshape2)
 #require(ggplot2)
 #require(gridExtra)
@@ -161,27 +162,36 @@ createTTT <- function(t) {
     minWidth = 110
   )
   
+  pValColDef2 <- colDef(
+    style = function(value) {
+      if (value >= 0.05) {
+        color <- "#4ca64c"
+      }
+      if (value < 0.05) {
+        color <- "#ff6666"
+      }
+      list(background = color)
+    },
+    minWidth = 110
+  )
+  
   res <- reactable(t,
             defaultColDef = colDef(
               header = function(value) gsub('_', ' ', value, fixed=TRUE),
               cell = function(value) format(value, nsmall = 2),
-              align='center',
-              style = function(value) {
-                
-              }
-              #headerStyle = list(background = "#f7f7f8")
+              align = 'center'
             ),
             columns = list(
               Variable = colDef(
                   minWidth = 160,
                   style = stickyStyle,
                   headerStyle = stickyStyle),
-              P_Value_3 = pValColDef,
-              P_Value_4 = pValColDef,
-              P_Value_5 = pValColDef,
-              P_Value_6 = pValColDef,
-              P_Value_7 = pValColDef,
-              P_Value_8 = pValColDef
+              P_Value_3 = pValColDef2,
+              P_Value_4 = pValColDef2,
+              P_Value_5 = pValColDef2,
+              P_Value_6 = pValColDef2,
+              P_Value_7 = pValColDef2,
+              P_Value_8 = pValColDef2
             ),
             bordered = TRUE,
             highlight = TRUE,
