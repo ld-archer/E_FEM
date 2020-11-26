@@ -127,8 +127,8 @@ est_base:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
 
 est_CV:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation1/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/crossvalidation2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_cross-validation2/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV1/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV2/models $(STATA) save_est_cpp.do
 
 est_minimal:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
@@ -175,7 +175,7 @@ Ttests_minimal:
 
 CV2_detailed_append:
 
-output/ELSA_CV2/ELSA_CV2_append.dta:
+$(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta: 
 	cd $(MAKEDATA) && datain=output/ dataout=output/ scen=CV2 $(STATA) detailed_output_append.do
 
 
