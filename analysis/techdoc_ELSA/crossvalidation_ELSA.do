@@ -14,8 +14,8 @@ log using crossvalidation_ELSA_`scen'.log, replace
 
 * Path to files
 if "`scen'" == "CV1" {
-	local output "../../output/ELSA_CrossValidation1"
-	*local output "$output_dir/ELSA_CrossValidation1"
+	local output "../../output/ELSA_CV1"
+	*local output "$output_dir/ELSA_CV1"
 }
 else if "`scen'" == "minimal" {
 	local output "../../output/ELSA_minimal"

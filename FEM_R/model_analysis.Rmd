@@ -82,7 +82,7 @@ min_list <- lapply(min_list, function(x) { x[is.na(x)] <- 0; x} )
 
 ```{r include=FALSE}
 # names for T-tests directory and filename stem
-CV1 <- "ELSA_CrossValidation1/T-tests/"
+CV1 <- "ELSA_CV1/T-tests/"
 stem <- "CV1_all_waves_"
 # Read in files
 cv_uw <- read.csv(paste0(CV1, stem, "unweighted.csv"))
@@ -295,7 +295,7 @@ vis_CV2_prev <- function(long, CV2) {
 
 # Load in whole stock pop, plus the CV2 summary output file
 long <- read_dta('../input_data/ELSA_long.dta')
-CV2 <- read_dta('ELSA_CrossValidation2/ELSA_CrossValidation2_summary.dta')
+CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
 
 vis_CV2_prev(long, CV2)
 ```
