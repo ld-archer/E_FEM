@@ -173,8 +173,10 @@ Ttests_minimal:
 
 ### Dealing with detailed output
 
-detailed_append:
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/detailed_output $(STATA) detailed_output_append.do
+CV2_detailed_append:
+
+output/ELSA_CV2/ELSA_CV2_append.dta:
+	cd $(MAKEDATA) && datain=output/ dataout=output/ scen=CV2 $(STATA) detailed_output_append.do
 
 
 ### Debugging
