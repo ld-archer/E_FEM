@@ -409,6 +409,10 @@ gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
 replace bmi = bmi + rand if !missing(rand)
 drop rand
 
+* The interpolation step for BMI produces a couple of completely impossible values. Removing anything under 14, as 14 is the lowest I've seen in ELSA that didn't look like a typo
+* Let kludge.do handle it with hotdeck
+replace bmi = . if bmi < 14
+
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
 
