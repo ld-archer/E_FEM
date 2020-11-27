@@ -76,6 +76,8 @@ keep
 	r*cwtresp
 	h*atotf
 	r*ipubpen
+	r*drink
+	r*psyche
 	
 	r*walkra
 	r*dressa
@@ -112,6 +114,8 @@ local shapelist
 	r@cwtresp
 	h@atotf
 	r@ipubpen
+	r@drink
+	r@psyche
 	
 	r@walkra
 	r@dressa
@@ -179,7 +183,7 @@ label var iadl2p "Two or more IADL limitations"
 
 
 * Health conditions
-foreach var in cancre diabe hearte hibpe lunge stroke {
+foreach var in cancre diabe hearte hibpe lunge stroke psyche {
 	ren r`var' `var'
 }
 label var cancre "R ever had cancer"
@@ -188,6 +192,7 @@ label var hearte "R ever had heart disease"
 label var hibpe "R ever had hypertension"
 label var lunge "R ever had lung disease"
 label var stroke "R ever had stroke"
+label var psyche "R ever had psychological problems"
 
 * Mortality
 gen died = riwstat
@@ -195,12 +200,13 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 * Risk factors
-foreach var in bmi smokev smoken {
+foreach var in bmi smokev smoken drink {
 	ren r`var' `var'
 }
 label var bmi "R Body mass index"
 label var smoken "R smokes now"
 label var smokev "R smoke ever"
+label var drink "R drinks alcohol"
 
 * Sampling weight
 ren rcwtresp weight
@@ -289,10 +295,12 @@ label var cancre "Cancer ever"
 label var lunge "Lung disease ever"
 label var hearte "Heart disease ever"
 label var stroke "Stroke ever"
+label var psyche "Psychological problems ever"
 
 label var bmi "BMI"
 label var smokev "Smoke ever"
 label var smoken "Smoke now"
+label var drink "Drinks Alcohol"
 
 label var work "Working for pay"
 
@@ -319,7 +327,7 @@ restore
 
 *save test_pre_loop.dta, replace
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl 
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche
 local risk smoken smokev bmi drink
 local binecon work
 *local cntecon /*itearnx atotfx*/
@@ -337,6 +345,9 @@ foreach tp in binhlth risk binecon cntecon demog {
 		
 			* BMI has no data for odd waves, skip over these in the loop
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
+				continue
+			}
+			else if "`var'" == "drink" & `wave' == 1 {
 				continue
 			}
 			
