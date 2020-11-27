@@ -98,7 +98,8 @@ global allvars_died male $lvars_age
 * 11-27_11:54:01: global allvars_cancre       $dvars $lvars_age l2logbmi
 *global allvars_cancre       $dvars $lvars_age l2logbmi l2drink
 *global allvars_cancre       $dvars $lvars_age l2logbmi l2hchole
-global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married
+*global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married
+global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married l2exstat1 l2exstat2
 
 * DIABE
 *global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe l2hchole /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
@@ -108,7 +109,8 @@ global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2marrie
 * 11-27_11:54:01: global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2smoken l2exstat1 l2exstat2
 *global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2
 *global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2 l2drink
-global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2 l2drink
+*global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2 l2drink
+global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2
 
 * HEARTE
 *global allvars_hearte       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2hibpe l2diabe l2psyche l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors  https://www.nhsggc.org.uk/your-health/health-services/hsd-patient-carers/heart-disease/risk-factors-for-heart-disease/#*/
@@ -117,10 +119,14 @@ global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exsta
 * 11-27_11:15:22: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole
 * 11-27_11:54:01: global allvars_hearte       $dvars $lvars_age l2logbmi l2smoken l2hibpe l2hchole
 *global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2drink
-global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2diabe
+*global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2diabe
+*global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2diabe l2exstat1 l2exstat2
+global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2exstat1 l2exstat2 l2smoken
 
 
 * 11-27_11:54:01: global allvars_hibpe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2psyche l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure https://cks.nice.org.uk/topics/hypertension-not-diabetic/background-information/risk-factors/ */
+*global allvars_hibpe        $dvars $lvars_age
+*global allvars_hibpe        $dvars $lvars_age l2logbmi
 global allvars_hibpe        $dvars $lvars_age l2logbmi l2hchole
 
 global allvars_lunge        $dvars $lvars_age l2logbmi `lvars_smoke' l2asthmae /*https://www.healthline.com/health/understanding-idiopathic-pulmonary-fibrosis/chronic-lung-diseases-causes-and-risk-factors#1 https://cks.nice.org.uk/topics/chronic-obstructive-pulmonary-disease/background-information/risk-factors/ */
