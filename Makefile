@@ -6,7 +6,7 @@ ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
 RAW_ELSA = /home/luke/Documents/E_FEM/UKDA-5050-stata/stata/stata11_se
 ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
-R = $(CURID)/FEM_R
+R = $(CURDIR)/FEM_R
 
 include fem.makefile
 
