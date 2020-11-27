@@ -8,8 +8,10 @@ local scen: env scen
 local maxrep 10
 
 * locals for start and stop year
-local minyr 2012
-local maxyr 2060
+if "`scen'" == "CV2" {
+	local minyr 2010
+	local maxyr 2016
+}
 
 #d ;
 local scenarios
