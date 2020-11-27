@@ -22,7 +22,7 @@ complete: ELSA base cross-validation minimal
 
 base: start_data transitions_base est_base summary_out_base simulation_base
 
-cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 Ttests_CV
+cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 CV2_detailed_append Ttests_CV
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
@@ -165,17 +165,19 @@ handovers:
 	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
 
 Ttests_CV: 
+	mkdir -p $(ROOT)/output/ELSA_CV1/T-tests
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=CV1 $(STATA) crossvalidation_ELSA.do
 
 Ttests_minimal:
+	mkdir -p $(ROOT)/output/ELSA_minimal/T-tests
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA.do
 
 
 ### Dealing with detailed output
 
-CV2_detailed_append:
+CV2_detailed_append: $(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta
 
-$(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta: 
+$(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_summary.dta
 	cd $(MAKEDATA) && datain=output/ dataout=output/ scen=CV2 $(STATA) detailed_output_append.do
 
 
@@ -187,7 +189,7 @@ TIMESTAMP = $(shell date +%m-%d_%T)
 
 debug_doc: $(R)/model_analysis.nb.html
 
-$(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CrossValidation1/ELSA_CrossValidation1_summary.dta
+$(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
 	# Knit the document
 	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis.Rmd')"
 	# Create debug dir if not already
@@ -198,7 +200,7 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	mv FEM_R/model_analysis.nb.html debug/$(TIMESTAMP)
 	cp -r output/ debug/$(TIMESTAMP)
 	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_cross-validation1/ FEM_CPP_settings/ELSA_cross-validation2/ FEM_CPP_settings/ELSA_minimal/ debug/$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/$(TIMESTAMP)
 	# Finally, open html file in firefox
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(TIMESTAMP)/model_analysis.nb.html
 
