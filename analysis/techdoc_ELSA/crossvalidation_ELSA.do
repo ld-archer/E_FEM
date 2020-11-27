@@ -320,7 +320,7 @@ restore
 *save test_pre_loop.dta, replace
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl 
-local risk smoken smokev bmi 
+local risk smoken smokev bmi drink
 local binecon work
 *local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
