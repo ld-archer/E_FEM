@@ -18,7 +18,7 @@ workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
-require(formattable)
+#require(formattable)
 require(reactable)
 require(haven)
 require(data.table)
@@ -300,4 +300,14 @@ CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
 vis_CV2_prev(long, CV2)
 ```
 
+# Github Reporting
+
+It would be nice if we could copy paste tables directly from this document into a github issue. For this reason, we will look into a package that can print tables directly into markdown or something similar, which we can then place straight into a Github issue.
+
+```{r}
+
+#kable
+
+
+```
 
