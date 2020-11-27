@@ -85,16 +85,24 @@ local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 *global allvars_died male $lvars_age l2srh3 l2srh4 l2srh5 l2cancre l2hearte l2atotb l2adl2 l2adl3p l2iadl2p
 *global allvars_died male $lvars_age l2srh3 l2srh4 l2srh5 l2cancre l2hearte l2iadl2p
 *global allvars_died male $lvars_age l2srh4 l2srh5 l2cancre l2hearte l2iadl2p
-*global allvars_died male $lvars_age l2srh5
-global allvars_died male $lvars_age l2srh5 l2hearte
+*global allvars_died male $lvars_age l2srh5 l2hearte
+global allvars_died male $lvars_age 
 
 
 *** Chronic Diseases
-global allvars_cancre       $dvars $lvars_age l2smoken l2logbmi l2drink
-global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe l2hchole /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
+*CANCRE
+*global allvars_cancre       $dvars $lvars_age l2smoken l2logbmi l2drink
+global allvars_cancre       $dvars $lvars_age l2smoken
+
+* DIABE
+*global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe l2hchole /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
+global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe
+
+* HEARTE
 *global allvars_hearte       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2hibpe l2diabe l2psyche l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors  https://www.nhsggc.org.uk/your-health/health-services/hsd-patient-carers/heart-disease/risk-factors-for-heart-disease/#*/
 *global allvars_hearte       $dvars $lvars_age l2logbmi l2smoken l2hibpe l2hchole
-global allvars_hearte       $dvars $lvars_age l2logbmi l2smoken l2hibpe
+*global allvars_hearte       $dvars $lvars_age l2logbmi l2smoken l2hibpe
+global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe
 
 
 global allvars_hibpe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2psyche l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure https://cks.nice.org.uk/topics/hypertension-not-diabetic/background-information/risk-factors/ */
