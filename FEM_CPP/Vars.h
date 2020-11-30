@@ -583,6 +583,17 @@ namespace Vars
 		l2mei_treated,              ///< Lag of whether treated with Moderate Exercise Increase intervention
 		ei_treated,					///< Whether treated with Exercise Intervention
 		l2ei_treated,				///< Lag of whether treated with Exercise Intervention
+		smkint,                     ///< Smoking intensity variable
+		smkint1,                    ///< Smoking intensity level 1
+		smkint2,                    ///< Smoking intensity level 2
+		smkint3,                    ///< Smoking intensity level 3
+		l2smkint,                   ///< Lag of Smoking intensity variable
+		l2smkint1,                  ///< Lag of Smoking intensity level 1
+		l2smkint2,                  ///< Lag of Smoking intensity level 2
+		l2smkint3,                  ///< Lag of Smoking intensity level 3
+		psmkint1,                   ///< Probability of smoking intensity level 1
+		psmkint2,                   ///< Probability of smoking intensity level 2
+		psmkint3,                   ///< Probability of smoking intensity level 3
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

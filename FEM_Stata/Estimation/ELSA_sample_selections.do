@@ -18,7 +18,7 @@ local select_died !l2died & wave > 1 & wave <= 6
 local select_smoke_start !died & l2smoken == 0  /*INCIDENCE*/
 local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
 local select_srh !died & wave != 3
-*local select_smokef !died & smoken==1
+local select_smkint !died & smoken == 1
 local select_hlthlm !died & wave > 1 & retemp == 0  /*PREVALENCE*/
 local select_ipubpen !died & retemp == 1 
 local select_retage !died /*INCIDENCE*/
@@ -35,7 +35,7 @@ if "`defmod'" == "CV2" {
     local CV2 & wave < 5
 }
 * varlist holds all that we estimate transition models for
-local varlist adlstat iadlstat work retemp atotf drink exstat cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine died smoke_start smoke_stop hlthlm ipubpen retage drinkd drinkd_stat logbmi hchole hipe itearn
+local varlist adlstat iadlstat work retemp atotf drink exstat cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine died smoke_start smoke_stop hlthlm ipubpen retage drinkd drinkd_stat logbmi hchole hipe itearn smkint
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

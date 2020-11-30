@@ -652,6 +652,18 @@ VarsInfo::VarsInfo() {
     info[Vars::l2mei_treated]       = VarInfo("l2mei_treated", "Lag of whether treated with Moderate Exercise Increase intervention", VarTypes::Boolean);
 	info[Vars::ei_treated]			= VarInfo("ei_treated", "Whether treated with Exercise Intervention", VarTypes::Boolean);
 	info[Vars::l2ei_treated]		= VarInfo("l2ei_treated", "Lag of whether treated with Exercise Intervention", VarTypes::Boolean);
+	info[Vars::smkint]              = VarInfo("smkint", "Smoking intensity variable, categorical", VarTypes::Short);
+    info[Vars::smkint1]             = VarInfo("smkint1", "Smoking intensity level 1 (1-9 cigs/day)", VarTypes::Boolean, Vars::smkint, 1);
+    info[Vars::smkint1]             = VarInfo("smkint2", "Smoking intensity level 2 (10-19 cigs/day)", VarTypes::Boolean, Vars::smkint, 2);
+    info[Vars::smkint1]             = VarInfo("smkint3", "Smoking intensity level 3 (>20 cigs/day)", VarTypes::Boolean, Vars::smkint, 3);
+	info[Vars::l2smkint]            = VarInfo("l2smkint", "Lag of smoking intensity variable, categorical", VarTypes::Short);
+    info[Vars::l2smkint1]             = VarInfo("l2smkint1", "Lag of Smoking intensity level 1 (1-9 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 1);
+    info[Vars::l2smkint2]             = VarInfo("l2smkint2", "Lag of Smoking intensity level 2 (10-19 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 2);
+    info[Vars::l2smkint3]             = VarInfo("l2smkint3", "Lag of Smoking intensity level 3 (>20 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 3);
+    info[Vars::psmkint1]            = VarInfo("psmkint1", "Probability of smoking intensity level 1", VarTypes::Float);
+    info[Vars::psmkint2]            = VarInfo("psmkint2", "Probability of smoking intensity level 2", VarTypes::Float);
+    info[Vars::psmkint3]            = VarInfo("psmkint3", "Probability of smoking intensity level 3", VarTypes::Float);
+
 
 	
 	// This is for vars that are transitioned each wave, not just assigned
@@ -800,6 +812,10 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::srh3] = Vars::l2srh3;
     lag_map[Vars::srh4] = Vars::l2srh4;
     lag_map[Vars::srh5] = Vars::l2srh5;
+    lag_map[Vars::smkint] = Vars::l2smkint;
+    lag_map[Vars::smkint1] = Vars::l2smkint1;
+    lag_map[Vars::smkint2] = Vars::l2smkint2;
+    lag_map[Vars::smkint3] = Vars::l2smkint3;
 
 
 
@@ -855,6 +871,9 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::srh3] =          Vars::psrh3;
     prob_map[Vars::srh4] =          Vars::psrh4;
     prob_map[Vars::srh5] =          Vars::psrh5;
+    prob_map[Vars::smkint1] =       Vars::psmkint1;
+    prob_map[Vars::smkint2] =       Vars::psmkint2;
+    prob_map[Vars::smkint3] =       Vars::psmkint3;
 
 
 

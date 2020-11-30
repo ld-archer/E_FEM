@@ -40,6 +40,7 @@ local measures
 						p_smokev  i_smokev  n_smokev
 						n_smoke_start
 						n_smoke_stop
+						a_smkint
 						p_work 	  n_work
 						p_hlthlm  n_hlthlm
 						p_retemp  i_retemp  n_retemp

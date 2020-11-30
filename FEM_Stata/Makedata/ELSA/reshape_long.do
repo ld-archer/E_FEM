@@ -127,6 +127,7 @@ r*hchole
 r*hipe
 r*shlt
 h*atotb
+r*smokef
 ;
 #d cr
 
@@ -200,6 +201,7 @@ foreach var in
     hipe
     shlt
     atotb
+    smokef
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -216,13 +218,13 @@ forvalues wv = $firstwave/$lastwave {
 }
 
 * Reshape data from wide to long
-* REMOVED: strat smokef
+* REMOVED: strat
 #d ;
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe shlt atotb
+    drink drinkd educl mstat hchole hipe shlt atotb smokef
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -255,7 +257,7 @@ label variable arthre "Arthritis ever"
 label variable bmi "BMI"
 label variable smokev "Smoke ever"
 label variable smoken "Smoke now"
-*label variable smokef "Average cigs/day"
+label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
 label variable work "Working for pay"
 label variable hlthlm "Health limits work"
@@ -435,7 +437,28 @@ replace smkstat = 3 if smoken == 1
 label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
-* Calculate drinkwn from drinkn for waves 2 and 3
+* Smoking intensity variable
+recode smokef (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
+label define smkint 1 "Low" 2 "Medium" 3 "High"
+label values smkint smkint
+label variable smkint "Smoking intensity"
+drop smokef
+
+/* * Smoking intensity variable
+recode smokef (0=1) (1/9=2) (10/19=3) (20/max=4), gen(smkint)
+label define smkint 1 "Non-smoker" 2 "Low" 3 "Medium" 4 "High"
+label values smkint smkint
+label variable smkint "Smoking intensity"
+drop smokef */
+
+* dummy vars for transition models
+gen smkint1 = smkint == 1
+gen smkint2 = smkint == 2
+gen smkint3 = smkint == 3
+
+
+* Drinking intensity variable
+* This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
 
 *count if missing(drinkd)
 * Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
@@ -539,6 +562,10 @@ foreach var in
     srh4
     srh5
     atotb
+    smkint
+    smkint1
+    smkint2
+    smkint3
     {;
         gen l2`var' = L.`var';
     };

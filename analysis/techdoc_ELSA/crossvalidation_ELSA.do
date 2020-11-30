@@ -78,6 +78,7 @@ keep
 	r*ipubpen
 	r*drink
 	r*psyche
+	r*smokef
 	
 	r*walkra
 	r*dressa
@@ -116,6 +117,7 @@ local shapelist
 	r@ipubpen
 	r@drink
 	r@psyche
+	r@smokef
 	
 	r@walkra
 	r@dressa
@@ -200,13 +202,20 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 * Risk factors
-foreach var in bmi smokev smoken drink {
+foreach var in bmi smokev smoken drink smokef {
 	ren r`var' `var'
 }
 label var bmi "R Body mass index"
 label var smoken "R smokes now"
 label var smokev "R smoke ever"
 label var drink "R drinks alcohol"
+
+* Smoking intensity variable
+recode smokef (0=1) (1/9=2) (10/19=3) (20/max=4), gen(smkint)
+label define smkint 1 "Non-smoker" 2 "Low" 3 "Medium" 4 "High"
+label values smkint smkint
+label variable smkint "Smoking intensity"
+drop smokef
 
 * Sampling weight
 ren rcwtresp weight
@@ -301,6 +310,7 @@ label var bmi "BMI"
 label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
+label var smkint "Smoking Intensity"
 
 label var work "Working for pay"
 
@@ -328,7 +338,7 @@ restore
 *save test_pre_loop.dta, replace
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche
-local risk smoken smokev bmi drink
+local risk smoken smokev bmi drink smkint
 local binecon work
 *local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
