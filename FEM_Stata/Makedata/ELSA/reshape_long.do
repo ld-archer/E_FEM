@@ -318,10 +318,20 @@ keep if inlist(iwstat,1,4,5)
 *               5 - Divorced
 *               7 - Widowed
 *               8 - Never Married
+replace mstat = 2 if inlist(mstat, 4,5,8)
+replace mstat = 4 if mstat == 7
+label define mstat 1 "Married" 2 "Single" 3 "Cohabiting" 4 "Widowed"
+label values mstat mstat
+
 gen married = mstat == 1
-gen single = inlist(mstat,4,5,8)
-gen widowed = mstat == 7
-drop mstat
+gen single = mstat == 2
+gen cohab = mstat == 3
+gen widowed = mstat == 4
+label variable married "Married"
+label variable single "Single"
+label variable cohab "Cohabiting"
+label variable widowed "Widowed"
+
 
 * FEM uses hhidpn as the person ID, so can drop idauniq
 gen hhidpn = idauniq
@@ -438,8 +448,8 @@ label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
 * Smoking intensity variable
-recode smokef (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
-label define smkint 1 "Low" 2 "Medium" 3 "High"
+recode smokef (0/0.99=1) (1/9.99=2) (10/19.99=3) (20/max=4), gen(smkint)
+label define smkint 1 "Non-Smoker" 2 "Low" 3 "Medium" 4 "High"
 label values smkint smkint
 label variable smkint "Smoking intensity"
 drop smokef
@@ -550,9 +560,11 @@ foreach var in
     exstat2
     exstat3
     obese
+    mstat
     married
     single
     widowed
+    cohab
     hchole
     hipe
     srh

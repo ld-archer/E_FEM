@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn atotb
-global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint /*vgactx_e mdactx_e ltactx_e smkstat*/
+global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
 #d ;
@@ -163,7 +163,7 @@ global allvars_smoke_start  $dvars $lvars_age l2work l2psyche l2single l2married
 * 11-27_16:12:16: global allvars_smoke_stop   $dvars $lvars_age
 *global allvars_smoke_stop   $dvars $lvars_age l2work
 global allvars_smoke_stop   $dvars $lvars_age l2work l2psyche l2single l2married l2widowed
-global allvars_smkint       $dvars $lvars_age l2work l2single l2married l2widowed
+global allvars_smkint       $dvars $lvars_age 
 
 
 *** Drinking
@@ -198,3 +198,6 @@ global allvars_retage       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `
 
 *** Exercise
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit' l2logbmi l2arthre l2asthmae
+
+*** Marriage Status
+global allvars_mstat        $dvars $lvars_age l2work l2psyche l2atotb l2logbmi 

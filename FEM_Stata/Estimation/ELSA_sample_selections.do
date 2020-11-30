@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat work retemp atotf drink exstat atotb /*smkstat vgactx_e mdactx_e ltactx_e*/ {
+foreach v in adlstat iadlstat work retemp atotf drink exstat atotb mstat /*smkstat vgactx_e mdactx_e ltactx_e*/ {
     local select_`v' !died 
 }
 
@@ -35,7 +35,7 @@ if "`defmod'" == "CV2" {
     local CV2 & wave < 5
 }
 * varlist holds all that we estimate transition models for
-local varlist adlstat iadlstat work retemp atotf drink exstat cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine died smoke_start smoke_stop hlthlm ipubpen retage drinkd drinkd_stat logbmi hchole hipe itearn smkint
+local varlist adlstat iadlstat work retemp atotf drink exstat cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine died smoke_start smoke_stop hlthlm ipubpen retage drinkd drinkd_stat logbmi hchole hipe itearn smkint mstat
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

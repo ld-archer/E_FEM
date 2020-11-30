@@ -211,11 +211,20 @@ label var smokev "R smoke ever"
 label var drink "R drinks alcohol"
 
 * Smoking intensity variable
+recode smokef (0/0.99=1) (1/9.99=2) (10/19.99=3) (20/max=4), gen(smkint)
+label define smkint 1 "Non-Smoker" 2 "Low" 3 "Medium" 4 "High"
+label values smkint smkint
+label variable smkint "Smoking intensity"
+drop smokef
+
+/*
+* Smoking intensity variable
 recode smokef (0=1) (1/9=2) (10/19=3) (20/max=4), gen(smkint)
 label define smkint 1 "Non-smoker" 2 "Low" 3 "Medium" 4 "High"
 label values smkint smkint
 label variable smkint "Smoking intensity"
 drop smokef
+*/
 
 * Sampling weight
 ren rcwtresp weight
@@ -357,7 +366,7 @@ foreach tp in binhlth risk binecon cntecon demog {
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
-			else if "`var'" == "drink" & `wave' == 1 {
+			else if "`var'" == "drinkd" & `wave' == 1 {
 				continue
 			}
 			
