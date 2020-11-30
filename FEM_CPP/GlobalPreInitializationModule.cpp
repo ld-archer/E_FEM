@@ -59,6 +59,25 @@ void GlobalPreInitializationModule::process(PersonVector& persons, unsigned int 
 					p->set(Vars::year, (double)scenario->StartYr());
 			}
 
+			// Need to make sure all marital status dummies are set correctly
+            // current marital status dummies
+            p->set(Vars::married, p->get(Vars::mstat) == 1);
+            p->set(Vars::single, p->get(Vars::mstat) == 2);
+            p->set(Vars::cohab, p->get(Vars::mstat) == 3);
+            p->set(Vars::widowed, p->get(Vars::mstat) == 4);
+            if(p->test(Vars::married) || p->test(Vars::cohab)) {
+                p->set(Vars::widowed, false);
+            }
+
+            // lag marital status dummies
+            p->set(Vars::l2married, p->get(Vars::l2mstat) == 1);
+            p->set(Vars::l2single, p->get(Vars::l2mstat) == 2);
+            p->set(Vars::l2cohab, p->get(Vars::l2mstat) == 3);
+            p->set(Vars::l2widowed, p->get(Vars::l2mstat) == 4);
+            if(p->test(Vars::l2married) || p->test(Vars::l2cohab)) {
+                p->set(Vars::l2widowed, false);
+            }
+
 
 			// If this is a married dead person, then if the spouse died before them set to them to widowed
 			if(p->test(Vars::died) && p->test(Vars::married) && p->getSpouse() != NULL) {

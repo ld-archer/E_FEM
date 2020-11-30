@@ -204,7 +204,8 @@ namespace Vars
 		l2eversep,                 ///< Lag of ever separated [0, 1], stored as Boolean		
 		l2inlaborforce,						///> Lag of in labor force
 		l2inscat,									///> Lag of insurance category
-		l2mstat_new,										///< Lag of Marital Status [1,3], stored as Short
+		//l2mstat_new,										///< Lag of Marital Status [1,3], stored as Short
+        l2mstat,										///< Lag of Marital Status [1,4], stored as Short
 		l2numbiokids,              ///< Lag of Number of biological children, stored as Short
 
 		l2adl1,                    ///< Lag of ADL 1, [0, 1], stored as Boolean
@@ -325,6 +326,7 @@ namespace Vars
 		l2ssclaim,                 ///< Lag of Claiming OASI, [0, 1], stored as Boolean
 		l2ssiclaim,                ///< Lag of Claiming SSI, [0, 1], stored as Boolean
 		l2stroke,                  ///< Lag of Stroke, [0, 1], stored as Boolean
+		l2single,                   ///< Lag of marital status: single [0, 1], stored as Boolean
 		l2htcamt,                   ///< Lag of transfers
 		l2tcamt_cpl,               ///< lag of couples tcamt_cpl
 		lunge,                    ///< Lung disease [0, 1], stored as Boolean
@@ -373,7 +375,8 @@ namespace Vars
 		medicaid_elig,            ///< Individual eligible for Medicaid this timestep
 		memrye,                   ///< R memory-related diseases [0, 1], stored as Boolean
 		more_educ,								////< Pursing more education, stored as Boolean
-		mstat_new,										///< Marital status [1,3], stored as Short
+		//mstat_new,										///< Marital status [1,3], stored as Short
+        mstat,										///< Marital status [1,4], stored as Short
 		mstat_new_cond1,					///< Marital status (DO NOT USE FOR OUTPUT) [1,3], stored as Short
 		mstat_new_cond2,					///< Marital status (DO NOT USE FOR OUTPUT) [1,3], stored as Short
 		mstat_new_cond3,					///< Marital status (DO NOT USE FOR OUTPUT) [1,3], stored as Short

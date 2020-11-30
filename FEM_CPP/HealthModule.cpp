@@ -145,10 +145,13 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 					case Vars::afibe:
 					     do_model = person->get(Vars::age) >= 65 && !person->test(Vars::l2afibe);
 					     break;
-					case Vars::mstat_new:
+					/*case Vars::mstat_new:
 						do_model = psid_data;
 						do_marriage(person, random);
-						break;
+						break;*/
+				    case Vars::mstat:
+				        do_model = elsa_data;
+				        break;
 					case Vars::births:
 						do_model = psid_data && !person->test(Vars::male) && person->get(Vars::l2age) < 43;
 						break;
@@ -239,7 +242,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 					person->set(Vars::diclaim, 0.0);
 				}
 			}
-      // Do cogstock model if 65-66
+            // Do cogstock model if 65-66
 			// if (runcogstk_var->value(person) == 1) {
  			//    cogstate_stock->predict(person, random);
 			// }
@@ -249,7 +252,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 				person->set(Vars::chfe, false);	
 					
 			// Should not transition hearta if hearte==0
-      if(!person->test(Vars::hearte))
+            if(!person->test(Vars::hearte))
 				person->set(Vars::hearta, false);	
 
 			// Accounting for start/stop cholesterol treatment	
@@ -300,12 +303,15 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
 						// Clean up other vars - didn't start, too
 						person->set(Vars::smoke_start,0.0);
+						// Set intensity to 0
+						person->set(Vars::smkint, 1.0);
 					}	
 					else {
-						// Didn't stop, so maintain smkstat, smoken, smokev
+						// Didn't stop, so maintain smkstat, smoken, smokev, smkint
 						person->set(Vars::smkstat,person->get(Vars::l2smkstat));
 						person->set(Vars::smoken,person->get(Vars::l2smoken));
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
+						//person->set(Vars::smkint,person->get(Vars::l2smkint)); Will this line mean that people will always have the same intensity if they continue to smoke? I.e. not being transitioned between states anymore
 						// Clean up other vars - didn't start, too
 						person->set(Vars::smoke_start,0.0);
 					}
@@ -322,6 +328,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::smokev,1.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
+						// How can I deal with smkint here? Will this happen automatically?
 					}	
 					else {
 						// Didn't start, so maintain previous status for smkstat, smoken, smokev
@@ -331,7 +338,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
 					}
-				}			
+				}
 			}
 
 			// If we change drink to 0 then we need to make sure drinkd is also 0
@@ -343,6 +350,89 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 					person->set(Vars::drinkd, 0.0);
 					// USE LAG VARIABLE
 				}
+			}
+
+			// Handle marriage status transitions
+			if (elsa_data) {
+                // Married = mstat == 1
+			    // Single = mstat == 2
+			    // Cohab = mstat == 3
+			    // Widowed = mstat == 4
+
+			    // Single to other states
+			    if(person->get(Vars::l2mstat) == 2) {
+                    // Now married
+                    if(person->get(Vars::mstat) == 1) {
+                        person->set(Vars::married, 1.0);
+                        person->set(Vars::single, 0.0);
+                    }
+                    // Now cohabiting
+                    if(person->get(Vars::mstat) == 3) {
+                        person->set(Vars::cohab, 1.0);
+                        person->set(Vars::single, 0.0);
+                    }
+                    // Now widowed
+                    if(person->get(Vars::mstat) == 4) {
+                        person->set(Vars::widowed, 1.0);
+                        person->set(Vars::single, 0.0);
+                    }
+                }
+                // married to other states
+                if(person->get(Vars::l2mstat) == 1) {
+                    // Now single
+                    if(person->get(Vars::mstat) == 2) {
+                        person->set(Vars::single, 1.0);
+                        person->set(Vars::married, 0.0);
+                    }
+                    // Now cohabiting (odd change, maybe rare but not impossible)
+                    if(person->get(Vars::mstat) == 3) {
+                        person->set(Vars::cohab, 1.0);
+                        person->set(Vars::married, 0.0);
+                    }
+                    // Now widowed
+                    if(person->get(Vars::mstat) == 4) {
+                        person->set(Vars::widowed, 1.0);
+                        person->set(Vars::married, 0.0);
+                    }
+                }
+                // cohab to other states
+                if(person->get(Vars::l2mstat) == 3) {
+                    // Now single
+                    if(person->get(Vars::mstat) == 2) {
+                        person->set(Vars::single, 1.0);
+                        person->set(Vars::cohab, 0.0);
+                    }
+                    // Now married
+                    if(person->get(Vars::mstat) == 1) {
+                        person->set(Vars::cohab, 1.0);
+                        person->set(Vars::married, 0.0);
+                    }
+                    // Now widowed
+                    if(person->get(Vars::mstat) == 4) {
+                        person->set(Vars::widowed, 1.0);
+                        person->set(Vars::cohab, 0.0);
+                    }
+                }
+                // widowed to other states (again, this is odd but not impossible)
+                // Should widowed be absorbing? Might be useful to keep this information even in marital status changes
+                // in the future?
+                if(person->get(Vars::l2mstat) == 4) {
+                    // Now single
+                    if(person->get(Vars::mstat) == 2) {
+                        person->set(Vars::single, 1.0);
+                        person->set(Vars::widowed, 0.0);
+                    }
+                    // Now married
+                    if(person->get(Vars::mstat) == 1) {
+                        person->set(Vars::cohab, 1.0);
+                        person->set(Vars::widowed, 0.0);
+                    }
+                    // Now widowed
+                    if(person->get(Vars::mstat) == 4) {
+                        person->set(Vars::widowed, 1.0);
+                        person->set(Vars::widowed, 0.0);
+                    }
+                }
 			}
 
 			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correclty
@@ -363,7 +453,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			//	}
 			//}
 					
-			// Do partner/spouse mortality for PSID simulation
+			/*// Do partner/spouse mortality for PSID simulation
 			if(psid_data && person->get(Vars::l2mstat_new) != 1) {
 				models[Vars::partdied]->predict(person, random);
 				// if partner died, set to single
@@ -375,7 +465,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::widowev, true);
 					}
 				}
-			}
+			}*/
 			
 			// Do mortality (with adjustment, if needed)
 			if(person->get(Vars::l2age) >= 118)
@@ -395,8 +485,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 		throw fem_exception("In health module: median of pdied not in [0,1] range");
 }
 
-void HealthModule::do_marriage(Person* person, Random* random) {
-	/** \todo Load one mstat model, but allow model definition to change according to lmstat value. Then, remove the following code and treat mstat like other models.  Even better: create a separate Marriage/Family module */
+/*void HealthModule::do_marriage(Person* person, Random* random) {
+	*//** \todo Load one mstat model, but allow model definition to change according to lmstat value. Then, remove the following code and treat mstat like other models.  Even better: create a separate Marriage/Family module *//*
 
 	// model for whether or not a person exits their current status
 	Vars::Vars_t mstatex_model_var = Vars::_NONE;
@@ -504,7 +594,7 @@ void HealthModule::do_marriage(Person* person, Random* random) {
 			break;
 	}
 	return;
-}
+}*/
 
 /** \todo If someone turned 65 during the last time step their adjustment factor should be averaged over the u65 table in years when they are < 65 and the 65p table after they turn 65.*/
 void HealthModule::mortalityAdj(Person* person, unsigned int year, Random* random) const {
@@ -562,7 +652,8 @@ void HealthModule::loadModels() {
 
 	std::vector<Vars::Vars_t>::iterator it;
 	for(it = combo_set.begin(); it != combo_set.end(); ++it) {		
-		if(*it != Vars::mstat_new) {
+		//if(*it != Vars::mstat_new) {
+        if(*it != Vars::mstat) {
 			try {
 				models[*it] = mp->get(VarsInfo::labelOf(*it));
 			} catch (const fem_exception & e) {

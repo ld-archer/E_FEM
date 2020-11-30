@@ -34,34 +34,34 @@ void PSIDInitializationModule::process(PersonVector& persons, unsigned int year,
 			// Only initialize just added persons
 			if(p->get(Vars::entry) == year)  {
 				
-				// Assume married if single but spouse is present
+				/*// Assume married if single but spouse is present
 				if(p->getSpouse() != NULL && p->get(Vars::mstat_new) == 1)
-					p->set(Vars::mstat_new, 3);
+					p->set(Vars::mstat_new, 3);*/
 					
-				// current marital status dummies
+				/*// current marital status dummies
 				p->set(Vars::married, p->get(Vars::mstat_new) == 3);
 				p->set(Vars::cohab, p->get(Vars::mstat_new) == 2);
 				p->set(Vars::single, p->get(Vars::mstat_new) == 1);
 				if(p->test(Vars::married) || p->test(Vars::cohab))
-					p->set(Vars::widowed, false);
+					p->set(Vars::widowed, false);*/
 
-				// lag marital status dummies
+				/*// lag marital status dummies
 				p->set(Vars::l2married, p->get(Vars::l2mstat_new) == 3);
 				p->set(Vars::l2cohab, p->get(Vars::l2mstat_new) == 2);
 				if(p->test(Vars::l2married) || p->test(Vars::l2cohab))
-					p->set(Vars::l2widowed, false);
+					p->set(Vars::l2widowed, false);*/
 
-				// marital status "ever" variables 
+				/*// marital status "ever" variables
 				if(p->test(Vars::widowed) || p->test(Vars::l2widowed))
 					p->set(Vars::widowev, true);
 
 				if(p->test(Vars::l2married))
-					p->set(Vars::l2everm, true);
+					p->set(Vars::l2everm, true);*/
 
 				// currently married or previously ever married => married at some point
-				p->set(Vars::everm, p->test(Vars::married) || p->test(Vars::l2everm));
+				//p->set(Vars::everm, p->test(Vars::married) || p->test(Vars::l2everm));
 
-				if(p->test(Vars::l2everm) && p->get(Vars::l2mstat_new) != 3)
+				/*if(p->test(Vars::l2everm) && p->get(Vars::l2mstat_new) != 3)
 					// lag ever married but not lag married => separated at some point
 					p->set(Vars::l2eversep, true);
 
@@ -75,10 +75,10 @@ void PSIDInitializationModule::process(PersonVector& persons, unsigned int year,
 						
 			 	if(!p->test(Vars::l2eversep) && p->get(Vars::mstat_new) != 1)
 			 		// lag never separated and currently partnered => never seperated
-			 		p->set(Vars::eversep, false);
+			 		p->set(Vars::eversep, false);*/
 
 
-				if(p->is_missing(Vars::partdied)) {
+				/*if(p->is_missing(Vars::partdied)) {
 					if(p->get(Vars::mstat_new) != 1)
 						p->set(Vars::partdied, false);
 					if(p->get(Vars::l2mstat_new) == 3)
@@ -87,7 +87,7 @@ void PSIDInitializationModule::process(PersonVector& persons, unsigned int year,
 				if(p->is_missing(Vars::l2partdied)) {
 					if(p->get(Vars::l2mstat_new) != 1)
 						p->set(Vars::l2partdied, false);
-				}
+				}*/
 
 				/* Set earnings to 0 for those out of labor force or unemployed */
 				if(p->get(Vars::workcat )== 1 || p->get(Vars::workcat) == 2){

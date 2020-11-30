@@ -83,7 +83,7 @@ void CrossSectionalModule::process(PersonVector& persons, unsigned int year, Ran
 					person->set(Vars::married, false);
 					person->set(Vars::cohab, false);
 					person->set(Vars::single, true);
-					person->set(Vars::mstat_new, 1);
+					//person->set(Vars::mstat_new, 1);
 					person->setSpouse(NULL);
 				}
 				
@@ -99,7 +99,7 @@ void CrossSectionalModule::process(PersonVector& persons, unsigned int year, Ran
 					person->set(Vars::married, false);
 					person->set(Vars::cohab, false);
 					person->set(Vars::single, true);
-					person->set(Vars::mstat_new, 1);
+					//person->set(Vars::mstat_new, 1);
 					person->setSpouse(NULL);
 				}
 			}

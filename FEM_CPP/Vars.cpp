@@ -117,7 +117,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::cogstate1]            = VarInfo("cogstate1", "Cogstate demented [0, 1]", VarTypes::Boolean, Vars::cogstate, 1);
 	info[Vars::cogstate2]            = VarInfo("cogstate2", "Cogstate CIND [0, 1]", VarTypes::Boolean, Vars::cogstate, 2);
 	info[Vars::cogstate3]            = VarInfo("cogstate3", "Cogstate normal [0, 1]", VarTypes::Boolean, Vars::cogstate, 3);
-	info[Vars::cohab]      				= VarInfo("cohab", "Cohabitating", VarTypes::Boolean, Vars::mstat_new, 2);
+	//info[Vars::cohab]      				= VarInfo("cohab", "Cohabitating", VarTypes::Boolean, Vars::mstat_new, 2);
+    info[Vars::cohab]      				= VarInfo("cohab", "Cohabitating", VarTypes::Boolean, Vars::mstat, 3);
 	info[Vars::cohab_cond1]      		 = VarInfo("cohab_cond1", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond1, 2);
 	info[Vars::cohab_cond2]      		 = VarInfo("cohab_cond2", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond2, 2);
 	info[Vars::cohab_cond3]      		 = VarInfo("cohab_cond3", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond3, 2);
@@ -258,14 +259,16 @@ VarsInfo::VarsInfo() {
 	info[Vars::laborforcestat]				= VarInfo("laborforcestat", "Labor force status, (1, 2, 3) = (Out of, Unemployed, Employed)", VarTypes::Short);
 
 	info[Vars::l2births]                = VarInfo("l2births", "Lag count of childbirth events", VarTypes::Short);
-	info[Vars::l2cohab]               = VarInfo("l2cohab", "Lag of Cohabitating", VarTypes::Boolean, Vars::l2mstat_new, 2);
+	//info[Vars::l2cohab]               = VarInfo("l2cohab", "Lag of Cohabitating", VarTypes::Boolean, Vars::l2mstat_new, 2);
+    info[Vars::l2cohab]               = VarInfo("l2cohab", "Lag of Cohabitating", VarTypes::Boolean, Vars::l2mstat, 3);
 	info[Vars::l2educlvl]							 = VarInfo("l2educlvl", "Lag of Six level education variable", VarTypes::Short);
 	info[Vars::l2everm]							 = VarInfo("l2everm", "Lag of ever married", VarTypes::Boolean);
 	info[Vars::l2eversep]						 = VarInfo("l2eversep", "Lag of ever separated from previous marriage or cohabitation", VarTypes::Boolean);
 	info[Vars::l2inlaborforce]        = VarInfo("l2inlaborforce", "Lag of Working for pay or unemployed", VarTypes::Boolean);
 	info[Vars::l2inscat]                 = VarInfo("l2inscat", "Lag of Health Insurance Type", VarTypes::Short);
 
-	info[Vars::l2mstat_new]               = VarInfo("l2mstat_new", "Lag of Marital Status, [1, 3]", VarTypes::Short);
+	//info[Vars::l2mstat_new]               = VarInfo("l2mstat_new", "Lag of Marital Status, [1, 3]", VarTypes::Short);
+    info[Vars::l2mstat]               = VarInfo("l2mstat", "Lag of Marital Status, [1, 4]", VarTypes::Short);
 	info[Vars::l2numbiokids]          = VarInfo("l2numbiokids", "Lag of Number of biological children", VarTypes::Short);
 
 	info[Vars::l2adl1]                 = VarInfo("l2adl1", "Lag of ADL 1 [0, 1]", VarTypes::Boolean, Vars::l2adlstat, 2);
@@ -331,7 +334,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2low_tics]            = VarInfo("l2low_tics", "Lag of low tics score", VarTypes::Short);
 	info[Vars::l2lunge]               = VarInfo("l2lunge", "Lag of Lung disease, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2lungoxy]             = VarInfo("l2lungoxy", "Lag of lungoxy", VarTypes::Boolean);
-	info[Vars::l2married]             = VarInfo("l2married", "Lag of Married, [0, 1]", VarTypes::Boolean);
+	info[Vars::l2married]             = VarInfo("l2married", "Lag of Married, [0, 1]", VarTypes::Boolean, Vars::l2mstat, 1);
 	info[Vars::l2mcare_pta_enroll]    = VarInfo("l2mcare_pta_enroll", "Lag of Medicare Part A Enrollment", VarTypes::Boolean);
 	info[Vars::l2mcare_pta_premium]   = VarInfo("l2mcare_pta_premium", "Lag of Medicare part A Premium", VarTypes::Float);
 	info[Vars::l2mcare_ptb_enroll]    = VarInfo("l2mcare_ptb_enroll", "Lag of Medicare Part B Enrollment", VarTypes::Boolean);
@@ -365,6 +368,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2selfmem2]                 = VarInfo("l2selfmem2", "Lag of fair memory status [0, 1]", VarTypes::Boolean, Vars::l2selfmem, 2);
 	info[Vars::l2selfmem3]                = VarInfo("l2selfmem3", "Lag of poor memory status [0, 1]", VarTypes::Boolean, Vars::l2selfmem, 3);
 	info[Vars::l2selfmem]            = VarInfo("l2selfmem", "Lag of memory status, (1, 2, 3) = (Ex/VG/Good, Fair, Poor)", VarTypes::Short);
+	info[Vars::l2single]            = VarInfo("l2single", "Lag of relationship status: single, [0, 1]", VarTypes::Boolean, Vars::l2mstat, 2);
 	info[Vars::l2smkstat]             = VarInfo("l2smkstat", "Lag of Smoking status, Approx Range [1, 3]", VarTypes::Short);
 	info[Vars::l2smoken]              = VarInfo("l2smoken", "Lag of Current smoking, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2smokev]              = VarInfo("l2smokev", "Lag of Ever Smoked, [0, 1]", VarTypes::Boolean);
@@ -391,7 +395,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::lunge]                = VarInfo("lunge", "Lung disease", VarTypes::Boolean);
 	info[Vars::lungoxy]              = VarInfo("lungoxy", "Taking supplemental oxygen for lung condition", VarTypes::Boolean);
 	info[Vars::l2volhours]            = VarInfo("l2volhours", "Lag of volhours", VarTypes::Double);
-	info[Vars::l2widowed]             = VarInfo("l2widowed", "Lag of Widowed, [0, 1]", VarTypes::Boolean);
+	info[Vars::l2widowed]             = VarInfo("l2widowed", "Lag of Widowed, [0, 1]", VarTypes::Boolean, Vars::l2mstat, 4);
 	info[Vars::l2wlp_treated]         = VarInfo("l2wlp_treated", "Lag of Treated with a Weight Loss Pill, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2wlth_nonzero]        = VarInfo("l2wlth_nonzero", "Lag of Non-pension wlth(hatota) not zero, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2work]                = VarInfo("l2work", "Lag of R working for pay, [0, 1]", VarTypes::Boolean);
@@ -400,7 +404,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2workstat_alt]						 = VarInfo("l2workstat_alt", "Lag of categorical variable for working status", VarTypes::Short);
 	info[Vars::l2yrsnclastkid]        = VarInfo("l2yrsnclastkid", "Lag of Years since last kid was born", VarTypes::Float);
 	info[Vars::male]                 = VarInfo("male", "Male [0, 1]", VarTypes::Boolean);
-	info[Vars::married]              = VarInfo("married", "Married {0,1}", VarTypes::Boolean, Vars::mstat_new, 3);
+	//info[Vars::married]              = VarInfo("married", "Married {0,1}", VarTypes::Boolean, Vars::mstat_new, 3);
+    info[Vars::married]              = VarInfo("married", "Married {0,1}", VarTypes::Boolean, Vars::mstat, 1);
 	info[Vars::married_cond1]        = VarInfo("married_cond1", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond1, 3);
 	info[Vars::married_cond2]        = VarInfo("married_cond2", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond2, 3);
 	info[Vars::married_cond3]        = VarInfo("married_cond3", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond3, 3);
@@ -426,7 +431,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::medicaid_elig]        = VarInfo("medicaid_elig", "Medicaid Eligibility", VarTypes::Boolean);
 	info[Vars::memrye]               = VarInfo("memrye", "R memory-related diseases [0, 1]", VarTypes::Boolean);
 	info[Vars::more_educ] 						= VarInfo("more_educ", "Pursing more education", VarTypes::Boolean);
-	info[Vars::mstat_new]            = VarInfo("mstat_new", "Marital Status, [1, 3]", VarTypes::Short, true);
+	//info[Vars::mstat_new]            = VarInfo("mstat_new", "Marital Status, [1, 3]", VarTypes::Short, true);
+    info[Vars::mstat]            = VarInfo("mstat", "Marital Status, [1, 4]", VarTypes::Short);
 	info[Vars::mstat_new_cond1]      = VarInfo("mstat_new_cond1", "Marital Status (DO NOT USE FOR OUTPUT), [1, 3]", VarTypes::Short, true);
 	info[Vars::mstat_new_cond2]      = VarInfo("mstat_new_cond2", "Marital Status (DO NOT USE FOR OUTPUT), [1, 3]", VarTypes::Short, true);
 	info[Vars::mstat_new_cond3]      = VarInfo("mstat_new_cond3", "Marital Status (DO NOT USE FOR OUTPUT), [1, 3]", VarTypes::Short, true);
@@ -539,7 +545,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::selfmem2]            = VarInfo("selfmem2", "Fair airmemory status [0, 1]", VarTypes::Boolean, Vars::selfmem, 2);
 	info[Vars::selfmem3]            = VarInfo("selfmem3", "Poor memory status [0, 1]", VarTypes::Boolean, Vars::selfmem, 3);
 	info[Vars::shlt]                 = VarInfo("shlt", "Health fair/poor [0, 1]", VarTypes::Boolean);
-	info[Vars::single]               = VarInfo("single", "Single {0,1}", VarTypes::Boolean, Vars::mstat_new, 1);
+	//info[Vars::single]               = VarInfo("single", "Single {0,1}", VarTypes::Boolean, Vars::mstat_new, 1);
+    info[Vars::single]               = VarInfo("single", "Single {0,1}", VarTypes::Boolean, Vars::mstat, 2);
 	info[Vars::single_cond1]         = VarInfo("single_cond1", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond1, 1);
 	info[Vars::single_cond2]         = VarInfo("single_cond2", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond2, 1);
 	info[Vars::single_cond3]         = VarInfo("single_cond3", "VARIABLE REQUIRED FOR BLOWFISH, DO NOT USE FOR OUTPUT", VarTypes::Boolean, Vars::mstat_new_cond3, 1);
@@ -591,7 +598,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::wave]                = VarInfo("wave", "Wave of interview Approx Range [7, 7]", VarTypes::Short);
 	info[Vars::weight]              = VarInfo("weight", "R person level weight Approx Range [0, 76727.77]", VarTypes::Double);
 	info[Vars::white]               = VarInfo("white", "Non-Hispanic white [0, 1]", VarTypes::Boolean);
-	info[Vars::widowed]             = VarInfo("widowed", "Widowed [0, 1]", VarTypes::Boolean);
+	info[Vars::widowed]             = VarInfo("widowed", "Widowed [0, 1]", VarTypes::Boolean, Vars::mstat, 4);
 	info[Vars::widowev]				= VarInfo("widowev", "Ever widowed [0, 1]", VarTypes::Boolean);
 	info[Vars::wlp_treated]         = VarInfo("wlp_treated", "Treated with a Weight Loss Pill, [0, 1]", VarTypes::Boolean);
 	info[Vars::wlth_nonzero]        = VarInfo("wlth_nonzero", "Non-pension wlth(hatota) not zero [0, 1]", VarTypes::Boolean);
@@ -653,13 +660,13 @@ VarsInfo::VarsInfo() {
 	info[Vars::ei_treated]			= VarInfo("ei_treated", "Whether treated with Exercise Intervention", VarTypes::Boolean);
 	info[Vars::l2ei_treated]		= VarInfo("l2ei_treated", "Lag of whether treated with Exercise Intervention", VarTypes::Boolean);
 	info[Vars::smkint]              = VarInfo("smkint", "Smoking intensity variable, categorical", VarTypes::Short);
-    info[Vars::smkint1]             = VarInfo("smkint1", "Smoking intensity level 1 (1-9 cigs/day)", VarTypes::Boolean, Vars::smkint, 1);
-    info[Vars::smkint1]             = VarInfo("smkint2", "Smoking intensity level 2 (10-19 cigs/day)", VarTypes::Boolean, Vars::smkint, 2);
-    info[Vars::smkint1]             = VarInfo("smkint3", "Smoking intensity level 3 (>20 cigs/day)", VarTypes::Boolean, Vars::smkint, 3);
+    info[Vars::smkint1]             = VarInfo("smkint1", "Smoking intensity level 1 (1-9 cigs/day)", VarTypes::Boolean, Vars::smkint, 2);
+    info[Vars::smkint2]             = VarInfo("smkint2", "Smoking intensity level 2 (10-19 cigs/day)", VarTypes::Boolean, Vars::smkint, 3);
+    info[Vars::smkint3]             = VarInfo("smkint3", "Smoking intensity level 3 (>20 cigs/day)", VarTypes::Boolean, Vars::smkint, 4);
 	info[Vars::l2smkint]            = VarInfo("l2smkint", "Lag of smoking intensity variable, categorical", VarTypes::Short);
-    info[Vars::l2smkint1]             = VarInfo("l2smkint1", "Lag of Smoking intensity level 1 (1-9 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 1);
-    info[Vars::l2smkint2]             = VarInfo("l2smkint2", "Lag of Smoking intensity level 2 (10-19 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 2);
-    info[Vars::l2smkint3]             = VarInfo("l2smkint3", "Lag of Smoking intensity level 3 (>20 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 3);
+    info[Vars::l2smkint1]             = VarInfo("l2smkint1", "Lag of Smoking intensity level 1 (1-9 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 2);
+    info[Vars::l2smkint2]             = VarInfo("l2smkint2", "Lag of Smoking intensity level 2 (10-19 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 3);
+    info[Vars::l2smkint3]             = VarInfo("l2smkint3", "Lag of Smoking intensity level 3 (>20 cigs/day)", VarTypes::Boolean, Vars::l2smkint, 4);
     info[Vars::psmkint1]            = VarInfo("psmkint1", "Probability of smoking intensity level 1", VarTypes::Float);
     info[Vars::psmkint2]            = VarInfo("psmkint2", "Probability of smoking intensity level 2", VarTypes::Float);
     info[Vars::psmkint3]            = VarInfo("psmkint3", "Probability of smoking intensity level 3", VarTypes::Float);
@@ -677,7 +684,9 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::eversep] = Vars::l2eversep;
 	lag_map[Vars::inlaborforce] = Vars::l2inlaborforce;
 	lag_map[Vars::inscat] = Vars::l2inscat;
-	lag_map[Vars::mstat_new] = Vars::l2mstat_new;
+    //lag_map[Vars::mstat_new] = Vars::l2mstat_new;
+    lag_map[Vars::mstat] = Vars::l2mstat;
+	lag_map[Vars::single] = Vars::l2single;
 	lag_map[Vars::numbiokids] = Vars::l2numbiokids;
 	lag_map[Vars::partdied]  = Vars::l2partdied;
 	lag_map[Vars::paternity] = Vars::l2paternity;
@@ -850,7 +859,7 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::smoken] = 		Vars::psmoken;
 	prob_map[Vars::smoke_start] =	Vars::psmoke_start;
 	prob_map[Vars::smoke_stop] =	Vars::psmoke_stop;
-	prob_map[Vars::hchole] =         Vars::phchole;
+	prob_map[Vars::hchole] =        Vars::phchole;
 	// Ordered
 	prob_map[Vars::smokev] =		Vars::psmkstat2;
 	prob_map[Vars::smoken] =		Vars::psmkstat3;
