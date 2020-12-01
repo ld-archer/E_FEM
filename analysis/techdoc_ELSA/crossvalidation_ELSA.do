@@ -211,11 +211,13 @@ label var smokev "R smoke ever"
 label var drink "R drinks alcohol"
 
 * Smoking intensity variable
-recode smokef (0/0.99=1) (1/9.99=2) (10/19.99=3) (20/max=4), gen(smkint)
-label define smkint 1 "Non-Smoker" 2 "Low" 3 "Medium" 4 "High"
+recode smokef (0/0.99=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
+label define smkint 1 "Low" 2 "Medium" 3 "High"
 label values smkint smkint
 label variable smkint "Smoking intensity"
 drop smokef
+* Now assign any missing that don't smoke to equal 0
+replace smkint = 0 if smoken == 0
 
 /*
 * Smoking intensity variable

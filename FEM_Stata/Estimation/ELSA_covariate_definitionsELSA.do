@@ -163,7 +163,7 @@ global allvars_smoke_start  $dvars $lvars_age l2work l2psyche l2single l2married
 * 11-27_16:12:16: global allvars_smoke_stop   $dvars $lvars_age
 *global allvars_smoke_stop   $dvars $lvars_age l2work
 global allvars_smoke_stop   $dvars $lvars_age l2work l2psyche l2single l2married l2widowed
-global allvars_smkint       $dvars $lvars_age 
+global allvars_smkint       $dvars $lvars_age l2single l2married l2cohab
 
 
 *** Drinking

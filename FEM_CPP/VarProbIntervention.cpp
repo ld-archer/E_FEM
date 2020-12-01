@@ -126,6 +126,8 @@ void VarProbIntervention::intervene(PersonVector& persons, unsigned int year, Ra
 							person->set(Vars::smokev,person->get(Vars::l2smokev));
 							// Clean up other vars - didn't start, too
 							person->set(Vars::smoke_start,0.0);
+                            // Set intensity to non-smoker (smkint == 1)
+                            person->set(Vars::smkint, 1.0);
 						}	
 						else {
 							// Didn't stop, so maintain smkstat, smoken, smokev

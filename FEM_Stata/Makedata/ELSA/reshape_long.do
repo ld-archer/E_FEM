@@ -425,6 +425,9 @@ drop rand
 * Let kludge.do handle it with hotdeck
 replace bmi = . if bmi < 14
 
+* Introduce perturbation in logbmi, maybe not symetrical when added to bmi
+* Maybe don't perturb at all, see what happens
+
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
 
@@ -448,11 +451,13 @@ label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
 * Smoking intensity variable
-recode smokef (0/0.99=1) (1/9.99=2) (10/19.99=3) (20/max=4), gen(smkint)
-label define smkint 1 "Non-Smoker" 2 "Low" 3 "Medium" 4 "High"
+recode smokef (0/0.99=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
+label define smkint 1 "Low" 2 "Medium" 3 "High"
 label values smkint smkint
 label variable smkint "Smoking intensity"
 drop smokef
+* Now assign any missing that don't smoke to equal 0
+replace smkint = 0 if smoken == 0
 
 /* * Smoking intensity variable
 recode smokef (0=1) (1/9=2) (10/19=3) (20/max=4), gen(smkint)
@@ -469,6 +474,9 @@ gen smkint3 = smkint == 3
 
 * Drinking intensity variable
 * This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
+* Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
+* drinkstat will be defined by an intersection between the drinkd, drinkwn, and potentially drinkn vars
+* if ANY of the variables are at the extreme end (will find cut off values for weekly/daily drinking), then person.drinkstat == high
 
 *count if missing(drinkd)
 * Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
