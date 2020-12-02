@@ -391,6 +391,9 @@ foreach tp in binhlth risk binecon cntecon demog {
 			else if "`var'" == "drinkd" & `wave' == 1 {
 				continue
 			}
+			else if "`var'" == "lnly" & `wave' == 1 {
+				continue
+			}
 			
 			local select
 			if "`var'" == "work" {
