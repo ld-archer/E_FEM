@@ -128,6 +128,7 @@ r*hipe
 r*shlt
 h*atotb
 r*smokef
+r*lnlys
 ;
 #d cr
 
@@ -202,6 +203,7 @@ foreach var in
     shlt
     atotb
     smokef
+    lnlys
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -224,7 +226,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe shlt atotb smokef
+    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -410,6 +412,24 @@ label variable srh3 "Self Reported Health Status: Good"
 label variable srh4 "Self Reported Health Status: Fair"
 label variable srh5 "Self Reported Health Status: Poor"
 
+*** Loneliness
+* loneliness is brought into our model as a summary score for 4 questions relating to loneliness
+* To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
+* Potentially in the future, we could just keep the high loneliness? Try full var first
+gen lnly = round(lnlys, 1)
+label variable lnly "Loneliness Score, Low to High [1, 3]"
+* Now generate some dummys
+gen lnly1 = lnly == 1
+gen lnly2 = lnly == 2
+gen lnly3 = lnly == 3
+* Labels
+label variable lnly1 "Loneliness level: low"
+label variable lnly2 "Loneliness level: medium"
+label variable lnly3 "Loneliness level: high"
+* Drop original
+drop lnlys
+
+
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
 replace bmi = bmi_ipolate if missing(bmi)
@@ -586,6 +606,10 @@ foreach var in
     smkint1
     smkint2
     smkint3
+    lnly
+    lnly1
+    lnly2
+    lnly3
     {;
         gen l2`var' = L.`var';
     };

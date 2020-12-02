@@ -79,6 +79,7 @@ keep
 	r*drink
 	r*psyche
 	r*smokef
+	r*lnlys
 	
 	r*walkra
 	r*dressa
@@ -118,6 +119,7 @@ local shapelist
 	r@drink
 	r@psyche
 	r@smokef
+	r@lnlys
 	
 	r@walkra
 	r@dressa
@@ -228,6 +230,23 @@ label variable smkint "Smoking intensity"
 drop smokef
 */
 
+*** Loneliness
+* loneliness is brought into our model as a summary score for 4 questions relating to loneliness
+* To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
+* Potentially in the future, we could just keep the high loneliness? Try full var first
+gen lnly = round(lnlys, 1)
+label variable lnly "Loneliness level [1, 3]"
+* Now generate some dummys
+*gen lnly1 = lnly == 1
+*gen lnly2 = lnly == 2
+*gen lnly3 = lnly == 3
+* Labels
+*label variable lnly1 "Loneliness level: low"
+*label variable lnly2 "Loneliness level: medium"
+*label variable lnly3 "Loneliness level: high"
+* Drop original
+drop lnlys
+
 * Sampling weight
 ren rcwtresp weight
 label var weight "R cross-sectional weight"
@@ -322,6 +341,7 @@ label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
 label var smkint "Smoking Intensity"
+label var lnly "Loneliness Score, Low to High [1, 3]"
 
 label var work "Working for pay"
 
@@ -349,7 +369,7 @@ restore
 *save test_pre_loop.dta, replace
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche
-local risk smoken smokev bmi drink smkint
+local risk smoken smokev bmi drink smkint lnly
 local binecon work
 *local cntecon /*itearnx atotfx*/
 local demog age_yrs male white

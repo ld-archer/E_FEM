@@ -53,6 +53,7 @@ local measures
 					a_drinkd 	a_drinkd_stat
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
+					a_lnly		p_lnly1		p_lnly2 	p_lnly3
 			
 										
 ;

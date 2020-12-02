@@ -670,6 +670,17 @@ VarsInfo::VarsInfo() {
     info[Vars::psmkint1]            = VarInfo("psmkint1", "Probability of smoking intensity level 1", VarTypes::Float);
     info[Vars::psmkint2]            = VarInfo("psmkint2", "Probability of smoking intensity level 2", VarTypes::Float);
     info[Vars::psmkint3]            = VarInfo("psmkint3", "Probability of smoking intensity level 3", VarTypes::Float);
+    info[Vars::lnly]                = VarInfo("lnly", "Loneliness Score, Low to High [1, 3]", VarTypes::Short);
+    info[Vars::lnly1]               = VarInfo("lnly1", "Loneliness Score: Low", VarTypes::Boolean, Vars::lnly, 1);
+    info[Vars::lnly2]               = VarInfo("lnly1", "Loneliness Score: Medium", VarTypes::Boolean, Vars::lnly, 2);
+    info[Vars::lnly3]               = VarInfo("lnly1", "Loneliness Score: High", VarTypes::Boolean, Vars::lnly, 3);
+    info[Vars::l2lnly]              = VarInfo("l2lnly", "Lag of Loneliness Score, Low to High [1, 3]", VarTypes::Short);
+    info[Vars::l2lnly1]             = VarInfo("l2lnly1", "Lag of Loneliness Score: Low", VarTypes::Boolean, Vars::l2lnly, 1);
+    info[Vars::l2lnly2]             = VarInfo("l2lnly1", "Lag of Loneliness Score: Medium", VarTypes::Boolean, Vars::l2lnly, 2);
+    info[Vars::l2lnly3]             = VarInfo("l2lnly1", "Lag of Loneliness Score: High", VarTypes::Boolean, Vars::l2lnly, 3);
+    info[Vars::plnly1]              = VarInfo("plnly1", "Probability of lnly == 1", VarTypes::Float);
+    info[Vars::plnly2]              = VarInfo("plnly2", "Probability of lnly == 2", VarTypes::Float);
+    info[Vars::plnly3]              = VarInfo("plnly3", "Probability of lnly == 3", VarTypes::Float);
 
 
 	
@@ -813,8 +824,6 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::mei_treated] = Vars::l2mei_treated;
 	lag_map[Vars::exstat]	= Vars::l2exstat;
 	lag_map[Vars::ei_treated] = Vars::l2ei_treated;
-	//lag_map[Vars::smoke_start] = Vars::l2smoke_start;
-	//lag_map[Vars::smoke_stop] = Vars::l2smoke_stop;
 	lag_map[Vars::srh] = Vars::l2srh;
 	lag_map[Vars::srh1] = Vars::l2srh1;
     lag_map[Vars::srh2] = Vars::l2srh2;
@@ -825,6 +834,10 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::smkint1] = Vars::l2smkint1;
     lag_map[Vars::smkint2] = Vars::l2smkint2;
     lag_map[Vars::smkint3] = Vars::l2smkint3;
+    lag_map[Vars::lnly] = Vars::l2lnly;
+    lag_map[Vars::lnly1] = Vars::l2lnly1;
+    lag_map[Vars::lnly2] = Vars::l2lnly2;
+    lag_map[Vars::lnly3] = Vars::l2lnly3;
 
 
 
@@ -883,6 +896,9 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::smkint1] =       Vars::psmkint1;
     prob_map[Vars::smkint2] =       Vars::psmkint2;
     prob_map[Vars::smkint3] =       Vars::psmkint3;
+    prob_map[Vars::lnly1] =         Vars::plnly1;
+    prob_map[Vars::lnly2] =         Vars::plnly2;
+    prob_map[Vars::lnly3] =         Vars::plnly3;
 
 
 

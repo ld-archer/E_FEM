@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn atotb
-global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat /*vgactx_e mdactx_e ltactx_e smkstat*/
+global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
 #d ;
@@ -179,6 +179,7 @@ global allvars_drinkd       $dvars $lvars_age
 *global allvars_logbmi       $dvars $lvars_age l2logbmi l2married l2atotf l2smokev l2smoken `lvars_exercise' l2atotb
 global allvars_logbmi       $dvars $lvars_age l2smokev l2smoken l2adl2 l2adl3p
 global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smoken smokev drink drinkd1 drinkd3 drinkd4
+global allvars_lnly         $dvars $lvars_age l2widowed
 
 
 *** Disabilities

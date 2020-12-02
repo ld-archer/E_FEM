@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
 global bin_econ work hlthlm retemp
 global ols logbmi retage ipubpen atotf itearn atotb
-global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat /*vgactx_e mdactx_e ltactx_e smkstat*/
+global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly /*vgactx_e mdactx_e ltactx_e smkstat*/
 
 * Variable names
 #d ;

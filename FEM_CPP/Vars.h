@@ -597,6 +597,17 @@ namespace Vars
 		psmkint1,                   ///< Probability of smoking intensity level 1
 		psmkint2,                   ///< Probability of smoking intensity level 2
 		psmkint3,                   ///< Probability of smoking intensity level 3
+		lnly,                       ///< Loneliness Score, Low to High [1, 3]
+		lnly1,                      ///< Loneliness Score: Low
+        lnly2,                      ///< Loneliness Score: Medium
+        lnly3,                      ///< Loneliness Score: High
+        l2lnly,                       ///< Lag of Loneliness Score, Low to High [1, 3]
+        l2lnly1,                      ///< Lag of Loneliness Score: Low
+        l2lnly2,                      ///< Lag of Loneliness Score: Medium
+        l2lnly3,                      ///< Lag of Loneliness Score: High
+        plnly1,                     ///< Probability of lnly == 1
+        plnly2,                     ///< Probability of lnly == 2
+        plnly3,                     ///< Probability of lnly == 3
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
