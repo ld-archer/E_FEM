@@ -102,7 +102,7 @@ global allvars_died male $lvars_age l2cancre l2hearte l2diabe
 * 11-27_13:49:05: global allvars_cancre       $dvars $lvars_age l2logbmi l2hchole
 * 11-27_16:12:16: global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married
 * 11-27_16:47:29: global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married l2exstat1 l2exstat2
-global allvars_cancre       $dvars $lvars_age l2logbmi l2exstat1 l2smkint2 l2smkint3
+global allvars_cancre       $dvars $lvars_age l2logbmi l2exstat1
 
 * DIABE
 *global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe l2hchole /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
@@ -126,7 +126,7 @@ global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exsta
 * 11-27_13:49:05: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2diabe
 * 11-27_16:12:16: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2diabe l2exstat1 l2exstat2
 * 11-27_16:47:29: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2exstat1 l2exstat2 l2smoken
-global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2exstat1 l2exstat2 l2smkint3
+global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2exstat1 l2exstat2
 
 
 * HIBPE 
@@ -163,7 +163,8 @@ global allvars_smoke_start  $dvars $lvars_age l2work l2psyche l2single l2married
 * 11-27_16:12:16: global allvars_smoke_stop   $dvars $lvars_age
 *global allvars_smoke_stop   $dvars $lvars_age l2work
 global allvars_smoke_stop   $dvars $lvars_age l2work l2psyche l2single l2married l2widowed
-global allvars_smkint       $dvars $lvars_age l2single l2married l2cohab
+*l2single l2married l2cohab l2atotb l2ipubpen
+global allvars_smkint       $dvars $lvars_age 
 
 
 *** Drinking

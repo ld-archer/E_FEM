@@ -237,7 +237,7 @@ riskTab <- createTTT(risk)
 riskTab
 ```
 
-# Cross Validation 2 - 'Handover' plots
+# Cross Validation 2 - 'Handover' plots (Still WIP need fixing)
 
 ```{r echo = FALSE}
 vis_CV2_prev <- function(long, CV2) {
