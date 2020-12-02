@@ -204,7 +204,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 * Risk factors
-foreach var in bmi smokev smoken drink smokef {
+foreach var in bmi smokev smoken drink smokef lnlys {
 	ren r`var' `var'
 }
 label var bmi "R Body mass index"

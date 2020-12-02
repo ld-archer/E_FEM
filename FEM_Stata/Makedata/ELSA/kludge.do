@@ -98,13 +98,13 @@ if "`scen'" == "base" {
     local hotdeck_vars logbmi white
 }
 else if "`scen'" == "CV1" |  {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage /*smokef*/
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage
 }
 else if "`scen'" == "CV2" {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl smkint mstat /*smokef*/
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl smkint mstat lnly
 }
 else if "`scen'" == "min" {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf ipubpen itearn retage hipe educl smkint
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl smkint lnly
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -159,15 +159,18 @@ replace l2smkint2 = 0 if missing(l2smkint2)
 replace l2smkint3 = 0 if missing(l2smkint3)
 
 * Minimal run has some special circumstances 
+* Some variables were not included in wave 1, however if possible we would like to keep the minimal stock population being generated from wave 1
+* To solve this problem, I think it is not a big issue to just copy back the values from wave 1
 * drinkd wasn't included until wave 2, so need to impute all drinkd for ELSA_stock_min
 * hchole wasn't included until wave 2
-if "`scen'" == "min" {
+* lnly not included until wave 2
+/* if "`scen'" == "min" {
     replace drinkd = 2 if missing(drinkd)
     replace l2drinkd = 2 if missing(l2drinkd)
 
     replace hchole = 0 if missing(hchole)
     replace l2hchole = 0 if missing(l2hchole)
-}
+} */
 
 * Still missing atotb, so impute with mean
 quietly summ atotb

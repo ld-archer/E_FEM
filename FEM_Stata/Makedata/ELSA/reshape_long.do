@@ -219,6 +219,16 @@ forvalues wv = $firstwave/$lastwave {
     rename s`wv'educl educl`wv'
 }
 
+*** Impute missing wave 1 for minimal ***
+* Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
+* Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
+local wav1missvars hchole drinkd lnlys
+
+foreach var in `wav1missvars' {
+    gen `var'1 = .
+    replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
+}
+
 * Reshape data from wide to long
 * REMOVED: strat
 #d ;

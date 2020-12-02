@@ -672,12 +672,12 @@ VarsInfo::VarsInfo() {
     info[Vars::psmkint3]            = VarInfo("psmkint3", "Probability of smoking intensity level 3", VarTypes::Float);
     info[Vars::lnly]                = VarInfo("lnly", "Loneliness Score, Low to High [1, 3]", VarTypes::Short);
     info[Vars::lnly1]               = VarInfo("lnly1", "Loneliness Score: Low", VarTypes::Boolean, Vars::lnly, 1);
-    info[Vars::lnly2]               = VarInfo("lnly1", "Loneliness Score: Medium", VarTypes::Boolean, Vars::lnly, 2);
-    info[Vars::lnly3]               = VarInfo("lnly1", "Loneliness Score: High", VarTypes::Boolean, Vars::lnly, 3);
+    info[Vars::lnly2]               = VarInfo("lnly2", "Loneliness Score: Medium", VarTypes::Boolean, Vars::lnly, 2);
+    info[Vars::lnly3]               = VarInfo("lnly3", "Loneliness Score: High", VarTypes::Boolean, Vars::lnly, 3);
     info[Vars::l2lnly]              = VarInfo("l2lnly", "Lag of Loneliness Score, Low to High [1, 3]", VarTypes::Short);
     info[Vars::l2lnly1]             = VarInfo("l2lnly1", "Lag of Loneliness Score: Low", VarTypes::Boolean, Vars::l2lnly, 1);
-    info[Vars::l2lnly2]             = VarInfo("l2lnly1", "Lag of Loneliness Score: Medium", VarTypes::Boolean, Vars::l2lnly, 2);
-    info[Vars::l2lnly3]             = VarInfo("l2lnly1", "Lag of Loneliness Score: High", VarTypes::Boolean, Vars::l2lnly, 3);
+    info[Vars::l2lnly2]             = VarInfo("l2lnly2", "Lag of Loneliness Score: Medium", VarTypes::Boolean, Vars::l2lnly, 2);
+    info[Vars::l2lnly3]             = VarInfo("l2lnly3", "Lag of Loneliness Score: High", VarTypes::Boolean, Vars::l2lnly, 3);
     info[Vars::plnly1]              = VarInfo("plnly1", "Probability of lnly == 1", VarTypes::Float);
     info[Vars::plnly2]              = VarInfo("plnly2", "Probability of lnly == 2", VarTypes::Float);
     info[Vars::plnly3]              = VarInfo("plnly3", "Probability of lnly == 3", VarTypes::Float);
