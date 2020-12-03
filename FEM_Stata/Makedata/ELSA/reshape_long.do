@@ -456,9 +456,9 @@ drop bmi_ipolate
 
 ** Now add some noise to the BMI interpolation **
 * Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
-gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
-replace bmi = bmi + rand if !missing(rand)
-drop rand
+*gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
+*replace bmi = bmi + rand if !missing(rand)
+*drop rand
 
 * The interpolation step for BMI produces a couple of completely impossible values. Removing anything under 14, as 14 is the lowest I've seen in ELSA that didn't look like a typo
 * Let kludge.do handle it with hotdeck
@@ -470,13 +470,19 @@ replace bmi = . if bmi < 14
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
 
+*** Now add noise
+* Generate random normal with bounds, then add log of this to logbmi
+gen rand = rnormal(-2, 2) if (wave==1 | wave==3 | wave==5 | wave==7)
+replace logbmi = logbmi + log(rand) if !missing(rand)
+drop rand
+
 * Generate dummy for obesity
 * This is already generated in generate_transition_pop.do. TODO: change gen_trans_pop.do to replace instead of generate
-gen obese = (bmi > 30.0) if !missing(bmi)
+gen obese = (logbmi > log(30.0)) if !missing(bmi)
 
 * Generate a categorical variable for BMI to get summary stats by group
 * cut() has to include both the lower and upper limits (which is why both 0 and 100 are included)
-egen bmi_cat = cut(bmi), at(0, 18.5, 25, 30, 40)
+egen bmi_cat = cut(logbmi), at(log(0), log(18.5), log(25), log(30), log(40))
 
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
 *count if smokev==0 & smoken==1
