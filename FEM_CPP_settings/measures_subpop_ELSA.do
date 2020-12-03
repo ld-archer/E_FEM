@@ -27,7 +27,9 @@ local measures
 					p_arthre    i_arthre    n_arthre
 					p_psyche    i_psyche    n_psyche
 					p_asthmae   i_asthmae   n_asthmae
-					p_parkine   i_parkine   n_parkine 
+					p_parkine   i_parkine   n_parkine
+					p_alzhe		i_alzhe		n_alzhe
+					p_demene	i_demene	n_demene
 						i_died    n_died
 						a_bmi     q05_bmi   q50_bmi   q95_bmi
 						p_adl1	  p_adl2    p_adl3p
@@ -54,11 +56,11 @@ local measures
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3
+					p_unemp		i_unemp		n_unemp
 			
 										
 ;
 #d cr
-
 
 /* Subpopulations you wish to analyze:
 

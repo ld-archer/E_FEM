@@ -1,10 +1,10 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
-global bin_econ work hlthlm retemp
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene
+global bin_econ work hlthlm retemp unemp
 global ols logbmi retage ipubpen atotf itearn atotb
-global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly /*vgactx_e mdactx_e ltactx_e smkstat*/
+global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly
 
 * Variable names
 #d ;
@@ -25,11 +25,14 @@ global bin_hlth_names
     "Stopped Smoking"
     "High Cholesterol"
     "Hip Fracture"
+    "Alzheimers"
+    "Dementia"
 ;
 global bin_econ_names
     "R working for pay"
     "Health Limits Work"
     "Whether retired at time of interview"
+    "Whether unemployed"
 ;
 global ols_names
     "Log(BMI)"
@@ -47,6 +50,7 @@ global order_names
     "Exercise status"
     "Self-Reported Health Status"
     "Smoking Intensity Status"
+    "Loneliness Status"
 ;
 #d cr
 

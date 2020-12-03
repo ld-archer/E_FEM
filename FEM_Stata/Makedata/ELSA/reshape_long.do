@@ -129,6 +129,9 @@ r*shlt
 h*atotb
 r*smokef
 r*lnlys
+r*unemp
+r*alzhe
+r*demene
 ;
 #d cr
 
@@ -204,6 +207,9 @@ foreach var in
     atotb
     smokef
     lnlys
+    unemp
+    alzhe
+    demene
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -236,7 +242,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
     asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys
+    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys unemp alzhe demene
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -293,6 +299,9 @@ label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
 label variable shlt "Self Reported Health Status"
 label variable atotb "Total Family Wealth"
+label variable unemp "Unemployed"
+label variable alzhe "Alzheimers Ever"
+label variable demene "Dementia Ever"
 
 
 * Use harmonised education var
@@ -620,6 +629,9 @@ foreach var in
     lnly1
     lnly2
     lnly3
+    unemp
+    alzhe
+    demene
     {;
         gen l2`var' = L.`var';
     };

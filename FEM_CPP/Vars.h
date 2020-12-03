@@ -18,7 +18,7 @@ namespace Vars
 		agec,                     ///< Approx Range [51, 85], stored as Short
 		aime_org,                 ///< AIME valued at year of reaching 60 or year 2004,whichever earlier, Approx Range [0.14767, 8433.632], stored as Double
 		alzhmr,                   ///< Alzheimer's disase, stored as Boolean
-		alzhe,                   ///< Alzheimer's disase from HRS wave 10 data, stored as Boolean
+		//alzhe,                   ///< Alzheimer's disase from HRS wave 10 data, stored as Boolean
 		anydb,                    ///< Any DB from current job RND VG [0, 1], stored as Boolean
 		anydc,                    ///< Any DC from current job RND VG [0, 1], stored as Boolean
 		anyexercise,							///< Any phyisical activity, stored as Boolean
@@ -215,7 +215,7 @@ namespace Vars
 		l2afibe,			    				 ///< Lag of NVAF
 		l2age,                     ///< Lag of exact age on July 1st, (year - rbyr) + (7-rbmonth)/12, Stored as Double
 		l2alzhmr,                  ///< Lag of Alzheimer's disease, stored as Boolean
-		l2alzhe,                  ///< Lag of Alzheimer's disease from HRS, stored as Boolean
+		//l2alzhe,                  ///< Lag of Alzheimer's disease from HRS, stored as Boolean
 		l2anyexercise,							///< Lag of any physical activity, stored as Boolean
 		l2anyhi,                   ///< Lag of HI cov -gov/emp/other, [0, 1], stored as Boolean
 		l2arthre,					///< Lag of arthritis ever, stored as Boolean
@@ -608,6 +608,15 @@ namespace Vars
         plnly1,                     ///< Probability of lnly == 1
         plnly2,                     ///< Probability of lnly == 2
         plnly3,                     ///< Probability of lnly == 3
+        unemp,                      ///< Unemployed [0, 1]
+        l2unemp,                    ///< Lag of unemployed
+        punemp,                     ///< Probability of unemployed
+        alzhe,                      ///< Alzheimers ever
+        l2alzhe,                    ///< Lag of Alzheimers ever
+        palzhe,                     ///< Probability of Alzheimers ever
+        demene,                     ///< Dementia ever
+        l2demene,                   ///< Lag of Dementia ever
+        pdemene,                    ///< Probability of Dementia ever
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

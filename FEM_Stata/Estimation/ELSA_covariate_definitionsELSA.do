@@ -1,8 +1,8 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe
-global bin_econ work hlthlm retemp
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene
+global bin_econ work hlthlm retemp unemp
 global ols logbmi retage ipubpen atotf itearn atotb
 global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly /*vgactx_e mdactx_e ltactx_e smkstat*/
 
@@ -25,11 +25,14 @@ global bin_hlth_names
     "Stopped Smoking"
     "High Cholesterol"
     "Hip Fracture"
+    "Alzheimers"
+    "Dementia"
 ;
 global bin_econ_names
     "R working for pay"
     "Health Limits Work"
     "Whether retired at time of interview"
+    "Whether unemployed"
 ;
 global ols_names
     "Log(BMI)"
@@ -47,6 +50,7 @@ global order_names
     "Exercise status"
     "Self-Reported Health Status"
     "Smoking Intensity Status"
+    "Loneliness Status"
 ;
 #d cr
 
@@ -151,7 +155,9 @@ global allvars_asthmae      $dvars $lvars_age l2logbmi `lvars_smoke' l2atotb /* 
 global allvars_parkine      $dvars $lvars_age l2logbmi `lvars_smoke' l2drink /*https://parkinsonsdisease.net/basics/risk-factors-causes/ */
 global allvars_hchole       $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
 global allvars_hipe         $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2drink l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
-global allvars_srh          $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2cancre l2hearte l2diabe l2stroke 
+global allvars_srh          $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2cancre l2hearte l2diabe l2stroke
+global allvars_alzhe        $dvars $lvars_age 
+global allvars_demene       $dvars $lvars_age
 
 
 *** Smoking 
@@ -179,7 +185,6 @@ global allvars_drinkd       $dvars $lvars_age
 *global allvars_logbmi       $dvars $lvars_age l2logbmi l2married l2atotf l2smokev l2smoken `lvars_exercise' l2atotb
 global allvars_logbmi       $dvars $lvars_age l2smokev l2smoken l2adl2 l2adl3p
 global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smoken smokev drink drinkd1 drinkd3 drinkd4
-global allvars_lnly         $dvars $lvars_age l2widowed
 
 
 *** Disabilities
@@ -189,6 +194,7 @@ global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth
 
 *** Economic
 global allvars_work         $dvars $lvars_age l2work l2psyche l2cancre l2diabe l2hearte l2stroke l2atotb
+global allvars_unemp        $dvars $lvars_age 
 *global allvars_itearn       $dvars $lvars_age l2logbmi $lvars_econ l2drink `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae
 global allvars_itearn       $dvars $lvars_age l2atotb l2itearn
 global allvars_atotf        $dvars $lvars_age l2atotb l2itearn l2work l2retemp
@@ -202,4 +208,7 @@ global allvars_retage       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit' l2logbmi l2arthre l2asthmae
 
 *** Marriage Status
-global allvars_mstat        $dvars $lvars_age l2work l2psyche l2atotb l2logbmi 
+global allvars_mstat        $dvars $lvars_age l2work l2psyche l2atotb l2logbmi
+
+*** Social
+global allvars_lnly         $dvars $lvars_age l2widowed

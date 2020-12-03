@@ -83,7 +83,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::agec]                 = VarInfo("agec", "Approx Range [51, 85]", VarTypes::Short);
 	info[Vars::aime_org]             = VarInfo("aime_org", "AIME valued at year of reaching 60 or year 2004,whichever earlier, Approx Range [0.14767, 8433.632]", VarTypes::Float);
 	info[Vars::alzhmr]               = VarInfo("alzhmr", "Alzheimer's Disease", VarTypes::Boolean);
-	info[Vars::alzhe]               = VarInfo("alzhe", "Alzheimer's Disease from HRS wave 10 data", VarTypes::Boolean);
+	//info[Vars::alzhe]               = VarInfo("alzhe", "Alzheimer's Disease from HRS wave 10 data", VarTypes::Boolean);
 	info[Vars::anydb]                = VarInfo("anydb", "Any DB from current job RND VG [0, 1]", VarTypes::Boolean);
 	info[Vars::anydc]                = VarInfo("anydc", "Any DC from current job RND VG [0, 1]", VarTypes::Boolean);
 	info[Vars::anyexercise]            = VarInfo("anyexercise", "Any physical activity", VarTypes::Boolean);
@@ -278,7 +278,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2afibe]		     = VarInfo("l2afibe", "Lag of NVAF", VarTypes::Boolean);
 	info[Vars::l2age]                 = VarInfo("l2age", "Lag of Exact age on July 1st, (year - rbyr) + (7-rbmonth)/12", VarTypes::Float);
 	info[Vars::l2alzhmr]              = VarInfo("l2alzhmr", "Lag of Alzheimer's Disease", VarTypes::Boolean);
-	info[Vars::l2alzhe]              = VarInfo("l2alzhe", "Lag of Alzheimer's Disease from HRS", VarTypes::Boolean);
+	//info[Vars::l2alzhe]              = VarInfo("l2alzhe", "Lag of Alzheimer's Disease from HRS", VarTypes::Boolean);
 	info[Vars::l2anyexercise]          = VarInfo("l2anyexercise", "Lag of any physical activity, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2anyhi]               = VarInfo("l2anyhi", "Lag of HI cov -gov/emp/other, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2arthre]			= VarInfo("l2arthre", "Lag of Arthritis ever", VarTypes::Boolean);
@@ -681,6 +681,15 @@ VarsInfo::VarsInfo() {
     info[Vars::plnly1]              = VarInfo("plnly1", "Probability of lnly == 1", VarTypes::Float);
     info[Vars::plnly2]              = VarInfo("plnly2", "Probability of lnly == 2", VarTypes::Float);
     info[Vars::plnly3]              = VarInfo("plnly3", "Probability of lnly == 3", VarTypes::Float);
+    info[Vars::unemp]               = VarInfo("unemp", "Whether unemployed", VarTypes::Boolean);
+    info[Vars::l2unemp]             = VarInfo("l2unemp", "Lag of whether unemployed", VarTypes::Boolean);
+    info[Vars::punemp]              = VarInfo("punemp", "Probability of unemployment", VarTypes::Float);
+    info[Vars::alzhe]               = VarInfo("alzhe", "Alzheimers ever", VarTypes::Boolean);
+    info[Vars::l2alzhe]             = VarInfo("l2alzhe", "Lag of Alzheimers ever", VarTypes::Boolean);
+    info[Vars::palzhe]              = VarInfo("palzhe", "Probability of Alzheimers ever", VarTypes::Float);
+    info[Vars::demene]              = VarInfo("demene", "Dementia ever", VarTypes::Boolean);
+    info[Vars::l2demene]            = VarInfo("l2demene", "Lag of Dementia ever", VarTypes::Boolean);
+    info[Vars::pdemene]             = VarInfo("pdemene", "Probability of Dementia ever", VarTypes::Float);
 
 
 	
@@ -712,7 +721,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::age] = Vars::l2age;
 	lag_map[Vars::anyhi] = Vars::l2anyhi;
 	lag_map[Vars::alzhmr] = Vars::l2alzhmr;
-	lag_map[Vars::alzhe] = Vars::l2alzhe;
+	//lag_map[Vars::alzhe] = Vars::l2alzhe;
 	lag_map[Vars::asthmae] = Vars::l2asthmae;
 	lag_map[Vars::anyexercise] = Vars::l2anyexercise;
 	lag_map[Vars::anyhi] = Vars::l2anyhi;
@@ -838,6 +847,9 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::lnly1] = Vars::l2lnly1;
     lag_map[Vars::lnly2] = Vars::l2lnly2;
     lag_map[Vars::lnly3] = Vars::l2lnly3;
+    lag_map[Vars::unemp] = Vars::l2unemp;
+    lag_map[Vars::alzhe] = Vars::l2alzhe;
+    lag_map[Vars::demene] = Vars::l2demene;
 
 
 
@@ -873,6 +885,9 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::smoke_start] =	Vars::psmoke_start;
 	prob_map[Vars::smoke_stop] =	Vars::psmoke_stop;
 	prob_map[Vars::hchole] =        Vars::phchole;
+	prob_map[Vars::unemp] =         Vars::punemp;
+	prob_map[Vars::alzhe] =         Vars::palzhe;
+	prob_map[Vars::demene] =        Vars::pdemene;
 	// Ordered
 	prob_map[Vars::smokev] =		Vars::psmkstat2;
 	prob_map[Vars::smoken] =		Vars::psmkstat3;

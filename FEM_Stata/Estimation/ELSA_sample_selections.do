@@ -8,7 +8,7 @@ foreach v in adlstat iadlstat work retemp atotf drink exstat atotb mstat {
 
 * Selection criteria for models that only rely on lag value and not being dead
 * These are all INCIDENCE models - estimate for people who have not previously got the disease and also not dead
-foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine {
+foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine alzhe demene {
     local select_`v' !l2`v' & !died 
 }
 
@@ -30,13 +30,14 @@ local select_hchole !died & l2hchole == 0 & wave > 1 /*INCIDENCE*/
 local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture question only asked if respondent is aged 60+ */
 local select_itearn !died & work == 1 & retemp == 0 /*PREVALENCE  Only estimate individual earnings if r in work and not retired */
 local select_lnly !died & wave > 1
+local select_unemp !died & retemp == 0 & age < 70
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
 if "`defmod'" == "CV2" {
     local CV2 & wave < 5
 }
 * varlist holds all that we estimate transition models for
-local varlist adlstat iadlstat work retemp atotf drink exstat cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine died smoke_start smoke_stop hlthlm ipubpen retage drinkd drinkd_stat logbmi hchole hipe itearn smkint mstat lnly
+local varlist adlstat iadlstat work retemp atotf drink exstat cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine died smoke_start smoke_stop hlthlm ipubpen retage drinkd drinkd_stat logbmi hchole hipe itearn smkint mstat lnly unemp alzhe demene
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

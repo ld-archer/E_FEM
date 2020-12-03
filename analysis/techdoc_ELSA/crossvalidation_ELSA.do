@@ -80,6 +80,9 @@ keep
 	r*psyche
 	r*smokef
 	r*lnlys
+	r*unemp
+	r*alzhe
+	r*demene
 	
 	r*walkra
 	r*dressa
@@ -120,6 +123,9 @@ local shapelist
 	r@psyche
 	r@smokef
 	r@lnlys
+	r@unemp
+	r@alzhe
+	r@demene
 	
 	r@walkra
 	r@dressa
@@ -187,7 +193,7 @@ label var iadl2p "Two or more IADL limitations"
 
 
 * Health conditions
-foreach var in cancre diabe hearte hibpe lunge stroke psyche {
+foreach var in cancre diabe hearte hibpe lunge stroke psyche alzhe demene {
 	ren r`var' `var'
 }
 label var cancre "R ever had cancer"
@@ -197,6 +203,8 @@ label var hibpe "R ever had hypertension"
 label var lunge "R ever had lung disease"
 label var stroke "R ever had stroke"
 label var psyche "R ever had psychological problems"
+label var alzhe "R ever had Alzheimers"
+label var demene "R ever had dementia"
 
 * Mortality
 gen died = riwstat
@@ -261,12 +269,13 @@ ren ragey age
 gen age_yrs = age
 
 * Economic vars
-foreach var in work itearn {
+foreach var in work itearn unemp {
 	ren r`var' `var'
 }
 
-* Work status
+* Work status and unemployment
 label var work "R working for pay"
+label var unemp "R unemployed"
 
 * Earnings
 replace itearn = 0 if work == 0
@@ -335,6 +344,8 @@ label var lunge "Lung disease ever"
 label var hearte "Heart disease ever"
 label var stroke "Stroke ever"
 label var psyche "Psychological problems ever"
+label var alzhe "Alzheimers ever"
+label var demene "Dementia ever"
 
 label var bmi "BMI"
 label var smokev "Smoke ever"
@@ -344,6 +355,7 @@ label var smkint "Smoking Intensity"
 label var lnly "Loneliness Score, Low to High [1, 3]"
 
 label var work "Working for pay"
+label var unemp "Unemployed"
 
 label var itearnx "Earnings (thou.)"
 label var atotfx "Household wealth (thou.)"
@@ -368,9 +380,9 @@ restore
 
 *save test_pre_loop.dta, replace
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche alzhe demene
 local risk smoken smokev bmi drink smkint lnly
-local binecon work
+local binecon work unemp
 *local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
 local unweighted died
