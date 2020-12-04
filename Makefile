@@ -196,11 +196,14 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	mkdir -p $(ROOT)/debug
 	# Create dir with current time
 	mkdir -p debug/$(TIMESTAMP)
-	# Move the html analysis file as well as all outputs, .ster and .est files
+	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
 	mv FEM_R/model_analysis.nb.html debug/$(TIMESTAMP)
 	cp -r output/ debug/$(TIMESTAMP)
 	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(TIMESTAMP)
 	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/$(TIMESTAMP)
+	mkdir -p debug/$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/$(TIMESTAMP)/logs/
 	# Finally, open html file in firefox
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(TIMESTAMP)/model_analysis.nb.html
 
