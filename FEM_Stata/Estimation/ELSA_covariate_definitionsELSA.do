@@ -2,7 +2,7 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene
-global bin_econ work hlthlm retemp unemp
+global bin_econ work hlthlm retemp unemp employed unemployed retired
 global ols logbmi retage ipubpen atotf itearn atotb
 global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly /*vgactx_e mdactx_e ltactx_e smkstat*/
 
@@ -33,6 +33,9 @@ global bin_econ_names
     "Health Limits Work"
     "Whether retired at time of interview"
     "Whether unemployed"
+    "Employed"
+    "Unemployed"
+    "Retired"
 ;
 global ols_names
     "Log(BMI)"
@@ -203,7 +206,9 @@ global allvars_atotb        $dvars $lvars_age l2atotf l2itearn l2work l2retemp
 global allvars_retemp       $dvars $lvars_age l2psyche l2cancre l2diabe l2hearte l2stroke l2atotb /* https://www.theamericancollege.edu/news-center/6-factors-affecting-actual-retirement-age*/
 global allvars_ipubpen      $dvars $lvars_age l2atotf l2atotb /* retage (when fixed and functional)*/
 global allvars_retage       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae /*REMOVING THIS MODEL SOON*/
-
+global allvars_employed     $dvars $lvars_age
+global allvars_unemployed   $dvars $lvars_age
+global allvars_retired      $dvars $lvars_age
 
 *** Exercise
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit' l2logbmi l2arthre l2asthmae

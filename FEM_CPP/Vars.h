@@ -337,7 +337,7 @@ namespace Vars
 		l2wlth_nonzero,            ///< Lag of Non-pension wlth(hatota) not zero, [0, 1], stored as Boolean
 		l2work,                    ///< Lag of R working for pay, [0, 1], stored as Boolean
 		l2workcat,                 ////<Lag of workcat, stored as Short
-		l2workstat,								///< Lag of workstat, stored as Short
+		//l2workstat,								///< Lag of workstat, stored as Short
 		l2workstat_alt,								///< Lag of workstat_alt, stored as Short
 		l2yrsnclastkid,						///< Lag of Years since last kid was born, stored as Float
 		lipidrx,                  ///< Cholesterol Drugs [0, 1], stored as Boolean
@@ -556,7 +556,7 @@ namespace Vars
 		wlth_nonzero,             ///< Non-pension wlth(hatota) not zero [0, 1], stored as Boolean
 		work,                     ///< R working for pay [0, 1], stored as Boolean
 		workcat, 								  ///< Categorical variable for workstat, stored as Short
-		workstat,									///< Categorical variable for workstat, stored as Short
+		//workstat,									///< Categorical variable for workstat, stored as Short
 		workstat_alt,							///< Three levels of workstat - unemployed, part-time, full-time
 		wthh,                     ///< Household weight Approx Range [0, 15569], stored as Double
 		year,                     ///< Year Approx Range [2004, 2050], stored as Short
@@ -617,6 +617,17 @@ namespace Vars
         demene,                     ///< Dementia ever
         l2demene,                   ///< Lag of Dementia ever
         pdemene,                    ///< Probability of Dementia ever
+        workstat,                   ///< Work Status
+        l2workstat,                 ///< Lag of workstat
+        employed,                   ///< Employed
+        unemployed,                 ///< Unemployed
+        retired,                    ///< Retired
+        l2employed,                 ///< Lag of Employed
+        l2unemployed,               ///< Lag of Unemployed
+        l2retired,                  ///< Lag of Retired
+        pemployed,                  ///< Probability of Employed
+        punemployed,                ///< Probability of Unemployed
+        pretired,                   ///< Probability of Retired
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

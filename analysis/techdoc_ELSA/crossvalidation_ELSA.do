@@ -83,6 +83,7 @@ keep
 	r*unemp
 	r*alzhe
 	r*demene
+	r*lbrf_e
 	
 	r*walkra
 	r*dressa
@@ -126,6 +127,7 @@ local shapelist
 	r@unemp
 	r@alzhe
 	r@demene
+	r@lbrf_e
 	
 	r@walkra
 	r@dressa
@@ -192,7 +194,7 @@ label var iadl1 "One IADL limitation"
 label var iadl2p "Two or more IADL limitations"
 
 
-* Health conditions
+*** Health conditions
 foreach var in cancre diabe hearte hibpe lunge stroke psyche alzhe demene {
 	ren r`var' `var'
 }
@@ -206,12 +208,12 @@ label var psyche "R ever had psychological problems"
 label var alzhe "R ever had Alzheimers"
 label var demene "R ever had dementia"
 
-* Mortality
+*** Mortality
 gen died = riwstat
 recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
-* Risk factors
+*** Risk factors
 foreach var in bmi smokev smoken drink smokef lnlys {
 	ren r`var' `var'
 }
@@ -268,10 +270,12 @@ ren riwstat iwstat
 ren ragey age
 gen age_yrs = age
 
-* Economic vars
-foreach var in work itearn unemp {
+*** Economic vars
+foreach var in work itearn unemp lbrf_e {
 	ren r`var' `var'
 }
+* Rename labour force var to remove the _e at the end (I don't like it)
+ren lbrf_e lbrf
 
 * Work status and unemployment
 label var work "R working for pay"
@@ -287,6 +291,16 @@ label var itearnx "Individual earnings in 1000s, max 200"
 gen atotfx = hatotf/1000
 replace atotfx = min(hatotf, 2000) if !missing(hatotf)
 label var atotfx "HH wealth in 1000s (max 2000) if positive, zero otherwise"
+
+* Sort out labour force var and generate dummys
+recode lbrf (1/2 4= 1 Employed) ///
+            (3    = 2 Unemployed) ///
+            (5/7  = 3 Retired) ///
+            , copyrest gen(workstat)
+*drop lbrf
+gen employed = workstat == 1
+gen unemployed = workstat == 2
+gen retired = workstat == 3
 
 * Couple level Capital Income
 
@@ -355,7 +369,10 @@ label var smkint "Smoking Intensity"
 label var lnly "Loneliness Score, Low to High [1, 3]"
 
 label var work "Working for pay"
-label var unemp "Unemployed"
+label var unemp "Unemployed (old)"
+label var employed "Employed"
+label var unemployed "Unemployed"
+label var retired "Retired"
 
 label var itearnx "Earnings (thou.)"
 label var atotfx "Household wealth (thou.)"
@@ -382,7 +399,7 @@ restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche alzhe demene
 local risk smoken smokev bmi drink smkint lnly
-local binecon work unemp
+local binecon work unemp employed unemployed retired
 *local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
 local unweighted died
@@ -514,7 +531,9 @@ foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 		save `wave`wave''
 	}
 
-	use "`wave3'", replace
+	use "`wave1'", replace
+	merge 1:1 variable using "`wave2'", nogen
+	merge 1:1 variable using "`wave3'", nogen
 	merge 1:1 variable using "`wave4'", nogen
 	merge 1:1 variable using "`wave5'", nogen
 	merge 1:1 variable using "`wave6'", nogen
