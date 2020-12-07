@@ -407,8 +407,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     }
                     // Now married
                     if(person->get(Vars::mstat) == 1) {
-                        person->set(Vars::cohab, 1.0);
-                        person->set(Vars::married, 0.0);
+                        person->set(Vars::married, 1.0);
+                        person->set(Vars::cohab, 0.0);
                     }
                     // Now widowed
                     if(person->get(Vars::mstat) == 4) {
@@ -430,12 +430,86 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                         person->set(Vars::cohab, 1.0);
                         person->set(Vars::widowed, 0.0);
                     }
-                    // Now widowed
-                    if(person->get(Vars::mstat) == 4) {
-                        person->set(Vars::widowed, 1.0);
+                    // Now cohab
+                    if(person->get(Vars::mstat) == 3) {
+                        person->set(Vars::cohab, 1.0);
                         person->set(Vars::widowed, 0.0);
                     }
                 }
+			}
+
+			// Handle workstat transitions (employed, unemployed, retired)
+			// 1 - Employed
+			// 2 - Unemployed
+			// 3 - Retired
+			// ORDER MATTERS HERE!
+			// Priority: Employed, Unemployed, Retired (absorbing?)
+			if (elsa_data) {
+			    // employed in previous state
+			    if(person->get(Vars::l2employed) == 1) {
+			        // Still employed
+                    if(person->get(Vars::employed) == 1) {
+                        // maintain workstat, make sure others set to 0
+                        person->set(Vars::workstat, 1.0);
+                        person->set(Vars::unemployed, 0.0);
+                        person->set(Vars::retired, 0.0);
+                    }
+			        // Now unemployed
+			        if(person->get(Vars::unemployed) == 1) {
+                        person->set(Vars::workstat, 2.0);
+			            person->set(Vars::employed, 0.0);
+			            person->set(Vars::retired, 0.0);
+			        }
+			        // Now out of the labour force (named retired)
+                    if(person->get(Vars::retired) == 1) {
+                        person->set(Vars::workstat, 3.0);
+                        person->set(Vars::employed, 0.0);
+                        person->set(Vars::unemployed, 0.0);
+                    }
+			    }
+			    // unemployed in previous state
+			    if(person->get(Vars::l2unemployed) == 1) {
+                    // Now employed
+                    if(person->get(Vars::employed) == 1) {
+                        person->set(Vars::workstat, 1.0);
+                        person->set(Vars::unemployed, 0.0);
+                        person->set(Vars::retired, 0.0);
+                    }
+			        // still unemployed
+                    if(person->get(Vars::unemployed) == 1) {
+                        // maintain workstat, make sure others set to 0
+                        person->set(Vars::workstat, 2.0);
+                        person->set(Vars::employed, 0.0);
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // Now out of the labour force (named retired)
+                    if(person->get(Vars::retired) == 1) {
+                        person->set(Vars::workstat, 3.0);
+                        person->set(Vars::employed, 0.0);
+                        person->set(Vars::unemployed, 0.0);
+                    }
+			    }
+			    // retired in previous state
+			    if(person->get(Vars::l2retired) == 1) {
+			        // still retired
+			        if(person->get(Vars::retired) == 1) {
+                        person->set(Vars::workstat, 3.0);
+                        person->set(Vars::employed, 0.0);
+                        person->set(Vars::unemployed, 0.0);
+			        }
+			        // guess its possible to go from retired to employed, will account for this
+                    if(person->get(Vars::employed) == 1) {
+                        person->set(Vars::workstat, 1.0);
+                        person->set(Vars::unemployed, 0.0);
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // also do accounting for retired to unemployed, even though I reckon its very rare if there at all
+                    if(person->get(Vars::unemployed) == 1) {
+                        person->set(Vars::workstat, 2.0);
+                        person->set(Vars::employed, 0.0);
+                        person->set(Vars::retired, 0.0);
+                    }
+			    }
 			}
 
 			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correclty
