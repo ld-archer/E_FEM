@@ -570,9 +570,9 @@ replace exstat3 = 0 if exstat != 3
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
-* - Working (includes self-employed and partly retired)
-* - Unemployed
-* - Retired (including disabled and caring for home/family)
+* 1 - Working (includes self-employed and partly retired)
+* 2 - Unemployed
+* 3 - Retired (including disabled and caring for home/family)
 recode lbrf (1/2 4= 1 Employed) ///
             (3    = 2 Unemployed) ///
             (5/7  = 3 Retired) ///

@@ -366,7 +366,7 @@ label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
 label var smkint "Smoking Intensity"
-label var lnly "Loneliness Score, Low to High [1, 3]"
+label var lnly "Loneliness Score"
 
 label var work "Working for pay"
 label var unemp "Unemployed (old)"
