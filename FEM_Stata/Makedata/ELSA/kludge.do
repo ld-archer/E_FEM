@@ -126,7 +126,9 @@ replace srh4 = 0 if srh3 == 1
 replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 srh3 srh4 srh5 atotb hipe mstat smkint unemp alzhe demene {
+foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe hearte hibpe ///
+                        lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 ///
+                        srh3 srh4 srh5 atotb hipe mstat smkint unemp alzhe demene employed unemployed retired {
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
