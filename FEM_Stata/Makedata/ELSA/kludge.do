@@ -2,7 +2,7 @@
 
 * Kludge section -  these are all variables that will be either eliminated from the simulation or developed in the data.
 
-* Set up var for deciding between base and CV1/CV2 
+* Set up var for deciding between base, CV1/CV2, min
 local scen `1'
 
 * For earnings
@@ -98,13 +98,18 @@ if "`scen'" == "base" {
     local hotdeck_vars logbmi white
 }
 else if "`scen'" == "CV1" |  {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+                        psyche asthmae parkine atotf drinkd ipubpen itearn retage
 }
 else if "`scen'" == "CV2" {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl smkint mstat lnly unemp alzhe demene
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+                        psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl ///
+                        smkint mstat lnly unemp alzhe demene workstat
 }
 else if "`scen'" == "min" {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl smkint lnly alzhe demene unemp
+    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+                        psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl ///
+                        smkint lnly alzhe demene unemp workstat
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -178,7 +183,7 @@ replace l2smkint3 = 0 if missing(l2smkint3)
 * Handle some missing unemployment data
 * For reference, only about 3.5% of respondents are unemployed, most are either not unemployed or not in the labour force
 replace l2unemp = 1 if l2unemp == . & l2work == 0 & l2age < 65 & l2retemp == 0
-* Need all the special missing codes to be ignored, so copy over to lag var from current
+* Need all the special missing codes to be ignored, so copy over to lag from current
 replace l2unemp = .x if unemp == .x
 replace l2unemp = .o if unemp == .o
 replace l2unemp = .r if unemp == .r

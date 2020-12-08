@@ -438,7 +438,101 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                 }
 			}
 
-			// Handle workstat transitions (employed, unemployed, retired)
+			// Modelling work status changes and relay this back to the indicator variables
+			if (elsa_data) {
+			    // previously employed
+			    if(person->get(Vars::l2workstat) == 1) {
+			        // Now retired
+			        if(person->get(Vars::workstat) == 3) {
+			            // Now not employed
+			            person->set(Vars::employed, 0.0);
+			            // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 1.0);
+			        }
+                    // Now unemployed
+                    if(person->get(Vars::workstat) == 2) {
+                        // Now not employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 1.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // Still employed (just make sure)
+                    if(person->get(Vars::workstat) == 1) {
+                        // Maintain employed
+                        person->set(Vars::employed, 1.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // Not retired
+                        person->set(Vars::retired, 0.0);
+                    }
+			    }
+                // previously unemployed
+                if(person->get(Vars::l2workstat) == 2) {
+                    // Now employed
+                    if(person->get(Vars::workstat) == 1) {
+                        // Now not employed
+                        person->set(Vars::employed, 1.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // Now retired
+                    if(person->get(Vars::workstat) == 3) {
+                        // Now not employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 1.0);
+                    }
+                    // Still unemployed (just make sure)
+                    if(person->get(Vars::workstat) == 2) {
+                        // Maintain employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 1.0);
+                        // Not retired
+                        person->set(Vars::retired, 0.0);
+                    }
+                }
+                // previously retired
+                if(person->get(Vars::l2workstat) == 3) {
+                    // Still retired (most common)
+                    if(person->get(Vars::workstat) == 3) {
+                        // Now not employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 1.0);
+                    }
+                    // Now employed
+                    if(person->get(Vars::workstat) == 1) {
+                        // Now not employed
+                        person->set(Vars::employed, 1.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // Still unemployed (just make sure)
+                    if(person->get(Vars::workstat) == 2) {
+                        // Maintain employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 1.0);
+                        // Not retired
+                        person->set(Vars::retired, 0.0);
+                    }
+                }
+			}
+
+			/*// Handle workstat transitions (employed, unemployed, retired)
 			// 1 - Employed
 			// 2 - Unemployed
 			// 3 - Retired
@@ -496,7 +590,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     person->set(Vars::employed, 0.0);
                     person->set(Vars::unemployed, 0.0);
 			    }
-			}
+			}*/
 
 			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correclty
 			//if (elsa_data) {
