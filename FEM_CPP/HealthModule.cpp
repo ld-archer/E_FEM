@@ -430,9 +430,9 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                         person->set(Vars::cohab, 1.0);
                         person->set(Vars::widowed, 0.0);
                     }
-                    // Now widowed
+                    // Now cohab
                     if(person->get(Vars::mstat) == 4) {
-                        person->set(Vars::widowed, 1.0);
+                        person->set(Vars::cohab, 1.0);
                         person->set(Vars::widowed, 0.0);
                     }
                 }
