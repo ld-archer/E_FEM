@@ -370,6 +370,7 @@ label var lnly "Loneliness Score"
 
 label var work "Working for pay"
 label var unemp "Unemployed (old)"
+label var workstat "Working Status"
 label var employed "Employed"
 label var unemployed "Unemployed"
 label var retired "Retired"
@@ -399,7 +400,7 @@ restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche alzhe demene
 local risk smoken smokev bmi drink smkint lnly
-local binecon work unemp employed unemployed retired
+local binecon work unemp workstat employed unemployed retired
 *local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
 local unweighted died

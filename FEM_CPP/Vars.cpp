@@ -691,16 +691,16 @@ VarsInfo::VarsInfo() {
     info[Vars::l2demene]            = VarInfo("l2demene", "Lag of Dementia ever", VarTypes::Boolean);
     info[Vars::pdemene]             = VarInfo("pdemene", "Probability of Dementia ever", VarTypes::Float);
     info[Vars::workstat]            = VarInfo("workstat", "Work status, [1, 3]", VarTypes::Short);
+    info[Vars::l2workstat]          = VarInfo("l2workstat", "Lag of Work status, [1, 3]", VarTypes::Short);
     info[Vars::employed]            = VarInfo("employed", "Employed", VarTypes::Boolean, Vars::workstat, 1);
     info[Vars::unemployed]          = VarInfo("unemployed", "Unemployed", VarTypes::Boolean, Vars::workstat, 2);
     info[Vars::retired]             = VarInfo("retired", "Retired", VarTypes::Boolean, Vars::workstat, 3);
-    info[Vars::l2workstat]          = VarInfo("l2workstat", "Lag of Work status, [1, 3]", VarTypes::Short);
     info[Vars::l2employed]          = VarInfo("l2employed", "Lag of Employed", VarTypes::Boolean, Vars::l2workstat, 1);
     info[Vars::l2unemployed]        = VarInfo("l2unemployed", "Lag of Unemployed", VarTypes::Boolean, Vars::l2workstat, 2);
     info[Vars::l2retired]           = VarInfo("l2retired", "Lag of Retired", VarTypes::Boolean, Vars::l2workstat, 3);
-    info[Vars::pemployed]           = VarInfo("pemployed", "Probability of employed (workstat == 1)", VarTypes::Float);
-    info[Vars::punemployed]           = VarInfo("punemployed", "Probability of unemployed (workstat == 2)", VarTypes::Float);
-    info[Vars::pretired]           = VarInfo("pretired", "Probability of retired (workstat == 3)", VarTypes::Float);
+    info[Vars::pworkstat1]           = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
+    info[Vars::pworkstat2]           = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
+    info[Vars::pworkstat3]           = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
 
 
 	
@@ -904,8 +904,8 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::alzhe] =         Vars::palzhe;
 	prob_map[Vars::demene] =        Vars::pdemene;
 	// Ordered
-	prob_map[Vars::smokev] =		Vars::psmkstat2;
-	prob_map[Vars::smoken] =		Vars::psmkstat3;
+	//prob_map[Vars::smokev] =		Vars::psmkstat2;
+	//prob_map[Vars::smoken] =		Vars::psmkstat3;
 	prob_map[Vars::adl1] =  		Vars::padlstat2;
 	prob_map[Vars::adl2] = 			Vars::padlstat3;
 	prob_map[Vars::adl3p] = 		Vars::padlstat4;
@@ -929,9 +929,9 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::lnly1] =         Vars::plnly1;
     prob_map[Vars::lnly2] =         Vars::plnly2;
     prob_map[Vars::lnly3] =         Vars::plnly3;
-    prob_map[Vars::employed] =      Vars::pemployed;
-    prob_map[Vars::unemployed] =    Vars::punemployed;
-    prob_map[Vars::retired] =       Vars::pretired;
+    prob_map[Vars::employed] =      Vars::pworkstat1;
+    prob_map[Vars::unemployed] =    Vars::pworkstat2;
+    prob_map[Vars::retired] =       Vars::pworkstat3;
 
 
 

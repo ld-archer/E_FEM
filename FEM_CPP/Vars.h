@@ -625,9 +625,9 @@ namespace Vars
         l2employed,                 ///< Lag of Employed
         l2unemployed,               ///< Lag of Unemployed
         l2retired,                  ///< Lag of Retired
-        pemployed,                  ///< Probability of Employed
-        punemployed,                ///< Probability of Unemployed
-        pretired,                   ///< Probability of Retired
+        pworkstat1,                  ///< Probability of Employed (workstat == 1)
+        pworkstat2,                ///< Probability of Unemployed (workstat == 2)
+        pworkstat3,                   ///< Probability of Retired (workstat == 3)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
