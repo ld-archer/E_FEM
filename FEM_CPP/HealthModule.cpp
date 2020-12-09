@@ -121,8 +121,11 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 					// This reflects the default case (hrs_data) 
 					case Vars::work:
 						// Assume people stop working after age 80 (Bryan's change to better reflect HRS)
-						do_model = (person->get(Vars::l2age) < 78 && hrs_data) || (elsa_data);
+						do_model = (person->get(Vars::l2age) < 78 && hrs_data);
 						break;
+				    case Vars::workstat:
+				        do_model = elsa_data;
+				        break;
 					// Only rxchol_start if l2rxchol == 0
 					case Vars::rxchol_start:
 						do_model = person->get(Vars::l2rxchol) == 0 && hrs_data;
@@ -531,66 +534,6 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     }
                 }
 			}
-
-			/*// Handle workstat transitions (employed, unemployed, retired)
-			// 1 - Employed
-			// 2 - Unemployed
-			// 3 - Retired
-			// ORDER MATTERS HERE!
-			// Priority: Employed, Unemployed, Retired (absorbing?)
-			if (elsa_data) {
-			    // employed in previous state
-			    if(person->get(Vars::l2employed) == 1) {
-                    // Now out of the labour force (named retired)
-                    if(person->get(Vars::retired) == 1) {
-                        person->set(Vars::workstat, 3.0);
-                        person->set(Vars::employed, 0.0);
-                        person->set(Vars::unemployed, 0.0);
-                    }
-                    // Now unemployed
-                    if(person->get(Vars::unemployed) == 1) {
-                        person->set(Vars::workstat, 2.0);
-                        person->set(Vars::employed, 0.0);
-                        person->set(Vars::retired, 0.0);
-                    }
-			        // Still employed
-                    if(person->get(Vars::employed) == 1) {
-                        // maintain workstat, make sure others set to 0
-                        person->set(Vars::workstat, 1.0);
-                        person->set(Vars::unemployed, 0.0);
-                        person->set(Vars::retired, 0.0);
-                    }
-			    }
-			    // unemployed in previous state
-			    if(person->get(Vars::l2unemployed) == 1) {
-                    // Now out of the labour force (named retired)
-                    if(person->get(Vars::retired) == 1) {
-                        person->set(Vars::workstat, 3.0);
-                        person->set(Vars::employed, 0.0);
-                        person->set(Vars::unemployed, 0.0);
-                    }
-                    // still unemployed
-                    if(person->get(Vars::unemployed) == 1) {
-                        // maintain workstat, make sure others set to 0
-                        person->set(Vars::workstat, 2.0);
-                        person->set(Vars::employed, 0.0);
-                        person->set(Vars::retired, 0.0);
-                    }
-                    // Now employed
-                    if(person->get(Vars::employed) == 1) {
-                        person->set(Vars::workstat, 1.0);
-                        person->set(Vars::unemployed, 0.0);
-                        person->set(Vars::retired, 0.0);
-                    }
-			    }
-			    // retired in previous state
-                // retiring is absorbing, so can't go back to being employed or unemployed
-			    if(person->get(Vars::l2retired) == 1) {
-			        person->set(Vars::retired, 1.0);
-                    person->set(Vars::employed, 0.0);
-                    person->set(Vars::unemployed, 0.0);
-			    }
-			}*/
 
 			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correclty
 			//if (elsa_data) {

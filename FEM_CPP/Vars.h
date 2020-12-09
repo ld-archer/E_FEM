@@ -308,7 +308,7 @@ namespace Vars
 		l2proptax_nonzero,         ///< Lag of the linear property taxes being nonzero, predicted independently from logproptax_nonzero, \note not a transform
 		l2psyche,					///< Lag of psychiatric problems ever, stored as Boolean
 		l2rxchol,                 ///< Lag of cholesterol drugs [0, 1], stored as Boolean
-		l2retemp,					///< Lag of whether considers self retired, stored as Boolean
+		//l2retemp,					///< Lag of whether considers self retired, stored as Boolean
 		l2selfmem1,                ///< Lag of selfmem 1 [0, 1], stored as Boolean
 		l2selfmem2,                ///< Lag of selfmem 2 [0, 1], stored as Boolean
 		l2selfmem3,                ///< Lag of selfmem 3 or more [0, 1], stored as Boolean
@@ -335,7 +335,7 @@ namespace Vars
 		l2widowed,                 ///< Lag of Widowed, [0, 1], stored as Boolean
 		l2wlp_treated,             ///< Lag of Treated with a Weight Loss Pill, [0, 1], stored as Boolean
 		l2wlth_nonzero,            ///< Lag of Non-pension wlth(hatota) not zero, [0, 1], stored as Boolean
-		l2work,                    ///< Lag of R working for pay, [0, 1], stored as Boolean
+		l2work,                    ///< Lag of R working for pay, [0, 1] (NOW DEFUNKT), stored as Boolean
 		l2workcat,                 ////<Lag of workcat, stored as Short
 		//l2workstat,								///< Lag of workstat, stored as Short
 		l2workstat_alt,								///< Lag of workstat_alt, stored as Short
@@ -442,13 +442,13 @@ namespace Vars
 		poasiclaim, 							///<Probability of SS OASI claiming in PSID, Stored as Double
 		proptax,                  ///< Linear property taxes, predicted independently from logproptax \note not a transform
 		proptax_nonzero,          ///< Linear property taxes being nonzero, predicted independently from logproptax_nonzero, \note not a transform
-		pretemp,				/// Probability of considering self retired, stored as Float
+		//pretemp,				/// Probability of considering self retired, stored as Float
 		pssclaim,                 ///< Probability of SS claiming, stored as Double
 		pstroke,                  ///< Probability of stroke, stored as Double
 		psyche,					///< Psychatric problems ever, stored as Boolean
 		ppsyche,				///< Probability of psychiatric problems ever, stored as Double
 		pwlth_nonzero,            ///< Probability of nonzero wealth, stored as Double
-		pwork,                    ///< Probability of working, stored as Double		
+		//pwork,                    ///< Probability of working, stored as Double
 		pselfmem1,               /// Probability selfmem == 1
 		pselfmem2,               /// Probability selfmem == 2
 		pselfmem3,               /// Probability selfmem == 3
@@ -474,8 +474,8 @@ namespace Vars
 		rel_notimp,								///< Religion not important
 		reloth,										///< Religion - Other
 		rel_someimp,							///< Religion somewhat important
-		retemp,						///< Whether considers self retired, stored as Boolean
-		retage,						///< Retirement age, stored as Float
+		//retemp,						///< Whether considers self retired, stored as Boolean
+		//retage,						///< Retirement age, stored as Float
 		rpia,											///< SS Primary Insurance Amount
 		rq,                       ///< Approx Range [1, 212], stored as Short
 		rssclyr,                  ///< Approx Range [1969, 2100], stored as Short
@@ -554,7 +554,7 @@ namespace Vars
 		widowev,                  ///< Ever widowed [0, 1], stored as Boolean
 		wlp_treated,              ///< Treated with a Weight Loss Pill, [0, 1], stored as Boolean
 		wlth_nonzero,             ///< Non-pension wlth(hatota) not zero [0, 1], stored as Boolean
-		work,                     ///< R working for pay [0, 1], stored as Boolean
+		work,                     ///< R working for pay [0, 1] (NOW DEFUNKT, REPLACED BY WORKSTAT == 1, EMPLOYED), stored as Boolean
 		workcat, 								  ///< Categorical variable for workstat, stored as Short
 		//workstat,									///< Categorical variable for workstat, stored as Short
 		workstat_alt,							///< Three levels of workstat - unemployed, part-time, full-time
@@ -608,9 +608,9 @@ namespace Vars
         plnly1,                     ///< Probability of lnly == 1
         plnly2,                     ///< Probability of lnly == 2
         plnly3,                     ///< Probability of lnly == 3
-        unemp,                      ///< Unemployed [0, 1]
-        l2unemp,                    ///< Lag of unemployed
-        punemp,                     ///< Probability of unemployed
+        //unemp,                      ///< Unemployed [0, 1]
+        //l2unemp,                    ///< Lag of unemployed
+        //punemp,                     ///< Probability of unemployed
         alzhe,                      ///< Alzheimers ever
         l2alzhe,                    ///< Lag of Alzheimers ever
         palzhe,                     ///< Probability of Alzheimers ever
