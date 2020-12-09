@@ -228,3 +228,7 @@ replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
 replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
 replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
 
+* Impute old 'work' variable with employed, just to keep the model happy
+* ELSA version doesn't use 'work' anymore
+gen work = employed if !missing(employed)
+gen l2work = l2employed if !missing(l2employed)
