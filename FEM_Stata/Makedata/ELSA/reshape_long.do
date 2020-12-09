@@ -119,6 +119,8 @@ r*mdactx_e
 r*ltactx_e
 r*drink
 r*drinkd_e
+r*drinkn_e
+r*drinkwn_e
 r*mstat
 r*hchole
 r*hipe
@@ -142,9 +144,17 @@ forvalues wv = $firstwave/$lastwave {
 * Rename drink vars to more readable (and pleasant) form - r*drinkd
 * Also rename exercise variables in the near future
 forvalues wv = $firstwave/$lastwave {
-	if `wv' >= 2 {
+	if `wv' > 1 {
 		/* drinkd_e not present in wave 1 */
 		rename r`wv'drinkd_e r`wv'drinkd
+    }
+    if inlist(`wv', 2, 3) {
+        /* drinkn_e only present in waves 2 & 3*/
+        rename r`wv'drinkn_e r`wv'drinkn
+    }
+    if `wv' > 3 {
+        /* drinkwn_e only present in waves 4+*/
+        rename r`wv'drinkwn_e r`wv'drinkwn
     }
     /*Remove '_e' from labour force status var (don't know why they link inlcuding these)*/
     rename r`wv'lbrf_e r`wv'lbrf
@@ -196,6 +206,8 @@ foreach var in
     ltactx_e
     drink
     drinkd
+    drinkn
+    drinkwn
     mstat
     hchole
     hipe
@@ -224,7 +236,7 @@ forvalues wv = $firstwave/$lastwave {
 *** Impute missing wave 1 for minimal ***
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
 * Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
-local wav1missvars hchole drinkd lnlys
+local wav1missvars hchole lnlys
 
 foreach var in `wav1missvars' {
     gen `var'1 = .
@@ -238,7 +250,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys alzhe demene
+    drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb smokef lnlys alzhe demene
     lbrf
 , i(idauniq) j(wave)
 ;
@@ -285,6 +297,8 @@ label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
 label variable drinkd "# Days/week has a drink"
+label variable drinkn "# Drinks/day on heaviest drinking day of last week"
+label variable drinkwn "# Drinks in last week"
 label variable educl "Spouse Harmonised Education Level"
 label variable ramomeduage "Age mother left education"
 label variable radadeduage "Age father left education"
@@ -500,42 +514,30 @@ drop smokef
 * Now assign any missing that don't smoke to equal 0
 replace smkint = 0 if smoken == 0
 
-/* * Smoking intensity variable
-recode smokef (0=1) (1/9=2) (10/19=3) (20/max=4), gen(smkint)
-label define smkint 1 "Non-smoker" 2 "Low" 3 "Medium" 4 "High"
-label values smkint smkint
-label variable smkint "Smoking intensity"
-drop smokef */
-
 * dummy vars for transition models
 gen smkint1 = smkint == 1
 gen smkint2 = smkint == 2
 gen smkint3 = smkint == 3
 
 
-* Drinking intensity variable
+*** Drinking intensity variable
 * This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
 * Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
 * drinkstat will be defined by an intersection between the drinkd, drinkwn, and potentially drinkn vars
 * if ANY of the variables are at the extreme end (will find cut off values for weekly/daily drinking), then person.drinkstat == high
 
-*count if missing(drinkd)
-* Create categorical drinking variable (for days of week - drinkd) (using adlstat as template)
-recode drinkd (0=1) (1/2 = 2) (3/4 = 3) (5/7 = 4), gen(drinkd_stat)
-label define drinkd_stat 1 "Teetotal" 2 "Light drinker" 3 "Moderate drinker" 4 "Heavy drinker"
-label values drinkd_stat drinkd_stat
-*count if missing(drinkd_stat)
+* First find binge_drinkers
+gen binge_d = 1 if drinkn > 4 & male == 1
+replace binge_d = 1 if drinkn > 3 & male == 0
+* Then heavy drinkers
+gen heavy_d = 1 if drinkwn > 7
+* First attempt at intensity var will be a binary variable
+gen heavy_drinker = 1 if binge_d | heavy_d
+* Also going to experiment with 'frequent_drinker' var
+gen freq_drinker = 1 if drinkd > 5
 
-* No create some dummy categorical vars from drinkd_stat for estimating other transition models
-gen drinkd1 = drinkd_stat==1 if !missing(drinkd_stat)
-gen drinkd2 = drinkd_stat==2 if !missing(drinkd_stat)
-gen drinkd3 = drinkd_stat==3 if !missing(drinkd_stat)
-gen drinkd4 = drinkd_stat==4 if !missing(drinkd_stat)
-
-label variable drinkd1 "Teetotal"
-label variable drinkd2 "Light Drinker"
-label variable drinkd3 "Moderate Drinker"
-label variable drinkd4 "Heavy Drinker"
+* Now drop drink vars after generating indicators
+drop drinkn drinkwn drinkd
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -555,6 +557,9 @@ gen exstat2 = 1 if exstat == 2
 replace exstat2 = 0 if exstat != 2
 gen exstat3 = 1 if exstat == 3
 replace exstat3 = 0 if exstat != 3
+
+* Drop the exercise vars now
+drop ltactx_e mdactx_e vgactx_e
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
@@ -606,16 +611,7 @@ foreach var in
     ipubpen
     atotf
     itearn
-    vgactx_e
-    mdactx_e
-    ltactx_e
     drink
-    drinkd
-    drinkd_stat
-	drinkd1
-	drinkd2
-	drinkd3
-	drinkd4
     exstat
     exstat1
     exstat2
@@ -649,6 +645,8 @@ foreach var in
     employed
     unemployed
     retired
+    heavy_drinker
+    freq_drinker
     {;
         gen l2`var' = L.`var';
     };
