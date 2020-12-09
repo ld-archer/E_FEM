@@ -121,8 +121,11 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 					// This reflects the default case (hrs_data) 
 					case Vars::work:
 						// Assume people stop working after age 80 (Bryan's change to better reflect HRS)
-						do_model = (person->get(Vars::l2age) < 78 && hrs_data) || (elsa_data);
+						do_model = (person->get(Vars::l2age) < 78 && hrs_data);
 						break;
+				    case Vars::workstat:
+				        do_model = elsa_data;
+				        break;
 					// Only rxchol_start if l2rxchol == 0
 					case Vars::rxchol_start:
 						do_model = person->get(Vars::l2rxchol) == 0 && hrs_data;
@@ -407,8 +410,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     }
                     // Now married
                     if(person->get(Vars::mstat) == 1) {
-                        person->set(Vars::cohab, 1.0);
-                        person->set(Vars::married, 0.0);
+                        person->set(Vars::married, 1.0);
+                        person->set(Vars::cohab, 0.0);
                     }
                     // Now widowed
                     if(person->get(Vars::mstat) == 4) {
@@ -430,10 +433,104 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                         person->set(Vars::cohab, 1.0);
                         person->set(Vars::widowed, 0.0);
                     }
-                    // Now widowed
-                    if(person->get(Vars::mstat) == 4) {
-                        person->set(Vars::widowed, 1.0);
+                    // Now cohab
+                    if(person->get(Vars::mstat) == 3) {
+                        person->set(Vars::cohab, 1.0);
                         person->set(Vars::widowed, 0.0);
+                    }
+                }
+			}
+
+			// Modelling work status changes and relay this back to the indicator variables
+			if (elsa_data) {
+			    // previously employed
+			    if(person->get(Vars::l2workstat) == 1) {
+			        // Now retired
+			        if(person->get(Vars::workstat) == 3) {
+			            // Now not employed
+			            person->set(Vars::employed, 0.0);
+			            // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 1.0);
+			        }
+                    // Now unemployed
+                    if(person->get(Vars::workstat) == 2) {
+                        // Now not employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 1.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // Still employed (just make sure)
+                    if(person->get(Vars::workstat) == 1) {
+                        // Maintain employed
+                        person->set(Vars::employed, 1.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // Not retired
+                        person->set(Vars::retired, 0.0);
+                    }
+			    }
+                // previously unemployed
+                if(person->get(Vars::l2workstat) == 2) {
+                    // Now employed
+                    if(person->get(Vars::workstat) == 1) {
+                        // Now not employed
+                        person->set(Vars::employed, 1.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // Now retired
+                    if(person->get(Vars::workstat) == 3) {
+                        // Now not employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 1.0);
+                    }
+                    // Still unemployed (just make sure)
+                    if(person->get(Vars::workstat) == 2) {
+                        // Maintain employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 1.0);
+                        // Not retired
+                        person->set(Vars::retired, 0.0);
+                    }
+                }
+                // previously retired
+                if(person->get(Vars::l2workstat) == 3) {
+                    // Still retired (most common)
+                    if(person->get(Vars::workstat) == 3) {
+                        // Now not employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 1.0);
+                    }
+                    // Now employed
+                    if(person->get(Vars::workstat) == 1) {
+                        // Now not employed
+                        person->set(Vars::employed, 1.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 0.0);
+                        // set retired indicator
+                        person->set(Vars::retired, 0.0);
+                    }
+                    // Still unemployed (just make sure)
+                    if(person->get(Vars::workstat) == 2) {
+                        // Maintain employed
+                        person->set(Vars::employed, 0.0);
+                        // Not unemployed
+                        person->set(Vars::unemployed, 1.0);
+                        // Not retired
+                        person->set(Vars::retired, 0.0);
                     }
                 }
 			}

@@ -37,7 +37,7 @@ replace ramomeduage = 0 if ramomeduage == .a
 
 
 * Collect vars for prediction and selection criteria into local
-local predict_vars male white l2age65l l2age6574 l2age75p work retemp married_educl_interaction radadeduage ramomeduage /*educl*/
+local predict_vars male white l2age65l l2age6574 l2age75p employed unemployed married_educl_interaction radadeduage ramomeduage 
 * educl         - spouses harmonised education level
 * ramomeduage   - Age mother stopped education
 * radadeduage   - Age father stopped education

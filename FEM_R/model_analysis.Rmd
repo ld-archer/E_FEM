@@ -186,6 +186,8 @@ createTTT <- function(t) {
                   minWidth = 160,
                   style = stickyStyle,
                   headerStyle = stickyStyle),
+              P_Value_1 = pValColDef2,
+              P_Value_2 = pValColDef2,
               P_Value_3 = pValColDef2,
               P_Value_4 = pValColDef2,
               P_Value_5 = pValColDef2,

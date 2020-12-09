@@ -2,9 +2,9 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene
-global bin_econ work hlthlm retemp unemp
-global ols logbmi retage ipubpen atotf itearn atotb
-global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly /*vgactx_e mdactx_e ltactx_e smkstat*/
+global bin_econ hlthlm
+global ols logbmi ipubpen atotf itearn atotb
+global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly workstat
 
 * Variable names
 #d ;
@@ -29,10 +29,7 @@ global bin_hlth_names
     "Dementia"
 ;
 global bin_econ_names
-    "R working for pay"
     "Health Limits Work"
-    "Whether retired at time of interview"
-    "Whether unemployed"
 ;
 global ols_names
     "Log(BMI)"
@@ -69,13 +66,13 @@ global lvars_age_sex male_l2age65l male_l2age6574 male_l2age75p
 *** Health variables at t-1
 global lvars_hlth l2cancre l2diabe l2hearte l2hibpe l2lunge l2stroke
 *** Econ vars at t-1
-global lvars_econ l2work l2retemp l2itearn l2ipubpen l2atotf
+global lvars_econ l2employed l2unemployed l2itearn l2ipubpen l2atotf
 
 *** Custom groups
 * Exercise vars
 local lvars_exercise l2exstat1 l2exstat2 /*l2exstat3*/
 * Smoking
-local lvars_smoke l2smokev l2smoken
+local lvars_smoke l2smokev l2smoken l2smkint1 l2smkint2 l2smkint3
 * Drinking
 local lvars_drink l2drink
 * Functional Limitations
@@ -147,7 +144,7 @@ global allvars_stroke       $dvars $lvars_age l2logbmi `lvars_smoke' l2drink l2h
 global allvars_arthre       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' /*https://www.verywellhealth.com/arthritis-causes-and-risk-factors-2549243*/
 
 * PSYCHE
-*global allvars_psyche       $dvars $lvars_age `lvars_smoke' l2drink l2ipubpen l2itearn l2atotf l2work l2cancre l2diabe l2stroke l2hibpe /*https://www.healthyplace.com/other-info/mental-illness-overview/what-causes-mental-illness-genetics-environment-risk-factors*/
+*global allvars_psyche       $dvars $lvars_age `lvars_smoke' l2drink l2ipubpen l2itearn l2atotf l2employed l2unemployed l2cancre l2diabe l2stroke l2hibpe /*https://www.healthyplace.com/other-info/mental-illness-overview/what-causes-mental-illness-genetics-environment-risk-factors*/
 global allvars_psyche       $dvars $lvars_age 
 
 
@@ -161,22 +158,22 @@ global allvars_demene       $dvars $lvars_age
 
 
 *** Smoking 
-*global allvars_smoke_start  $dvars $lvars_age l2work l2retemp l2smokev l2psyche l2itearn l2atotf l2ipubpen l2atotb
+*global allvars_smoke_start  $dvars $lvars_age l2employed l2unemployed l2smokev l2psyche l2itearn l2atotf l2ipubpen l2atotb
 * 11-27_16:12:16: global allvars_smoke_start  $dvars $lvars_age
-*global allvars_smoke_start  $dvars $lvars_age l2smokev l2work 
-global allvars_smoke_start  $dvars $lvars_age l2work l2psyche l2single l2married l2widowed
-*global allvars_smoke_stop   $dvars $lvars_age l2work l2retemp l2psyche l2itearn l2atotf l2ipubpen l2atotb
+*global allvars_smoke_start  $dvars $lvars_age l2smokev l2employed l2unemployed 
+global allvars_smoke_start  $dvars $lvars_age l2employed l2unemployed l2psyche l2single l2married l2widowed
+*global allvars_smoke_stop   $dvars $lvars_age l2employed l2unemployed l2psyche l2itearn l2atotf l2ipubpen l2atotb
 * 11-27_16:12:16: global allvars_smoke_stop   $dvars $lvars_age
-*global allvars_smoke_stop   $dvars $lvars_age l2work
-global allvars_smoke_stop   $dvars $lvars_age l2work l2psyche l2single l2married l2widowed
+*global allvars_smoke_stop   $dvars $lvars_age l2employed l2unemployed
+global allvars_smoke_stop   $dvars $lvars_age l2employed l2unemployed l2psyche l2single l2married l2widowed
 *l2single l2married l2cohab l2atotb l2ipubpen
 global allvars_smkint       $dvars $lvars_age 
 
 
 *** Drinking
-*global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2work l2atotb /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
+*global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2employed l2unemployed l2atotb /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 * 11-27_16:12:16: global allvars_drink        $dvars $lvars_age
-global allvars_drink        $dvars $lvars_age l2work l2logbmi
+global allvars_drink        $dvars $lvars_age l2employed l2unemployed l2logbmi
 global allvars_drinkd_stat  $dvars $lvars_age
 global allvars_drinkd       $dvars $lvars_age
 
@@ -194,22 +191,19 @@ global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth
 
 
 *** Economic
-global allvars_work         $dvars $lvars_age l2work l2psyche l2cancre l2diabe l2hearte l2stroke l2atotb
-global allvars_unemp        $dvars $lvars_age 
 *global allvars_itearn       $dvars $lvars_age l2logbmi $lvars_econ l2drink `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae
 global allvars_itearn       $dvars $lvars_age l2atotb l2itearn
-global allvars_atotf        $dvars $lvars_age l2atotb l2itearn l2work l2retemp
-global allvars_atotb        $dvars $lvars_age l2atotf l2itearn l2work l2retemp
-global allvars_retemp       $dvars $lvars_age l2psyche l2cancre l2diabe l2hearte l2stroke l2atotb /* https://www.theamericancollege.edu/news-center/6-factors-affecting-actual-retirement-age*/
-global allvars_ipubpen      $dvars $lvars_age l2atotf l2atotb /* retage (when fixed and functional)*/
-global allvars_retage       $dvars $lvars_age l2logbmi $lvars_hlth $lvars_econ `lvars_smoke' hlthlm l2arthre l2psyche l2asthmae /*REMOVING THIS MODEL SOON*/
+global allvars_atotf        $dvars $lvars_age l2atotb l2itearn l2employed l2unemployed /* Control for workstat vars is retired */
+global allvars_atotb        $dvars $lvars_age l2atotf l2itearn l2employed l2unemployed /* Control for workstat vars is retired */
+global allvars_ipubpen      $dvars $lvars_age l2atotf l2atotb
 
+global allvars_workstat     $dvars $lvars_age l2workstat l2psyche l2stroke `lvars_smoke' l2married l2single
 
 *** Exercise
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit' l2logbmi l2arthre l2asthmae
 
 *** Marriage Status
-global allvars_mstat        $dvars $lvars_age l2work l2psyche l2atotb l2logbmi
+global allvars_mstat        $dvars $lvars_age l2employed l2unemployed l2psyche l2atotb l2logbmi
 
 *** Social
-global allvars_lnly         $dvars $lvars_age l2widowed
+global allvars_lnly         $dvars $lvars_age l2widowed `lvars_funclimit' 
