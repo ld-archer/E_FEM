@@ -108,12 +108,9 @@ r*arthre
 r*bmi 
 r*smokev
 r*smoken
-r*work
 r*hlthlm
 r*asthmae
 r*parkine
-r*retemp
-r*retage
 r*ipubpen
 r*itearn
 h*atotf
@@ -129,7 +126,6 @@ r*shlt
 h*atotb
 r*smokef
 r*lnlys
-r*unemp
 r*alzhe
 r*demene
 r*lbrf_e
@@ -189,12 +185,9 @@ foreach var in
     smokev
     smoken
     hhid
-    work
     hlthlm
     asthmae
     parkine
-    retemp
-    retage
     ipubpen
     itearn
     atotf
@@ -210,7 +203,6 @@ foreach var in
     atotb
     smokef
     lnlys
-    unemp
     alzhe
     demene
     lbrf
@@ -244,9 +236,9 @@ foreach var in `wav1missvars' {
 #d ;
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
-    asthmae parkine itearn ipubpen retemp retage atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys unemp alzhe demene
+    hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
+    asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
+    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys alzhe demene
     lbrf
 , i(idauniq) j(wave)
 ;
@@ -282,14 +274,11 @@ label variable smokev "Smoke ever"
 label variable smoken "Smoke now"
 label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
-label variable work "Working for pay"
 label variable hlthlm "Health limits work"
 label variable itearn "Individual employment earnings (annual, after tax)"
 label variable ipubpen "Public pension income (all types)"
 label variable asthmae "Asthma ever"
 label variable parkine "Parkinsons disease ever"
-label variable retemp "Considers self retired"
-label variable retage "Retirement age"
 label variable atotf "Net Value of Non-Housing Financial Wealth"
 label variable vgactx_e "Number of times done vigorous exercise per week"
 label variable mdactx_e "Number of times done moderate exercise per week"
@@ -304,7 +293,6 @@ label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
 label variable shlt "Self Reported Health Status"
 label variable atotb "Total Family Wealth"
-label variable unemp "Unemployed"
 label variable alzhe "Alzheimers Ever"
 label variable demene "Dementia Ever"
 label variable lbrf "Labour Force Status"
@@ -613,11 +601,8 @@ foreach var in
     iadlstat
     anyiadl
     smkstat
-    work
     asthmae
     parkine
-    retemp
-    retage
     ipubpen
     atotf
     itearn
@@ -658,7 +643,6 @@ foreach var in
     lnly1
     lnly2
     lnly3
-    unemp
     alzhe
     demene
     workstat

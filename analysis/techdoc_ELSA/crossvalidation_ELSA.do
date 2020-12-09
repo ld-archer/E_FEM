@@ -70,7 +70,6 @@ keep
 	r*stroke
 	r*smoken
 	r*smokev
-	r*work
 	r*bmi
 	r*itearn
 	r*cwtresp
@@ -80,7 +79,6 @@ keep
 	r*psyche
 	r*smokef
 	r*lnlys
-	r*unemp
 	r*alzhe
 	r*demene
 	r*lbrf_e
@@ -114,7 +112,6 @@ local shapelist
 	r@stroke
 	r@smoken
 	r@smokev
-	r@work
 	r@bmi
 	r@itearn
 	r@cwtresp
@@ -124,7 +121,6 @@ local shapelist
 	r@psyche
 	r@smokef
 	r@lnlys
-	r@unemp
 	r@alzhe
 	r@demene
 	r@lbrf_e
@@ -271,18 +267,14 @@ ren ragey age
 gen age_yrs = age
 
 *** Economic vars
-foreach var in work itearn unemp lbrf_e {
+foreach var in itearn lbrf_e {
 	ren r`var' `var'
 }
 * Rename labour force var to remove the _e at the end (I don't like it)
 ren lbrf_e lbrf
 
-* Work status and unemployment
-label var work "R working for pay"
-label var unemp "R unemployed"
-
 * Earnings
-replace itearn = 0 if work == 0
+replace itearn = 0 if employed == 0
 gen itearnx = itearn/1000
 replace itearnx = min(itearn, 200) if !missing(itearn)
 label var itearnx "Individual earnings in 1000s, max 200"
@@ -368,8 +360,6 @@ label var drink "Drinks Alcohol"
 label var smkint "Smoking Intensity"
 label var lnly "Loneliness Score"
 
-label var work "Working for pay"
-label var unemp "Unemployed (old)"
 label var workstat "Working Status"
 label var employed "Employed"
 label var unemployed "Unemployed"
@@ -400,7 +390,7 @@ restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche alzhe demene
 local risk smoken smokev bmi drink smkint lnly
-local binecon work unemp workstat employed unemployed retired
+local binecon workstat employed unemployed retired
 *local cntecon /*itearnx atotfx*/
 local demog age_yrs male white
 local unweighted died
@@ -426,9 +416,6 @@ foreach tp in binhlth risk binecon cntecon demog {
 			}
 			
 			local select
-			if "`var'" == "work" {
-				local select & age_yrs <= 80
-			}
 			if "`var'" == "itearnx" {
 				local select & age_yrs <= 80
 			}

@@ -2,7 +2,7 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene
-global bin_econ work hlthlm retemp unemp
+global bin_econ hlthlm
 global ols logbmi retage ipubpen atotf itearn atotb
 global order adlstat iadlstat drinkd drinkd_stat exstat srh smkint mstat lnly workstat
 
@@ -29,10 +29,7 @@ global bin_hlth_names
     "Dementia"
 ;
 global bin_econ_names
-    "R working for pay"
     "Health Limits Work"
-    "Whether retired at time of interview"
-    "Whether unemployed"
 ;
 global ols_names
     "Log(BMI)"
