@@ -273,6 +273,16 @@ foreach var in itearn lbrf_e {
 * Rename labour force var to remove the _e at the end (I don't like it)
 ren lbrf_e lbrf
 
+* Sort out labour force var and generate dummys
+recode lbrf (1/2 4= 1 Employed) ///
+            (3    = 2 Unemployed) ///
+            (5/7  = 3 Retired) ///
+            , copyrest gen(workstat)
+*drop lbrf
+gen employed = workstat == 1
+gen unemployed = workstat == 2
+gen retired = workstat == 3
+
 * Earnings
 replace itearn = 0 if employed == 0
 gen itearnx = itearn/1000
@@ -283,16 +293,6 @@ label var itearnx "Individual earnings in 1000s, max 200"
 gen atotfx = hatotf/1000
 replace atotfx = min(hatotf, 2000) if !missing(hatotf)
 label var atotfx "HH wealth in 1000s (max 2000) if positive, zero otherwise"
-
-* Sort out labour force var and generate dummys
-recode lbrf (1/2 4= 1 Employed) ///
-            (3    = 2 Unemployed) ///
-            (5/7  = 3 Retired) ///
-            , copyrest gen(workstat)
-*drop lbrf
-gen employed = workstat == 1
-gen unemployed = workstat == 2
-gen retired = workstat == 3
 
 * Couple level Capital Income
 
