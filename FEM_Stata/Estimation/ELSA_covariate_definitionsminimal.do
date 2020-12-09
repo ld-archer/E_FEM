@@ -33,7 +33,6 @@ global bin_econ_names
 ;
 global ols_names
     "Log(BMI)"
-    "Retirement Age"
     "Public Pension Income (All types)"
     "Net Value of Non-housing Financial Wealth"
     "Individual Employment Earnings (annual, after tax)"

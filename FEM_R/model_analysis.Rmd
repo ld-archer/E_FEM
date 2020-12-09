@@ -264,10 +264,10 @@ vis_CV2_prev <- function(long, CV2) {
   
   # Now lets extract chronic disease variables from both dataframes and do a row combine
   # Start with cancre, diabe, hearte
-  cd_l2 <- select(l2, c(year, age, cancre, diabe, hearte, lunge, smoken, bmi, work, anyadl)) #, anyiadl, adl1, adl2, adl3p))
+  cd_l2 <- select(l2, c(year, age, cancre, diabe, hearte, lunge, smoken, bmi, employed, anyadl)) #, anyiadl, adl1, adl2, adl3p))
   cd_CV2 <- select(CV2, c(year, a_age_all, p_cancre_all, p_diabe_all, 
                             p_hearte_all, p_lunge_all, p_smoken_all, 
-                            a_bmi_all, p_work_all,  p_anyadl_all))
+                            a_bmi_all, p_employed_all,  p_anyadl_all))
                             #, p_anyiadl_all p_adl1_all, p_adl2_all, p_adl3p_all))
   
   CV2_rename <- cd_CV2 %>% dplyr::rename('age' = a_age_all,
@@ -277,7 +277,7 @@ vis_CV2_prev <- function(long, CV2) {
                                         'lunge' = p_lunge_all,
                                         'smoken' = p_smoken_all,
                                         'bmi' = a_bmi_all,
-                                        'work' = p_work_all,
+                                        'employed' = p_employed_all,
                                         'anyadl' = p_anyadl_all)
                                         #'anyiadl' = p_anyiadl_all)
                                         #'adl1' = p_adl1_all,
