@@ -88,21 +88,21 @@ gen medicare_elig = 0
 *** ELSA Specific Imputation ***
 
 if "`scen'" == "base" {
-    local hotdeck_vars logbmi white
+    local hotdeck_vars logbmi white freq_drinker heavy_drinker
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine atotf ipubpen itearn 
+                        psyche asthmae parkine atotf ipubpen itearn freq_drinker heavy_drinker
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine atotf ipubpen itearn hchole hipe educl ///
-                        smkint mstat lnly alzhe demene workstat
+                        smkint mstat lnly alzhe demene workstat freq_drinker heavy_drinker
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine atotf ipubpen itearn hchole hipe educl ///
-                        smkint lnly alzhe demene workstat
+                        smkint lnly alzhe demene workstat freq_drinker heavy_drinker
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -125,7 +125,8 @@ replace srh5 = 0 if srh3 == 1
 * Impute some vars by simply copying lag to current and/or vice versa
 foreach var of varlist atotf itearn asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 atotb hipe mstat smkint alzhe demene employed unemployed retired {
+                        srh3 srh4 srh5 atotb hipe mstat smkint alzhe demene employed unemployed ///
+                        retired freq_drinker heavy_drinker {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')

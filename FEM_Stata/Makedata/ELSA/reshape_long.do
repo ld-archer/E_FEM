@@ -236,8 +236,8 @@ forvalues wv = $firstwave/$lastwave {
 *** Impute missing wave 1 for minimal ***
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
 * Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
-local wav1missvars hchole lnlys
-
+* This will not affect transitions, as the transition population excludes wave 1
+local wav1missvars hchole lnlys drinkd
 foreach var in `wav1missvars' {
     gen `var'1 = .
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
@@ -525,17 +525,24 @@ gen smkint3 = smkint == 3
 * Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
 * drinkstat will be defined by an intersection between the drinkd, drinkwn, and potentially drinkn vars
 * if ANY of the variables are at the extreme end (will find cut off values for weekly/daily drinking), then person.drinkstat == high
-
-* First find binge_drinkers
-gen binge_d = 1 if drinkn > 4 & male == 1
-replace binge_d = 1 if drinkn > 3 & male == 0
-* Then heavy drinkers
-gen heavy_d = 1 if drinkwn > 7
-* First attempt at intensity var will be a binary variable
-gen heavy_drinker = 1 if binge_d | heavy_d
-* Also going to experiment with 'frequent_drinker' var
-gen freq_drinker = 1 if drinkd > 5
-
+* First find binge drinkers 
+gen binge = 1 if male & drinkn > 4 & !missing(drinkn)
+replace binge = 1 if !male & drinkn > 3 & !missing(drinkn)
+replace binge = 0 if male & drinkn <= 4 & !missing(drinkn)
+replace binge = 0 if drinkn <= 3 & !missing(drinkn)
+* Now heavy drinkers (>14 units ~=~ 7 drinks)
+gen heavy = 1 if drinkwn > 7 & !missing(drinkwn)
+replace heavy = 0 if drinkwn <= 7 & !missing(drinkwn)
+* Now generate heavy_drinker as either of binge or heavy
+gen heavy_drinker = 1 if binge == 1 | heavy == 1 & !missing(binge) | !missing(heavy)
+replace heavy_drinker = 0 if binge == 0 & missing(heavy)
+replace heavy_drinker = 0 if heavy == 0 & missing(binge)
+* Now find frequent drinkers (the decision of 6 or more days was arbitrary)
+gen freq_drinker = drinkd > 5 if !missing(drinkd)
+replace freq_drinker = 0 if drinkd <= 5 & !missing(drinkd)
+* Can't be heavy or frequent drinker in the last week if they didn't drink
+replace heavy_drinker = 0 if drink == 0
+replace freq_drinker = 0 if drink == 0
 * Now drop drink vars after generating indicators
 drop drinkn drinkwn drinkd
 

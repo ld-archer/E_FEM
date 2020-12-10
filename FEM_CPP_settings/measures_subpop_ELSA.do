@@ -48,8 +48,8 @@ local measures
 						t_atotf   a_atotf
 						t_itearn  a_itearn
 					p_drink		i_drink		n_drink
-					p_drinkd1	p_drinkd2	p_drinkd3	p_drinkd4
-					a_drinkd 	a_drinkd_stat
+					p_heavy_drinker i_heavy_drinker n_heavy_drinker
+					p_freq_drinker  i_freq_drinker  n_freq_drinker
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3
