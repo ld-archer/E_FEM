@@ -7,7 +7,6 @@
 #include "WorkTillMedicareIntervention.h"
 #include "BariatricSurg.h"
 #include "WeightLossPill.h"
-#include "ReduceDrinkDays.h"
 #include "SmokeStopIntervention.h"
 #include "ModExIncrease.h"
 #include "ReduceBMI.h"
@@ -44,7 +43,6 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::memrye,
 		Vars::alzhmr,
 		Vars::drink,
-		Vars::drinkd
 	};
 
 	int nInitVars = sizeof(init_vars)/sizeof(Vars::Vars_t);
@@ -119,9 +117,6 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 
 	WeightLossPill* wlp = new WeightLossPill(index++, tp, vp);
 	interventions[wlp->name()] = wlp;
-
-	ReduceDrinkDays* rdd = new ReduceDrinkDays(index++, tp, vp);
-	interventions[rdd->name()] = rdd;
 
 	SmokeStopIntervention* ssi = new SmokeStopIntervention(index++, tp, vp);
 	interventions[ssi->name()] = ssi;
