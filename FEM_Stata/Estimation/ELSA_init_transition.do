@@ -215,6 +215,44 @@ foreach n in $order {
     local i = `i'+1
 }
 
+/*********************************************************************/
+* ESTIMATE UNORDERED OUTCOMES
+/*********************************************************************/
+
+local i = 1
+foreach n in $unorder {
+	local modname: word `i' of "$unorder_names"
+	local coef_name = "`modname'" + " (`n') coefficients"
+	di "`n' - `coef_name'"
+  	local mfx_name = "`modname'" + " (`n') marginal effects"
+  	di "`n' - `mfx_name'"
+  	local x = "allvars_`n'"
+	dis "mlogit `n' $`x' if `select_`n''"
+    quietly sum `n' if `select_`n''
+    if r(N)>0{
+    	mlogit `n' $`x' if `select_`n''
+    	ch_est_title "`coef_name'"
+    	mfx2, stub(o_`n') nose
+    	est save "`ster'/`n'.ster", replace
+    	est restore o_`n'_mfx
+			ch_est_title "`mfx_name'"
+			est store o_`n'_mfx
+			
+    	*for cross validation
+    	if "`defmod'" == "CV1" {
+	  	  mlogit `n' $`x' if `select_`n'' & transition==1
+          est save `ster'/CV1/`n'.ster, replace
+		}
+
+		*for cross validation 2
+    	if "`defmod'" == "CV2" {
+	  	  mlogit `n' $`x' if `select_`n''
+          est save `ster'/CV2/`n'.ster, replace
+		}
+	}
+    local i = `i'+1
+}
+
 shell touch `ster'/estimates`defmod'.txt
 
 /*

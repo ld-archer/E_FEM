@@ -4,7 +4,8 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene heavy_drinker freq_drinker
 global bin_econ hlthlm
 global ols logbmi ipubpen atotf itearn atotb
-global order adlstat iadlstat exstat srh smkint mstat lnly workstat
+global order adlstat iadlstat exstat srh smkint lnly
+global unorder mstat workstat
 
 * Variable names
 #d ;
@@ -46,8 +47,10 @@ global order_names
     "Exercise status"
     "Self-Reported Health Status"
     "Smoking Intensity Status"
-    "Marriage Status"
     "Loneliness Status"
+;
+global unorder_names
+    "Marriage Status"
     "Work Status"
 ;
 #d cr

@@ -4,7 +4,8 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene heavy_drinker freq_drinker
 global bin_econ hlthlm
 global ols logbmi ipubpen atotf itearn atotb
-global order adlstat iadlstat exstat srh smkint mstat lnly workstat
+global order adlstat iadlstat exstat srh smkint lnly
+global unorder mstat workstat
 
 * Variable names
 #d ;
@@ -43,12 +44,13 @@ global ols_names
 global order_names 
     "ADL status"
     "IADL status"
-    "# days per week R drinks alcohol"
-    "Days/week drinking status"
     "Exercise status"
     "Self-Reported Health Status"
     "Smoking Intensity Status"
     "Loneliness Status"
+;
+global unorder_names
+    "Marriage Status"
     "Work Status"
 ;
 #d cr
@@ -62,6 +64,6 @@ global lvars_age l2age65l l2age6574 l2age75p
 
 *** Now specify the transition models ***
 
-foreach v of varlist $bin_hlth $bin_econ $ols $order {
+foreach v of varlist $bin_hlth $bin_econ $ols $order $unorder {
 	global allvars_`v' $dvars $lvars_age
 }
