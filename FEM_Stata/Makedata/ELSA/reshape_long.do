@@ -234,7 +234,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
     asthmae parkine vgactx_e mdactx_e ltactx_e itot
-    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys unemp alzhe demene
+    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys alzhe demene
     lbrf
 , i(idauniq) j(wave)
 ;
