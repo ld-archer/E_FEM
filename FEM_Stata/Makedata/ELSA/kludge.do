@@ -2,19 +2,12 @@
 
 * Kludge section -  these are all variables that will be either eliminated from the simulation or developed in the data.
 
-* Set up var for deciding between base and CV1/CV2 
+* Set up var for deciding between base, CV1/CV2, min
 local scen `1'
 
 * For earnings
 gen iearnuc = 0
 gen iearnx = 0
-
-* handle missing work vals
-replace work = 0 if missing(work) & age > 65
-replace work = 1 if missing(work) & age < 65
-replace l2work = work if missing(l2work)
-replace l2work = 0 if missing(l2work) & age > 67
-replace l2work = 1 if missing(l2work) & age > 67
 
 * For marital status
 *gen married = 0
@@ -98,13 +91,18 @@ if "`scen'" == "base" {
     local hotdeck_vars logbmi white
 }
 else if "`scen'" == "CV1" |  {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage
+    local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+                        psyche asthmae parkine atotf drinkd ipubpen itearn 
 }
 else if "`scen'" == "CV2" {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl smkint mstat lnly unemp alzhe demene
+    local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+                        psyche asthmae parkine atotf drinkd ipubpen itearn hchole hipe educl ///
+                        smkint mstat lnly alzhe demene workstat
 }
 else if "`scen'" == "min" {
-    local hotdeck_vars logbmi white work cancre hibpe diabe hearte stroke smokev lunge smoken arthre psyche asthmae parkine atotf drinkd ipubpen itearn retage hchole hipe educl smkint lnly alzhe demene unemp
+    local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+                        psyche asthmae parkine atotf drinkd ipubpen itearn hchole hipe educl ///
+                        smkint lnly alzhe demene workstat
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -126,7 +124,10 @@ replace srh4 = 0 if srh3 == 1
 replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist atotf itearn asthmae parkine retemp exstat cancre diabe hearte hibpe lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 srh3 srh4 srh5 atotb hipe mstat smkint unemp alzhe demene {
+foreach var of varlist atotf itearn asthmae parkine exstat cancre diabe hearte hibpe ///
+                        lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 ///
+                        srh3 srh4 srh5 atotb hipe mstat smkint alzhe demene employed unemployed retired {
+                            
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
@@ -158,42 +159,12 @@ replace l2smkint1 = 0 if missing(l2smkint1)
 replace l2smkint2 = 0 if missing(l2smkint2)
 replace l2smkint3 = 0 if missing(l2smkint3)
 
-* Minimal run has some special circumstances 
-* Some variables were not included in wave 1, however if possible we would like to keep the minimal stock population being generated from wave 1
-* To solve this problem, I think it is not a big issue to just copy back the values from wave 1
-* drinkd wasn't included until wave 2, so need to impute all drinkd for ELSA_stock_min
-* hchole wasn't included until wave 2
-* lnly not included until wave 2
-/* if "`scen'" == "min" {
-    replace drinkd = 2 if missing(drinkd)
-    replace l2drinkd = 2 if missing(l2drinkd)
-
-    replace hchole = 0 if missing(hchole)
-    replace l2hchole = 0 if missing(l2hchole)
-} */
-
-* Handle some missing unemployment data
-* For reference, only about 3.5% of respondents are unemployed, most are either not unemployed or not in the labour force
-replace l2unemp = 1 if l2unemp == . & l2work == 0 & l2age < 65 & l2retemp == 0
-* Need all the special missing codes to be ignored, so copy over to lag var from current
-replace l2unemp = .x if unemp == .x
-replace l2unemp = .o if unemp == .o
-replace l2unemp = .r if unemp == .r
-* Only 7 missing (.) left, so going to just set to not unemployed
-replace l2unemp = 0 if l2unemp == .
-
 
 * Still missing atotb, so impute with mean
 quietly summ atotb
 replace atotb = r(mean) if missing(atotb)
 replace l2atotb = atotb if missing(l2atotb) & !missing(atotb)
 
-* Retemp slightly more complicated
-replace retemp = 0 if missing(retemp) & age <= 65
-replace retemp = 1 if missing(retemp) & age > 65
-replace l2retemp = retemp if missing(l2retemp) & !missing(retemp)
-replace l2retemp = 0 if missing(l2retemp) & age <= 67
-replace l2retemp = 1 if missing(l2retemp) & age > 67
 * Exstat more complicated still due to dummy variables
 * Exstat == 3 is most common value, 3 is moderate/heavy exercise more than once a week
 replace exstat = 3 if missing(exstat)
@@ -257,3 +228,7 @@ replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
 replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
 replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
 
+* Impute old 'work' variable with employed, just to keep the model happy
+* ELSA version doesn't use 'work' anymore
+gen work = employed if !missing(employed)
+gen l2work = l2employed if !missing(l2employed)

@@ -108,12 +108,9 @@ r*arthre
 r*bmi 
 r*smokev
 r*smoken
-r*work
 r*hlthlm
 r*asthmae
 r*parkine
-r*retemp
-r*retage
 r*vgactx_e
 r*mdactx_e
 r*ltactx_e
@@ -126,10 +123,10 @@ r*shlt
 h*atotb
 r*smokef
 r*lnlys
-r*unemp
 r*alzhe
 r*demene
 h*itot
+r*lbrf_e
 ;
 #d cr
 
@@ -146,6 +143,8 @@ forvalues wv = $firstwave/$lastwave {
 		/* drinkd_e not present in wave 1 */
 		rename r`wv'drinkd_e r`wv'drinkd
     }
+    /*Remove '_e' from labour force status var (don't know why they link inlcuding these)*/
+    rename r`wv'lbrf_e r`wv'lbrf
 }
 
 * Rename variables to make reshape easier and have names consistent with US FEM
@@ -183,12 +182,9 @@ foreach var in
     smokev
     smoken
     hhid
-    work
     hlthlm
     asthmae
     parkine
-    retemp
-    retage
     vgactx_e
     mdactx_e
     ltactx_e
@@ -201,10 +197,10 @@ foreach var in
     atotb
     smokef
     lnlys
-    unemp
     alzhe
     demene
     itot
+    lbrf
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -236,8 +232,9 @@ foreach var in `wav1missvars' {
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
-    asthmae parkine retemp retage vgactx_e mdactx_e ltactx_e itot
+    asthmae parkine vgactx_e mdactx_e ltactx_e itot
     drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys unemp alzhe demene
+    lbrf
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -272,15 +269,11 @@ label variable smokev "Smoke ever"
 label variable smoken "Smoke now"
 label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
-label variable work "Working for pay"
 label variable hlthlm "Health limits work"
 *label variable itearn "Individual employment earnings (annual, after tax)"
 *label variable ipubpen "Public pension income (all types)"
 label variable asthmae "Asthma ever"
 label variable parkine "Parkinsons disease ever"
-label variable retemp "Considers self retired"
-label variable retage "Retirement age"
-*label variable atotf "Net Value of Non-Housing Financial Wealth"
 label variable vgactx_e "Number of times done vigorous exercise per week"
 label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
@@ -293,11 +286,11 @@ label variable mstat "Marriage Status"
 label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
 label variable shlt "Self Reported Health Status"
-label variable unemp "Unemployed"
 label variable alzhe "Alzheimers Ever"
 label variable demene "Dementia Ever"
 label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
+label variable lbrf "Labour Force Status"
 
 
 * Use harmonised education var
@@ -563,6 +556,21 @@ replace exstat3 = 0 if exstat != 3
 gen logitot = log(itot) if !missing(itot)
 gen logatotb = log(atotb) if !missing(atotb)
 
+*** Labour Force Status
+* Recoding the lbrf var to three categories
+* 1 - Working (includes self-employed and partly retired)
+* 2 - Unemployed
+* 3 - Retired (including disabled and caring for home/family)
+recode lbrf (1/2 4= 1 Employed) ///
+            (3    = 2 Unemployed) ///
+            (5/7  = 3 Retired) ///
+            , copyrest gen(workstat)
+*drop lbrf
+gen employed = workstat == 1
+gen unemployed = workstat == 2
+gen retired = workstat == 3
+
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
@@ -593,11 +601,8 @@ foreach var in
     iadlstat
     anyiadl
     smkstat
-    work
     asthmae
     parkine
-    retemp
-    retage
     vgactx_e
     mdactx_e
     ltactx_e
@@ -635,11 +640,14 @@ foreach var in
     lnly1
     lnly2
     lnly3
-    unemp
     alzhe
     demene
     logitot
     logatotb
+    workstat
+    employed
+    unemployed
+    retired
     {;
         gen l2`var' = L.`var';
     };

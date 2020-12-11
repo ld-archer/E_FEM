@@ -43,18 +43,19 @@ local measures
 						n_smoke_start
 						n_smoke_stop
 						a_smkint
-						p_work 	  n_work
-						p_hlthlm  n_hlthlm
-						p_retemp  i_retemp  n_retemp
-						a_retage
-						t_logatotb
+						p_hlthlm  	n_hlthlm
+						t_logatotb 	a_logatotb
+						t_atotb 	a_atotb
 					p_drink		i_drink		n_drink
 					p_drinkd1	p_drinkd2	p_drinkd3	p_drinkd4
 					a_drinkd 	a_drinkd_stat
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3
-					p_unemp		i_unemp		n_unemp
+					a_workstat
+					p_employed  i_employed  n_employed
+					p_unemployed i_unemployed n_unemployed
+					p_retired	i_retired	n_retired
 			
 										
 ;

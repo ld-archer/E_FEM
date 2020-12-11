@@ -398,9 +398,9 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2widowed]             = VarInfo("l2widowed", "Lag of Widowed, [0, 1]", VarTypes::Boolean, Vars::l2mstat, 4);
 	info[Vars::l2wlp_treated]         = VarInfo("l2wlp_treated", "Lag of Treated with a Weight Loss Pill, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2wlth_nonzero]        = VarInfo("l2wlth_nonzero", "Lag of Non-pension wlth(hatota) not zero, [0, 1]", VarTypes::Boolean);
-	info[Vars::l2work]                = VarInfo("l2work", "Lag of R working for pay, [0, 1]", VarTypes::Boolean);
+	info[Vars::l2work]                = VarInfo("l2work", "Lag of R working for pay, [0, 1] (NOW DEFUNKT)", VarTypes::Boolean);
 	info[Vars::l2workcat]             = VarInfo("l2workcat", "Lag of workcat", VarTypes::Short);
-	info[Vars::l2workstat]						 = VarInfo("l2workstat", "Lag of categorical variable for working status", VarTypes::Short);
+	//info[Vars::l2workstat]						 = VarInfo("l2workstat", "Lag of categorical variable for working status", VarTypes::Short);
 	info[Vars::l2workstat_alt]						 = VarInfo("l2workstat_alt", "Lag of categorical variable for working status", VarTypes::Short);
 	info[Vars::l2yrsnclastkid]        = VarInfo("l2yrsnclastkid", "Lag of Years since last kid was born", VarTypes::Float);
 	info[Vars::male]                 = VarInfo("male", "Male [0, 1]", VarTypes::Boolean);
@@ -497,7 +497,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::pssclaim]             = VarInfo("pssclaim", "Prob(SS claiming)", VarTypes::Float);
 	info[Vars::pstroke]              = VarInfo("pstroke", "Prob(stroke)", VarTypes::Float);
 	info[Vars::pwlth_nonzero]        = VarInfo("pwlth_nonzero", "Prob(non zero wealth)", VarTypes::Float);
-	info[Vars::pwork]                = VarInfo("pwork", "Prob(work)", VarTypes::Float);
+	//info[Vars::pwork]                = VarInfo("pwork", "Prob(work)", VarTypes::Float);
 	info[Vars::pselfmem1]           = VarInfo("pselfmem1", "Prob(selfmem = 1)", VarTypes::Float);
 	info[Vars::pselfmem2]           = VarInfo("pselfmem2", "Prob(selfmem = 2)", VarTypes::Float);
 	info[Vars::pselfmem3]           = VarInfo("pselfmem3", "Prob(selfmem = 3)", VarTypes::Float);
@@ -602,17 +602,17 @@ VarsInfo::VarsInfo() {
 	info[Vars::widowev]				= VarInfo("widowev", "Ever widowed [0, 1]", VarTypes::Boolean);
 	info[Vars::wlp_treated]         = VarInfo("wlp_treated", "Treated with a Weight Loss Pill, [0, 1]", VarTypes::Boolean);
 	info[Vars::wlth_nonzero]        = VarInfo("wlth_nonzero", "Non-pension wlth(hatota) not zero [0, 1]", VarTypes::Boolean);
-	info[Vars::work]                = VarInfo("work", "R working for pay [0, 1]", VarTypes::Boolean);
+	info[Vars::work]                = VarInfo("work", "R working for pay [0, 1] (NOW DEFUNKT, REPLACED BY WORKSTAT == 1, EMPLOYED", VarTypes::Boolean);
 	info[Vars::workcat]				= VarInfo("workcat", "Categorical variable for working status out of, unemployed, part-time, full-time", VarTypes::Short);
-	info[Vars::workstat]			= VarInfo("workstat", "Categorical variable for working status", VarTypes::Short);
+	//info[Vars::workstat]			= VarInfo("workstat", "Categorical variable for working status", VarTypes::Short);
 	info[Vars::workstat_alt]		= VarInfo("workstat_alt", "Categorical variable for working status - unemployed, part-time, full-time", VarTypes::Short);
 	info[Vars::wthh]                = VarInfo("wthh", "Household weight Approx Range [0, 15569]", VarTypes::Double);
 	info[Vars::year]                = VarInfo("year", "Year Approx Range [2004, 2050]", VarTypes::Short);
 	info[Vars::yrsnclastkid]        = VarInfo("yrsnclastkid", "Years since last kid was born", VarTypes::Float);
-	info[Vars::retemp]         		= VarInfo("retemp", "Whether considers self retired", VarTypes::Boolean);
-	info[Vars::l2retemp]        	= VarInfo("l2retemp", "Lag of whether considers self retired", VarTypes::Boolean);
-	info[Vars::pretemp]         	= VarInfo("pretemp", "Prob(considers self retired)", VarTypes::Float);
-	info[Vars::retage]        		= VarInfo("retage", "Retirement age", VarTypes::Float);
+	//info[Vars::retemp]         		= VarInfo("retemp", "Whether considers self retired", VarTypes::Boolean);
+	//info[Vars::l2retemp]        	= VarInfo("l2retemp", "Lag of whether considers self retired", VarTypes::Boolean);
+	//info[Vars::pretemp]         	= VarInfo("pretemp", "Prob(considers self retired)", VarTypes::Float);
+	//info[Vars::retage]        		= VarInfo("retage", "Retirement age", VarTypes::Float);
 	info[Vars::drink]				= VarInfo("drink", "Whether drinks alcohol at all", VarTypes::Boolean);
 	info[Vars::drinkd]				= VarInfo("drinkd", "Number of days per week drinks alcohol, Range [0,7]", VarTypes::Short);
 	//info[Vars::drinkwn]				= VarInfo("drinkwn", "Number of drinks per week", VarTypes::Double);
@@ -681,15 +681,26 @@ VarsInfo::VarsInfo() {
     info[Vars::plnly1]              = VarInfo("plnly1", "Probability of lnly == 1", VarTypes::Float);
     info[Vars::plnly2]              = VarInfo("plnly2", "Probability of lnly == 2", VarTypes::Float);
     info[Vars::plnly3]              = VarInfo("plnly3", "Probability of lnly == 3", VarTypes::Float);
-    info[Vars::unemp]               = VarInfo("unemp", "Whether unemployed", VarTypes::Boolean);
-    info[Vars::l2unemp]             = VarInfo("l2unemp", "Lag of whether unemployed", VarTypes::Boolean);
-    info[Vars::punemp]              = VarInfo("punemp", "Probability of unemployment", VarTypes::Float);
+    //info[Vars::unemp]               = VarInfo("unemp", "Whether unemployed", VarTypes::Boolean);
+    //info[Vars::l2unemp]             = VarInfo("l2unemp", "Lag of whether unemployed", VarTypes::Boolean);
+    //info[Vars::punemp]              = VarInfo("punemp", "Probability of unemployment", VarTypes::Float);
     info[Vars::alzhe]               = VarInfo("alzhe", "Alzheimers ever", VarTypes::Boolean);
     info[Vars::l2alzhe]             = VarInfo("l2alzhe", "Lag of Alzheimers ever", VarTypes::Boolean);
     info[Vars::palzhe]              = VarInfo("palzhe", "Probability of Alzheimers ever", VarTypes::Float);
     info[Vars::demene]              = VarInfo("demene", "Dementia ever", VarTypes::Boolean);
     info[Vars::l2demene]            = VarInfo("l2demene", "Lag of Dementia ever", VarTypes::Boolean);
     info[Vars::pdemene]             = VarInfo("pdemene", "Probability of Dementia ever", VarTypes::Float);
+    info[Vars::workstat]            = VarInfo("workstat", "Work status, [1, 3]", VarTypes::Short);
+    info[Vars::l2workstat]          = VarInfo("l2workstat", "Lag of Work status, [1, 3]", VarTypes::Short);
+    info[Vars::employed]            = VarInfo("employed", "Employed", VarTypes::Boolean, Vars::workstat, 1);
+    info[Vars::unemployed]          = VarInfo("unemployed", "Unemployed", VarTypes::Boolean, Vars::workstat, 2);
+    info[Vars::retired]             = VarInfo("retired", "Retired", VarTypes::Boolean, Vars::workstat, 3);
+    info[Vars::l2employed]          = VarInfo("l2employed", "Lag of Employed", VarTypes::Boolean, Vars::l2workstat, 1);
+    info[Vars::l2unemployed]        = VarInfo("l2unemployed", "Lag of Unemployed", VarTypes::Boolean, Vars::l2workstat, 2);
+    info[Vars::l2retired]           = VarInfo("l2retired", "Lag of Retired", VarTypes::Boolean, Vars::l2workstat, 3);
+    info[Vars::pworkstat1]           = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
+    info[Vars::pworkstat2]           = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
+    info[Vars::pworkstat3]           = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
 
 
 	
@@ -711,7 +722,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::partdied]  = Vars::l2partdied;
 	lag_map[Vars::paternity] = Vars::l2paternity;
 	lag_map[Vars::workcat] = Vars::l2workcat;
-	lag_map[Vars::workstat] = Vars::l2workstat;
+	//lag_map[Vars::workstat] = Vars::l2workstat;
 	lag_map[Vars::workstat_alt] = Vars::l2workstat_alt;
 	lag_map[Vars::adl1] = Vars::l2adl1;
 	lag_map[Vars::adl2] = Vars::l2adl2;
@@ -814,7 +825,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::arthre] = Vars::l2arthre;
 	lag_map[Vars::psyche] = Vars::l2psyche;	
 	lag_map[Vars::parkine] = Vars::l2parkine;
-	lag_map[Vars::retemp] = Vars::l2retemp;
+	//lag_map[Vars::retemp] = Vars::l2retemp;
 	lag_map[Vars::atotf] = Vars::l2atotf;
 	lag_map[Vars::atotb] = Vars::l2atotb;
 	lag_map[Vars::drink] = Vars::l2drink;
@@ -847,9 +858,13 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::lnly1] = Vars::l2lnly1;
     lag_map[Vars::lnly2] = Vars::l2lnly2;
     lag_map[Vars::lnly3] = Vars::l2lnly3;
-    lag_map[Vars::unemp] = Vars::l2unemp;
+    //lag_map[Vars::unemp] = Vars::l2unemp;
     lag_map[Vars::alzhe] = Vars::l2alzhe;
     lag_map[Vars::demene] = Vars::l2demene;
+    lag_map[Vars::workstat] = Vars::l2workstat;
+    lag_map[Vars::employed] = Vars::l2employed;
+    lag_map[Vars::unemployed] = Vars::l2unemployed;
+    lag_map[Vars::retired] = Vars::l2retired;
 
 
 
@@ -873,24 +888,24 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::ssclaim] =		Vars::pssclaim;
 	prob_map[Vars::stroke] =		Vars::pstroke;
 	prob_map[Vars::wlth_nonzero] =	Vars::pwlth_nonzero;
-	prob_map[Vars::work] =			Vars::pwork;
+	//prob_map[Vars::work] =			Vars::pwork;
 	prob_map[Vars::inpatient_ever] = Vars::pinpatient_ever;
 	prob_map[Vars::arthre] =		Vars::parthre;
 	prob_map[Vars::psyche] =		Vars::ppsyche;
 	prob_map[Vars::asthmae] = 		Vars::pasthmae;
 	prob_map[Vars::parkine] = 		Vars::pparkine;
-	prob_map[Vars::retemp] = 		Vars::pretemp;
+	//prob_map[Vars::retemp] = 		Vars::pretemp;
 	prob_map[Vars::drink] =			Vars::pdrink;
 	prob_map[Vars::smoken] = 		Vars::psmoken;
 	prob_map[Vars::smoke_start] =	Vars::psmoke_start;
 	prob_map[Vars::smoke_stop] =	Vars::psmoke_stop;
 	prob_map[Vars::hchole] =        Vars::phchole;
-	prob_map[Vars::unemp] =         Vars::punemp;
+	//prob_map[Vars::unemp] =         Vars::punemp;
 	prob_map[Vars::alzhe] =         Vars::palzhe;
 	prob_map[Vars::demene] =        Vars::pdemene;
 	// Ordered
-	prob_map[Vars::smokev] =		Vars::psmkstat2;
-	prob_map[Vars::smoken] =		Vars::psmkstat3;
+	//prob_map[Vars::smokev] =		Vars::psmkstat2;
+	//prob_map[Vars::smoken] =		Vars::psmkstat3;
 	prob_map[Vars::adl1] =  		Vars::padlstat2;
 	prob_map[Vars::adl2] = 			Vars::padlstat3;
 	prob_map[Vars::adl3p] = 		Vars::padlstat4;
@@ -914,6 +929,9 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::lnly1] =         Vars::plnly1;
     prob_map[Vars::lnly2] =         Vars::plnly2;
     prob_map[Vars::lnly3] =         Vars::plnly3;
+    prob_map[Vars::employed] =      Vars::pworkstat1;
+    prob_map[Vars::unemployed] =    Vars::pworkstat2;
+    prob_map[Vars::retired] =       Vars::pworkstat3;
 
 
 
