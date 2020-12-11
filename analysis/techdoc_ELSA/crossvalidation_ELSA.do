@@ -71,10 +71,7 @@ keep
 	r*smoken
 	r*smokev
 	r*bmi
-	r*itearn
 	r*cwtresp
-	h*atotf
-	r*ipubpen
 	r*drink
 	r*psyche
 	r*smokef
@@ -82,6 +79,8 @@ keep
 	r*alzhe
 	r*demene
 	r*lbrf_e
+	h*atotb
+	h*itot
 	
 	r*walkra
 	r*dressa
@@ -113,10 +112,7 @@ local shapelist
 	r@smoken
 	r@smokev
 	r@bmi
-	r@itearn
 	r@cwtresp
-	h@atotf
-	r@ipubpen
 	r@drink
 	r@psyche
 	r@smokef
@@ -124,6 +120,8 @@ local shapelist
 	r@alzhe
 	r@demene
 	r@lbrf_e
+	h@atotb
+	h@itot
 	
 	r@walkra
 	r@dressa
@@ -267,7 +265,7 @@ ren ragey age
 gen age_yrs = age
 
 *** Economic vars
-foreach var in itearn lbrf_e {
+foreach var in lbrf_e {
 	ren r`var' `var'
 }
 * Rename labour force var to remove the _e at the end (I don't like it)
@@ -283,18 +281,20 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
-* Earnings
-replace itearn = 0 if employed == 0
-gen itearnx = itearn/1000
-replace itearnx = min(itearn, 200) if !missing(itearn)
-label var itearnx "Individual earnings in 1000s, max 200"
+* household econ vars
+foreach var in atotb itot {
+	ren h`var' `var'
+}
 
-* Non-housing Wealth
-gen atotfx = hatotf/1000
-replace atotfx = min(hatotf, 2000) if !missing(hatotf)
-label var atotfx "HH wealth in 1000s (max 2000) if positive, zero otherwise"
+* Total household wealth
+gen atotbx = atotb / 1000
+replace atotbx = min(atotb, 2000) if !missing(atotb)
+label var atotbx "Total Family Wealth in 1000s (max 2000) if positive, zero otherwise"
 
-* Couple level Capital Income
+* Total household income
+gen itotx = itot / 1000
+replace itotx = min(itot, 200) if !missing(itot)
+label var itotx "Total Household Income in 1000s, (max 200)"
 
 * Interview year
 gen iwyear = 2000 + 2*wave
@@ -321,7 +321,12 @@ gen reweight = weight/`iter'
 gen FEM = 1
 gen rep = mcrep + 1
 
-*replace hicap = hicap/1000
+* Convert income and wealth into 1000s
+gen atotbx = atotb / 1000
+replace atotbx = min(atotb, 2000) if !missing(atotb)
+* Total household income
+gen itotx = itot / 1000
+replace itotx = min(itot, 200) if !missing(itot)
 
 append using `ELSA'
 
@@ -365,14 +370,14 @@ label var employed "Employed"
 label var unemployed "Unemployed"
 label var retired "Retired"
 
-label var itearnx "Earnings (thou.)"
-label var atotfx "Household wealth (thou.)"
+label var atotb "Total Family Wealth"
+label var atotbx "Total Family Wealth in 1000s (max 2000) if positive, zero otherwise"
+label var itot "Total Family Income"
+label var itotx "Total Household Income in 1000s, (max 200)"
 
 label var age_yrs "Age at interview"
 label var male "Male"
 label var white "White"
-
-
 
 * Get variable labels for later merging
 preserve
@@ -391,7 +396,7 @@ restore
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche alzhe demene
 local risk smoken smokev bmi drink smkint lnly
 local binecon workstat employed unemployed retired
-*local cntecon /*itearnx atotfx*/
+local cntecon atotbx itotx
 local demog age_yrs male white
 local unweighted died
 

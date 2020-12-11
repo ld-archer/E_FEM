@@ -32,6 +32,7 @@ namespace Vars
 		asthmae,				///< Asthma ever, stored as Boolean
 		atotf,					///< Net value of non-housing financial wealth
 		atotb,                  ///< Total Family Wealth
+		logatotb,               ///< Log(Total Family Wealth)
 		births,                   ///< Count of childbirth events (0,1,2), stored as Short
 		black,                    ///< Non-Hispanic black [0, 1], stored as Boolean
 		bornus,                   ///< Born in the U.S.? [0, 1], stored as Boolean
@@ -222,6 +223,7 @@ namespace Vars
 		l2asthmae,					///< Lag of asthma ever, stored as Boolean
 		l2atotf,					///< Lag of net value of non-housing financial wealth
 		l2atotb,                    ///< Lag of Total Family Wealth
+        l2logatotb,                 ///< Log(Lag of Total Family Wealth)
 		l2bpcontrol,               ///< Lag of bpcontrol
 		l2bs_treated,              ///< Lag of treated with bariatric surgery, stored as Boolean
 		l2cancre,                  ///< Lag of Cancer, [0, 1], stored as Boolean
@@ -628,6 +630,10 @@ namespace Vars
         pworkstat1,                  ///< Probability of Employed (workstat == 1)
         pworkstat2,                ///< Probability of Unemployed (workstat == 2)
         pworkstat3,                   ///< Probability of Retired (workstat == 3)
+        itot,                       ///< Total Family Income
+        logitot,                    ///< Log(Total Family Income)
+        l2itot,                     ///< Lag of Total Family Income
+        l2logitot,                  ///< Log(Lag of Total Family Income)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

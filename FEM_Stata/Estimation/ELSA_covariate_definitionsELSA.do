@@ -77,6 +77,10 @@ local lvars_drink l2drink
 local lvars_funclimit l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
 * Self Reported Health Status
 local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
+* Workstat
+local lvars_workstat l2employed l2unemployed
+* Mstat
+local lvars_mstat l2single l2cohab l2widowed
 
 
 *** Now specify the transition models ***
@@ -156,22 +160,22 @@ global allvars_demene       $dvars $lvars_age
 
 
 *** Smoking 
-*global allvars_smoke_start  $dvars $lvars_age l2employed l2unemployed l2smokev l2psyche l2itearn l2atotf l2ipubpen l2atotb
+*global allvars_smoke_start  $dvars $lvars_age l2employed l2unemployed l2smokev l2psyche l2logatotb
 * 11-27_16:12:16: global allvars_smoke_start  $dvars $lvars_age
 *global allvars_smoke_start  $dvars $lvars_age l2smokev l2employed l2unemployed 
-global allvars_smoke_start  $dvars $lvars_age l2employed l2unemployed l2psyche l2single l2married l2widowed
-*global allvars_smoke_stop   $dvars $lvars_age l2employed l2unemployed l2psyche l2itearn l2atotf l2ipubpen l2atotb
+global allvars_smoke_start  $dvars $lvars_age `lvars_workstat' l2psyche l2single l2married l2widowed
+*global allvars_smoke_stop   $dvars $lvars_age l2employed l2unemployed l2psyche l2logatotb
 * 11-27_16:12:16: global allvars_smoke_stop   $dvars $lvars_age
 *global allvars_smoke_stop   $dvars $lvars_age l2employed l2unemployed
-global allvars_smoke_stop   $dvars $lvars_age l2employed l2unemployed l2psyche l2single l2married l2widowed
-*l2single l2married l2cohab l2atotb l2ipubpen
-global allvars_smkint       $dvars $lvars_age 
+global allvars_smoke_stop   $dvars $lvars_age `lvars_workstat' l2psyche l2single l2married l2widowed
+*l2single l2married l2cohab l2logatotb
+global allvars_smkint       $dvars $lvars_age `lvars_mstat' `lvars_workstat' l2logatotb l2logitot
 
 
 *** Drinking
 *global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2employed l2unemployed l2logatotb /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 * 11-27_16:12:16: global allvars_drink        $dvars $lvars_age
-global allvars_drink        $dvars $lvars_age l2employed l2unemployed l2logbmi
+global allvars_drink        $dvars $lvars_age `lvars_workstat' l2logbmi
 global allvars_drinkd_stat  $dvars $lvars_age
 global allvars_drinkd       $dvars $lvars_age
 
@@ -189,15 +193,15 @@ global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth
 
 
 *** Economic
-global allvars_logatotb     $dvars $lvars_age l2logatotb l2logitot
-global allvars_logitot      $dvars $lvars_age l2logitot
+global allvars_logatotb     $dvars $lvars_age /*l2logatotb l2logitot*/
+global allvars_logitot      $dvars $lvars_age l2logitot `lvars_workstat'
 global allvars_workstat     $dvars $lvars_age l2workstat l2psyche l2stroke `lvars_smoke' l2married l2single
 
 *** Exercise
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit' l2logbmi l2arthre l2asthmae
 
 *** Marriage Status
-global allvars_mstat        $dvars $lvars_age l2employed l2unemployed l2psyche l2logatotb l2logbmi
+global allvars_mstat        $dvars $lvars_age `lvars_workstat' l2psyche l2logatotb l2logbmi
 
 *** Social
 global allvars_lnly         $dvars $lvars_age l2widowed `lvars_funclimit' 

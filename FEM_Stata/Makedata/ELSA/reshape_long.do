@@ -130,10 +130,11 @@ r*lbrf_e
 ;
 #d cr
 
-* Rename h*coupid to a more useful form
+* Rename household vars to a more useful form
 forvalues wv = $firstwave/$lastwave {
     rename h`wv'coupid r`wv'hhid
     rename h`wv'atotb r`wv'atotb
+    rename h`wv'itot r`wv'itot
 }
 
 * Rename drink vars to more readable (and pleasant) form - r*drinkd
@@ -231,7 +232,7 @@ foreach var in `wav1missvars' {
 #d ;
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre bmi smokev smoken hhid work hlthlm 
+    hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
     asthmae parkine vgactx_e mdactx_e ltactx_e itot
     drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys unemp alzhe demene
     lbrf
@@ -631,7 +632,6 @@ foreach var in
     srh3
     srh4
     srh5
-    atotb
     smkint
     smkint1
     smkint2
