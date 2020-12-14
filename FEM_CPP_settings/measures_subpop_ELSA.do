@@ -44,9 +44,8 @@ local measures
 						n_smoke_stop
 						a_smkint
 						p_hlthlm  n_hlthlm
-						t_ipubpen a_ipubpen
-						t_atotf   a_atotf
-						t_itearn  a_itearn
+						t_atotb		a_atotb
+						t_itot		a_itot
 					p_drink		i_drink		n_drink
 					p_drinkd1	p_drinkd2	p_drinkd3	p_drinkd4
 					a_drinkd 	a_drinkd_stat
