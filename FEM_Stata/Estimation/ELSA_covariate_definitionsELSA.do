@@ -185,9 +185,9 @@ global allvars_smkint       $dvars $lvars_age `lvars_lnly' `lvars_workstat' `lva
 *** Drinking
 *global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2employed l2unemployed l2atotb /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 * 11-27_16:12:16: global allvars_drink        $dvars $lvars_age
-global allvars_drink        $dvars $lvars_age l2logbmi `lvars_workstat' `lvars_mstat'
-global allvars_heavy_drinker $dvars $lvars_age l2logbmi `lvars_workstat' `lvars_mstat'
-global allvars_freq_drinker $dvars $lvars_age l2logbmi `lvars_workstat' `lvars_mstat'
+global allvars_drink        $dvars $lvars_age l2drink l2logbmi `lvars_workstat' `lvars_mstat'
+global allvars_heavy_drinker $dvars $lvars_age l2heavy_drinker l2logbmi `lvars_workstat' `lvars_mstat'
+global allvars_freq_drinker $dvars $lvars_age l2freq_drinker l2logbmi `lvars_workstat' `lvars_mstat'
 
 
 *** Logbmi & other health
