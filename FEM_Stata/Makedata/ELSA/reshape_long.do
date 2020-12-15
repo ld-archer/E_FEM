@@ -548,6 +548,8 @@ replace exstat3 = 0 if exstat != 3
 * These vars need to be converted to logs
 gen logitot = log(itot) if !missing(itot)
 gen logatotb = log(atotb) if !missing(atotb)
+* Now drop non-logged vars
+drop atotb itot
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
@@ -563,11 +565,6 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
-*** Log money variables
-gen logatotb = log(atotb)
-gen logitot = log(itot)
-* Now drop non-logged vars
-drop atotb itot
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)

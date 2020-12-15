@@ -7,12 +7,10 @@ local scen : env scen
 
 local expansion 1
 
-
-
 clear all
 
 *use ../../../input_data/ELSA_stock.dta, replace
-use $outdata/ELSA_stock_`scen'.dta, replace
+use $outdata/ELSA_stock_base.dta, replace
 *use $outdata/ELSA_long.dta, replace
 
 

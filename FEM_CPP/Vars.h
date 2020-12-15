@@ -624,10 +624,6 @@ namespace Vars
         pworkstat1,                  ///< Probability of Employed (workstat == 1)
         pworkstat2,                ///< Probability of Unemployed (workstat == 2)
         pworkstat3,                   ///< Probability of Retired (workstat == 3)
-        itot,                       ///< Total Family Income
-        logitot,                    ///< Log(Total Family Income)
-        l2itot,                     ///< Lag of Total Family Income
-        l2logitot,                  ///< Log(Lag of Total Family Income)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

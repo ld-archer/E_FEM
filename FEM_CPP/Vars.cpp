@@ -699,10 +699,6 @@ VarsInfo::VarsInfo() {
     info[Vars::pworkstat1]          = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
     info[Vars::pworkstat2]          = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
     info[Vars::pworkstat3]          = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
-    info[Vars::itot]                = VarInfo("itot", "Total Family Income", VarTypes::Float);
-    info[Vars::logitot]             = VarInfo("logitot", "Log(Total Family Income)", VarTypes::Float);
-    info[Vars::l2itot]              = VarInfo("l2itot", "Lag of Total Family Income", VarTypes::Float);
-    info[Vars::l2logitot]           = VarInfo("l2logitot", "Log(Lag of Total Family Income)", VarTypes::Float);
 
 
 	
@@ -825,17 +821,8 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::arthre] = Vars::l2arthre;
 	lag_map[Vars::psyche] = Vars::l2psyche;	
 	lag_map[Vars::parkine] = Vars::l2parkine;
-	//lag_map[Vars::retemp] = Vars::l2retemp;
-	//lag_map[Vars::atotf] = Vars::l2atotf;
-<<<<<<< HEAD
-	lag_map[Vars::atotb] = Vars::l2atotb;
-    lag_map[Vars::logatotb] = Vars::l2logatotb;
-    lag_map[Vars::itot] = Vars::l2itot;
-    lag_map[Vars::logitot] = Vars::l2logitot;
-=======
 	lag_map[Vars::logatotb] = Vars::l2logatotb;
 	lag_map[Vars::logitot] = Vars::l2logitot;
->>>>>>> check_branch
 	lag_map[Vars::drink] = Vars::l2drink;
 	lag_map[Vars::drinkd] = Vars::l2drinkd;
 	//lag_map[Vars::drinkwn] = Vars::l2drinkwn;
