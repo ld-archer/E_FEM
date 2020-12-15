@@ -44,8 +44,23 @@ label var male_l2age75p "Male and Max(0, two-year lag age - 73)"
 * Age squared
 gen l2agesq = l2`age_var'*l2`age_var'
 
-* BMI dummies for obese (BMI > 25.0) or not
+* BMI dummies for obese (BMI > 30.0) or not
 replace l2obese = (l2logbmi > log(30.0)) if !missing(l2logbmi)
+* Generate a 'knot' at BMI == 30 to make sure we don't lose the right tail in our projections
+*gen l2logbmi_l30 = min(log(30), l2logbmi) if l2logbmi < .
+*gen l2logbmi_30p = max(0, l2logbmi - log(30)) if l2logbmi < .
+
+local log_30 = log(30)
+mkspline l2logbmi_l30 `log_30' l2logbmi_30p = l2logbmi
+
+label var l2logbmi_l30 "Splined two-year lag of BMI <= log(30)"
+label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
+
+* First attempt didn't work, try a different idea (Didn't work either)
+*gen l2logbmi_l30 = logbmi if logbmi < log(30) & !missing(logbmi)
+*replace l2logbmi_l30 = . if logbmi >= log(30) & !missing(logbmi)
+*gen l2logbmi_30p = logbmi if logbmi >= log(30) & !missing(logbmi)
+*replace l2logbmi_30p = . if logbmi < log(30) & !missing(logbmi)
 
 * Label the variables to use for technical appendix
 label variable male "Male"
@@ -56,7 +71,7 @@ label variable l2age6574 "Lag: age spline between 65-74"
 label variable l2age75p "Lag: age spline more than 75"
 label variable l2smoken "Lag: current smoker"
 label variable l2smokev "Lag: ever smoked"
-label variable l2obese "Lag: BMI more than 23.5"
+label variable l2obese "Lag: BMI more than 30"
 *label variable fsmoken50 "Smoked at 50" Variable never produced (should have been in reshape_long if at all)
 label variable l2diabe "Lag: diabetes"
 label variable l2cancre "Lag: cancer"
@@ -69,6 +84,8 @@ label variable l2adl2 "Lag: 2 ADL"
 label variable l2adl3 "Lag: 3 or more ADLs"
 label variable l2iadl1 "Lag: 1 IADL"
 label variable l2iadl2p "Lag: 2 or more IADLs"
+label variable l2logbmi_l30 "Lag: BMI less than 30"
+label variable l2logbmi_30p "Lag: BMI over 30"
 
 
 * Save the file

@@ -111,9 +111,6 @@ r*smoken
 r*hlthlm
 r*asthmae
 r*parkine
-r*ipubpen
-r*itearn
-h*atotf
 r*vgactx_e
 r*mdactx_e
 r*ltactx_e
@@ -126,19 +123,21 @@ r*hchole
 r*hipe
 r*shlt
 h*atotb
+h*itot
 r*smokef
 r*lnlys
 r*alzhe
 r*demene
+h*itot
 r*lbrf_e
 ;
 #d cr
 
-* Rename h*coupid to a more useful form
+* Rename household vars to a more useful form
 forvalues wv = $firstwave/$lastwave {
     rename h`wv'coupid r`wv'hhid
-    rename h`wv'atotf r`wv'atotf
     rename h`wv'atotb r`wv'atotb
+    rename h`wv'itot r`wv'itot
 }
 
 * Rename drink vars to more readable (and pleasant) form - r*drinkd
@@ -198,9 +197,6 @@ foreach var in
     hlthlm
     asthmae
     parkine
-    ipubpen
-    itearn
-    atotf
     vgactx_e
     mdactx_e
     ltactx_e
@@ -213,10 +209,12 @@ foreach var in
     hipe
     shlt
     atotb
+    itot
     smokef
     lnlys
     alzhe
     demene
+    itot
     lbrf
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
@@ -250,7 +248,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb smokef lnlys alzhe demene
+    drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf
 , i(idauniq) j(wave)
 ;
@@ -287,11 +285,8 @@ label variable smoken "Smoke now"
 label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
 label variable hlthlm "Health limits work"
-label variable itearn "Individual employment earnings (annual, after tax)"
-label variable ipubpen "Public pension income (all types)"
 label variable asthmae "Asthma ever"
 label variable parkine "Parkinsons disease ever"
-label variable atotf "Net Value of Non-Housing Financial Wealth"
 label variable vgactx_e "Number of times done vigorous exercise per week"
 label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
@@ -306,9 +301,10 @@ label variable mstat "Marriage Status"
 label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
 label variable shlt "Self Reported Health Status"
-label variable atotb "Total Family Wealth"
 label variable alzhe "Alzheimers Ever"
 label variable demene "Dementia Ever"
+label variable itot "Total Family Income"
+label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
 
 
@@ -464,9 +460,9 @@ drop bmi_ipolate
 
 *** Now add some noise to the BMI interpolation ***
 * Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
-gen rand = rnormal(0, 1.8) if (wave==1 | wave==3 | wave==5 | wave==7)
-replace bmi = bmi + rand if !missing(rand)
-drop rand
+*gen rand = rnormal(0, 1.8) if (wave==1 | wave==3 | wave==5 | wave==7)
+*replace bmi = bmi + rand if !missing(rand)
+*drop rand
 
 * The interpolation step for BMI produces a couple of completely impossible values. Removing anything under 14, as 14 is the lowest I've seen in ELSA that didn't look like a typo
 * Let kludge.do handle it with hotdeck
@@ -486,13 +482,17 @@ gen logbmi = log(bmi) if !missing(bmi)
 *replace logbmi = logbmi + rand if !missing(rand)
 *drop rand
 
+* 
+gen rand = rnormal(0, 0.05)
+replace logbmi = logbmi + rand if !missing(rand)
+
 * Generate dummy for obesity
 * This is already generated in generate_transition_pop.do. TODO: change gen_trans_pop.do to replace instead of generate
 gen obese = (logbmi > log(30.0)) if !missing(bmi)
 
 * Generate a categorical variable for BMI to get summary stats by group
 * cut() has to include both the lower and upper limits (which is why both 0 and 100 are included)
-egen bmi_cat = cut(logbmi), at(0 18.5 25 30 40)
+*egen bmi_cat = cut(logbmi), at(0 18.5 25 30 40)
 
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
 *count if smokev==0 & smoken==1
@@ -567,6 +567,12 @@ replace exstat3 = 0 if exstat != 3
 
 * Drop the exercise vars now
 drop ltactx_e mdactx_e vgactx_e
+*** Income and Wealth
+* These vars need to be converted to logs
+gen logitot = log(itot) if !missing(itot)
+gen logatotb = log(atotb) if !missing(atotb)
+* Now drop non-logged vars
+drop atotb itot
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
@@ -615,9 +621,9 @@ foreach var in
     smkstat
     asthmae
     parkine
-    ipubpen
-    atotf
-    itearn
+    vgactx_e
+    mdactx_e
+    ltactx_e
     drink
     exstat
     exstat1
@@ -637,7 +643,6 @@ foreach var in
     srh3
     srh4
     srh5
-    atotb
     smkint
     smkint1
     smkint2
@@ -648,6 +653,8 @@ foreach var in
     lnly3
     alzhe
     demene
+    logitot
+    logatotb
     workstat
     employed
     unemployed

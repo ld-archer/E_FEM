@@ -42,11 +42,10 @@ local measures
 						p_smokev  i_smokev  n_smokev
 						n_smoke_start
 						n_smoke_stop
-						a_smkint
-						p_hlthlm  n_hlthlm
-						t_ipubpen a_ipubpen
-						t_atotf   a_atotf
-						t_itearn  a_itearn
+						a_smkint	p_smkint3
+						p_hlthlm  	n_hlthlm
+						t_atotb 	a_atotb
+						t_itot		a_itot
 					p_drink		i_drink		n_drink
 					p_heavy_drinker i_heavy_drinker n_heavy_drinker
 					p_freq_drinker  i_freq_drinker  n_freq_drinker
@@ -78,4 +77,4 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f
+local subpop all m f 5564 6574 7584 85p
