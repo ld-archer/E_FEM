@@ -121,6 +121,7 @@ r*hchole
 r*hipe
 r*shlt
 h*atotb
+h*itot
 r*smokef
 r*lnlys
 r*alzhe
@@ -196,6 +197,7 @@ foreach var in
     hipe
     shlt
     atotb
+    itot
     smokef
     lnlys
     alzhe
@@ -233,8 +235,8 @@ foreach var in `wav1missvars' {
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
-    asthmae parkine vgactx_e mdactx_e ltactx_e itot
-    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys alzhe demene
+    asthmae parkine vgactx_e mdactx_e ltactx_e 
+    drink drinkd educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf
 , i(idauniq) j(wave)
 ;
@@ -271,8 +273,6 @@ label variable smoken "Smoke now"
 label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
 label variable hlthlm "Health limits work"
-*label variable itearn "Individual employment earnings (annual, after tax)"
-*label variable ipubpen "Public pension income (all types)"
 label variable asthmae "Asthma ever"
 label variable parkine "Parkinsons disease ever"
 label variable vgactx_e "Number of times done vigorous exercise per week"
@@ -460,14 +460,6 @@ replace bmi = . if bmi < 14
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
 
-*** Now add noise
-* Take the exponential of rnormal distribution, then add this
-*gen rand = exp(rnormal(0, 0.08)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*gen rand = exp(rnormal(-2, 2)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*gen rand = exp(rnormal(0, 0.5)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*replace logbmi = logbmi + rand if !missing(rand)
-*drop rand
-
 * Generate dummy for obesity
 * This is already generated in generate_transition_pop.do. TODO: change gen_trans_pop.do to replace instead of generate
 gen obese = (logbmi > log(30.0)) if !missing(bmi)
@@ -571,6 +563,11 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
+*** Log money variables
+gen logatotb = log(atotb)
+gen logitot = log(itot)
+* Now drop non-logged vars
+drop atotb itot
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)

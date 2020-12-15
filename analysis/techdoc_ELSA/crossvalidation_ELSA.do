@@ -225,15 +225,6 @@ drop smokef
 * Now assign any missing that don't smoke to equal 0
 replace smkint = 0 if smoken == 0
 
-/*
-* Smoking intensity variable
-recode smokef (0=1) (1/9=2) (10/19=3) (20/max=4), gen(smkint)
-label define smkint 1 "Non-smoker" 2 "Low" 3 "Medium" 4 "High"
-label values smkint smkint
-label variable smkint "Smoking intensity"
-drop smokef
-*/
-
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
@@ -281,20 +272,20 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
-* household econ vars
+*** Money vars
 foreach var in atotb itot {
 	ren h`var' `var'
 }
 
-* Total household wealth
-gen atotbx = atotb / 1000
-replace atotbx = min(atotb, 2000) if !missing(atotb)
-label var atotbx "Total Family Wealth in 1000s (max 2000) if positive, zero otherwise"
+* Earnings
+gen itotx = itot/1000
+replace itotx = min(itotx, 200) if !missing(itotx)
+label var itotx "Total Family Income in 1000s, max 200"
 
-* Total household income
-gen itotx = itot / 1000
-replace itotx = min(itot, 200) if !missing(itot)
-label var itotx "Total Household Income in 1000s, (max 200)"
+* Wealth
+gen atotbx = atotb/1000
+replace atotbx = min(atotbx, 2000) if !missing(atotbx)
+label var atotbx "Total Family Wealth in 1000s (max 2000) if positive, zero otherwise"
 
 * Interview year
 gen iwyear = 2000 + 2*wave
@@ -321,12 +312,15 @@ gen reweight = weight/`iter'
 gen FEM = 1
 gen rep = mcrep + 1
 
-* Convert income and wealth into 1000s
-gen atotbx = atotb / 1000
-replace atotbx = min(atotb, 2000) if !missing(atotb)
-* Total household income
-gen itotx = itot / 1000
-replace itotx = min(itot, 200) if !missing(itot)
+* Earnings
+gen itotx = itot/1000
+replace itotx = min(itotx, 200) if !missing(itotx)
+
+* Wealth
+gen atotbx = atotb/1000
+replace atotbx = min(atotbx, 2000) if !missing(atotbx)
+
+*replace hicap = hicap/1000
 
 append using `ELSA'
 
@@ -370,10 +364,8 @@ label var employed "Employed"
 label var unemployed "Unemployed"
 label var retired "Retired"
 
-label var atotb "Total Family Wealth"
-label var atotbx "Total Family Wealth in 1000s (max 2000) if positive, zero otherwise"
-label var itot "Total Family Income"
-label var itotx "Total Household Income in 1000s, (max 200)"
+label var itotx "Total Family Income (thou.)"
+label var atotbx "Total Family Wealth (thou.)"
 
 label var age_yrs "Age at interview"
 label var male "Male"
@@ -396,7 +388,7 @@ restore
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche alzhe demene
 local risk smoken smokev bmi drink smkint lnly
 local binecon workstat employed unemployed retired
-local cntecon atotbx itotx
+local cntecon itotx atotbx
 local demog age_yrs male white
 local unweighted died
 
@@ -476,7 +468,7 @@ foreach tp in unweighted {
 local varlist "fem_mean fem_n fem_sd elsa_mean elsa_n elsa_sd p_value"
 
 * Produce tables
-foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
+foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	
 	foreach wave in 3 5 8 {
 		tempfile wave`wave'
@@ -512,7 +504,7 @@ foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
 
 ///*
 * Produce tables of all years
-foreach tabl in binhlth risk binecon /*cntecon*/ demog unweighted {
+foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	
 	foreach wave in 1 2 3 4 5 6 7 8 {
 		tempfile wave`wave'

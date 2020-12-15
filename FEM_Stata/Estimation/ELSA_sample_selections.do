@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat drink exstat workstat logatotb mstat logitot {
+foreach v in adlstat iadlstat drink exstat mstat workstat logatotb logitot {
     local select_`v' !died 
 }
 

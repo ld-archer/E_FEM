@@ -3,18 +3,16 @@ clear all
 quietly include ../../../fem_env.do
 
 * This sets the scenario for use in naming files, trending variables, etc.
-local scr : env SCENARIO
-
-local goal : env GOAL
+local scen : env scen
 
 local expansion 1
 
-local goal_yr : env GOAL_YR
+
 
 clear all
 
 *use ../../../input_data/ELSA_stock.dta, replace
-use $outdata/ELSA_stock_base.dta, replace
+use $outdata/ELSA_stock_`scen'.dta, replace
 *use $outdata/ELSA_long.dta, replace
 
 

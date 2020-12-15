@@ -30,9 +30,8 @@ namespace Vars
 		anyrx_meps,								///< Any prescriptions from MEPS model
 		arthre,					///< Arthritis ever, stored as Boolean
 		asthmae,				///< Asthma ever, stored as Boolean
-		atotf,					///< Net value of non-housing financial wealth
-		atotb,                  ///< Total Family Wealth
-		logatotb,               ///< Log(Total Family Wealth)
+		logatotb,                  ///< Log(Total Family Wealth)
+		logitot,                    ///< Log(Total Family Income)
 		births,                   ///< Count of childbirth events (0,1,2), stored as Short
 		black,                    ///< Non-Hispanic black [0, 1], stored as Boolean
 		bornus,                   ///< Born in the U.S.? [0, 1], stored as Boolean
@@ -106,7 +105,7 @@ namespace Vars
 		exitsingle_f,							///< female: lag single, now not single
 		exitsingle_m,							///< male: lag single, now not single
 		exurb,										///< Lives in exurbs
-	  fanydb,                         ///< Init.of any defined benefit pension plan
+	    fanydb,                         ///< Init.of any defined benefit pension plan
 		fcanc50,                  ///< Init.of Cancer [0, 1] at age 50, stored as Boolean
 		fdiabe50,                   ///< Init.of Diabetes [0, 1] at age 50, stored as Boolean
 		fheart50,                  ///< Init.of Heart disease [0, 1] at age 50, stored as Boolean
@@ -124,7 +123,7 @@ namespace Vars
 		fproptax,									///< Initial of proptax, stored as Double
 		fproptax_nonzero,					///< Init of proptax_nonzero, stored as Boolean
 		fraime,                   ///< Initial AIME, stored as Double
-	  frbyr,
+	    frbyr,
 		frich,										///< Rich as a child
 		frq,                      ///< Init.of number of quarters earned, stored as Short
 		fsingle50,                  ///< Init.of Single [0, 1] at age 50, stored as Boolean
@@ -189,8 +188,6 @@ namespace Vars
 		insulin,                  ///< Diabetic taking insulin
 		internal_id,							///< simulation internal ID, used for debugging
 		isret,                    ///< income: R SoCSec Retirment Approx Range [0, 47046.87], stored as Double
-		ipubpen,					///< Public pension income, stored as Float
-		itearn,						///< Individual employment earnings, stored as Float
 		iwbeg,                    ///< R interview begin date Approx Range [16116, 16451], stored as Double
 		iwstat,                   ///< R interview status Approx Range [1, 1], stored as Short
 		jewish,										///< Religion - Jewish
@@ -221,9 +218,8 @@ namespace Vars
 		l2anyhi,                   ///< Lag of HI cov -gov/emp/other, [0, 1], stored as Boolean
 		l2arthre,					///< Lag of arthritis ever, stored as Boolean
 		l2asthmae,					///< Lag of asthma ever, stored as Boolean
-		l2atotf,					///< Lag of net value of non-housing financial wealth
-		l2atotb,                    ///< Lag of Total Family Wealth
-        l2logatotb,                 ///< Log(Lag of Total Family Wealth)
+		l2logatotb,                    ///< Log(Lag of Total Family Wealth)
+		l2logitot,                      ///< Log(Lag of Total Family Income)
 		l2bpcontrol,               ///< Lag of bpcontrol
 		l2bs_treated,              ///< Lag of treated with bariatric surgery, stored as Boolean
 		l2cancre,                  ///< Lag of Cancer, [0, 1], stored as Boolean
@@ -267,8 +263,6 @@ namespace Vars
 		l2iearnuc, 		     ///< lag of uncapped individual earnings in 1000s
 		l2iearnx,                  ///< Lag of Individual earnings in 1000s-max 200, Approx Range [0, 200], stored as Short
 		l2insulin,                 ///< Lag of insulin
-		l2ipubpen,					///< Lag of public pension earnings (£), stored as Float
-		l2itearn,					///< Lag of ELSA Individual employment earnings in pounds sterling (£)
 		l2iwstat,                  ///< Lag of R interview status, Approx Range [1, 1], stored as Short
 		l2k6score, 								///<Lag of Kessler 6 score
 		l2k6severe,									///< Lag of Kessler 6 score is severe

@@ -88,21 +88,21 @@ gen medicare_elig = 0
 *** ELSA Specific Imputation ***
 
 if "`scen'" == "base" {
-    local hotdeck_vars logbmi white
+    local hotdeck_vars logbmi white logitot
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine drinkd 
+                        psyche asthmae parkine drinkd logitot
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine drinkd hchole hipe educl ///
-                        smkint mstat lnly alzhe demene workstat
+                        smkint mstat lnly alzhe demene workstat logitot
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine drinkd hchole hipe educl ///
-                        smkint lnly alzhe demene workstat
+                        smkint lnly alzhe demene workstat logitot
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -124,9 +124,9 @@ replace srh4 = 0 if srh3 == 1
 replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist asthmae parkine exstat cancre diabe hearte hibpe ///
+foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 logatotb hipe mstat smkint alzhe demene employed unemployed retired {
+                        srh3 srh4 srh5 logatotb logitot hipe mstat smkint alzhe demene employed unemployed retired {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')

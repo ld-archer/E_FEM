@@ -78,9 +78,9 @@ local lvars_funclimit l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p
 * Self Reported Health Status
 local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 * Workstat
-local lvars_workstat l2employed l2unemployed
-* Mstat
-local lvars_mstat l2single l2cohab l2widowed
+local lvars_workstat l2employed l2unemployed /*Control is l2retired*/
+* Marriage status
+local lvars_mstat l2married l2widowed l2cohab /*Control is l2single*/
 
 
 *** Now specify the transition models ***
@@ -193,9 +193,10 @@ global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth
 
 
 *** Economic
-global allvars_logatotb     $dvars $lvars_age /*l2logatotb l2logitot*/
-global allvars_logitot      $dvars $lvars_age l2logitot `lvars_workstat'
-global allvars_workstat     $dvars $lvars_age l2workstat l2psyche l2stroke `lvars_smoke' l2married l2single
+global allvars_logatotb     $dvars $lvars_age l2logatotb `lvars_workstat' `lvars_mstat' $lvars_hlth  /* Control for workstat vars is retired */
+global allvars_logitot         $dvars $lvars_age l2logitot `lvars_workstat' `lvars_mstat' $lvars_hlth
+
+global allvars_workstat     $dvars $lvars_age l2workstat l2psyche l2stroke `lvars_smoke' `lvars_mstat'
 
 *** Exercise
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit' l2logbmi l2arthre l2asthmae
