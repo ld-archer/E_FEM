@@ -183,7 +183,7 @@ global allvars_drinkd       $dvars $lvars_age
 *** Logbmi & other health
 *global allvars_logbmi       $dvars $lvars_age l2logbmi l2married l2smokev l2smoken `lvars_exercise' l2logatotb
 * Previous Good: global allvars_logbmi       $dvars $lvars_age l2smokev l2smoken l2adl2 l2adl3p
-global allvars_logbmi       $dvars $lvars_age l2logbmi
+global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smoken smokev drink drinkd1 drinkd3 drinkd4
 
 
