@@ -47,8 +47,14 @@ gen l2agesq = l2`age_var'*l2`age_var'
 * BMI dummies for obese (BMI > 30.0) or not
 replace l2obese = (l2logbmi > log(30.0)) if !missing(l2logbmi)
 * Generate a 'knot' at BMI == 30 to make sure we don't lose the right tail in our projections
-gen l2logbmi_l30 = min(log(30), l2logbmi) if l2logbmi < .
-gen l2logbmi_30p = max(0, l2logbmi - log(30))
+*gen l2logbmi_l30 = min(log(30), l2logbmi) if l2logbmi < .
+*gen l2logbmi_30p = max(0, l2logbmi - log(30)) if l2logbmi < .
+
+local log_30 = log(30)
+mkspline l2logbmi_l30 `log_30' l2logbmi_30p = l2logbmi
+
+label var l2logbmi_l30 "Splined two-year lag of BMI <= log(30)"
+label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
 
 * First attempt didn't work, try a different idea (Didn't work either)
 *gen l2logbmi_l30 = logbmi if logbmi < log(30) & !missing(logbmi)
