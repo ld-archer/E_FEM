@@ -621,9 +621,6 @@ foreach var in
     smkstat
     asthmae
     parkine
-    vgactx_e
-    mdactx_e
-    ltactx_e
     drink
     exstat
     exstat1
