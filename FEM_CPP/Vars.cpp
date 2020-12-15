@@ -95,8 +95,9 @@ VarsInfo::VarsInfo() {
 	info[Vars::anyrx_meps]           = VarInfo("anyrx_meps", "Any drug spending (MEPS model)", VarTypes::Boolean);
 	info[Vars::arthre]				= VarInfo("arthre", "Arthritis ever", VarTypes::Boolean);
 	info[Vars::asthmae]				= VarInfo("asthmae", "Asthma ever", VarTypes::Boolean);
-	info[Vars::atotf]				= VarInfo("atotf", "Net value of non-housing financial wealth", VarTypes::Float);
-	info[Vars::atotb]               = VarInfo("atotb", "Total Family Wealth", VarTypes::Float);
+	//info[Vars::atotf]				= VarInfo("atotf", "Net value of non-housing financial wealth", VarTypes::Float);
+	info[Vars::logatotb]               = VarInfo("logatotb", "Log(Total Family Wealth)", VarTypes::Float);
+    info[Vars::logitot]               = VarInfo("logitot", "Log(Total Family Income)", VarTypes::Float);
 	info[Vars::births]                = VarInfo("births", "Count of childbirth events", VarTypes::Short,true);
 	info[Vars::black]                = VarInfo("black", "Non-Hispanic black [0, 1]", VarTypes::Boolean);
 	info[Vars::bornus]               = VarInfo("bornus", "Born in U.S.? [0, 1]", VarTypes::Boolean);
@@ -247,8 +248,6 @@ VarsInfo::VarsInfo() {
 	info[Vars::insulin]              = VarInfo("insulin", "Diabetic taking insulin", VarTypes::Boolean);
 	info[Vars::isret]                = VarInfo("isret", "income: R SoCSec Retirment Approx Range [0, 47046.87]", VarTypes::Double);
 	info[Vars::internal_id]					 = VarInfo("internal_id", "simulation internal ID, used for debugging", VarTypes::Long);
-	info[Vars::ipubpen]				= VarInfo("ipubpen", "Public pension income in pounds sterling (£)", VarTypes::Float);
-	info[Vars::itearn]					= VarInfo("itearn", "Individual employment earnings in Pounds Sterling (£)", VarTypes::Float);
 	info[Vars::iwbeg]                = VarInfo("iwbeg", "R interview begin date Approx Range [16116, 16451]", VarTypes::Double);
 	info[Vars::iwstat]               = VarInfo("iwstat", "R interview status Approx Range [1, 1]", VarTypes::Short);
 	info[Vars::jewish]             = VarInfo("jewish", "Religion - Jewish", VarTypes::Boolean);
@@ -283,8 +282,9 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2anyhi]               = VarInfo("l2anyhi", "Lag of HI cov -gov/emp/other, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2arthre]			= VarInfo("l2arthre", "Lag of Arthritis ever", VarTypes::Boolean);
 	info[Vars::l2asthmae]			= VarInfo("l2asthmae", "Lag of Asthma ever", VarTypes::Boolean);
-	info[Vars::l2atotf]				= VarInfo("l2atotf", "Lag of net value of non-housing financial wealth", VarTypes::Float);
-	info[Vars::l2atotb]             = VarInfo("l2atotb", "Lag of Total Family Wealth", VarTypes::Float);
+	//info[Vars::l2atotf]				= VarInfo("l2atotf", "Lag of net value of non-housing financial wealth", VarTypes::Float);
+	info[Vars::l2logatotb]             = VarInfo("l2logatotb", "Log(Lag of Total Family Wealth)", VarTypes::Float);
+    info[Vars::l2logitot]             = VarInfo("l2logitot", "Log(Lag of Total Family Income)", VarTypes::Float);
 	info[Vars::l2bs_treated]          = VarInfo("l2bs_treated", "Lag of treated with bariatric surgery", VarTypes::Boolean);
 	info[Vars::l2bpcontrol]           = VarInfo("l2bpcontrol", "Lag of bpcontrol", VarTypes::Boolean);
 	info[Vars::l2cancre]              = VarInfo("l2cancre", "Lag of Cancer, [0, 1]", VarTypes::Boolean);
@@ -320,8 +320,6 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2iearnuc]		     = VarInfo("l2iearnuc", "Lag of Individual earnings in 100s, uncapped", VarTypes::Double);
 	info[Vars::l2iearnx]              = VarInfo("l2iearnx", "Lag of Individual earnings in 1000s-max 200, Approx Range [0, 200]", VarTypes::Float);
 	info[Vars::l2insulin]             = VarInfo("l2insulin", "Lag of insulin", VarTypes::Boolean);
-	info[Vars::l2ipubpen] 				= VarInfo("l2ipubpen", "Lag of public pension income in pounds sterling (£)", VarTypes::Float);
-	info[Vars::l2itearn]				= VarInfo("l2itearn", "ELSA Lag of Individual employment earnings in pounds sterling (£)", VarTypes::Float);
 	info[Vars::l2iwstat]              = VarInfo("l2iwstat", "Lag of R interview status, Approx Range [1, 1]", VarTypes::Short);
 	info[Vars::l2k6score]             = VarInfo("l2k6score", "Lag of Kessler 6 score", VarTypes::Double);
 	info[Vars::l2k6severe]             = VarInfo("l2k6severe", "Lag of Kessler 6 score is severe", VarTypes::Boolean);
@@ -698,9 +696,9 @@ VarsInfo::VarsInfo() {
     info[Vars::l2employed]          = VarInfo("l2employed", "Lag of Employed", VarTypes::Boolean, Vars::l2workstat, 1);
     info[Vars::l2unemployed]        = VarInfo("l2unemployed", "Lag of Unemployed", VarTypes::Boolean, Vars::l2workstat, 2);
     info[Vars::l2retired]           = VarInfo("l2retired", "Lag of Retired", VarTypes::Boolean, Vars::l2workstat, 3);
-    info[Vars::pworkstat1]           = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
-    info[Vars::pworkstat2]           = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
-    info[Vars::pworkstat3]           = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
+    info[Vars::pworkstat1]          = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
+    info[Vars::pworkstat2]          = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
+    info[Vars::pworkstat3]          = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
 
 
 	
@@ -770,8 +768,6 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::iearnuc] = Vars::l2iearnuc;
 	lag_map[Vars::iearnx] = Vars::l2iearnx;
 	lag_map[Vars::insulin] = Vars::l2insulin;
-	lag_map[Vars::ipubpen] = Vars::l2ipubpen;
-	lag_map[Vars::itearn] = Vars::l2itearn;
 	lag_map[Vars::iwstat] = Vars::l2iwstat;
 	lag_map[Vars::k6score] = Vars::l2k6score; 
 	lag_map[Vars::k6severe] = Vars::l2k6severe;
@@ -825,9 +821,8 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::arthre] = Vars::l2arthre;
 	lag_map[Vars::psyche] = Vars::l2psyche;	
 	lag_map[Vars::parkine] = Vars::l2parkine;
-	//lag_map[Vars::retemp] = Vars::l2retemp;
-	lag_map[Vars::atotf] = Vars::l2atotf;
-	lag_map[Vars::atotb] = Vars::l2atotb;
+	lag_map[Vars::logatotb] = Vars::l2logatotb;
+	lag_map[Vars::logitot] = Vars::l2logitot;
 	lag_map[Vars::drink] = Vars::l2drink;
 	lag_map[Vars::drinkd] = Vars::l2drinkd;
 	//lag_map[Vars::drinkwn] = Vars::l2drinkwn;

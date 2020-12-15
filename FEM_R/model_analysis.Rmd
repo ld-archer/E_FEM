@@ -67,10 +67,11 @@ min_uw <- read.csv(paste0(min, stem, "unweighted.csv"))
 min_demog <- read.csv(paste0(min, stem, "demog.csv"))
 min_binhlth <- read.csv(paste0(min, stem, "binhlth.csv"))
 min_binecon <- read.csv(paste0(min, stem, "binecon.csv"))
+min_cntecon <- read.csv(paste0(min, stem, "cntecon.csv"))
 min_risk <- read.csv(paste0(min, stem, "risk.csv"))
 
 # Collect in a list to do some formatting
-min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_risk)
+min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_cntecon, min_risk)
 # Add prefix 'min_' onto every variable name for clarity
 min_list <- lapply(min_list, rename_first_var, prefix='min')
 # Rename columns to be more succinct
@@ -89,9 +90,10 @@ cv_uw <- read.csv(paste0(CV1, stem, "unweighted.csv"))
 cv_demog <- read.csv(paste0(CV1, stem, "demog.csv"))
 cv_binhlth <- read.csv(paste0(CV1, stem, "binhlth.csv"))
 cv_binecon <- read.csv(paste0(CV1, stem, "binecon.csv"))
+cv_cntecon <- read.csv(paste0(CV1, stem, "cntecon.csv"))
 cv_risk <- read.csv(paste0(CV1, stem, "risk.csv"))
 # Now collect into list and rename vars and cols for clarity
-cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_risk)
+cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_cntecon, cv_risk)
 cv_list <- lapply(cv_list, rename_first_var, prefix='CV')
 cv_list <- lapply(cv_list, shorten_columns)
 cv_list <- lapply(cv_list, function(x) { x[is.na(x)] <- 0; x} )
@@ -124,8 +126,12 @@ binhlth <- arrange(binhlth, Variable)
 binecon <- rbind(min_list[[4]], cv_list[[4]])
 binecon <- arrange(binecon, Variable)
 
+# cntecon
+cntecon <- rbind(min_list[[5]], cv_list[[5]])
+cntecon <- arrange(cntecon, Variable)
+
 # risk
-risk <- rbind(min_list[[5]], cv_list[[5]])
+risk <- rbind(min_list[[6]], cv_list[[6]])
 risk <- arrange(risk, Variable)
 ```
 
@@ -205,21 +211,17 @@ createTTT <- function(t) {
 ```
 
 ### Unweighted (Died)
-
 ```{r echo = FALSE}
 # Create the actual table!
 uwTab <- createTTT(uw)
 uwTab
 ```
-
 ### Demographics
-
 ```{r echo = FALSE}
 # Create the actual table!
 demogTab <- createTTT(demog)
 demogTab
 ```
-
 ### Binary Health
 ```{r echo = FALSE}
 # Create the actual table!
@@ -231,6 +233,12 @@ binhlthTab
 # Create the actual table!
 bineconTab <- createTTT(binecon)
 bineconTab
+```
+### Count Economic
+```{r echo = FALSE}
+# Create the actual table!
+cnteconTab <- createTTT(cntecon)
+cnteconTab
 ```
 ### Risk Behaviours
 ```{r echo = FALSE}

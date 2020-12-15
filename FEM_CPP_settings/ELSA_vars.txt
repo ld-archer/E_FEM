@@ -338,3 +338,9 @@ drinkers = not(l2died) & drink==1
 
 | Variables for education estimation model (used for imputing missing_educ)
 married_educl_interaction = married * educl : Interaction between married and spouse education, value = 0 if not married, value = educl if married : short
+
+|| Convert log money values back to continuous
+atotb = exp(logatotb) : exp of log atotb : float
+l2atotb = exp(l2logatotb) : exp of lag of log atotb : float
+itot = exp(logitot) : exp of log itot : float
+l2itot = exp(l2logitot) : exp of lag of log itot : float

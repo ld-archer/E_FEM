@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat atotf drink exstat atotb mstat workstat {
+foreach v in adlstat iadlstat drink exstat mstat workstat logatotb logitot {
     local select_`v' !died 
 }
 
@@ -20,14 +20,12 @@ local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
 local select_srh !died & wave != 3
 local select_smkint !died & smoken == 1
 local select_hlthlm !died & wave > 1 & retired == 0  /*PREVALENCE*/
-local select_ipubpen !died & retired == 1 
 local select_drinkd !died & drink == 1 & wave > 1
 local select_drinkd_stat !died & drink == 1 & wave > 1
 *local select_drinkwn !died & drink == 1 & wave > 3 /* Estimate model if not dead, is a drinker and wave 4 or higher */
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8) /* Only estimate bmi model using waves 2,4,6 as other waves are imputed */
 local select_hchole !died & l2hchole == 0 & wave > 1 /*INCIDENCE*/
 local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture question only asked if respondent is aged 60+ */
-local select_itearn !died & employed == 1 & retired == 0 /*PREVALENCE  Only estimate individual earnings if r in work and not retired */
 local select_lnly !died & wave > 1
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
@@ -35,11 +33,11 @@ if "`defmod'" == "CV2" {
     local CV2 & wave < 5
 }
 * varlist holds all that we estimate transition models for
-local varlist adlstat iadlstat atotf drink exstat cancre diabe ///
+local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
-                smoke_start smoke_stop hlthlm ipubpen drinkd drinkd_stat ///
-                logbmi hchole hipe itearn smkint mstat lnly alzhe demene ///
-                workstat
+                smoke_start smoke_stop hlthlm drinkd drinkd_stat ///
+                logbmi hchole hipe smkint mstat lnly alzhe demene ///
+                workstat logatotb logitot
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

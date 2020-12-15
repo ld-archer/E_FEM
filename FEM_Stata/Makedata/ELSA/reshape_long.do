@@ -111,9 +111,6 @@ r*smoken
 r*hlthlm
 r*asthmae
 r*parkine
-r*ipubpen
-r*itearn
-h*atotf
 r*vgactx_e
 r*mdactx_e
 r*ltactx_e
@@ -124,19 +121,21 @@ r*hchole
 r*hipe
 r*shlt
 h*atotb
+h*itot
 r*smokef
 r*lnlys
 r*alzhe
 r*demene
+h*itot
 r*lbrf_e
 ;
 #d cr
 
-* Rename h*coupid to a more useful form
+* Rename household vars to a more useful form
 forvalues wv = $firstwave/$lastwave {
     rename h`wv'coupid r`wv'hhid
-    rename h`wv'atotf r`wv'atotf
     rename h`wv'atotb r`wv'atotb
+    rename h`wv'itot r`wv'itot
 }
 
 * Rename drink vars to more readable (and pleasant) form - r*drinkd
@@ -188,9 +187,6 @@ foreach var in
     hlthlm
     asthmae
     parkine
-    ipubpen
-    itearn
-    atotf
     vgactx_e
     mdactx_e
     ltactx_e
@@ -201,10 +197,12 @@ foreach var in
     hipe
     shlt
     atotb
+    itot
     smokef
     lnlys
     alzhe
     demene
+    itot
     lbrf
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
@@ -237,8 +235,8 @@ foreach var in `wav1missvars' {
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
-    asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd educl mstat hchole hipe shlt atotb smokef lnlys alzhe demene
+    asthmae parkine vgactx_e mdactx_e ltactx_e 
+    drink drinkd educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf
 , i(idauniq) j(wave)
 ;
@@ -275,11 +273,8 @@ label variable smoken "Smoke now"
 label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
 label variable hlthlm "Health limits work"
-label variable itearn "Individual employment earnings (annual, after tax)"
-label variable ipubpen "Public pension income (all types)"
 label variable asthmae "Asthma ever"
 label variable parkine "Parkinsons disease ever"
-label variable atotf "Net Value of Non-Housing Financial Wealth"
 label variable vgactx_e "Number of times done vigorous exercise per week"
 label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
@@ -292,9 +287,10 @@ label variable mstat "Marriage Status"
 label variable hchole "High Cholesterol Ever"
 label variable hipe "Hip Fracture Ever"
 label variable shlt "Self Reported Health Status"
-label variable atotb "Total Family Wealth"
 label variable alzhe "Alzheimers Ever"
 label variable demene "Dementia Ever"
+label variable itot "Total Family Income"
+label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
 
 
@@ -464,14 +460,6 @@ replace bmi = . if bmi < 14
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
 
-*** Now add noise
-* Take the exponential of rnormal distribution, then add this
-*gen rand = exp(rnormal(0, 0.08)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*gen rand = exp(rnormal(-2, 2)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*gen rand = exp(rnormal(0, 0.5)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*replace logbmi = logbmi + rand if !missing(rand)
-*drop rand
-
 * Generate dummy for obesity
 * This is already generated in generate_transition_pop.do. TODO: change gen_trans_pop.do to replace instead of generate
 gen obese = (logbmi > log(30.0)) if !missing(bmi)
@@ -556,6 +544,13 @@ replace exstat2 = 0 if exstat != 2
 gen exstat3 = 1 if exstat == 3
 replace exstat3 = 0 if exstat != 3
 
+*** Income and Wealth
+* These vars need to be converted to logs
+gen logitot = log(itot) if !missing(itot)
+gen logatotb = log(atotb) if !missing(atotb)
+* Now drop non-logged vars
+drop atotb itot
+
 *** Labour Force Status
 * Recoding the lbrf var to three categories
 * 1 - Working (includes self-employed and partly retired)
@@ -603,9 +598,6 @@ foreach var in
     smkstat
     asthmae
     parkine
-    ipubpen
-    atotf
-    itearn
     vgactx_e
     mdactx_e
     ltactx_e
@@ -634,7 +626,6 @@ foreach var in
     srh3
     srh4
     srh5
-    atotb
     smkint
     smkint1
     smkint2
@@ -645,6 +636,8 @@ foreach var in
     lnly3
     alzhe
     demene
+    logitot
+    logatotb
     workstat
     employed
     unemployed

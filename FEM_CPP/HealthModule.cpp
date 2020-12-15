@@ -340,7 +340,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::smkstat,person->get(Vars::l2smkstat));
 						person->set(Vars::smoken,person->get(Vars::l2smoken));
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
-						person->set(Vars::smkint,person->get(Vars::l2smkint));
+						//person->set(Vars::smkint,person->get(Vars::l2smkint));
+                        person->set(Vars::smkint, 0.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
 					}
