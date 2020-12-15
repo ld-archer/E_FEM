@@ -469,7 +469,7 @@ gen logbmi = log(bmi) if !missing(bmi)
 *drop rand
 
 * 
-gen rand = rnormal(0, 0.08)
+gen rand = rnormal(0, 0.05)
 replace logbmi = logbmi + rand if !missing(rand)
 
 * Generate dummy for obesity
