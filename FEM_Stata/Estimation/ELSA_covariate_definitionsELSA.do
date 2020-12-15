@@ -105,7 +105,7 @@ global allvars_died male $lvars_age l2cancre l2hearte l2diabe
 * 11-27_13:49:05: global allvars_cancre       $dvars $lvars_age l2logbmi l2hchole
 * 11-27_16:12:16: global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married
 * 11-27_16:47:29: global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married l2exstat1 l2exstat2
-global allvars_cancre       $dvars $lvars_age l2logbmi l2exstat1
+global allvars_cancre       $dvars $lvars_age l2logbmi l2exstat1 `lvars_exercise'
 
 * DIABE
 *global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe l2hchole /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
@@ -175,7 +175,7 @@ global allvars_smkint       $dvars $lvars_age `lvars_mstat' `lvars_workstat' l2l
 *** Drinking
 *global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2employed l2unemployed l2logatotb /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 * 11-27_16:12:16: global allvars_drink        $dvars $lvars_age
-global allvars_drink        $dvars $lvars_age `lvars_workstat' l2logbmi
+global allvars_drink        $dvars $lvars_age `lvars_workstat' l2logbmi $lvars_hlth
 global allvars_drinkd_stat  $dvars $lvars_age
 global allvars_drinkd       $dvars $lvars_age
 
@@ -183,7 +183,7 @@ global allvars_drinkd       $dvars $lvars_age
 *** Logbmi & other health
 *global allvars_logbmi       $dvars $lvars_age l2logbmi l2married l2smokev l2smoken `lvars_exercise' l2logatotb
 * Previous Good: global allvars_logbmi       $dvars $lvars_age l2smokev l2smoken l2adl2 l2adl3p
-global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' `lvars_smoke' `lvars_drink' `lvars_funclimit' `lvars_workstat' `lvars_mstat'
 global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smoken smokev drink drinkd1 drinkd3 drinkd4
 
 
