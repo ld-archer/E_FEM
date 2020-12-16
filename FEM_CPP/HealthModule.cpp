@@ -348,15 +348,17 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 				}
 			}
 
-			// If we change drink to 0 then we need to make sure drinkd is also 0
-			// i.e. if we stop someone drinking at all, the number of days they drink must also be set to 0
+			// If we change drink to 0 then we need to make sure heavy_drinker and freq_drinker are also 0
 			if (elsa_data) {
-				// Doesn't drink/stopped drinking
-				if(!person->test(Vars::drink)) {
-					// Set drink days to 0
-					person->set(Vars::drinkd, 0.0);
-					// USE LAG VARIABLE
-				}
+			    // previously drinker
+			    if(person->get(Vars::l2drink)) {
+			        // now quit
+			        if(person->get(Vars::drink)) {
+			            // set heavy and freq to 0
+			            person->set(Vars::heavy_drinker, 0.0);
+			            person->set(Vars::freq_drinker, 0.0);
+			        }
+			    }
 			}
 
 			// Handle marriage status transitions

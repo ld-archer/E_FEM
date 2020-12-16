@@ -88,28 +88,27 @@ gen medicare_elig = 0
 *** ELSA Specific Imputation ***
 
 if "`scen'" == "base" {
-    local hotdeck_vars logbmi white logitot
+    local hotdeck_vars logbmi white logitot freq_drinker heavy_drinker
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine drinkd logitot
+                        psyche asthmae parkine logitot freq_drinker heavy_drinker
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine drinkd hchole hipe educl ///
-                        smkint mstat lnly alzhe demene workstat logitot
+                        psyche asthmae parkine logitot hchole hipe educl ///
+                        smkint mstat lnly alzhe demene workstat freq_drinker heavy_drinker
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine drinkd hchole hipe educl ///
-                        smkint lnly alzhe demene workstat logitot
+                        psyche asthmae parkine logitot hchole hipe educl ///
+                        smkint lnly alzhe demene workstat freq_drinker heavy_drinker
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
 }
 
 * Current vars missing info should be hotdecked before any other imputation
-* Removed: cancre diabe hearte hibpe lunge stroke arthre psyche
 foreach var of varlist `hotdeck_vars' {
     hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
     use hotdeck_data/`var'_imp1.dta, clear
@@ -125,8 +124,9 @@ replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
 foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
-                        lunge stroke arthre psyche drink drinkd smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 logatotb logitot hipe mstat smkint alzhe demene employed unemployed retired {
+                        lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
+                        srh3 srh4 srh5 logatotb logitot hipe mstat smkint alzhe demene employed unemployed ///
+                        retired freq_drinker heavy_drinker {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
@@ -182,7 +182,7 @@ replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)
 gen flogbmi50 = l2logbmi
 
 * Now handle logical accounting with drinking and smoking
-replace drinkd = 0 if drink == 0
+*replace drinkd = 0 if drink == 0
 replace smokev = 1 if smoken == 1
 
 * Still missing some l2drink
@@ -211,22 +211,22 @@ replace smkstat = 2 if missing(smkstat)
 replace l2smkstat = 2 if missing(l2smkstat)
 
 * Update drinkd_stat after hotdecking
-replace drinkd_stat = 1 if drinkd == 0
-replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
-replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
-replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
+*replace drinkd_stat = 1 if drinkd == 0
+*replace drinkd_stat = 2 if (drinkd == 1 | drinkd == 2)
+*replace drinkd_stat = 3 if (drinkd == 3 | drinkd == 4)
+*replace drinkd_stat = 4 if (drinkd == 5 | drinkd == 6 | drinkd == 7)
 * Set to low - moderate if still missing
-replace drinkd_stat = 2 if missing(drinkd_stat)
+*replace drinkd_stat = 2 if missing(drinkd_stat)
 
 * Now handle missing drinkd# data
-replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
-replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
-replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
-replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
-replace l2drinkd1 = l2drinkd_stat==1 if missing(l2drinkd1)
-replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
-replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
-replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
+*replace drinkd1 = drinkd_stat==1 if missing(drinkd1)
+*replace drinkd2 = drinkd_stat==2 if missing(drinkd2)
+*replace drinkd3 = drinkd_stat==3 if missing(drinkd3)
+*replace drinkd4 = drinkd_stat==4 if missing(drinkd4)
+*replace l2drinkd1 = l2drinkd_stat==1 if missing(l2drinkd1)
+*replace l2drinkd2 = l2drinkd_stat==2 if missing(l2drinkd2)
+*replace l2drinkd3 = l2drinkd_stat==3 if missing(l2drinkd3)
+*replace l2drinkd4 = l2drinkd_stat==4 if missing(l2drinkd4)
 
 * Impute old 'work' variable with employed, just to keep the model happy
 * ELSA version doesn't use 'work' anymore

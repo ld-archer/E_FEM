@@ -79,6 +79,9 @@ keep
 	r*alzhe
 	r*demene
 	r*lbrf_e
+	r*drinkd_e
+	r*drinkn_e
+	r*drinkwn_e
 	h*atotb
 	h*itot
 	
@@ -120,6 +123,9 @@ local shapelist
 	r@alzhe
 	r@demene
 	r@lbrf_e
+	r@drinkd_e
+	r@drinkn_e
+	r@drinkwn_e
 	h@atotb
 	h@itot
 	
@@ -208,13 +214,17 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in bmi smokev smoken drink smokef lnlys {
+foreach var in bmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e {
 	ren r`var' `var'
 }
 label var bmi "R Body mass index"
 label var smoken "R smokes now"
 label var smokev "R smoke ever"
 label var drink "R drinks alcohol"
+label var drinkd_e "# days/week drinking"
+label var drinkn_e "# drinks/day"
+label var drinkwn_e "# drinks/week"
+
 
 * Smoking intensity variable
 recode smokef (0/0.99=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
@@ -224,6 +234,34 @@ label variable smkint "Smoking intensity"
 drop smokef
 * Now assign any missing that don't smoke to equal 0
 replace smkint = 0 if smoken == 0
+
+*** Drinking intensity variable
+* This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
+* Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
+* drinkstat will be defined by an intersection between the drinkd, drinkwn, and potentially drinkn vars
+* if ANY of the variables are at the extreme end (will find cut off values for weekly/daily drinking), then person.drinkstat == high
+* First find binge drinkers 
+gen binge = 1 if male & drinkn > 4 & !missing(drinkn)
+replace binge = 1 if !male & drinkn > 3 & !missing(drinkn)
+replace binge = 0 if male & drinkn <= 4 & !missing(drinkn)
+replace binge = 0 if drinkn <= 3 & !missing(drinkn)
+* Now heavy drinkers (>14 units ~=~ 7 drinks)
+gen heavy = 1 if drinkwn > 7 & !missing(drinkwn)
+replace heavy = 0 if drinkwn <= 7 & !missing(drinkwn)
+* Now generate heavy_drinker as either of binge or heavy
+gen heavy_drinker = 1 if binge == 1 | heavy == 1 & !missing(binge) | !missing(heavy)
+replace heavy_drinker = 0 if binge == 0 & missing(heavy)
+replace heavy_drinker = 0 if heavy == 0 & missing(binge)
+* Now find frequent drinkers (the decision of 6 or more days was arbitrary)
+gen freq_drinker = drinkd > 5 if !missing(drinkd)
+replace freq_drinker = 0 if drinkd <= 5 & !missing(drinkd)
+* Can't be heavy or frequent drinker in the last week if they didn't drink
+replace heavy_drinker = 0 if drink == 0
+replace freq_drinker = 0 if drink == 0
+* Now drop drink vars after generating indicators
+drop drinkn drinkwn drinkd
+label variable heavy_drinker "Heavy Drinker (>14 units/week)"
+label variable freq_drinker "Frequent Drinker (>5 days/week)"
 
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
@@ -358,6 +396,8 @@ label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
 label var smkint "Smoking Intensity"
 label var lnly "Loneliness Score"
+label var heavy_drinker "Heavy Drinker"
+label var freq_drinker "Frequent Drinker"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -386,7 +426,7 @@ restore
 *save test_pre_loop.dta, replace
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl psyche alzhe demene
-local risk smoken smokev bmi drink smkint lnly
+local risk smoken smokev bmi drink smkint lnly heavy_drinker freq_drinker
 local binecon workstat employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
