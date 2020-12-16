@@ -92,12 +92,7 @@ local lvars_workstat l2employed l2unemployed                        /*Control: l
 *** Now specify the transition models ***
 
 *** For Mortality
-*global allvars_died male $lvars_age l2srh3 l2srh4 l2srh5 l2cancre l2hearte l2logatotb l2adl2 l2adl3p l2iadl2p
-*global allvars_died male $lvars_age l2srh3 l2srh4 l2srh5 l2cancre l2hearte l2iadl2p
-*global allvars_died male $lvars_age l2srh4 l2srh5 l2cancre l2hearte l2iadl2p
-*global allvars_died male $lvars_age l2srh5 l2hearte
-* 11-27_16:47:29: global allvars_died male $lvars_age 
-global allvars_died male $lvars_age l2cancre l2hearte l2diabe `lvars_srh' `lvars_funclimit' `lvars_lnly'
+global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe `lvars_srh' `lvars_funclimit' /* :thumbs-up !!! */
 
 
 *** Chronic Diseases
@@ -153,7 +148,7 @@ global allvars_arthre       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exer
 
 * PSYCHE
 *global allvars_psyche       $dvars $lvars_age `lvars_smoke' l2drink l2work l2cancre l2diabe l2stroke l2hibpe /*https://www.healthyplace.com/other-info/mental-illness-overview/what-causes-mental-illness-genetics-environment-risk-factors*/
-global allvars_psyche       $dvars $lvars_age 
+global allvars_psyche       $dvars $lvars_age l2logbmi `lvars_drink' `lvars_workstat' $lvars_hlth
 
 
 global allvars_asthmae      $dvars $lvars_age l2logbmi `lvars_smoke' l2logatotb /* https://cks.nice.org.uk/topics/asthma/background-information/risk-factors/ */
@@ -161,8 +156,8 @@ global allvars_parkine      $dvars $lvars_age l2logbmi `lvars_smoke' l2drink /*h
 global allvars_hchole       $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2diabe /*https://www.bhf.org.uk/informationsupport/risk-factors/high-cholesterol*/
 global allvars_hipe         $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2drink l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
 global allvars_srh          $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2cancre l2hearte l2diabe l2stroke
-global allvars_alzhe        $dvars $lvars_age 
-global allvars_demene       $dvars $lvars_age
+global allvars_alzhe        $dvars $lvars_age l2logbmi l2hchole l2stroke l2diabe /*https://www.alzheimersresearchuk.org/dementia-information/types-of-dementia/alzheimers-disease/risk-factors/ */
+global allvars_demene       $dvars $lvars_age l2logbmi `lvars_exercise' l2hchole l2stroke l2diabe `lvars_smoke' `lvars_funclimit' /*https://www.healthline.com/health/dementia-risk-factors#genetic-and-lifestyle-risk-factors*/
 
 
 *** Smoking 
@@ -184,8 +179,8 @@ global allvars_smkint       $dvars $lvars_age `lvars_workstat' `lvars_mstat' l2p
 *global allvars_drink        $dvars $lvars_age l2logbmi l2psyche l2employed l2unemployed l2logatotb /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 * 11-27_16:12:16: global allvars_drink        $dvars $lvars_age
 global allvars_drink        $dvars $lvars_age l2drink l2logbmi `lvars_workstat' `lvars_mstat' $lvars_hlth
-global allvars_heavy_drinker $dvars $lvars_age l2heavy_drinker l2logbmi `lvars_workstat' `lvars_mstat'
-global allvars_freq_drinker $dvars $lvars_age l2freq_drinker l2logbmi `lvars_workstat' `lvars_mstat'
+global allvars_heavy_drinker $dvars $lvars_age l2heavy_drinker l2freq_drinker l2logbmi `lvars_workstat' `lvars_mstat'
+global allvars_freq_drinker $dvars $lvars_age l2freq_drinker l2heavy_drinker l2logbmi `lvars_workstat' `lvars_mstat'
 
 
 *** Logbmi & other health
