@@ -1,6 +1,8 @@
 ---
 title: "FEM Model Analysis"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 This notebook is for debugging purposes. The current plan is to write a Make rule for running this notebook automatically at the end of a model run.
@@ -18,13 +20,12 @@ workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
-#require(formattable)
 require(reactable)
 require(haven)
 require(data.table)
-#require(reshape2)
-#require(ggplot2)
-#require(gridExtra)
+require(reshape2)
+require(ggplot2)
+require(plyr)
 
 ```
 
@@ -38,7 +39,7 @@ htmltools::tagList(
   reactable::reactable(iris)
 )
 
-# function to rename the dataframes, so we can run in an sapply()
+# function to rename the dataframes, so we can run in an lapply()
 rename_first_var <- function(testCSV, prefix) {
   testCSV[,1] <- paste0(testCSV[,1], '_', prefix)
   return(testCSV)
@@ -50,7 +51,7 @@ shorten_columns <- function(testCSV) {
                 rename_at(vars(starts_with('fem_mean_wave')), funs(sub('fem_mean_wave', 'FEM_', .))) %>%
                 rename_at(vars(starts_with('elsa_mean_wave')), funs(sub('elsa_mean_wave', 'ELSA_', .))) %>%
                 rename_at(vars(starts_with('p_value_wave')), funs(sub('p_value_wave', 'P_Value_', .))) %>%
-                rename('Variable' = variable)
+                dplyr::rename('Variable' = variable)
 }
 
 ```
@@ -67,11 +68,10 @@ min_uw <- read.csv(paste0(min, stem, "unweighted.csv"))
 min_demog <- read.csv(paste0(min, stem, "demog.csv"))
 min_binhlth <- read.csv(paste0(min, stem, "binhlth.csv"))
 min_binecon <- read.csv(paste0(min, stem, "binecon.csv"))
-min_cntecon <- read.csv(paste0(min, stem, "cntecon.csv"))
 min_risk <- read.csv(paste0(min, stem, "risk.csv"))
 
 # Collect in a list to do some formatting
-min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_cntecon, min_risk)
+min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_risk)
 # Add prefix 'min_' onto every variable name for clarity
 min_list <- lapply(min_list, rename_first_var, prefix='min')
 # Rename columns to be more succinct
@@ -90,10 +90,9 @@ cv_uw <- read.csv(paste0(CV1, stem, "unweighted.csv"))
 cv_demog <- read.csv(paste0(CV1, stem, "demog.csv"))
 cv_binhlth <- read.csv(paste0(CV1, stem, "binhlth.csv"))
 cv_binecon <- read.csv(paste0(CV1, stem, "binecon.csv"))
-cv_cntecon <- read.csv(paste0(CV1, stem, "cntecon.csv"))
 cv_risk <- read.csv(paste0(CV1, stem, "risk.csv"))
 # Now collect into list and rename vars and cols for clarity
-cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_cntecon, cv_risk)
+cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_risk)
 cv_list <- lapply(cv_list, rename_first_var, prefix='CV')
 cv_list <- lapply(cv_list, shorten_columns)
 cv_list <- lapply(cv_list, function(x) { x[is.na(x)] <- 0; x} )
@@ -126,12 +125,8 @@ binhlth <- arrange(binhlth, Variable)
 binecon <- rbind(min_list[[4]], cv_list[[4]])
 binecon <- arrange(binecon, Variable)
 
-# cntecon
-cntecon <- rbind(min_list[[5]], cv_list[[5]])
-cntecon <- arrange(cntecon, Variable)
-
 # risk
-risk <- rbind(min_list[[6]], cv_list[[6]])
+risk <- rbind(min_list[[5]], cv_list[[5]])
 risk <- arrange(risk, Variable)
 ```
 
@@ -211,17 +206,21 @@ createTTT <- function(t) {
 ```
 
 ### Unweighted (Died)
+
 ```{r echo = FALSE}
 # Create the actual table!
 uwTab <- createTTT(uw)
 uwTab
 ```
+
 ### Demographics
+
 ```{r echo = FALSE}
 # Create the actual table!
 demogTab <- createTTT(demog)
 demogTab
 ```
+
 ### Binary Health
 ```{r echo = FALSE}
 # Create the actual table!
@@ -233,12 +232,6 @@ binhlthTab
 # Create the actual table!
 bineconTab <- createTTT(binecon)
 bineconTab
-```
-### Count Economic
-```{r echo = FALSE}
-# Create the actual table!
-cnteconTab <- createTTT(cntecon)
-cnteconTab
 ```
 ### Risk Behaviours
 ```{r echo = FALSE}
@@ -308,6 +301,92 @@ long <- read_dta('../input_data/ELSA_long.dta')
 CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
 
 vis_CV2_prev(long, CV2)
+```
+
+# Intervention Scenarios
+
+### Base Initial Prevalence of Chronic Disease
+
+```{r echo = FALSE}
+visInitBasePrev <- function(base) {
+  
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                dplyr::rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                filter(year == 2012) %>%
+                melt(id.var = 'year', value.name = 'Prevalence') %>%
+                subset(select = -year)
+  
+  ggplot(data=cdMelted, aes(x=variable, y=Prevalence)) +
+          geom_bar(stat = 'identity') +
+          labs(title='Initial Prevalence', x='Prevalence', y='Chronic Disease')
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visInitBasePrev(baseline)
+```
+
+### Baseline Projections
+
+```{r echo = FALSE}
+visProjectedBaselineCD <- function(base) {
+  
+  # Extract vars, rename, and melt to put it in better format for graphing with ggplot2
+  cdMelted <- base %>%
+                select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
+                dplyr::rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
+                melt(id.var='year', value.name = 'Prevalence')
+  
+  # Create the tiled plot of disease prevalence
+  ggplot(data=cdMelted, aes(x=year, y=Prevalence)) +
+            geom_line() +
+            facet_grid(. ~ variable) +
+            theme(panel.spacing.x = unit(1.5, 'lines')) +
+            labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visProjectedBaselineCD(baseline)
+```
+
+### Baseline Projections by Subpopulation
+
+```{r echo = FALSE}
+visProjectedBySubpop <- function(base, cd, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  if(cd == 'cancre') {
+    dis <- 'Cancer'
+  } else if(cd == 'diabe') {
+    dis <- 'Diabetes'
+  } else if(cd == 'hearte') {
+    dis <- 'Heart Disease'
+  }
+  
+  # Generate varnames
+  all <- paste0('p_', cd, '_all')
+  # age
+  a5564 <- paste0('p_', cd, '_5564')
+  a6574 <- paste0('p_', cd, '_6574')
+  a7584 <- paste0('p_', cd, '_7584')
+  a85p <- paste0('p_', cd, '_85p')
+  
+  ageMelt <- base %>%
+              select(c('year', a5564, a6574, a7584, a85p)) %>%
+              dplyr::rename('55 to 64' = a5564, '65 to 74' = a6574, '75 to 64' = a7584, '85+' = a85p) %>%
+              melt(id.var = 'year', value.name = 'Prevalence')
+  
+  ggplot(data=ageMelt, aes(x=year, y=Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = dis, x = 'Year', y = 'Prevalence')
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visProjectedBySubpop(baseline, cd = 'cancre')
+visProjectedBySubpop(baseline, cd = 'diabe')
+visProjectedBySubpop(baseline, cd = 'hearte')
 ```
 
 # Github Reporting
