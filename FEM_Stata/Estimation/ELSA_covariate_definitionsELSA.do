@@ -92,7 +92,7 @@ local lvars_workstat l2employed l2unemployed                        /*Control: l
 *** Now specify the transition models ***
 
 *** For Mortality
-global allvars_died         male $lvars_age l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe `lvars_srh' `lvars_funclimit' /* :thumbs-up !!! */
+global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe `lvars_srh' `lvars_funclimit' /* :thumbs-up !!! */
 
 
 *** Chronic Diseases
