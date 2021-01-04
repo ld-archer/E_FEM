@@ -1,8 +1,6 @@
 ---
 title: "FEM Model Analysis"
-output:
-  html_document:
-    df_print: paged
+output: html_notebook
 ---
 
 This notebook is for debugging purposes. The current plan is to write a Make rule for running this notebook automatically at the end of a model run.
@@ -287,7 +285,7 @@ vis_CV2_prev <- function(long, CV2) {
   
   combine <- rbind(cd_l2, CV2_rename)
   
-  melted <- melt(combine, id.var = 'year', value.name = 'Prevalence')
+  melted <- reshape2::melt(combine, id.var = 'year', value.name = 'Prevalence')
   
   ggplot(data = melted, aes(x = year, y = Prevalence, color = variable)) +
           geom_line() +
@@ -314,7 +312,7 @@ visInitBasePrev <- function(base) {
                 select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
                 dplyr::rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
                 filter(year == 2012) %>%
-                melt(id.var = 'year', value.name = 'Prevalence') %>%
+                reshape2::melt(id.var = 'year', value.name = 'Prevalence') %>%
                 subset(select = -year)
   
   ggplot(data=cdMelted, aes(x=variable, y=Prevalence)) +
@@ -336,7 +334,7 @@ visProjectedBaselineCD <- function(base) {
   cdMelted <- base %>%
                 select(c('year', 'p_cancre_all', 'p_diabe_all', 'p_hearte_all')) %>%
                 dplyr::rename('Cancer' = p_cancre_all, 'Diabetes' = p_diabe_all, 'Heart Disease' = p_hearte_all) %>%
-                melt(id.var='year', value.name = 'Prevalence')
+                reshape2::melt(id.var='year', value.name = 'Prevalence')
   
   # Create the tiled plot of disease prevalence
   ggplot(data=cdMelted, aes(x=year, y=Prevalence)) +
@@ -375,7 +373,7 @@ visProjectedBySubpop <- function(base, cd, path='/home/luke/Documents/E_FEM_clea
   ageMelt <- base %>%
               select(c('year', a5564, a6574, a7584, a85p)) %>%
               dplyr::rename('55 to 64' = a5564, '65 to 74' = a6574, '75 to 64' = a7584, '85+' = a85p) %>%
-              melt(id.var = 'year', value.name = 'Prevalence')
+              reshape2::melt(id.var = 'year', value.name = 'Prevalence')
   
   ggplot(data=ageMelt, aes(x=year, y=Prevalence, color = variable)) +
           geom_line() +
