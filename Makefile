@@ -20,13 +20,17 @@ RSCRIPT = Rscript
 
 complete: ELSA base cross-validation minimal
 
-base: start_data transitions_base est_base summary_out_base simulation_base
+base: start_data transitions_base est_base summary_out_base simulation_base 
 
 cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 CV2_detailed_append Ttests_CV
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: complete debug_doc
+debug: complete debug_doc STYLE = BASE
+
+core: start_data transitions_core est_core summary_out_core simulation_core
+
+core_debug: core debug_doc STYLE = CORE
 
 
 ### Combined rules
@@ -136,6 +140,9 @@ est_CV:
 est_minimal:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
 
+est_core:
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_setting/ELSA_core/models $(STATA) save_est_cpp.do
+
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
 
@@ -145,6 +152,9 @@ summary_out_CV:
 
 summary_out_minimal:
 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
+
+summary_out_core:
+	cd FEM_CPP_settings && measures_suffix=ELSA_core $(STATA) summary_output_gen.do
 
 
 ### FEM Simulation
@@ -160,6 +170,9 @@ simulation_CV2:
 
 simulation_minimal:
 	$(MPI) ELSA_minimal.settings.txt
+
+simulation_core:
+	$(MPI) ELSA_core.settings.txt
 
 
 ### Handovers and Validation
@@ -190,6 +203,8 @@ $(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_su
 # This is a bit of an experiment
 TIMESTAMP = $(shell date +%m-%d_%T)
 
+STYLE = " "
+
 debug_doc: $(R)/model_analysis.nb.html
 
 $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
@@ -198,7 +213,7 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
 	# Create dir with current time
-	mkdir -p debug/$(TIMESTAMP)
+	mkdir -p debug/$(STYLE)_$(TIMESTAMP)
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
 	mv FEM_R/model_analysis.nb.html debug/$(TIMESTAMP)
 	cp -r output/ debug/$(TIMESTAMP)
