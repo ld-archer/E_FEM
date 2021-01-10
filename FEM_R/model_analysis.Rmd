@@ -387,6 +387,24 @@ visProjectedBySubpop(baseline, cd = 'diabe')
 visProjectedBySubpop(baseline, cd = 'hearte')
 ```
 
+### Survival Curve
+
+```{r echo = FALSE}
+cohort <- read_dta('ELSA_cohort/ELSA_cohort_summary.dta')
+
+cohort$age <- (cohort$year - 2012) + 50
+
+cohort$survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+cohort$survival_m <- cohort$m_endpop_m / cohort$m_endpop_m[1]
+cohort$survival_f <- cohort$m_endpop_f / cohort$m_endpop_f[1]
+
+# plot up survival curve
+ggplot(cohort, aes(x=age, y=survival)) +
+        geom_line(col='black', size=0.3) +
+        labs(title='Cohort Survival: All', y='Survival', x='Age')
+```
+
+
 # Github Reporting
 
 It would be nice if we could copy paste tables directly from this document into a github issue. For this reason, we will look into a package that can print tables directly into markdown or something similar, which we can then place straight into a Github issue.
