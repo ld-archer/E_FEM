@@ -344,3 +344,6 @@ atotb = exp(logatotb) : exp of log atotb : float
 l2atotb = exp(l2logatotb) : exp of lag of log atotb : float
 itot = exp(logitot) : exp of log itot : float
 l2itot = exp(l2logitot) : exp of lag of log itot : float
+
+| For Mortality Adjustment
+age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))

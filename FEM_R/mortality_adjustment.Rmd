@@ -21,11 +21,10 @@ require(readODS)
 ```
 
 
-First lets read in the .xls document containing the life tables. The life tables are divided into period and cohort life tables, which are further subdivided by gender, resulting in 4 separate life tables: a cohort and period life table for men, and the same for women.
+First read in the .xls document containing the life tables. The life tables are divided into period and cohort tables, which are further subdivided by gender, resulting in 4 separate life tables.
 
 ```{r}
-
-#ppp <- read_excel('../Mortality_Projections/engppp18ex.ods')
+# Read in male and female, cohort and period data separately 
 m_period <- read_ods('../Mortality_Projections/engppp18ex.ods',
                      sheet = 3,
                      skip = 9,
@@ -43,101 +42,53 @@ f_cohort <- read_ods('../Mortality_Projections/engppp18ex.ods',
                      skip = 9,
                      row_names = FALSE)
 
+# First row is empty so remove
 m_period <- m_period[-1,]
 f_period <- f_period[-1,]
 m_cohort <- m_cohort[-1,]
 f_cohort <- f_cohort[-1,]
-
 ```
 
-Before using this data to calculate mortality adjustment, we will produce one version using the assumptions laid out in [this](http://www.ssisi.ie/SSISI172Naqvi&WhelanRevised20190614.pdf) paper assessing different methodologies of estimating future life expectancies (focussing on Table VII on page 15). The paper has a detailed comparison between UK (ONS) and Irish (CSO) outputs, providing information on the assumptions made to produce the UK outputs. Here, we will use these assumptions to generate a mortality adjustment table, and we can use this to compare with a more granular version we will create soon using the life tables we loaded in in the previous chunk. 
+Steps:
 
-SIDELINE THE ABOVE, not doing this first might have a go later.
-
-```{r}
-
-#PASS
-
-```
-
-Forget the previous paragraph and chunk for a bit, instead we're going to try to use the cohort life tables to work out an age and gender specific life expectancy for each year.
-
-```{r}
-
-# First drop all ages below 50 for both male and female dfs
-#male <- tibble::rownames_to_column(m_cohort) # create copy of df so we can run this chunk independantly if we make mistakes
-male <- m_cohort %>% rename(Age = 'Attained age (years)')
-female <- f_cohort %>% rename(Age = 'Attained age (years)')
-
-# Filter out ages below 50
-male <- male %>% filter(Age >= 50)
-female <- female %>% filter(Age >= 50)
-
-# Replace rownames with values from Age row
-rownames(male) <- male$Age
-rownames(female) <- female$Age
-male <- subset(male, select = -Age)
-female <- subset(female, select = -Age)
-
-
-# Testing where the value for 50 yr old in 2012 is
-#foo <- male[1,33]
-#print(foo)
-# Now normalise to the value for a 50 year old in 2012
-male_norm <- male / male[1,32]
-female_norm <- female / female[1,32]
-
-male_norm
-
-# Divide all by 1 to flip the values, so values below 1 mean reduction in mortality, and vice versa
-m_inv <- 1 / male_norm
-f_inv <- 1 / female_norm
-
-m_inv
-
-
-```
-
-
-HAD A BETTER IDEA! Not going to remove the above chunk but I think I have figured out a mistake, going to try again. I think instead of scaling to single value for a 50 year old in 2012, I think we need to scale to the values for all ages in 2012. Then, we would have a value of 1 for every age in 2012, and the values would change over time, at a different rate for each age. 
+- Drop ages below 50
+- Assign age to rownames and drop Age column. End up with a matrix indexed by age and year.
+- Normalise matrix to 2012 values (column 32)
+- Calculate inverse (value < 1 == decreased chance of mortality)
 
 
 ```{r}
 # Rename age column and filter out ages below 50
 male <- m_cohort %>% 
-            rename(Age = 'Attained age (years)') %>%
-            filter(Age >= 50)
+            rename(age = 'Attained age (years)') %>%
+            filter(age >= 50)
 
 female <- f_cohort %>% 
-            rename(Age = 'Attained age (years)') %>%
-            filter(Age >= 50)
+            rename(age = 'Attained age (years)') %>%
+            filter(age >= 50)
 
 # Replace rownames with values from Age row
-rownames(male) <- male$Age
-rownames(female) <- female$Age
-male <- subset(male, select = -Age)
-female <- subset(female, select = -Age)
-
-# Add prefix to colnames so we can reference them with $ operator
-#colnames(male) <- paste("y", colnames(male), sep = '')
-#colnames(female) <- paste("y", colnames(female), sep = '')
+rownames(male) <- male$age
+rownames(female) <- female$age
+male <- subset(male, select = -age)
+female <- subset(female, select = -age)
 
 # Scale all values to the 2012 column
 male_norm <- male / male[,32]
 female_norm <- female / female[,32]
 
+head(female_norm)
+
 # Take the inverse (we want lower values to represent reduced mortality)
 m_inv <- 1 / male_norm
-f_inv <- 2 / female_norm
+f_inv <- 1 / female_norm
 
-m_inv
-
-
+head(f_inv)
 ```
 
-This is much more like it I think. We now have a value of 1 for all ages in the year 2012, which decreases into the future (reduced chance of mortality), and older years show an increase (where mortlity used to be higher). 
+We now have a value of 1 for all ages in the year 2012, which decreases into the future (reduced chance of mortality), and previous years show an increase (where mortality used to be higher). 
 
-The next step now is to rearrange the matrices into a single table with 4 columns: gender, age, year, and adjustment (the latter column must be unnamed to be recognised by the model). We can do this by reshaping the data, which should then create multiple rows, one for each gender, age, and year combination.
+The next step is to rearrange the matrices into a single table with 4 columns: gender, age, year, and adjustment (the latter column must be unnamed to be recognised by the model). We can do this with tidyr::gather.
 
 ```{r}
 # Copy dfs so we don't have to rerun other chunks
@@ -145,45 +96,31 @@ m_copy <- m_inv
 f_copy <- f_inv
 
 # Add a column for gender and reinsert the rownames back as a column for reshaping
-m_copy <- cbind(Male = 1, rownames(m_copy), m_copy)
+m_copy <- cbind(male = 1, rownames(m_copy), m_copy)
 rownames(m_copy) <- 1:nrow(m_copy)
-f_copy <- cbind(Male = 0, rownames(f_copy), f_copy)
+f_copy <- cbind(male = 0, rownames(f_copy), f_copy)
 rownames(f_copy) <- 1:nrow(f_copy)
 # Rename age column
-m_copy <- rename(m_copy, Age = "rownames(m_copy)")
-f_copy <- rename(f_copy, Age = "rownames(f_copy)")
+m_copy <- rename(m_copy, age = "rownames(m_copy)")
+f_copy <- rename(f_copy, age = "rownames(f_copy)")
 
 # First attempt at reshaping with gather
-m_long <- gather(m_copy, year, adjustment, 3:ncol(m_long), factor_key = TRUE)
-# Looks good!
+m_long <- gather(m_copy, year, adjustment, 3:ncol(m_copy), factor_key = TRUE)
+f_long <- gather(f_copy, year, adjustment, 3:ncol(f_copy), factor_key = TRUE)
 
+head(f_long) # Looks good!
 ```
 
+Last step is just to row bind and stick everything together, then can manually delete the 'adjustment' column heading before adding to a folder called 'mortality_adj_ELSA' in FEM_CPP_settings.
 
+```{r}
+# Combine male and female data
+adjustment <- rbind(m_long, f_long)
 
+head(adjustment)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Write to folder outside trunk so we can't accidentally replace it later
+write_tsv(adjustment, path = '/home/luke/Documents/E_FEM_clean/Mortality_Projections/mortality_adj.txt', 
+                      append = FALSE, 
+                      col_names = TRUE)
+```
