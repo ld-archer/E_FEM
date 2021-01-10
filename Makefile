@@ -207,6 +207,8 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	mkdir -p debug/$(TIMESTAMP)/logs/
 	cp -r FEM_Stata/Makedata/ELSA/*.log debug/$(TIMESTAMP)/logs/
 	cp -r FEM_Stata/Estimation/*.log debug/$(TIMESTAMP)/logs/
+	mkdir -p debug/$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(TIMESTAMP)/model_analysis.nb.html
 
