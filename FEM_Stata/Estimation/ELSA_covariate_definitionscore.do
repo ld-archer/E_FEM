@@ -3,9 +3,9 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge died drink smoke_start smoke_stop hchole alzhe demene heavy_drinker freq_drinker
 global bin_econ
-global ols logbmi logatotb logitot
+global ols logbmi
 global order adlstat iadlstat srh smkint
-global unorder mstat workstat
+global unorder workstat
 
 * Variable names
 #d ;
@@ -30,18 +30,14 @@ global bin_econ_names
 ;
 global ols_names
     "Log(BMI)"
-    "Log(Total Family Wealth)"
-    "Log(Total Family Income)"
 ;
 global order_names 
     "ADL status"
     "IADL status"
     "Self-Reported Health Status"
     "Smoking Intensity Status"
-    "Loneliness Status"
 ;
 global unorder_names
-    "Marriage Status"
     "Work Status"
 ;
 #d cr
@@ -70,31 +66,23 @@ local lvars_smoke l2smokev l2smoken l2smkint1 l2smkint2 l2smkint3
 local lvars_drink l2drink l2heavy_drinker l2freq_drinker
 * Functional Limitations
 local lvars_funclimit l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p        /*Control: NoADL*/
-* Marriage Status vars
-local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
 * Workstat vars
 local lvars_workstat l2employed l2unemployed                        /*Control: l2retired - retired*/
-* Finance vars
-local lvars_finance l2logatotb l2logitot
 
 
 *** Now specify the transition models ***
 
 *** For Mortality
-global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe `lvars_srh' `lvars_funclimit' l2logatotb /* :thumbs-up !!! */
+global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe `lvars_srh' `lvars_funclimit'  /* :thumbs-up !!! */
 
 
 *** Chronic Diseases
 *CANCRE
 global allvars_cancre       $dvars $lvars_age l2logbmi `lvars_smoke' l2freq_drinker l2heavy_drinker `lvars_srh'
-
 * DIABE
-global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2logatotb /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
-
+global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
 * HEARTE
 global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors  https://www.nhsggc.org.uk/your-health/health-services/hsd-patient-carers/heart-disease/risk-factors-for-heart-disease/#*/
-
-
 * HIBPE 
 global allvars_hibpe        $dvars $lvars_age l2logbmi l2hchole l2smoken /*https://www.bhf.org.uk/informationsupport/risk-factors/high-blood-pressure https://cks.nice.org.uk/topics/hypertension-not-diabetic/background-information/risk-factors/ */
 global allvars_lunge        $dvars $lvars_age l2logbmi l2smkint /*https://www.healthline.com/health/understanding-idiopathic-pulmonary-fibrosis/chronic-lung-diseases-causes-and-risk-factors#1 https://cks.nice.org.uk/topics/chronic-obstructive-pulmonary-disease/background-information/risk-factors/ */
@@ -106,32 +94,25 @@ global allvars_demene       $dvars $lvars_age l2logbmi l2hchole l2stroke l2diabe
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age `lvars_workstat' `lvars_mstat' l2logatotb l2logitot
-global allvars_smoke_stop   $dvars $lvars_age `lvars_workstat' `lvars_mstat' l2logatotb l2logitot
-global allvars_smkint       $dvars $lvars_age `lvars_workstat' `lvars_mstat' l2logatotb l2logitot
+global allvars_smoke_start  $dvars $lvars_age `lvars_workstat'
+global allvars_smoke_stop   $dvars $lvars_age `lvars_workstat'
+global allvars_smkint       $dvars $lvars_age `lvars_workstat'
 
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
-global allvars_drink        $dvars $lvars_age l2drink `lvars_workstat' `lvars_mstat' $lvars_hlth
-global allvars_heavy_drinker $dvars $lvars_age l2heavy_drinker l2freq_drinker `lvars_workstat' `lvars_mstat' $lvars_hlth `lvars_smoke' `lvars_finance'
-global allvars_freq_drinker $dvars $lvars_age l2freq_drinker l2heavy_drinker `lvars_workstat' `lvars_mstat' $lvars_hlth `lvars_smoke' `lvars_finance'
+global allvars_drink        $dvars $lvars_age l2drink `lvars_workstat' $lvars_hlth
+global allvars_heavy_drinker $dvars $lvars_age l2heavy_drinker l2freq_drinker `lvars_workstat' $lvars_hlth `lvars_smoke'
+global allvars_freq_drinker $dvars $lvars_age l2freq_drinker l2heavy_drinker `lvars_workstat' $lvars_hlth `lvars_smoke'
 
 
 *** Logbmi & other health
-global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_drink' `lvars_funclimit' `lvars_workstat' `lvars_mstat'
+global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_drink' `lvars_funclimit' `lvars_workstat'
 
 
 *** Disabilities
 global allvars_adlstat      $dvars $lvars_age `lvars_smoke' $lvars_hlth `lvars_funclimit' l2drink
 global allvars_iadlstat     $dvars $lvars_age `lvars_smoke' $lvars_hlth `lvars_funclimit' l2drink
 
-
-*** Economic
-global allvars_logatotb     $dvars $lvars_age l2logatotb `lvars_workstat' `lvars_mstat' $lvars_hlth  /* Control for workstat vars is retired */
-global allvars_logitot      $dvars $lvars_age l2logitot `lvars_workstat' `lvars_mstat' $lvars_hlth
-
-global allvars_workstat     $dvars $lvars_age l2workstat l2stroke `lvars_smoke' `lvars_mstat'
-
-*** Marriage Status
-global allvars_mstat        $dvars $lvars_age `lvars_workstat' l2logatotb
+** Workstat
+global allvars_workstat     $dvars $lvars_age l2workstat l2stroke `lvars_smoke'

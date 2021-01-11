@@ -26,11 +26,11 @@ cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: complete debug_doc STYLE = BASE
+debug: clean_logs clean_output complete debug_doc STYLE=BASE
 
 core: start_data transitions_core est_core summary_out_core simulation_core
 
-core_debug: core debug_doc STYLE = CORE
+core_debug: clean_logs clean_output core debug_doc STYLE=CORE
 
 
 ### Combined rules
@@ -141,7 +141,7 @@ est_minimal:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
 
 est_core:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_setting/ELSA_core/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
 
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
@@ -203,8 +203,6 @@ $(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_su
 # This is a bit of an experiment
 TIMESTAMP = $(shell date +%m-%d_%T)
 
-STYLE = " "
-
 debug_doc: $(R)/model_analysis.nb.html
 
 $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
@@ -215,28 +213,31 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	# Create dir with current time
 	mkdir -p debug/$(STYLE)_$(TIMESTAMP)
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
-	mv FEM_R/model_analysis.nb.html debug/$(TIMESTAMP)
-	cp -r output/ debug/$(TIMESTAMP)
-	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/$(TIMESTAMP)
-	mkdir -p debug/$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Makedata/ELSA/*.log debug/$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Estimation/*.log debug/$(TIMESTAMP)/logs/
-	mkdir -p debug/$(TIMESTAMP)/settings/
-	cp -r FEM_CPP_settings/ debug/$(TIMESTAMP)/settings/
+	mv FEM_R/model_analysis.nb.html debug/$(STYLE)_$(TIMESTAMP)
+	cp -r output/ debug/$(STYLE)_$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(STYLE)_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/$(STYLE)_$(TIMESTAMP)
+	mkdir -p debug/$(STYLE)_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/$(STYLE)_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/$(STYLE)_$(TIMESTAMP)/logs/
+	mkdir -p debug/$(STYLE)_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/$(STYLE)_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
-	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(TIMESTAMP)/model_analysis.nb.html
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(STYLE)_$(TIMESTAMP)/model_analysis.nb.html
 
 
 ### Housekeeping and cleaning
 
-clean_all: clean clean_total
+clean_all: clean_logs clean_total clean_output clean_models
 
-clean:
+clean_logs:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
 	rm -f FEM_R/*.nb.html
+
+clean_output:
+	rm -rf output/*
 
 clean_total:
 	rm -f output/*/*.dta
