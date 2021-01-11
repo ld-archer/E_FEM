@@ -404,6 +404,57 @@ ggplot(cohort, aes(x=age, y=survival)) +
         labs(title='Cohort Survival: All', y='Survival', x='Age')
 ```
 
+# AgeUK Almanac External Validation
+
+'The Age UK almanac of disease profiles in later life', published in October 2015, contains information on the prevalence of major diseases, conditions, and syndromes affecting older people in England, broken down by age and sex. 
+
+```{r}
+# Need a function here to handle the repetition
+get_prevalence <- function(FEM) {
+  
+}
+
+
+# Now read in male and female AgeUK data
+male_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-MALE.csv')
+female_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
+# Rename columns
+colnames(male_ageUK) <- c('Condition', 'Age 60-64', 'Age 65-69', 'Age 70-74', 'Age 75-79', 'Age 80-84', 'Age 85-89', 'Age 90-94', 'Age 95-99', 'Age 100+', 'Total Pop.')
+colnames(female_ageUK) <- colnames(male_ageUK)
+
+# Collect conditions into a list for extracting from FEM
+# Will need to be written in FEM shorthand
+keep_vars <- c('male', 'age', 'hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene')
+
+# Now get FEM output for 2014
+FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
+FEM_2014 <- FEM_2014[keep_vars]
+# extract males and females
+mFEM_2014 <- FEM_2014 %>% filter(male == 1)
+fFEM_2014 <- FEM_2014 %>% filter(male == 0)
+
+m6064 <- mFEM_2014 %>% filter(age %in% (60:64))
+f6064 <- fFEM_2014 %>% filter(age %in% (60:64))
+
+m6064_prev <- data.frame((colSums(m6064) / nrow(m6064)) * 100)
+f6064_prev <- data.frame((colSums(f6064) / nrow(f6064)) * 100)
+colnames(m6064_prev) <- 'FEM_male_6064'
+colnames(f6064_prev) <- 'FEM_female_6064'
+
+prev_df <- data.frame(m6064_prev, f6064_prev)
+
+# correct colnames in ageUK stuff
+male_ageUK <- male_ageUK %>% filter(conditions == c('Hypertension', 'Stroke', 'Diabetes', 'Dementia'))
+
+# Now calculate prevalence by age group for each chronic disease
+# prevalence = total / affected
+# Diabetes
+male_prev <- data.frame(colSums(mFEM_2014) / nrow(mFEM_2014))
+female_prev <- data.frame(colSums(fFEM_2014) / nrow(fFEM_2014))
+colnames(male_prev) <- 'FEM_male'
+colnames(female_prev) <- 'FEM_female'
+
+```
 
 # Github Reporting
 
