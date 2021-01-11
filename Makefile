@@ -20,13 +20,17 @@ RSCRIPT = Rscript
 
 complete: ELSA base cross-validation minimal
 
-base: start_data transitions_base est_base summary_out_base simulation_base
+base: start_data transitions_base est_base summary_out_base simulation_base 
 
 cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 CV2_detailed_append Ttests_CV
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: complete debug_doc
+debug: clean_logs clean_output complete debug_doc STYLE=BASE
+
+core: start_data transitions_core est_core summary_out_core simulation_core
+
+core_debug: clean_logs clean_output core debug_doc STYLE=CORE
 
 
 ### Combined rules
@@ -119,6 +123,9 @@ $(ESTIMATES)/ELSA/crossvalidation2/died.est: $(DATADIR)/ELSA_transition.dta $(ES
 transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=minimal $(STATA) ELSA_init_transition.do
 
+transitions_core: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core $(STATA) ELSA_init_transition.do
+
 
 ### Estimates and Summary
 
@@ -133,6 +140,9 @@ est_CV:
 est_minimal:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
 
+est_core:
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
+
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
 
@@ -142,6 +152,9 @@ summary_out_CV:
 
 summary_out_minimal:
 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
+
+summary_out_core:
+	cd FEM_CPP_settings && measures_suffix=ELSA_core $(STATA) summary_output_gen.do
 
 
 ### FEM Simulation
@@ -157,6 +170,9 @@ simulation_CV2:
 
 simulation_minimal:
 	$(MPI) ELSA_minimal.settings.txt
+
+simulation_core:
+	$(MPI) ELSA_core.settings.txt
 
 
 ### Handovers and Validation
@@ -195,28 +211,33 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
 	# Create dir with current time
-	mkdir -p debug/$(TIMESTAMP)
+	mkdir -p debug/$(STYLE)_$(TIMESTAMP)
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
-	mv FEM_R/model_analysis.nb.html debug/$(TIMESTAMP)
-	cp -r output/ debug/$(TIMESTAMP)
-	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/$(TIMESTAMP)
-	mkdir -p debug/$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Makedata/ELSA/*.log debug/$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Estimation/*.log debug/$(TIMESTAMP)/logs/
+	mv FEM_R/model_analysis.nb.html debug/$(STYLE)_$(TIMESTAMP)
+	cp -r output/ debug/$(STYLE)_$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(STYLE)_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/$(STYLE)_$(TIMESTAMP)
+	mkdir -p debug/$(STYLE)_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/$(STYLE)_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/$(STYLE)_$(TIMESTAMP)/logs/
+	mkdir -p debug/$(STYLE)_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/$(STYLE)_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
-	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(TIMESTAMP)/model_analysis.nb.html
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(STYLE)_$(TIMESTAMP)/model_analysis.nb.html
 
 
 ### Housekeeping and cleaning
 
-clean_all: clean clean_total
+clean_all: clean_logs clean_total clean_output clean_models
 
-clean:
+clean_logs:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
 	rm -f FEM_R/*.nb.html
+
+clean_output:
+	rm -rf output/*
 
 clean_total:
 	rm -f output/*/*.dta

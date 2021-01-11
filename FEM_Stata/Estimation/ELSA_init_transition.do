@@ -51,6 +51,9 @@ if !missing("`defmod'") {
 	else if "`defmod'" == "minimal" {
 		local ster "$local_path/Estimates/ELSA_minimal"
 	}
+	else if "`defmod'" == "core" {
+		local ster "$local_path/Estimates/ELSA_core"
+	}
 }
 else {
 	di as error "The ELSA_init_transition.do script requires a suffix input"
