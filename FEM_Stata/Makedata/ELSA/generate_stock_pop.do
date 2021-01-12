@@ -93,6 +93,7 @@ saveold $outdata/ELSA_stock_base_CV1.dta, replace v(12)
 
 *** Now cross-validation population 2 (CV2)
 restore
+preserve
 
 * For CV2 pop:
 *   Keep wave 5
@@ -113,5 +114,20 @@ do kludge.do CV2
 
 saveold $outdata/ELSA_stock_base_CV2.dta, replace v(12)
 *saveold ../../../input_data/ELSA_stock_base_CV2.dta, replace v(12)
+
+*** Now AgeUK Validation sim
+restore
+
+keep if wave == 3
+gen entry = 2006
+
+drop if died == 1
+
+replace l2age = age - 2 if missing(l2age)
+
+*** KLUDGE ***
+do kludge.do valid
+
+saveold $outdata/ELSA_stock_base_valid.dta, replace v(12)
 
 capture log close

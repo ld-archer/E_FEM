@@ -104,6 +104,11 @@ else if "`scen'" == "min" {
                         psyche asthmae parkine logitot hchole hipe educl ///
                         smkint lnly alzhe demene workstat freq_drinker heavy_drinker
 }
+else if "`scen'" == "valid" {
+    local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev freq_drinker heavy_drinker ///
+                        lunge smoken logitot lnly smkint workstat alzhe arthre asthmae demene ///
+                        parkine psyche hipe hchole
+}
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
 }

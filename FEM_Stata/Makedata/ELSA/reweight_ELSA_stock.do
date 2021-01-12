@@ -10,7 +10,7 @@ log using reweight_ELSA_stock_`scen'.log, replace
 use $outdata/ELSA_stock_base.dta, clear
 *use ../../../input_data/ELSA_stock_base.dta, clear
 
-* If not base, one of the 2 cross-validation populations
+* If not base, one of the other populations
 if "`scen'" != "base" {
 	use $outdata/ELSA_stock_base_`scen'.dta, clear
 }
@@ -34,6 +34,9 @@ else if "`scen'" == "CV2" {
 }
 else if "`scen'" == "min" {
 	keep if year == 2002
+}
+else if "`scen'" == "valid" {
+	keep if year == 2006
 }
 
 * Check the merge
@@ -75,6 +78,9 @@ else if "`scen'" == "CV2" {
 }
 else if "`scen'" == "min" {
 	saveold $outdata/ELSA_stock_min.dta, replace v(12)
+}
+else if "`scen'" == "valid" {
+	saveold $outdata/ELSA_stock_valid.dta, replace v(12)
 }
 
 
