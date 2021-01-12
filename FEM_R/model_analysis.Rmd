@@ -410,8 +410,42 @@ ggplot(cohort, aes(x=age, y=survival)) +
 
 ```{r}
 # Need a function here to handle the repetition
-get_prevalence <- function(FEM) {
+get_FEM_prev <- function(FEM, age_range, keep_vars) {
+  # Keep only important vars
+  FEM <- FEM[keep_vars]
+  # Separate by gender
+  mFEM <- FEM %>% filter(male == 1)
+  fFEM <- FEM %>% filter(male == 0)
+  # Filter by age from age_range
+  mFEM <- mFEM %>% filter(age %in% (age_range))
+  fFEM <- fFEM %>% filter(age %in% (age_range))
+  # Get proportion of total pop. (prevalence)
+  mFEM <- data.frame((colSums(mFEM) / nrow(mFEM)) * 100)
+  fFEM <- data.frame((colSums(fFEM) / nrow(fFEM)) * 100)
   
+  # produce a string for column naming
+  age <- paste0(age_range[1], '-', age_range[5])
+  
+  colnames(mFEM) <- paste0('FEM_male_', age)
+  colnames(fFEM) <- paste0('FEM_female_', age)
+  
+  #male <- cbind(male, mFEM)
+  
+  # Collect into 1 df
+  prev_df <- data.frame(mFEM, fFEM)
+  return(prev_df)
+  
+  #return(out)
+}
+
+package <- function() {
+  # Set up objects for holding and returning the prevalences, separate dfs for male and female
+  out <- list()
+  male <- data.frame()
+  female <- data.frame()
+  
+  age_list <- c('Age 60-64', 'Age 65-69', 'Age 70-74', 'Age 75-79', 'Age 80-84', 'Age 85-89', 'Age 90-94', 'Age 95-99', 'Age 100+')
+  age_list <- c(60:64, 65:69, 70:74, 75:79, 80:84, 85:89, 90:94, 95:99)
 }
 
 
@@ -428,8 +462,11 @@ keep_vars <- c('male', 'age', 'hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'ca
 
 # Now get FEM output for 2014
 FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
-FEM_2014 <- FEM_2014[keep_vars]
-# extract males and females
+
+test <- get_FEM_prev(FEM_2014, 60:64, keep_vars)
+
+#FEM_2014 <- FEM_2014[keep_vars]
+## extract males and females
 mFEM_2014 <- FEM_2014 %>% filter(male == 1)
 fFEM_2014 <- FEM_2014 %>% filter(male == 0)
 
@@ -443,18 +480,77 @@ colnames(f6064_prev) <- 'FEM_female_6064'
 
 prev_df <- data.frame(m6064_prev, f6064_prev)
 
+# AgeUK conditions to extract
+#condlist <- c('Dementia', 'Hypertension', 'Diabetes', 'Stroke')
+
 # correct colnames in ageUK stuff
-male_ageUK <- male_ageUK %>% filter(conditions == c('Hypertension', 'Stroke', 'Diabetes', 'Dementia'))
+#male_ageUK <- male_ageUK %>% filter(Condition == 'Dementia' | Condition == 'Hypertension' | Condition == 'Diabetes' | Condition == 'Stroke')
+#male_ageUK <- male_ageUK %>% filter(Condition %in% condlist)
 
 # Now calculate prevalence by age group for each chronic disease
 # prevalence = total / affected
 # Diabetes
-male_prev <- data.frame(colSums(mFEM_2014) / nrow(mFEM_2014))
-female_prev <- data.frame(colSums(fFEM_2014) / nrow(fFEM_2014))
-colnames(male_prev) <- 'FEM_male'
-colnames(female_prev) <- 'FEM_female'
+#male_prev <- data.frame(colSums(mFEM_2014) / nrow(mFEM_2014))
+#female_prev <- data.frame(colSums(fFEM_2014) / nrow(fFEM_2014))
+#colnames(male_prev) <- 'FEM_male'
+#colnames(female_prev) <- 'FEM_female'
 
 ```
+
+```{r}
+
+tmp <- function(m, f, age) {
+  
+  m_age <- m %>% filter(age %in% (age))
+  f_age <- f %>% filter(age %in% (age))
+  
+  m_prev <- data.frame((colSums(m_age) / nrow(m_age)) * 100)
+  f_prev <- data.frame((colSums(f_age) / nrow(f_age)) * 100)
+  
+  list <- list(m_prev, f_prev)
+  return(list)
+}
+
+
+
+# Now read in male and female AgeUK data
+male_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-MALE.csv')
+female_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
+# Rename columns
+colnames(male_ageUK) <- c('Condition', 'Age 60-64', 'Age 65-69', 'Age 70-74', 'Age 75-79', 'Age 80-84', 'Age 85-89', 'Age 90-94', 'Age 95-99', 'Age 100+', 'Total Pop.')
+colnames(female_ageUK) <- colnames(male_ageUK)
+
+# Collect conditions into a list for extracting from FEM
+# Will need to be written in FEM shorthand
+keep_vars <- c('male', 'age', 'hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene')
+
+# Now get FEM output for 2014
+FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
+FEM <- FEM_2014[keep_vars]
+
+# extract males and females
+mFEM <- FEM %>% filter(male == 1)
+fFEM <- FEM %>% filter(male == 0)
+
+age_list <- c(60:64, 65:69, 70:74, 75:79, 80:84, 85:89, 90:94, 95:99)
+
+m6064 <- mFEM %>% filter(age %in% (60:64))
+f6064 <- fFEM %>% filter(age %in% (60:64))
+
+m6064_prev <- data.frame((colSums(m6064) / nrow(m6064)) * 100)
+f6064_prev <- data.frame((colSums(f6064) / nrow(f6064)) * 100)
+colnames(m6064_prev) <- 'FEM_male_6064'
+colnames(f6064_prev) <- 'FEM_female_6064'
+
+male <- list()
+female <- list()
+
+mf_list <- tmp(mFEM, fFEM, 60:64)
+male <- list(male, mf_list[1])
+female <- list(female, mf_list[2])
+
+```
+
 
 # Github Reporting
 
