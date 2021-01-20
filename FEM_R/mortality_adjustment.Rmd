@@ -17,6 +17,7 @@ knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
 require(readODS)
+require(ggplot2)
 
 ```
 
@@ -124,3 +125,249 @@ write_tsv(adjustment, path = '/home/luke/Documents/E_FEM_clean/Mortality_Project
                       append = FALSE, 
                       col_names = TRUE)
 ```
+
+# DISREGARD ALL THE ABOVE
+
+It's all wrong. Start again but can reuse some of the code for another dataset.
+
+# Second Attempt Using Mortality Rates (qx)
+
+```{r}
+m_period <- read_ods('../Mortality_Projections/engppp18qx.ods',
+                     sheet = 3,
+                     skip = 6,
+                     row_names = TRUE)
+f_period <- read_ods('../Mortality_Projections/engppp18qx.ods',
+                     sheet = 4,
+                     skip = 6,
+                     row_names = TRUE)
+m_cohort <- read_ods('../Mortality_Projections/engppp18qx.ods',
+                     sheet = 5,
+                     skip = 6,
+                     row_names = FALSE)
+f_cohort <- read_ods('../Mortality_Projections/engppp18qx.ods',
+                     sheet = 6,
+                     skip = 6,
+                     row_names = FALSE)
+
+```
+
+Steps:
+
+- Drop ages below 50
+- Assign age to rownames and drop Age column. End up with a matrix indexed by age and year.
+- Calculate ratio between values for consecutive years
+
+```{r}
+# Rename age column and filter out ages below 50
+male <- m_cohort %>% 
+            rename(age = 'age (years)') %>%
+            filter(age >= 50)
+
+female <- f_cohort %>% 
+            rename(age = 'age (years)') %>%
+            filter(age >= 50)
+
+# Replace rownames with values from Age row
+rownames(male) <- male$age
+rownames(female) <- female$age
+male <- subset(male, select = -age)
+female <- subset(female, select = -age)
+
+ratio_df <- data.frame(matrix(vector(mode = 'numeric', length = nrow(male) * ncol(male)), nrow = nrow(male), ncol = ncol(male)))
+
+for(i in nrow(male)) {
+  for(j in ncol(male)) {
+    ratio_df[i,j] <- male[i,j] / male[i-1, j-1]
+  }
+}
+
+
+```
+
+
+```{r}
+# Rename age column and filter out ages below 50
+male <- m_cohort %>% 
+            rename(age = 'age (years)') %>%
+            filter(age >= 50)
+
+female <- f_cohort %>% 
+            rename(age = 'age (years)') %>%
+            filter(age >= 50)
+
+# Replace rownames with values from Age row
+rownames(male) <- male$age
+rownames(female) <- female$age
+male <- subset(male, select = -age)
+female <- subset(female, select = -age)
+
+# Scale all values to the 2012 column
+# SET TO 2004 FOR TESTING AGAINST US, NEED TO CHANGE THIS BACK 
+male_norm <- male / male[,24]
+female_norm <- female / female[,24]
+
+head(female_norm)
+```
+
+
+```{r}
+# Copy dfs so we don't have to rerun other chunks
+m_copy <- male_norm
+f_copy <- female_norm
+
+# Add a column for gender and reinsert the rownames back as a column for reshaping
+m_copy <- cbind(male = 1, rownames(m_copy), m_copy)
+rownames(m_copy) <- 1:nrow(m_copy)
+f_copy <- cbind(male = 0, rownames(f_copy), f_copy)
+rownames(f_copy) <- 1:nrow(f_copy)
+# Rename age column
+m_copy <- rename(m_copy, age = "rownames(m_copy)")
+f_copy <- rename(f_copy, age = "rownames(f_copy)")
+
+# First attempt at reshaping with gather
+m_long <- gather(m_copy, year, adjustment, 3:ncol(m_copy), factor_key = TRUE)
+f_long <- gather(f_copy, year, adjustment, 3:ncol(f_copy), factor_key = TRUE)
+
+head(f_long) # Looks good!
+```
+
+Write out the file to E_FEM_clean/Mortality_Projections/.
+
+```{r}
+# Combine male and female data
+adjustment <- rbind(m_long, f_long)
+
+head(adjustment)
+
+# Write to folder outside trunk so we can't accidentally replace it later
+write_tsv(adjustment, path = '/home/luke/Documents/E_FEM_clean/Mortality_Projections/mortality_adj.txt', 
+                      append = FALSE, 
+                      col_names = TRUE)
+```
+
+```{r}
+# Test against US data
+us_adj <- read_tsv('../Mortality_Projections/mortality_adj_US.txt', col_names = TRUE, skip = 1)
+
+adj <- adjustment
+
+adj$year <- as.numeric(as.character(adj$year))
+us_adj$year <- as.numeric(as.character(us_adj$year))
+
+# Extract only 60 year olds from my dataset
+# Drop all years before 1990 as this is when the US data starts
+adj_60 <- adj %>%
+                filter(age == 60) %>%
+                select(-age) %>%
+                filter(year > 1989) %>%
+                rename(group = male)
+
+# Drop all years after 2068 for US as this is when Eng data stops
+# Also drop over 65 values
+adj_us <- us_adj %>%
+                filter(year < 2069) %>%
+                filter(l2age65pd == 0) %>%
+                rename(group = l2age65pd)
+adj_us$group <- 2
+
+```
+
+NOW PLOT!!
+
+```{r}
+
+# Now combine the data and start plotting
+combined <- rbind(adj_60, adj_us)
+
+combined$group[combined$group == 1] <- 'male'
+combined$group[combined$group == 0] <- 'female'
+combined$group[combined$group == 2] <- 'US'
+
+ggplot(data = combined, aes(x = year, y = adjustment, color = group)) +
+      geom_line(size = 0.5) +
+      labs(title = 'Age 60')
+
+
+cut <- combined %>% filter(group != 'US')
+
+ggplot(data = cut, aes(x = year, y = adjustment, color = group)) +
+      geom_line()
+
+cut2 <- cut %>% filter(group == 'female')
+
+ggplot(data = cut2, aes(x = year, y = adjustment, color = group)) +
+      geom_line()
+
+```
+
+
+
+```{r}
+# Test against US data
+us_adj2 <- read_tsv('../Mortality_Projections/mortality_adj_US.txt', col_names = TRUE, skip = 1)
+
+adj2 <- adjustment
+
+adj2$year <- as.numeric(as.character(adj2$year))
+us_adj$year <- as.numeric(as.character(us_adj$year))
+# Extract only 60 year olds from my dataset
+# Drop all years before 1990 as this is when the US data starts
+adj_60 <- adj2 %>%
+                filter(age == 75) %>%
+                select(-age) %>%
+                filter(year > 1989) %>%
+                rename(group = male)
+
+# Drop all years after 2068 for US as this is when Eng data stops
+# Also drop over 65 values
+adj_us <- us_adj %>%
+                filter(year < 2069) %>%
+                filter(l2age65pd == 1) %>%
+                rename(group = l2age65pd)
+adj_us$group <- 2
+
+```
+```{r}
+
+# Now combine the data and start plotting
+combined <- rbind(adj_60, adj_us)
+
+combined$group[combined$group == 1] <- 'male'
+combined$group[combined$group == 0] <- 'female'
+combined$group[combined$group == 2] <- 'US'
+
+ggplot(data = combined, aes(x = year, y = adjustment, color = group)) +
+      geom_line(size = 0.5) +
+      labs(title = 'Age 75')
+
+
+cut <- combined %>% filter(group != 'US')
+
+ggplot(data = cut, aes(x = year, y = adjustment, color = group)) +
+      geom_line()
+
+cut2 <- cut %>% filter(group == 'female')
+
+ggplot(data = cut2, aes(x = year, y = adjustment, color = group)) +
+      geom_line()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
