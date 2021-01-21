@@ -111,8 +111,8 @@ global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_s
 
 
 *** Disabilities
-global allvars_adlstat      $dvars $lvars_age `lvars_smoke' $lvars_hlth `lvars_funclimit' l2drink
-global allvars_iadlstat     $dvars $lvars_age `lvars_smoke' $lvars_hlth `lvars_funclimit' l2drink
+global allvars_adlstat      $dvars $lvars_age `lvars_smoke' $lvars_hlth l2demene `lvars_funclimit' l2drink
+global allvars_iadlstat     $dvars $lvars_age `lvars_smoke' $lvars_hlth l2demene `lvars_funclimit' l2drink
 
 ** Workstat
 global allvars_workstat     $dvars $lvars_age l2workstat l2stroke `lvars_smoke'
