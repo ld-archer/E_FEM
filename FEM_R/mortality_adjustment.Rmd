@@ -21,115 +21,6 @@ require(ggplot2)
 
 ```
 
-
-First read in the .xls document containing the life tables. The life tables are divided into period and cohort tables, which are further subdivided by gender, resulting in 4 separate life tables.
-
-```{r}
-# Read in male and female, cohort and period data separately 
-m_period <- read_ods('../Mortality_Projections/engppp18ex.ods',
-                     sheet = 3,
-                     skip = 9,
-                     row_names = TRUE)
-f_period <- read_ods('../Mortality_Projections/engppp18ex.ods',
-                     sheet = 4,
-                     skip = 9,
-                     row_names = TRUE)
-m_cohort <- read_ods('../Mortality_Projections/engppp18ex.ods',
-                     sheet = 5,
-                     skip = 9,
-                     row_names = FALSE)
-f_cohort <- read_ods('../Mortality_Projections/engppp18ex.ods',
-                     sheet = 6,
-                     skip = 9,
-                     row_names = FALSE)
-
-# First row is empty so remove
-m_period <- m_period[-1,]
-f_period <- f_period[-1,]
-m_cohort <- m_cohort[-1,]
-f_cohort <- f_cohort[-1,]
-```
-
-Steps:
-
-- Drop ages below 50
-- Assign age to rownames and drop Age column. End up with a matrix indexed by age and year.
-- Normalise matrix to 2012 values (column 32)
-- Calculate inverse (value < 1 == decreased chance of mortality)
-
-
-```{r}
-# Rename age column and filter out ages below 50
-male <- m_cohort %>% 
-            rename(age = 'Attained age (years)') %>%
-            filter(age >= 50)
-
-female <- f_cohort %>% 
-            rename(age = 'Attained age (years)') %>%
-            filter(age >= 50)
-
-# Replace rownames with values from Age row
-rownames(male) <- male$age
-rownames(female) <- female$age
-male <- subset(male, select = -age)
-female <- subset(female, select = -age)
-
-# Scale all values to the 2012 column
-male_norm <- male / male[,32]
-female_norm <- female / female[,32]
-
-head(female_norm)
-
-# Take the inverse (we want lower values to represent reduced mortality)
-m_inv <- 1 / male_norm
-f_inv <- 1 / female_norm
-
-head(f_inv)
-```
-
-We now have a value of 1 for all ages in the year 2012, which decreases into the future (reduced chance of mortality), and previous years show an increase (where mortality used to be higher). 
-
-The next step is to rearrange the matrices into a single table with 4 columns: gender, age, year, and adjustment (the latter column must be unnamed to be recognised by the model). We can do this with tidyr::gather.
-
-```{r}
-# Copy dfs so we don't have to rerun other chunks
-m_copy <- m_inv
-f_copy <- f_inv
-
-# Add a column for gender and reinsert the rownames back as a column for reshaping
-m_copy <- cbind(male = 1, rownames(m_copy), m_copy)
-rownames(m_copy) <- 1:nrow(m_copy)
-f_copy <- cbind(male = 0, rownames(f_copy), f_copy)
-rownames(f_copy) <- 1:nrow(f_copy)
-# Rename age column
-m_copy <- rename(m_copy, age = "rownames(m_copy)")
-f_copy <- rename(f_copy, age = "rownames(f_copy)")
-
-# First attempt at reshaping with gather
-m_long <- gather(m_copy, year, adjustment, 3:ncol(m_copy), factor_key = TRUE)
-f_long <- gather(f_copy, year, adjustment, 3:ncol(f_copy), factor_key = TRUE)
-
-head(f_long) # Looks good!
-```
-
-Last step is just to row bind and stick everything together, then can manually delete the 'adjustment' column heading before adding to a folder called 'mortality_adj_ELSA' in FEM_CPP_settings.
-
-```{r}
-# Combine male and female data
-adjustment <- rbind(m_long, f_long)
-
-head(adjustment)
-
-# Write to folder outside trunk so we can't accidentally replace it later
-write_tsv(adjustment, path = '/home/luke/Documents/E_FEM_clean/Mortality_Projections/mortality_adj.txt', 
-                      append = FALSE, 
-                      col_names = TRUE)
-```
-
-# DISREGARD ALL THE ABOVE
-
-It's all wrong. Start again but can reuse some of the code for another dataset.
-
 # Second Attempt Using Mortality Rates (qx)
 
 ```{r}
@@ -161,11 +52,11 @@ Steps:
 ```{r}
 # Rename age column and filter out ages below 50
 male <- m_cohort %>% 
-            rename(age = 'age (years)') %>%
+            dplyr::rename(age = 'age (years)') %>%
             filter(age >= 50)
 
 female <- f_cohort %>% 
-            rename(age = 'age (years)') %>%
+            dplyr::rename(age = 'age (years)') %>%
             filter(age >= 50)
 
 # Replace rownames with values from Age row
@@ -189,11 +80,11 @@ for(i in nrow(male)) {
 ```{r}
 # Rename age column and filter out ages below 50
 male <- m_cohort %>% 
-            rename(age = 'age (years)') %>%
+            dplyr::rename(age = 'age (years)') %>%
             filter(age >= 50)
 
 female <- f_cohort %>% 
-            rename(age = 'age (years)') %>%
+            dplyr::rename(age = 'age (years)') %>%
             filter(age >= 50)
 
 # Replace rownames with values from Age row
@@ -222,8 +113,8 @@ rownames(m_copy) <- 1:nrow(m_copy)
 f_copy <- cbind(male = 0, rownames(f_copy), f_copy)
 rownames(f_copy) <- 1:nrow(f_copy)
 # Rename age column
-m_copy <- rename(m_copy, age = "rownames(m_copy)")
-f_copy <- rename(f_copy, age = "rownames(f_copy)")
+m_copy <- dplyr::rename(m_copy, age_elsa = "rownames(m_copy)")
+f_copy <- dplyr::rename(f_copy, age_elsa = "rownames(f_copy)")
 
 # First attempt at reshaping with gather
 m_long <- gather(m_copy, year, adjustment, 3:ncol(m_copy), factor_key = TRUE)
@@ -245,6 +136,27 @@ write_tsv(adjustment, path = '/home/luke/Documents/E_FEM_clean/Mortality_Project
                       append = FALSE, 
                       col_names = TRUE)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Now check against US mortality adjustment
 
 ```{r}
 # Test against US data
@@ -370,4 +282,113 @@ ggplot(data = cut2, aes(x = year, y = adjustment, color = group)) +
 
 
 
+# Old Defunkt
 
+First read in the .xls document containing the life tables. The life tables are divided into period and cohort tables, which are further subdivided by gender, resulting in 4 separate life tables.
+
+```{r}
+# Read in male and female, cohort and period data separately 
+m_period <- read_ods('../Mortality_Projections/engppp18ex.ods',
+                     sheet = 3,
+                     skip = 9,
+                     row_names = TRUE)
+f_period <- read_ods('../Mortality_Projections/engppp18ex.ods',
+                     sheet = 4,
+                     skip = 9,
+                     row_names = TRUE)
+m_cohort <- read_ods('../Mortality_Projections/engppp18ex.ods',
+                     sheet = 5,
+                     skip = 9,
+                     row_names = FALSE)
+f_cohort <- read_ods('../Mortality_Projections/engppp18ex.ods',
+                     sheet = 6,
+                     skip = 9,
+                     row_names = FALSE)
+
+# First row is empty so remove
+m_period <- m_period[-1,]
+f_period <- f_period[-1,]
+m_cohort <- m_cohort[-1,]
+f_cohort <- f_cohort[-1,]
+```
+
+Steps:
+
+- Drop ages below 50
+- Assign age to rownames and drop Age column. End up with a matrix indexed by age and year.
+- Normalise matrix to 2012 values (column 32)
+- Calculate inverse (value < 1 == decreased chance of mortality)
+
+
+```{r}
+# Rename age column and filter out ages below 50
+
+male <- m_cohort %>% 
+            dplyr::rename(age = "Attained age (years)") %>%
+            filter(age >= 50)
+
+female <- f_cohort %>% 
+            dplyr::rename(age = "Attained age (years)") %>%
+            filter(age >= 50)
+
+# Replace rownames with values from Age row
+rownames(male) <- male$age
+rownames(female) <- female$age
+male <- subset(male, select = -age)
+female <- subset(female, select = -age)
+
+# Scale all values to the 2012 column
+male_norm <- male / male[,32]
+female_norm <- female / female[,32]
+
+head(female_norm)
+
+# Take the inverse (we want lower values to represent reduced mortality)
+m_inv <- 1 / male_norm
+f_inv <- 1 / female_norm
+
+head(f_inv)
+```
+
+We now have a value of 1 for all ages in the year 2012, which decreases into the future (reduced chance of mortality), and previous years show an increase (where mortality used to be higher). 
+
+The next step is to rearrange the matrices into a single table with 4 columns: gender, age, year, and adjustment (the latter column must be unnamed to be recognised by the model). We can do this with tidyr::gather.
+
+```{r}
+# Copy dfs so we don't have to rerun other chunks
+m_copy <- m_inv
+f_copy <- f_inv
+
+# Add a column for gender and reinsert the rownames back as a column for reshaping
+m_copy <- cbind(male = 1, rownames(m_copy), m_copy)
+rownames(m_copy) <- 1:nrow(m_copy)
+f_copy <- cbind(male = 0, rownames(f_copy), f_copy)
+rownames(f_copy) <- 1:nrow(f_copy)
+# Rename age column
+m_copy <- dplyr::rename(m_copy, age = "rownames(m_copy)")
+f_copy <- dplyr::rename(f_copy, age = "rownames(f_copy)")
+
+# First attempt at reshaping with gather
+m_long <- gather(m_copy, year, adjustment, 3:ncol(m_copy), factor_key = TRUE)
+f_long <- gather(f_copy, year, adjustment, 3:ncol(f_copy), factor_key = TRUE)
+
+head(f_long) # Looks good!
+```
+
+Last step is just to row bind and stick everything together, then can manually delete the 'adjustment' column heading before adding to a folder called 'mortality_adj_ELSA' in FEM_CPP_settings.
+
+```{r}
+# Combine male and female data
+adjustment <- rbind(m_long, f_long)
+
+head(adjustment)
+
+# Write to folder outside trunk so we can't accidentally replace it later
+write_tsv(adjustment, path = '/home/luke/Documents/E_FEM_clean/Mortality_Projections/mortality_adj.txt', 
+                      append = FALSE, 
+                      col_names = TRUE)
+```
+
+# DISREGARD ALL THE ABOVE
+
+It's all wrong. Start again but can reuse some of the code for another dataset.

@@ -26,11 +26,13 @@ cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: clean_logs clean_output complete debug_doc STYLE=BASE
+debug: STYLE = base
+debug: clean_logs clean_output complete debug_doc 
 
 core: start_data transitions_core est_core summary_out_core simulation_core
 
-core_debug: clean_logs clean_output core debug_doc STYLE=CORE
+core_degug: STYLE = core
+core_debug: clean_logs clean_output core debug_doc
 
 
 ### Combined rules
