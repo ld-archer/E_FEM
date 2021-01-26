@@ -166,6 +166,81 @@ forvalues x = 1/`measures_l' {
 			local sel "& anyadl == 0"
 			local samp "noadl"
 		}
+		else if "`b'" == "m6064" {
+			local sel "& male == 1 & age >= 60 & age < 65"
+			local samp "male age 60 to 64"
+		}
+		else if "`b'" == "f6064" {
+			local sel "& male == 0 & age >= 60 & age < 65"
+			local samp "female age 60 to 64"
+		}
+		else if "`b'" == "m6569" {
+			local sel "& male == 1 & age >= 65 & age < 70"
+			local samp "male age 65 to 69"
+		}
+		else if "`b'" == "f6569" {
+			local sel "& male == 0 & age >= 65 & age < 70"
+			local samp "female age 65 to 69"
+		}
+		else if "`b'" == "m7074" {
+			local sel "& male == 1 & age >= 70 & age < 75"
+			local samp "male age 70 to 74"
+		}
+		else if "`b'" == "f7074" {
+			local sel "& male == 0 & age >= 70 & age < 75"
+			local samp "female age 70 to 74"
+		}
+		else if "`b'" == "m7579" {
+			local sel "& male == 1 & age >= 75 & age < 80"
+			local samp "male age 75 to 79"
+		}
+		else if "`b'" == "f7579" {
+			local sel "& male == 0 & age >= 75 & age < 80"
+			local samp "female age 75 to 79"
+		}
+		else if "`b'" == "m8084" {
+			local sel "& male == 1 & age >= 80 & age < 85"
+			local samp "male age 80 to 84"
+		}
+		else if "`b'" == "f8084" {
+			local sel "& male == 0 & age >= 80 & age < 85"
+			local samp "female age 80 to 84"
+		}
+		else if "`b'" == "m8589" {
+			local sel "& male == 1 & age >= 85 & age < 90"
+			local samp "male age 85 to 89"
+		}
+		else if "`b'" == "f8589" {
+			local sel "& male == 0 & age >= 85 & age < 90"
+			local samp "female age 85 to 89"
+		}
+		else if "`b'" == "m9094" {
+			local sel "& male == 1 & age >= 90 & age < 94"
+			local samp "male age 90 to 94"
+		}
+		else if "`b'" == "f9094" {
+			local sel "& male == 0 & age >= 90 & age < 94"
+			local samp "female age 90 to 94"
+		}
+		else if "`b'" == "m9599" {
+			local sel "& male == 1 & age >= 95 & age < 99"
+			local samp "male age 95 to 99"
+		}
+		else if "`b'" == "f9599" {
+			local sel "& male == 0 & age >= 95 & age < 99"
+			local samp "female age 95 to 99"
+		}
+		else if "`b'" == "m100p" {
+			local sel "& male == 1 & age >= 100"
+			local samp "male age 100 plus"
+		}
+		else if "`b'" == "f100p" {
+			local sel "& male == 0 & age >= 100"
+			local samp "female age 100 plus"
+		}
+		
+
+local subpop all m f m6064 f6064 m6569 f6569 6569 7074 m7074 f7074 7579 m7579 f7579 8084 m8084 f8084 8589 m8589 f8589 9094 m9094 f9094 9599 m9599 f9599 100p m100p f100p
 
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {

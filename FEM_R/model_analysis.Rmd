@@ -349,7 +349,7 @@ baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
 visProjectedBaselineCD(baseline)
 ```
 
-### Baseline Projections by Subpopulation
+<!--### Baseline Projections by Subpopulation
 
 ```{r echo = FALSE}
 visProjectedBySubpop <- function(base, cd, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
@@ -386,6 +386,8 @@ visProjectedBySubpop(baseline, cd = 'cancre')
 visProjectedBySubpop(baseline, cd = 'diabe')
 visProjectedBySubpop(baseline, cd = 'hearte')
 ```
+
+-->
 
 ### Survival Curve
 
