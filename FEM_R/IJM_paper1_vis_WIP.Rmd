@@ -444,7 +444,45 @@ ggplot(data=pop_rbmi, aes(x=year, y=p_anyadl_all)) +
 
 
 
+<!--### Baseline Projections by Subpopulation
 
+```{r echo = FALSE}
+visProjectedBySubpop <- function(base, cd, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Scenario_1/') {
+  
+  if(cd == 'cancre') {
+    dis <- 'Cancer'
+  } else if(cd == 'diabe') {
+    dis <- 'Diabetes'
+  } else if(cd == 'hearte') {
+    dis <- 'Heart Disease'
+  }
+  
+  # Generate varnames
+  all <- paste0('p_', cd, '_all')
+  # age
+  a5564 <- paste0('p_', cd, '_5564')
+  a6574 <- paste0('p_', cd, '_6574')
+  a7584 <- paste0('p_', cd, '_7584')
+  a85p <- paste0('p_', cd, '_85p')
+  
+  ageMelt <- base %>%
+              select(c('year', a5564, a6574, a7584, a85p)) %>%
+              dplyr::rename('55 to 64' = a5564, '65 to 74' = a6574, '75 to 64' = a7584, '85+' = a85p) %>%
+              reshape2::melt(id.var = 'year', value.name = 'Prevalence')
+  
+  ggplot(data=ageMelt, aes(x=year, y=Prevalence, color = variable)) +
+          geom_line() +
+          labs(title = dis, x = 'Year', y = 'Prevalence')
+}
+
+baseline <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+visProjectedBySubpop(baseline, cd = 'cancre')
+visProjectedBySubpop(baseline, cd = 'diabe')
+visProjectedBySubpop(baseline, cd = 'hearte')
+```
+
+-->
 
 
 
