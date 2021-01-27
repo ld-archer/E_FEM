@@ -166,6 +166,10 @@ forvalues x = 1/`measures_l' {
 			local sel "& anyadl == 0"
 			local samp "noadl"
 		}
+		else if "`b'" == "6064" {
+			local sel "& age >= 60 & age < 65"
+			local samp "age 60 to 64"
+		}
 		else if "`b'" == "m6064" {
 			local sel "& male == 1 & age >= 60 & age < 65"
 			local samp "male age 60 to 64"
@@ -173,6 +177,10 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "f6064" {
 			local sel "& male == 0 & age >= 60 & age < 65"
 			local samp "female age 60 to 64"
+		}
+		else if "`b'" == "6569" {
+			local sel "& age >= 65 & age < 70"
+			local samp "age 65 to 69"
 		}
 		else if "`b'" == "m6569" {
 			local sel "& male == 1 & age >= 65 & age < 70"
@@ -182,6 +190,10 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age >= 65 & age < 70"
 			local samp "female age 65 to 69"
 		}
+		else if "`b'" == "7074" {
+			local sel "& age >= 70 & age < 75"
+			local samp "age 70 to 74"
+		}
 		else if "`b'" == "m7074" {
 			local sel "& male == 1 & age >= 70 & age < 75"
 			local samp "male age 70 to 74"
@@ -189,6 +201,10 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "f7074" {
 			local sel "& male == 0 & age >= 70 & age < 75"
 			local samp "female age 70 to 74"
+		}
+		else if "`b'" == "7579" {
+			local sel "& age >= 75 & age < 80"
+			local samp "age 75 to 79"
 		}
 		else if "`b'" == "m7579" {
 			local sel "& male == 1 & age >= 75 & age < 80"
@@ -198,6 +214,10 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age >= 75 & age < 80"
 			local samp "female age 75 to 79"
 		}
+		else if "`b'" == "8084" {
+			local sel "& age >= 80 & age < 85"
+			local samp "age 80 to 84"
+		}
 		else if "`b'" == "m8084" {
 			local sel "& male == 1 & age >= 80 & age < 85"
 			local samp "male age 80 to 84"
@@ -205,6 +225,10 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "f8084" {
 			local sel "& male == 0 & age >= 80 & age < 85"
 			local samp "female age 80 to 84"
+		}
+		else if "`b'" == "8589" {
+			local sel "& age >= 85 & age < 90"
+			local samp "age 85 to 89"
 		}
 		else if "`b'" == "m8589" {
 			local sel "& male == 1 & age >= 85 & age < 90"
@@ -214,6 +238,10 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age >= 85 & age < 90"
 			local samp "female age 85 to 89"
 		}
+		else if "`b'" == "9094" {
+			local sel "& age >= 90 & age < 94"
+			local samp "age 90 to 94"
+		}
 		else if "`b'" == "m9094" {
 			local sel "& male == 1 & age >= 90 & age < 94"
 			local samp "male age 90 to 94"
@@ -222,6 +250,10 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age >= 90 & age < 94"
 			local samp "female age 90 to 94"
 		}
+		else if "`b'" == "9599" {
+			local sel "& age >= 95 & age < 99"
+			local samp "age 95 to 99"
+		}
 		else if "`b'" == "m9599" {
 			local sel "& male == 1 & age >= 95 & age < 99"
 			local samp "male age 95 to 99"
@@ -229,6 +261,10 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "f9599" {
 			local sel "& male == 0 & age >= 95 & age < 99"
 			local samp "female age 95 to 99"
+		}
+		else if "`b'" == "100p" {
+			local sel "& age >= 100"
+			local samp "age 100 plus"
 		}
 		else if "`b'" == "m100p" {
 			local sel "& male == 1 & age >= 100"
