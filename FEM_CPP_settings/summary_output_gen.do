@@ -274,9 +274,6 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age >= 100"
 			local samp "female age 100 plus"
 		}
-		
-
-local subpop all m f m6064 f6064 m6569 f6569 6569 7074 m7074 f7074 7579 m7579 f7579 8084 m8084 f8084 8589 m8589 f8589 9094 m9094 f9094 9599 m9599 f9599 100p m100p f100p
 
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {
