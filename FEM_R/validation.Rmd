@@ -102,23 +102,23 @@ female_au <- fAGE_UK
 male_au <- male_au %>%
                 dplyr::rename(m_6064 = X60.64, m_6569 = X65.69, m_7074 = X70.74, 
                        m_7579 = X75.79, m_8084 = X80.84, m_8589 = X85.89, 
-                       m_9094 = X90.94, m_9599 = X95.99, m_100 = Over.100) %>%
+                       m_9094 = X90.94, m_9599 = X95.99, m_100p = Over.100) %>%
                 select(!Total)
 
 female_au <- female_au %>%
                 dplyr::rename(f_6064 = X60.64, f_6569 = X65.69, f_7074 = X70.74, 
                        f_7579 = X75.79, f_8084 = X80.84, f_8589 = X85.89, 
-                       f_9094 = X90.94, f_9599 = X95.99, f_100 = Over.100) %>%
+                       f_9094 = X90.94, f_9599 = X95.99, f_100p = Over.100) %>%
                 select(!Total)
 
 # Now need to reshape these datasets to long format
 pivoted.male <- pivot_longer(data = male_au,
-                             cols = m_6064:m_100,
+                             cols = m_6064:m_100p,
                              names_to = c('Gender', 'Age_Group'),
                              names_sep = '_')
 
 pivoted.female <- pivot_longer(data = female_au,
-                             cols = f_6064:f_100,
+                             cols = f_6064:f_100p,
                              names_to = c('Gender', 'Age_Group'),
                              names_sep = '_')
 
@@ -145,6 +145,10 @@ ageUK$Condition <- gsub("COPD", "Lung Disease (COPD)", ageUK$Condition)
 # Finally, add column to specify that this is ageUK data
 ageUK$source <- "ageUK"
 
+# REMOVE CONDITIONS FROM ageUK THAT ARE NOT IN FEM (may change in future)
+#ageUK <- filter(ageUK, Condition != c('Asthma', 'Depression', 'Severe Mental Health Condition'))
+ageUK <- filter(ageUK, Condition != 'Asthma', Condition != 'Depression', Condition != 'Severe Mental Health Conditions')
+
 ```
 
 ```{r}
@@ -163,7 +167,7 @@ newFEM <- pivoted.FEM
 # Rename all the conditions to fit ageUK
 # NOTE: Lung disease is not a perfect match, as ageUK only contains info on COPD
 #       Therefore only validation from this will be that FEM is higher than ageUK
-newFEM$Condition <- gsub("hearte", "Hearte Problems", newFEM$Condition)
+newFEM$Condition <- gsub("hearte", "Heart Problems", newFEM$Condition)
 newFEM$Condition <- gsub("hibpe", "Hypertension", newFEM$Condition)
 newFEM$Condition <- gsub("stroke", "Stroke", newFEM$Condition)
 newFEM$Condition <- gsub("diabe", "Diabetes", newFEM$Condition)
@@ -180,6 +184,8 @@ newFEM$source <- "FEM"
 
 # Now row bind the datasets
 combined <- rbind(newFEM, ageUK)
+# Specify factor levels for age group
+combined$Age_Group <- factor(combined$Age_Group, levels = c('6064', '6569', '7074', '7579', '8084', '8589', '9094', '9599', '100p'))
 # Sort
 combined <- arrange(combined, source, Condition, Gender, Age_Group)
 
@@ -190,7 +196,34 @@ combined <- arrange(combined, source, Condition, Gender, Age_Group)
 
 # Lets do some plotting!
 
+# First try to plot the whole dataset in a facet grid
+# This isn't perfect, and it's pretty complicated to plot altogether
+ggplot(data = combined, aes(x = Age_Group, y = value, width = 0.7)) +
+  geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+  facet_wrap(~Condition)
+
 
 ```
 
+```{r}
+
+# Now instead, lets plot an individual condition - Hypertension
+
+# First extract all hypertension info
+hyper <- filter(combined, Condition == 'Hypertension')
+
+# Big dirty plot
+ggplot(data = hyper, aes(x = Age_Group, y = value, width = 0.7)) +
+  geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+  labs(title = 'Hypertension', x = 'Age Group', y = 'Proportion')
+
+
+```
+
+```{r}
+
+# Next, lets try an all female and all male example
+
+
+```
 
