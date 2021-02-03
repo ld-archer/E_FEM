@@ -223,6 +223,73 @@ ggplot(data = hyper, aes(x = Age_Group, y = value, width = 0.7)) +
 ```{r}
 
 # Next, lets try an all female and all male example
+comb <- combined
+
+# extract genders
+male <- filter(combined, Gender == 'm')
+female <- filter(combined, Gender == 'f')
+
+# try plotting each separately
+
+ggplot(data = male, aes(x = Age_Group, y = value, width = 0.7)) +
+  geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+  facet_wrap(~Condition) +
+  labs(title = 'Male')
+
+ggplot(data = female, aes(x = Age_Group, y = value, width = 0.7)) +
+  geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+  facet_wrap(~Condition) +
+  labs(title = 'Female')
+
+```
+
+```{r}
+
+# Function to filter the combined dataset and visualise
+visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Validation/ageUK/') {
+  
+  if(gender == 'm') {
+    full_gender <- 'Male'
+  }
+  else if(gender == 'f') {
+    full_gender <- 'Female'
+  }
+  
+  # filter by gender and condition
+  data <- data %>%
+            filter(Gender == gender) %>%
+            filter(Condition == cd)
+  
+  # now plot!
+  p <- ggplot(data = data, aes(x = Age_Group, y = value)) +
+          geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+          labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = paste0(cd, '_', gender, '.png'),
+         plot = p,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p
+}
+
+visAgeUKValid(combined, 'Hypertension', 'm')
+
+```
+
+```{r}
+
+# Collect all conditions (and both genders) into a list, and apply the function above to that list
+cd_list <- unique(combined$Condition)
+gender_list <- unique(combined$Gender)
+
+for(cd in cd_list) {
+  for(gen in gender_list) {
+    visAgeUKValid(combined, cd, gen)
+  }
+}
 
 
 ```

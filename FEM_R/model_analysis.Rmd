@@ -370,152 +370,182 @@ ggplot(cohort, aes(x=age, y=survival)) +
 
 'The Age UK almanac of disease profiles in later life', published in October 2015, contains information on the prevalence of major diseases, conditions, and syndromes affecting older people in England, broken down by age and sex. 
 
-```{r}
-# Need a function here to handle the repetition
-get_FEM_prev <- function(FEM, age_range, keep_vars) {
-  # Keep only important vars
-  FEM <- FEM[keep_vars]
-  # Separate by gender
-  mFEM <- FEM %>% filter(male == 1)
-  fFEM <- FEM %>% filter(male == 0)
-  # Filter by age from age_range
-  mFEM <- mFEM %>% filter(age %in% (age_range))
-  fFEM <- fFEM %>% filter(age %in% (age_range))
-  # Get proportion of total pop. (prevalence)
-  mFEM <- data.frame((colSums(mFEM) / nrow(mFEM)) * 100)
-  fFEM <- data.frame((colSums(fFEM) / nrow(fFEM)) * 100)
-  
-  # produce a string for column naming
-  age <- paste0(age_range[1], '-', age_range[5])
-  
-  colnames(mFEM) <- paste0('FEM_male_', age)
-  colnames(fFEM) <- paste0('FEM_female_', age)
-  
-  #male <- cbind(male, mFEM)
-  
-  # Collect into 1 df
-  prev_df <- data.frame(mFEM, fFEM)
-  return(prev_df)
-  
-  #return(out)
-}
+```{r echo = FALSE}
 
-package <- function() {
-  # Set up objects for holding and returning the prevalences, separate dfs for male and female
-  out <- list()
-  male <- data.frame()
-  female <- data.frame()
-  
-  age_list <- c('Age 60-64', 'Age 65-69', 'Age 70-74', 'Age 75-79', 'Age 80-84', 'Age 85-89', 'Age 90-94', 'Age 95-99', 'Age 100+')
-  age_list <- c(60:64, 65:69, 70:74, 75:79, 80:84, 85:89, 90:94, 95:99)
-}
+#AgeUK
+male_au <- read.csv('../../Validation/AgeUK-chronDisease-MALE.csv')
+female_au <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
 
-
-# Now read in male and female AgeUK data
-male_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-MALE.csv')
-female_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
-# Rename columns
-colnames(male_ageUK) <- c('Condition', 'Age 60-64', 'Age 65-69', 'Age 70-74', 'Age 75-79', 'Age 80-84', 'Age 85-89', 'Age 90-94', 'Age 95-99', 'Age 100+', 'Total Pop.')
-colnames(female_ageUK) <- colnames(male_ageUK)
-
-# Collect conditions into a list for extracting from FEM
-# Will need to be written in FEM shorthand
-keep_vars <- c('male', 'age', 'hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene')
-
-# Now get FEM output for 2014
-FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
-
-test <- get_FEM_prev(FEM_2014, 60:64, keep_vars)
-
-#FEM_2014 <- FEM_2014[keep_vars]
+# FEM 2014 detailed output
+#FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
 ## extract males and females
-mFEM_2014 <- FEM_2014 %>% filter(male == 1)
-fFEM_2014 <- FEM_2014 %>% filter(male == 0)
+#mFEM_2014 <- FEM_2014 %>% filter(male == 1)
+#fFEM_2014 <- FEM_2014 %>% filter(male == 0)
 
-m6064 <- mFEM_2014 %>% filter(age %in% (60:64))
-f6064 <- fFEM_2014 %>% filter(age %in% (60:64))
+# FEM 2014 summary
+FEM <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
 
-m6064_prev <- data.frame((colSums(m6064) / nrow(m6064)) * 100)
-f6064_prev <- data.frame((colSums(f6064) / nrow(f6064)) * 100)
-colnames(m6064_prev) <- 'FEM_male_6064'
-colnames(f6064_prev) <- 'FEM_female_6064'
+# Keep only year 2014 from FEM summary
+FEM <- filter(FEM, year == 2014)
 
-prev_df <- data.frame(m6064_prev, f6064_prev)
+# Specify the age groups to extract from FEM
+ages <- c('6064', '6569', '7074', '7579', '8084', '8589', '9094', '9599', '100p')
+# Add m and f for male and female variables
+m_ages <- paste0('m_', ages)
+f_ages <- paste0('f_', ages)
 
-# AgeUK conditions to extract
-#condlist <- c('Dementia', 'Hypertension', 'Diabetes', 'Stroke')
+# Collect the age suffixes into a vector
+keep_vars <- c(m_ages, f_ages)
+# Now set up the chronic diseases in a list so we can create a bigger list with all of them produced
+diseases <- c('hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene')
 
-# correct colnames in ageUK stuff
-#male_ageUK <- male_ageUK %>% filter(Condition == 'Dementia' | Condition == 'Hypertension' | Condition == 'Diabetes' | Condition == 'Stroke')
-#male_ageUK <- male_ageUK %>% filter(Condition %in% condlist)
-
-# Now calculate prevalence by age group for each chronic disease
-# prevalence = total / affected
-# Diabetes
-#male_prev <- data.frame(colSums(mFEM_2014) / nrow(mFEM_2014))
-#female_prev <- data.frame(colSums(fFEM_2014) / nrow(fFEM_2014))
-#colnames(male_prev) <- 'FEM_male'
-#colnames(female_prev) <- 'FEM_female'
-
-```
-
-```{r}
-
-tmp <- function(m, f, age) {
-  
-  m_age <- m %>% filter(age %in% (age))
-  f_age <- f %>% filter(age %in% (age))
-  
-  m_prev <- data.frame((colSums(m_age) / nrow(m_age)) * 100)
-  f_prev <- data.frame((colSums(f_age) / nrow(f_age)) * 100)
-  
-  list <- list(m_prev, f_prev)
-  return(list)
+# Don't like using loops but this one was just too simple to bother with figuring out the apply version
+final <- c()
+ticker <- 1
+# Generating the column (variable) names we want to keep in a loop
+for(item in diseases) {
+  for(anotherItem in keep_vars) {
+    final[ticker] <- paste0('p_', item, '_', anotherItem)
+    ticker <- ticker + 1
+  }
 }
 
+# Keep the right vars using varnames generated in loop
+FEM <- FEM %>%
+          select(c('year', all_of(final)))
 
+# Rename some vars to remove 'p_' before merging
+FEM <- FEM %>%
+          rename_at(vars(starts_with('p_')),
+                    funs(str_replace(., 'p_', ''))) %>%
+          select(!year)
 
-# Now read in male and female AgeUK data
-male_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-MALE.csv')
-female_ageUK <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
-# Rename columns
-colnames(male_ageUK) <- c('Condition', 'Age 60-64', 'Age 65-69', 'Age 70-74', 'Age 75-79', 'Age 80-84', 'Age 85-89', 'Age 90-94', 'Age 95-99', 'Age 100+', 'Total Pop.')
-colnames(female_ageUK) <- colnames(male_ageUK)
+pivoted.FEM <- pivot_longer(data = FEM,
+                            cols = hearte_m_6064:demene_f_100p, 
+                            names_to = c('Condition', 'Gender', 'Age_Group'), 
+                            names_sep = '_')
 
-# Collect conditions into a list for extracting from FEM
-# Will need to be written in FEM shorthand
-keep_vars <- c('male', 'age', 'hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene')
+# Convert value from fraction to percentage
+pivoted.FEM$value <- pivoted.FEM$value * 100
 
-# Now get FEM output for 2014
-FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
-FEM <- FEM_2014[keep_vars]
+# Rename cols to enable reshaping
+male_au <- male_au %>%
+                dplyr::rename(m_6064 = X60.64, m_6569 = X65.69, m_7074 = X70.74, 
+                       m_7579 = X75.79, m_8084 = X80.84, m_8589 = X85.89, 
+                       m_9094 = X90.94, m_9599 = X95.99, m_100p = Over.100) %>%
+                select(!Total)
 
-# extract males and females
-mFEM <- FEM %>% filter(male == 1)
-fFEM <- FEM %>% filter(male == 0)
+female_au <- female_au %>%
+                dplyr::rename(f_6064 = X60.64, f_6569 = X65.69, f_7074 = X70.74, 
+                       f_7579 = X75.79, f_8084 = X80.84, f_8589 = X85.89, 
+                       f_9094 = X90.94, f_9599 = X95.99, f_100p = Over.100) %>%
+                select(!Total)
 
-age_list <- c(60:64, 65:69, 70:74, 75:79, 80:84, 85:89, 90:94, 95:99)
+# Now need to reshape these datasets to long format
+pivoted.male <- pivot_longer(data = male_au,
+                             cols = m_6064:m_100p,
+                             names_to = c('Gender', 'Age_Group'),
+                             names_sep = '_')
 
-m6064 <- mFEM %>% filter(age %in% (60:64))
-f6064 <- fFEM %>% filter(age %in% (60:64))
+pivoted.female <- pivot_longer(data = female_au,
+                             cols = f_6064:f_100p,
+                             names_to = c('Gender', 'Age_Group'),
+                             names_sep = '_')
 
-m6064_prev <- data.frame((colSums(m6064) / nrow(m6064)) * 100)
-f6064_prev <- data.frame((colSums(f6064) / nrow(f6064)) * 100)
-colnames(m6064_prev) <- 'FEM_male_6064'
-colnames(f6064_prev) <- 'FEM_female_6064'
+# Now row bind these frames together, combining male and female data
+ageUK <-rbind(pivoted.male, pivoted.female)
 
-male <- list()
-female <- list()
+# Now need to deal with the fact that ageUK data splits heart issues into 3 different conditions
+# extract all heart related conditions for combining
+ageUK_heart <- filter(ageUK, Condition == c('Coronary Heart Disease', 'Heart Failure', 'Atrial Fibrillation'))
+# Aggregate the values by gender and age group
+ageUK_heart <- aggregate(ageUK_heart$value, by = list(ageUK_heart$Gender, ageUK_heart$Age_Group), FUN = sum)
+# Rename columns and add condition column back
+colnames(ageUK_heart) <- c('Gender', 'Age_Group', 'value')
+ageUK_heart$Condition <- 'Heart Problems'
 
-mf_list <- tmp(mFEM, fFEM, 60:64)
-male <- list(male, mf_list[1])
-female <- list(female, mf_list[2])
+# Now drop the heart problems from original ageUK and replace with aggregate
+ageUK <- filter(ageUK, Condition != 'Coronary Heart Disease', Condition != 'Heart Failure', Condition != 'Atrial Fibrillation')
+ageUK <- rbind(ageUK, ageUK_heart)
 
-mf_list <- tmp(mFEM, fFEM, 65:69)
-male <- list(male, mf_list[1])
-female <- list(female, mf_list[2])
+# Rename a few just for completeness
+ageUK$Condition <- gsub("Cancer, recent", "Cancer", ageUK$Condition)
+ageUK$Condition <- gsub("COPD", "Lung Disease (COPD)", ageUK$Condition)
+
+# Finally, add column to specify that this is ageUK data
+ageUK$source <- "ageUK"
+
+# REMOVE CONDITIONS FROM ageUK THAT ARE NOT IN FEM (may change in future)
+#ageUK <- filter(ageUK, Condition != c('Asthma', 'Depression', 'Severe Mental Health Condition'))
+ageUK <- filter(ageUK, Condition != 'Asthma', Condition != 'Depression', Condition != 'Severe Mental Health Conditions')
+
+# Make copy
+newFEM <- pivoted.FEM
+
+# Rename all the conditions to fit ageUK
+# NOTE: Lung disease is not a perfect match, as ageUK only contains info on COPD
+#       Therefore only validation from this will be that FEM is higher than ageUK
+newFEM$Condition <- gsub("hearte", "Heart Problems", newFEM$Condition)
+newFEM$Condition <- gsub("hibpe", "Hypertension", newFEM$Condition)
+newFEM$Condition <- gsub("stroke", "Stroke", newFEM$Condition)
+newFEM$Condition <- gsub("diabe", "Diabetes", newFEM$Condition)
+newFEM$Condition <- gsub("lunge", "Lung Disease (COPD)", newFEM$Condition)
+newFEM$Condition <- gsub("cancre", "Cancer", newFEM$Condition)
+newFEM$Condition <- gsub("demene", "Dementia", newFEM$Condition)
+
+# Add column to specify this is FEM data
+newFEM$source <- "FEM"
+
+# Now row bind the datasets
+combined <- rbind(newFEM, ageUK)
+# Specify factor levels for age group
+combined$Age_Group <- factor(combined$Age_Group, levels = c('6064', '6569', '7074', '7579', '8084', '8589', '9094', '9599', '100p'))
+# Sort
+combined <- arrange(combined, source, Condition, Gender, Age_Group)
+
+# Function to filter the combined dataset and visualise
+visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Validation/ageUK/') {
+  
+  if(gender == 'm') {
+    full_gender <- 'Male'
+  }
+  else if(gender == 'f') {
+    full_gender <- 'Female'
+  }
+  
+  # filter by gender and condition
+  data <- data %>%
+            filter(Gender == gender) %>%
+            filter(Condition == cd)
+  
+  # now plot!
+  p <- ggplot(data = data, aes(x = Age_Group, y = value)) +
+          geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+          labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  ggsave(filename = paste0(cd, '_', gender, '.png'),
+         plot = p,
+         path = path,
+         width = 7,
+         height = 5)
+  
+  p
+}
+
+# Collect all conditions (and both genders) into a list, and apply the function above to that list
+cd_list <- unique(combined$Condition)
+gender_list <- unique(combined$Gender)
+
+for(cd in cd_list) {
+  for(gen in gender_list) {
+    visAgeUKValid(combined, cd, gen)
+  }
+}
 
 ```
+
+
 
 
 # Github Reporting
