@@ -383,7 +383,8 @@ female_au <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
 #fFEM_2014 <- FEM_2014 %>% filter(male == 0)
 
 # FEM 2014 summary
-FEM <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+#FEM <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+FEM <- read_dta('ELSA_AgeUK_valid/ELSA_AgeUK_valid_summary.dta')
 
 # Keep only year 2014 from FEM summary
 FEM <- filter(FEM, year == 2014)
@@ -397,7 +398,7 @@ f_ages <- paste0('f_', ages)
 # Collect the age suffixes into a vector
 keep_vars <- c(m_ages, f_ages)
 # Now set up the chronic diseases in a list so we can create a bigger list with all of them produced
-diseases <- c('hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene')
+diseases <- c('hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene', 'asthmae')
 
 # Don't like using loops but this one was just too simple to bother with figuring out the apply version
 final <- c()
@@ -421,7 +422,7 @@ FEM <- FEM %>%
           select(!year)
 
 pivoted.FEM <- pivot_longer(data = FEM,
-                            cols = hearte_m_6064:demene_f_100p, 
+                            cols = hearte_m_6064:asthmae_f_100p, 
                             names_to = c('Condition', 'Gender', 'Age_Group'), 
                             names_sep = '_')
 
@@ -477,7 +478,7 @@ ageUK$source <- "ageUK"
 
 # REMOVE CONDITIONS FROM ageUK THAT ARE NOT IN FEM (may change in future)
 #ageUK <- filter(ageUK, Condition != c('Asthma', 'Depression', 'Severe Mental Health Condition'))
-ageUK <- filter(ageUK, Condition != 'Asthma', Condition != 'Depression', Condition != 'Severe Mental Health Conditions')
+ageUK <- filter(ageUK, Condition != 'Depression', Condition != 'Severe Mental Health Conditions')
 
 # Make copy
 newFEM <- pivoted.FEM
@@ -492,6 +493,7 @@ newFEM$Condition <- gsub("diabe", "Diabetes", newFEM$Condition)
 newFEM$Condition <- gsub("lunge", "Lung Disease (COPD)", newFEM$Condition)
 newFEM$Condition <- gsub("cancre", "Cancer", newFEM$Condition)
 newFEM$Condition <- gsub("demene", "Dementia", newFEM$Condition)
+newFEM$Condition <- gsub("asthmae", "Asthma", newFEM$Condition)
 
 # Add column to specify this is FEM data
 newFEM$source <- "FEM"
@@ -527,22 +529,25 @@ visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_c
   ggsave(filename = paste0(cd, '_', gender, '.png'),
          plot = p,
          path = path,
-         width = 7,
-         height = 5)
+         width = 6,
+         height = 4)
   
-  p
+  return(p)
 }
 
+```
+
+```{r}
 # Collect all conditions (and both genders) into a list, and apply the function above to that list
 cd_list <- unique(combined$Condition)
 gender_list <- unique(combined$Gender)
 
 for(cd in cd_list) {
   for(gen in gender_list) {
-    visAgeUKValid(combined, cd, gen)
+    plot <- visAgeUKValid(combined, cd, gen)
+    print(plot)
   }
 }
-
 ```
 
 
