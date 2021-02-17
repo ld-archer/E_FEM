@@ -465,7 +465,6 @@ namespace Vars
         psrh5,                  ///< Probability of Poor Self Reported Health
 		period,                   ///< Approx Range [1, 1], stored as Short
 		qaly,                     ///< Quality Adjusted Life Year, stored as Double
-		hlthlm,					///< Health Limited Work, stored as Boolean
 		rabyear,                  ///< Approx Range [1896, 1972], stored as Short
 		racegrp,                  ///< Approx Range [1, 4], stored as Short
 		raime,                    ///< Current AIME, stored as Double

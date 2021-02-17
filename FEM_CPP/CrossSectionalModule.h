@@ -23,7 +23,6 @@ protected:
 	std::map<Vars::Vars_t, IModel*> models;
 
 	IVariable* qaly_nhm_var;
-	IVariable* hlthlm_nhm_var; // Added hlthlm var here (need stuff after _?)
 	
 	/** Calculator for SS benefits */
 	SSCalculator sscalc;

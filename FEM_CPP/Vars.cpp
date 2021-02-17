@@ -225,7 +225,6 @@ VarsInfo::VarsInfo() {
 	info[Vars::hicap_nonzero]        = VarInfo("hicap_nonzero", "Household Capital Income not zero", VarTypes::Boolean);
 	info[Vars::hipe]                = VarInfo("hipe", "Hip Fracture Ever", VarTypes::Boolean);
 	info[Vars::hispan]               = VarInfo("hispan", "Hispanic [0, 1]", VarTypes::Boolean);
-	info[Vars::hlthlm]					= VarInfo("hlthlm", "Health Limited Work", VarTypes::Boolean);
 	info[Vars::hmed]                 = VarInfo("hmed", "Medicare Tax", VarTypes::Double);
 	info[Vars::hoasi]                = VarInfo("hoasi", "OASI Tax", VarTypes::Double);
 	info[Vars::hsless]               = VarInfo("hsless", "Less than high school [0, 1]", VarTypes::Boolean, Vars::educ, 1);
