@@ -166,6 +166,14 @@ forvalues x = 1/`measures_l' {
 			local sel "& anyadl == 0"
 			local samp "noadl"
 		}
+		else if "`b'" == "5059" {
+			local sel "& age >= 50 & age < 60"
+			local samp "age 50 to 59"
+		}
+		else if "`b'" == "60p" {
+			local sel "& age >= 60"
+			local samp "age 60 plus"
+		}
 		else if "`b'" == "6064" {
 			local sel "& age >= 60 & age < 65"
 			local samp "age 60 to 64"

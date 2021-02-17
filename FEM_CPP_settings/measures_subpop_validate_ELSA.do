@@ -32,7 +32,6 @@ local measures
 													a_age
 													p_smoken p_smokev
 													p_work
-													p_hlthlm
 																		
 ;
 #d cr

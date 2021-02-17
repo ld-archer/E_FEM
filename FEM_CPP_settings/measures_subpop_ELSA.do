@@ -43,7 +43,6 @@ local measures
 						n_smoke_start
 						n_smoke_stop
 						a_smkint	p_smkint3
-						p_hlthlm  	n_hlthlm
 						t_atotb 	a_atotb
 						t_itot		a_itot
 					p_drink		i_drink		n_drink
@@ -77,4 +76,4 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 6064 m_6064 f_6064 6569 m_6569 f_6569 7074 m_7074 f_7074 7579 m_7579 f_7579 8084 m_8084 f_8084 8589 m_8589 f_8589 9094 m_9094 f_9094 9599 m_9599 f_9599 100p m_100p f_100p
+local subpop all m f 5059 60p 6064 m_6064 f_6064 6569 m_6569 f_6569 7074 m_7074 f_7074 7579 m_7579 f_7579 8084 m_8084 f_8084 8589 m_8589 f_8589 9094 m_9094 f_9094 9599 m_9599 f_9599 100p m_100p f_100p
