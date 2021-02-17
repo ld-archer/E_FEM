@@ -2,7 +2,7 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene heavy_drinker freq_drinker
-global bin_econ hlthlm
+global bin_econ 
 global ols logbmi logatotb logitot
 global order adlstat iadlstat exstat srh smkint lnly
 global unorder mstat workstat
@@ -32,7 +32,6 @@ global bin_hlth_names
     "Frequent Drinker (>5 days/week)"
 ;
 global bin_econ_names
-    "Health Limits Work"
 ;
 global ols_names
     "Log(BMI)"
@@ -92,45 +91,20 @@ local lvars_workstat l2employed l2unemployed                        /*Control: l
 *** Now specify the transition models ***
 
 *** For Mortality
-global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe `lvars_srh' `lvars_funclimit' /* :thumbs-up !!! */
+global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2stroke l2alzhe l2demene `lvars_srh' `lvars_funclimit' /* :thumbs-up !!! */
 
 
 *** Chronic Diseases
 *CANCRE
-*global allvars_cancre       $dvars $lvars_age l2smoken l2logbmi l2drink
-* debug/11-27_10:49:41
-* 11-27_11:01:51: global allvars_cancre       $dvars $lvars_age l2smoken
-* 11-27_11:15:22: global allvars_cancre       $dvars $lvars_age l2smokev
-* 11-27_11:54:01: global allvars_cancre       $dvars $lvars_age l2logbmi
-* 11-27_12:21:26: global allvars_cancre       $dvars $lvars_age l2logbmi l2drink
-* 11-27_13:49:05: global allvars_cancre       $dvars $lvars_age l2logbmi l2hchole
-* 11-27_16:12:16: global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married
-* 11-27_16:47:29: global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2drink l2married l2exstat1 l2exstat2
-global allvars_cancre       $dvars $lvars_age l2logbmi `lvars_smoke' l2freq_drinker l2heavy_drinker `lvars_srh' `lvars_exercise' 
+global allvars_cancre       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_srh' `lvars_exercise'
 
 * DIABE
 *global allvars_diabe        $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2hibpe l2hchole /*https://www.diabetes.org.uk/Preventing-Type-2-diabetes/Diabetes-risk-factors https://www.diabetes.co.uk/Diabetes-Risk-factors.html*/
-* debug/11-27_10:49:41
-* 11-27_11:01:51: global allvars_diabe        $dvars $lvars_age l2logbmi l2hchole l2hibpe l2smoken
-* 11-27_11:15:22: global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2smoken
-* 11-27_11:54:01: global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2smoken l2exstat1 l2exstat2
-* 11-27_12:21:26: global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2
-* 11-27_13:49:05: global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2 l2drink
-* 11-27_16:12:16: global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2 l2drink
-* 11-27_16:47:29: global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2
 global allvars_diabe        $dvars $lvars_age l2hchole l2hibpe l2exstat1 l2exstat2 l2logatotb
 
 * HEARTE
 *global allvars_hearte       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2hibpe l2diabe l2psyche l2hchole /*https://www.bhf.org.uk/informationsupport/risk-factors  https://www.nhsggc.org.uk/your-health/health-services/hsd-patient-carers/heart-disease/risk-factors-for-heart-disease/#*/
-* debug/11-27_10:49:41
-* 11-27_11:01:51: global allvars_hearte       $dvars $lvars_age l2logbmi l2smoken l2hibpe
-* 11-27_11:15:22: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole
-* 11-27_11:54:01: global allvars_hearte       $dvars $lvars_age l2logbmi l2smoken l2hibpe l2hchole
-* 11-27_12:21:26: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2drink
-* 11-27_13:49:05: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2diabe
-* 11-27_16:12:16: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2diabe l2exstat1 l2exstat2
-* 11-27_16:47:29: global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2exstat1 l2exstat2 l2smoken
-global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2exstat1 l2exstat2
+global allvars_hearte       $dvars $lvars_age l2logbmi l2smkint3 l2hibpe l2hchole l2exstat1 l2exstat2
 
 
 * HIBPE 
@@ -157,7 +131,7 @@ global allvars_hchole       $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_s
 global allvars_hipe         $dvars $lvars_age l2logbmi `lvars_exercise' `lvars_smoke' l2drink l2arthre /*https://www.nursingtimes.net/clinical-archive/orthopaedics/hip-fracture-1-identifying-and-managing-risk-factors-10-12-2018/ */
 global allvars_srh          $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_exercise' l2drink l2cancre l2hearte l2diabe l2stroke
 global allvars_alzhe        $dvars $lvars_age l2logbmi l2hchole l2stroke l2diabe /*https://www.alzheimersresearchuk.org/dementia-information/types-of-dementia/alzheimers-disease/risk-factors/ */
-global allvars_demene       $dvars $lvars_age l2logbmi `lvars_exercise' l2hchole l2stroke l2diabe `lvars_smoke' `lvars_funclimit' /*https://www.healthline.com/health/dementia-risk-factors#genetic-and-lifestyle-risk-factors*/
+global allvars_demene       $dvars $lvars_age l2logbmi `lvars_exercise' l2hchole l2stroke l2diabe l2smoken /*https://www.healthline.com/health/dementia-risk-factors#genetic-and-lifestyle-risk-factors*/
 
 
 *** Smoking 
@@ -186,13 +160,12 @@ global allvars_freq_drinker $dvars $lvars_age l2freq_drinker l2heavy_drinker l2l
 *** Logbmi & other health
 *global allvars_logbmi       $dvars $lvars_age l2logbmi l2married l2smokev l2smoken `lvars_exercise' l2logatotb
 * Previous Good: global allvars_logbmi       $dvars $lvars_age l2smokev l2smoken l2adl2 l2adl3p
-global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' `lvars_smoke' `lvars_drink' `lvars_funclimit' `lvars_workstat' `lvars_mstat'
-global allvars_hlthlm       $dvars $lvars_age hearte stroke cancre diabe lunge logbmi adl1 adl2 adl3p iadl1 iadl2p smoken smokev drink freq_drinker heavy_drinker
+global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' 
 
 
 *** Disabilities
-global allvars_adlstat      $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth `lvars_funclimit' l2drink l2psyche l2arthre l2asthmae
-global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' $lvars_hlth `lvars_funclimit' l2drink l2psyche l2arthre l2asthmae
+global allvars_adlstat      $dvars $lvars_age l2logbmi `lvars_smoke' l2demene l2asthmae l2arthre `lvars_funclimit' 
+global allvars_iadlstat     $dvars $lvars_age l2logbmi `lvars_smoke' l2demene l2asthmae l2arthre `lvars_funclimit'
 
 
 *** Economic

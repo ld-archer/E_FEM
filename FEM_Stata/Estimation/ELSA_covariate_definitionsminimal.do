@@ -2,7 +2,7 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene heavy_drinker freq_drinker
-global bin_econ hlthlm
+global bin_econ
 global ols logbmi logatotb logitot
 global order adlstat iadlstat exstat srh smkint lnly
 global unorder mstat workstat
@@ -32,7 +32,6 @@ global bin_hlth_names
     "Frequent Drinker (>5 days/week)"
 ;
 global bin_econ_names
-    "Health Limits Work"
 ;
 global ols_names
     "Log(BMI)"

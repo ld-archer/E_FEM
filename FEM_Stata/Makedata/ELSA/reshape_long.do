@@ -108,7 +108,6 @@ r*arthre
 r*bmi 
 r*smokev
 r*smoken
-r*hlthlm
 r*asthmae
 r*parkine
 r*vgactx_e
@@ -194,7 +193,6 @@ foreach var in
     smokev
     smoken
     hhid
-    hlthlm
     asthmae
     parkine
     vgactx_e
@@ -246,7 +244,7 @@ foreach var in `wav1missvars' {
 #d ;
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre bmi smokev smoken hhid hlthlm 
+    hearte stroke psyche arthre bmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf
@@ -284,7 +282,6 @@ label variable smokev "Smoke ever"
 label variable smoken "Smoke now"
 label variable smokef "Average cigs/day"
 label variable hhid "Household ID"
-label variable hlthlm "Health limits work"
 label variable asthmae "Asthma ever"
 label variable parkine "Parkinsons disease ever"
 label variable vgactx_e "Number of times done vigorous exercise per week"
@@ -597,7 +594,7 @@ replace smokev = 1 if L.smokev == 1 & smokev == 0
 * L.***, L is lag operator; can use L2 for 2 waves prior also
 * can use this as xtset tells stata that data is panel data
 
-* REMOVED: adlcount, iadlcount, agey, bmi, hlthlm
+* REMOVED: adlcount, iadlcount, agey, bmi
 #d ;
 foreach var in
     iwstat
