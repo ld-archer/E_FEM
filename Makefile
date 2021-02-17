@@ -26,13 +26,15 @@ cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: STYLE = base
 debug: clean_logs clean_output complete debug_doc 
 
-core: start_data transitions_core est_core summary_out_core simulation_core
+core_prep: start_data transitions_core est_core summary_out_core
+core: core_prep simulation_core
 
-core_debug: STYLE = core
-core_debug: clean_logs clean_output core debug_doc
+core_complete_prep: core_prep transitions_CV est_CV summary_out_CV transitions_minimal est_minimal summary_out_minimal
+core_complete: ELSA core_complete_prep simulation_core_complete CV2_detailed_append Ttests_CV Ttests_minimal
+
+core_debug: clean_logs clean_output core_complete debug_doc_core
 
 
 ### Combined rules
@@ -177,6 +179,9 @@ simulation_minimal:
 simulation_core:
 	$(MPI) ELSA_core.settings.txt
 
+simulation_core_complete:
+	$(MPI) ELSA_core_complete.settings.txt
+
 
 ### Handovers and Validation
 
@@ -214,19 +219,42 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
 	# Create dir with current time
-	mkdir -p debug/$(STYLE)_$(TIMESTAMP)
+	mkdir -p debug/base_$(TIMESTAMP)
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
-	mv FEM_R/model_analysis.nb.html debug/$(STYLE)_$(TIMESTAMP)
-	cp -r output/ debug/$(STYLE)_$(TIMESTAMP)
-	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/$(STYLE)_$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/$(STYLE)_$(TIMESTAMP)
-	mkdir -p debug/$(STYLE)_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Makedata/ELSA/*.log debug/$(STYLE)_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Estimation/*.log debug/$(STYLE)_$(TIMESTAMP)/logs/
-	mkdir -p debug/$(STYLE)_$(TIMESTAMP)/settings/
-	cp -r FEM_CPP_settings/ debug/$(STYLE)_$(TIMESTAMP)/settings/
+	mv FEM_R/model_analysis.nb.html debug/base_$(TIMESTAMP)
+	cp -r output/ debug/base_$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/base_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/base_$(TIMESTAMP)
+	mkdir -p debug/base_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/base_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/base_$(TIMESTAMP)/logs/
+	mkdir -p debug/base_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/base_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
-	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/$(STYLE)_$(TIMESTAMP)/model_analysis.nb.html
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/base_$(TIMESTAMP)/model_analysis.nb.html
+
+
+debug_doc_core: $(R)/model_analysis_core.nb.html
+
+$(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
+	# Knit the document
+	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis_core.Rmd')"
+	# Create debug dir if not already
+	mkdir -p $(ROOT)/debug
+	# Create dir with current time
+	mkdir -p debug/core_$(TIMESTAMP)
+	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
+	mv FEM_R/model_analysis_core.nb.html debug/core_$(TIMESTAMP)
+	cp -r output/ debug/core_$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core_$(TIMESTAMP)
+	mkdir -p debug/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/core_$(TIMESTAMP)/logs/
+	mkdir -p debug/core_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/core_$(TIMESTAMP)/settings/
+	# Finally, open html file in firefox
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core_$(TIMESTAMP)/model_analysis_core.nb.html
 
 
 ### Housekeeping and cleaning
