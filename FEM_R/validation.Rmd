@@ -16,6 +16,7 @@ require(haven)
 require(reshape2)
 require(ggplot2)
 #require(plyr)
+require(readODS)
 
 ```
 
@@ -37,7 +38,7 @@ fAGE_UK <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
 #fFEM_2014 <- FEM_2014 %>% filter(male == 0)
 
 # FEM 2014 summary
-FEM_sum <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+FEM_sum <- read_dta('ELSA_AgeUK_valid/ELSA_AgeUK_valid_summary.dta')
 
 ```
 
@@ -267,11 +268,11 @@ visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_c
           labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
   
   # Save plot into in E-FEM_Paper/figures/
-  ggsave(filename = paste0(cd, '_', gender, '.png'),
-         plot = p,
-         path = path,
-         width = 7,
-         height = 5)
+  #ggsave(filename = paste0(cd, '_', gender, '.png'),
+  #       plot = p,
+  #       path = path,
+  #       width = 7,
+  #       height = 5)
   
   p
 }
@@ -291,6 +292,276 @@ for(cd in cd_list) {
     visAgeUKValid(combined, cd, gen)
   }
 }
+
+
+```
+
+
+# Smoking
+
+## Action on Smoking and Health
+
+```{r}
+FEM_base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+# Smoking prevalence stats
+# Stats found here: https://ash.org.uk/information-and-resources/fact-sheets/smoking-statistics-who-smokes-and-how-much/
+# Page 3, table 4
+smok.5059 <- 15.2
+smok.60p <- 10.2
+
+# FEM summary, filter for 2018 and 60p
+#FEM.smok <- FEM_sum
+FEM.smok <- FEM_base
+FEM.smok <- FEM.smok %>%
+                filter(year == 2018) %>%
+                select(contains('smoken')) %>%
+                select(contains('60p'), contains('5059')) %>%
+                select(contains('p_'))
+
+FEM.smok <- FEM.smok * 100
+
+smok.combined <- data.frame(FEM = FEM.smok[1,1], AgeUK = 10.2)
+smok.combined <- data.frame(source = c('FEM', 'FEM', 'Observed', 'Observed'), age = c('50 - 59', '60+', '50 - 59', '60+'), value = c(FEM.smok[1,2], FEM.smok[1,1], 15.2, 10.2))
+
+smok.plot <-ggplot(data = smok.combined, aes(x = age, y = value)) +
+                geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+                labs(title = 'Comparison of smoking prevalence in the elderly in 2018', x = ' ', y = 'Prevalence (%)')
+
+ggsave(filename = 'smoking_prev_2018.png',
+       plot = smok.plot,
+       path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Validation/',
+       width = 7,
+       height = 5)
+
+smok.plot
+
+```
+
+## ONS
+
+Found some more data on smoking in the UK from the ONS, perhaps more reliable than the other? Might be a good idea to show both if they are all within a couple of percent.
+
+```{r}
+# FEM
+FEM_base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+# ONS - Male
+m.ons.smok <- read_ods(path = '/home/luke/Documents/E_FEM_clean/Validation/adultsmokinghabitsinengland2019final.ods',
+                sheet = 4,
+                skip = 8,
+                col_names = TRUE,
+                row_names = FALSE,
+                range = "E1:F22")
+# ONS - Female
+f.ons.smok <- read_ods(path = '/home/luke/Documents/E_FEM_clean/Validation/adultsmokinghabitsinengland2019final.ods',
+                sheet = 4,
+                skip = 8,
+                col_names = TRUE,
+                row_names = FALSE,
+                range = "L1:M22")
+# ONS - All
+all.ons.smok <- read_ods(path = '/home/luke/Documents/E_FEM_clean/Validation/adultsmokinghabitsinengland2019final.ods',
+                sheet = 4,
+                skip = 8,
+                col_names = TRUE,
+                row_names = FALSE,
+                range = "S1:T22")
+
+# Remove empty row
+m.ons.smok <- m.ons.smok %>% slice(-1)
+f.ons.smok <- f.ons.smok %>% slice(-1)
+all.ons.smok <- all.ons.smok %>% slice(-1)
+
+# Add year column
+m.ons.smok$Year <- c(2000:2019)
+f.ons.smok$Year <- c(2000:2019)
+all.ons.smok$Year <- c(2000:2019)
+
+# Add Gender col
+m.ons.smok$Gender <- 'Male'
+f.ons.smok$Gender <- 'Female'
+all.ons.smok$Gender <- 'All'
+
+# Rearrange columns before rbind
+m.ons.smok <- subset(m.ons.smok, select = c(3,4,1,2))
+f.ons.smok <- subset(f.ons.smok, select = c(3,4,1,2))
+all.ons.smok <- subset(all.ons.smok, select = c(3,4,1,2))
+
+# Filter out years before 2012
+m.ons.smok <- dplyr::filter(m.ons.smok, Year >= 2012)
+f.ons.smok <- dplyr::filter(f.ons.smok, Year >= 2012)
+all.ons.smok <- dplyr::filter(all.ons.smok, Year >= 2012)
+
+# Combine male, female, all and rename 60 plus column
+ons.smok <- rbind(m.ons.smok, f.ons.smok, all.ons.smok)
+ons.smok <- dplyr::rename(ons.smok, '60p' = '60 and over')
+
+# Reshape data to long
+pivot.ons.smok <- pivot_longer(data = ons.smok,
+                               cols = '50-59':'60p',
+                               names_to = 'Age',
+                               values_to = 'Value')
+
+pivot.ons.smok$Source <- 'ONS'
+
+
+# ONS data wrangled, now get FEM into shape
+FEM.smok <- FEM_base
+# Get year out to put back later
+Year <- FEM.smok$year
+FEM.smok <- FEM.smok %>%
+                select(contains('smoken')) %>%
+                select(contains('p_'), -starts_with('n_')) %>%
+                select(contains('60p'), contains('5059')) %>%
+                dplyr::rename('60p' = p_smoken_60p, '50-59' = p_smoken_5059)
+
+FEM.smok <- subset(FEM.smok, select = c(2, 1))
+FEM.smok <- cbind(Year, FEM.smok)
+
+FEM.smok <- filter(FEM.smok, year >= 2012, year < 2022)
+
+pivot.FEM.smok <- pivot_longer(data = FEM.smok,
+                               cols = '50-59':'60p',
+                               names_to = 'Age',
+                               values_to = 'Value')
+pivot.FEM.smok$Source <- 'FEM'
+pivot.FEM.smok$Value <- pivot.FEM.smok$Value * 100
+
+pivot.ons.smok.all <- pivot.ons.smok %>%
+                          filter(Gender == 'All') %>%
+                          select(-Gender)
+  
+combined <- rbind(pivot.FEM.smok, pivot.ons.smok.all)
+
+ggplot(data = combined, aes(x = Year, y = Value)) +
+  geom_bar(aes(fill = Source), stat = 'identity', position = 'dodge')
+
+
+```
+
+
+# ADLs
+
+Just having a play around with this data, wanted to visualise how levels of anyADL change over time.
+
+```{r}
+
+FEM.new <- FEM_base
+
+FEM.adl <- FEM.new %>%
+              select(contains('year'), contains('anyadl')) %>%
+              select(-starts_with('i_'), -starts_with('n_'), -starts_with('a_')) %>%
+              select(-contains('_m'), -contains('_f')) %>%
+              select(-contains('5059'), -contains('60p'))
+
+p.FEM.adl <- pivot_longer(data = FEM.adl,
+                          cols = p_anyadl_100p:p_anyadl_all,
+                          names_to = c('Prevalence', 'Condition', 'Age'),
+                          names_sep = '_')
+
+p.FEM.adl <- select(p.FEM.adl, -Prevalence, -Condition)
+
+p.FEM.adl$Age <- factor(p.FEM.adl$Age, levels = c('6064', '6569', '7074', '7579', '8084', '8589', '9094', '9599', '100p', 'all'))
+
+ggplot(data = p.FEM.adl, aes(x = year, y = value, colour = Age)) +
+  geom_line(aes(fill = Age))
+
+```
+
+# ADL Comparison (Wittenberg)
+
+Data for this comparison came from [this paper](https://people.uea.ac.uk/en/publications/projections-of-demand-and-expenditure-on-adult-social-care-2015-to-2040(d1f44389-4e52-4cb1-9b66-ecc7594d345e).html) - Projections of Demand and Expenditure on Adult Social Care 2015 to 2040. On page 6, base case projections are outlined. Wittenberg says that from 2015 to 2040, the population having at least 1 difficulty in ADL or IADL would rise by 67%, and from 2015 to 2070 would rise by 116%. When considering only ADLs, the increase was 69% from 2015 to 2040, and 124% from 2015 to 2070. Written more clearly:
+
+ADL & IADL
+2015 - 2040: 67% increase
+2015 - 2070: 116% increase
+
+ADL only
+2015 - 2040: 69% increase
+2015 - 2070: 124% increase
+
+```{r}
+
+FEM_base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+# Get FEM output and extract only p_anyadl_all
+FEM.adl <- FEM_base %>%
+              select(contains('year'), contains('anyadl')) %>%
+              select(-starts_with('i_'), -starts_with('n_'), -starts_with('a_')) %>%
+              select(-contains('_m'), -contains('_f')) %>%
+              select(contains('year'), contains('_all'))
+
+# Now calculate % increase between 2015 & 2040. Need to take average between 2014 & 2016 values
+FEM.2015 <- data.frame(year = 2015, ((FEM.adl[2,2] + FEM.adl[3,2]) / 2))
+# extract 2040
+FEM.2040 <- filter(FEM.adl, year == 2040)
+# Row bind
+FEM.2015_2040 <- rbind(FEM.2015, FEM.2040)
+
+# Now calculate percentage change
+FEM.adl.perchange <- ((FEM.2015_2040[2,2] - FEM.2015_2040[1,2]) / FEM.2015_2040[2,2]) * 100
+
+# Not good! Showing an 8% reduction in anyadl when we should be seeing a ~70% increase
+# Have changed some transition models to see if we can change this significantly
+# Now 14% reduction, not good. Need to have a good look at these later.
+
+```
+
+# Stroke Comparison (Wittenberg)
+
+Data from [this paper](https://www.semanticscholar.org/paper/The-future-incidence%2C-prevalence-and-costs-of-in-UK-King-Wittenberg/fdaffc8cd7790556e57c77c0b195c8f7a64c4189) by King et al. (2020). Their model predicts an increase in prevalence of 120% from 2015 to 2035. Also, paper projects that incidence of stroke will increase by 60% each year in the same period. Going to start by comparing the prevalence, but when I come back to this I think it would be interesting to compare incidence also.
+
+```{r}
+
+FEM_base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+# Get FEM output and extract only p_anyadl_all
+FEM.stroke <- FEM_base %>%
+              select(contains('year'), contains('stroke')) %>%
+              select(-starts_with('i_'), -starts_with('n_'), -starts_with('a_')) %>%
+              select(contains('year'), contains('_all'))
+# select(-contains('_m'), -contains('_f')) %>%
+
+FEM.stroke.2015 <- data.frame(year = 2015, ((FEM.stroke[2,2] + FEM.stroke[3,2]) / 2))
+FEM.stroke.2040 <- filter(FEM.stroke, year == 2040)
+FEM.stroke.2015_2040 <- rbind(FEM.stroke.2015, FEM.stroke.2040)
+
+# Now calculate percentage change
+FEM.stroke.perchange <- ((FEM.stroke.2015_2040[2,2] - FEM.stroke.2015_2040[1,2]) / FEM.stroke.2015_2040[2,2]) * 100
+
+# Output showing a ~29% increase in stroke, nowhere near the 120% increase Wittenberg predicts
+
+```
+
+```{r}
+
+FEM_base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+# Get FEM output and extract only p_anyadl_all
+FEM.dem <- FEM_base %>%
+              select(contains('year'), contains('demene')) %>%
+              select(-starts_with('i_'), -starts_with('n_'), -starts_with('a_')) %>%
+              select(contains('year'), contains('_all'))
+# select(-contains('_m'), -contains('_f')) %>%
+
+FEM.dem.2015 <- data.frame(year = 2015, ((FEM.dem[2,2] + FEM.dem[3,2]) / 2))
+FEM.dem.2040 <- filter(FEM.dem, year == 2040)
+FEM.dem.2015_2040 <- rbind(FEM.dem.2015, FEM.dem.2040)
+
+# Now calculate percentage change
+FEM.dem.perchange <- ((FEM.dem.2015_2040[2,2] - FEM.dem.2015_2040[1,2]) / FEM.dem.2015_2040[2,2]) * 100
+
+```
+
+
+
+# Bland Altman method of Validation
+
+```{r}
+# Contains method for bland-altman validation 
+require(MethComp)
+
 
 
 ```

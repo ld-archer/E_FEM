@@ -301,6 +301,69 @@ CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
 vis_CV2_prev(long, CV2)
 ```
 
+Second go at this cross-validation, attempting to solve some issues by using the 60 plus population.
+
+```{r echo = FALSE}
+vis_CV2_prev <- function(long, CV2) {
+  
+  # Keep only waves 1 - 4
+  longC <- subset(long, wave < 5)
+  longC <- as.data.table(longC)
+  
+  # Replace all NA with 0
+  longC[is.na(longC)] <- 0
+  
+  # Have to drop r*clust vars as they contain strings
+  longC <- select(longC, -contains('clust'))
+  
+  # Now get the weighted mean by wave of every column based on cwtresp
+  l2 <- longC[ , lapply(.SD,weighted.mean,w=cwtresp), by = list(wave)]
+  
+  # ELSA_long is now processed to the point where we can start extracting and combining variables
+  # Better start by adding year to l2 and reordering the columns
+  l2$year <- seq(from=2002, to = 2008, by = 2)
+  setcolorder(l2, c('year', 'wave'))
+  
+  # Now lets extract chronic disease variables from both dataframes and do a row combine
+  # Start with cancre, diabe, hearte
+  cd_l2 <- select(l2, c(year, age, cancre, diabe, hearte, lunge, smoken, bmi, employed, anyadl)) #, anyiadl, adl1, adl2, adl3p))
+  cd_CV2 <- select(CV2, c(year, a_age_60p, p_cancre_60p, p_diabe_60p, 
+                            p_hearte_60p, p_lunge_60p, p_smoken_60p, 
+                            a_bmi_60p, p_employed_60p,  p_anyadl_60p))
+                            #, p_anyiadl_60p p_adl1_60p, p_adl2_60p, p_adl3p_60p))
+  
+  CV2_rename <- cd_CV2 %>% dplyr::rename('age' = a_age_60p,
+                                        'cancre' = p_cancre_60p, 
+                                        'diabe' = p_diabe_60p, 
+                                        'hearte' = p_hearte_60p,
+                                        'lunge' = p_lunge_60p,
+                                        'smoken' = p_smoken_60p,
+                                        'bmi' = a_bmi_60p,
+                                        'employed' = p_employed_60p,
+                                        'anyadl' = p_anyadl_60p)
+                                        #'anyiadl' = p_anyiadl_60p)
+                                        #'adl1' = p_adl1_60p,
+                                        #'adl2' = p_adl2_60p,
+                                        #'adl3p' = p_adl3p_60p)
+  
+  combine <- rbind(cd_l2, CV2_rename)
+  
+  melted <- reshape2::melt(combine, id.var = 'year', value.name = 'Prevalence')
+  
+  ggplot(data = melted, aes(x = year, y = Prevalence, color = variable)) +
+          geom_line() +
+          facet_wrap(. ~ variable, scales = "free")
+          #theme(panel.spacing.x = unit(1.5, 'lines')) +
+          #labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
+}
+
+# Load in whole stock pop, plus the CV2 summary output file
+long <- read_dta('../input_data/ELSA_long.dta')
+CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
+
+vis_CV2_prev(long, CV2)
+```
+
 # Intervention Scenarios
 
 ### Base Initial Prevalence of Chronic Disease
@@ -550,7 +613,42 @@ for(cd in cd_list) {
 }
 ```
 
+# Smoking
 
+```{r}
+FEM_base <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
+
+# Smoking prevalence stats
+smok.5059 <- 15.2
+smok.60p <- 10.2
+
+# FEM summary, filter for 2018 and 60p
+#FEM.smok <- FEM_sum
+FEM.smok <- FEM_base
+FEM.smok <- FEM.smok %>%
+                filter(year == 2018) %>%
+                select(contains('smoken')) %>%
+                select(contains('60p'), contains('5059')) %>%
+                select(contains('p_'))
+
+FEM.smok <- FEM.smok * 100
+
+smok.combined <- data.frame(FEM = FEM.smok[1,1], AgeUK = 10.2)
+smok.combined <- data.frame(source = c('FEM', 'FEM', 'Observed', 'Observed'), age = c('50 - 59', '60+', '50 - 59', '60+'), value = c(FEM.smok[1,2], FEM.smok[1,1], 15.2, 10.2))
+
+smok.plot <-ggplot(data = smok.combined, aes(x = age, y = value)) +
+                geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+                labs(title = 'Comparison of smoking prevalence in the elderly in 2018', x = ' ', y = 'Prevalence (%)')
+
+ggsave(filename = 'smoking_prev_2018.png',
+       plot = smok.plot,
+       path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Validation/',
+       width = 7,
+       height = 5)
+
+smok.plot
+
+```
 
 
 # Github Reporting
