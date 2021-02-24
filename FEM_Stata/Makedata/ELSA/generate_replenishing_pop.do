@@ -46,7 +46,7 @@ save `base_cohort'
 
 * Generate cohorts for each year
 
-forvalues yy = 2012 (2) 2060 {
+forvalues yy = 2012 (2) 2082 {
     di "Year is `yy'"
     use `base_cohort', replace
 
@@ -78,7 +78,7 @@ forvalues yy = 2012 (2) 2060 {
 clear
 
 * Append the temporary files
-forvalues yy = 2012 (2) 2060 {
+forvalues yy = 2012 (2) 2082 {
     append using `cohort_`yy''
 }
 

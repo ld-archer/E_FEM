@@ -1,0 +1,502 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This notebook will hold some initial testing and visualisation for the results section of the IJM paper.
+
+
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(reshape2)
+require(ggplot2)
+#require(plyr)
+#require(data.table)
+
+```
+
+
+
+```{r}
+
+# Baselines
+base <- read_dta('ELSA_core_base/ELSA_core_base_summary.dta')
+cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+
+# Hearte (cohort and pop)
+heart_c <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta')
+heart_p <- read_dta('ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
+
+# Smoking (cohort)
+smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
+
+# BMI
+nomorbid <- read_dta('ELSA_core_nomorbid/ELSA_core_nomorbid_summary.dta')
+obese2 <- read_dta('ELSA_core_noobese2/ELSA_core_noobese2_summary.dta')
+obese1 <- read_dta('ELSA_core_noobese1/ELSA_core_noobese1_summary.dta')
+
+```
+
+Data has been read in, lets create some functions to visualise.
+
+```{r}
+
+compareSurvivalCurve <- function(cohort, intervention, int_name,
+                                 path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  # Calculate age and survival curves
+  cohort$Age <- (cohort$year - 2012) + 50
+  intervention$Age <- (intervention$year - 2012) + 50
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
+  
+  survivals <- data.frame(cohort$Age, cohort$Survival, intervention$Survival)
+  
+  # Had a small problem when trying to rename using the variable name given as function argument
+  # Found solution here: https://stackoverflow.com/questions/49650394/how-to-rename-a-variable-using-a-dynamic-name-and-dplyr
+  survivals <- survivals %>%
+                 dplyr::rename('Age' = cohort.Age, 'Baseline' = cohort.Survival, !!quo_name(int_name) := intervention.Survival) %>%
+                 melt(id.var = 'Age', value.name = 'Survival')
+  
+  p1 <-ggplot(data = survivals, aes(x=Age, y=Survival, color = variable)) +
+        geom_line() +
+        labs(title = paste('Baseline vs', int_name), x = 'Age', y = 'Survival')
+  
+  ggsave(filename = paste0(int_name, '_survival_curve.png'),
+         plot = p1,
+         path = path)
+  
+  return(p1)
+  
+}
+
+```
+
+```{r}
+
+compareDeathAge <- function(base, int, int_name, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  aDeath <- data.frame(base$year, base$d_age_all, int$d_age_all)
+  
+  print(colnames(aDeath))
+  
+  aDeath <- aDeath %>%
+                dplyr::rename('Year' = base.year, 'Baseline' = base.d_age_all, !!quo_name(int_name) := int.d_age_all) %>%
+                reshape2::melt(id.var = 'Year', value.name = 'Age')
+  
+  p1 <- ggplot(data = aDeath, aes(x = Year, y = Age, color = variable)) +
+        geom_line() +
+        labs(title = paste('Baseline vs', int_name), x = 'Year', y = 'Age at Death')
+  
+  ggsave(filename = paste0(int_name, '_death_age.png'),
+         plot = p1,
+         path = path)
+  
+  return(p1)
+}
+```
+
+
+# Hearte
+
+## Cohort
+
+```{r}
+
+coh <- cohort
+h <- heart_c
+
+compareSurvivalCurve(coh, h, 'No Heart Disease')
+
+```
+
+```{r}
+
+coh <- cohort
+h <- heart_c
+
+cohortCDVis <- function(cohort, intervention, cds, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  # Calculate age and survival curves
+  cohort$Age <- (cohort$year - 2012) + 50
+  intervention$Age <- (intervention$year - 2012) + 50
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
+  
+  cohMelt <- cohort %>%
+              select(c('Age', all_of(cds))) %>%
+              melt(id.var='Age', value.name = 'Prevalence_cohort')
+
+  intMelt <- intervention %>%
+              select(c('Age', all_of(cds))) %>%
+              melt(id.var='Age', value.name = 'Prevalence_intervention')
+
+  merged <- merge(cohMelt, intMelt)
+
+  pivot.merged <- pivot_longer(data = merged,
+                             cols = Prevalence_cohort:Prevalence_intervention,
+                             names_to = c('Prevalence', 'source'),
+                             names_sep = '_')
+  pivot.merged <- select(pivot.merged, -Prevalence)
+
+
+  p1 <- ggplot(data = pivot.merged, aes(x = Age, y = value, color = source)) +
+          geom_line() +
+          facet_wrap(. ~ variable, scales = "free")
+  
+  ggsave(filename = 'noHearte_cd_lattice.png',
+         plot = p1,
+         path = path)
+  
+  return(p1)
+  
+}
+
+cds <- c('p_hearte_all', 'p_cancre_all', 'p_stroke_all', 'p_diabe_all')
+
+cohortCDVis(coh, h, cds)
+
+```
+
+## Population
+
+```{r}
+
+b <- base
+h_p <- heart_p
+
+compareDeathAge(b, h_p, 'No Heart Disease')
+
+```
+
+
+
+# Smoking
+
+## Average Age at Death
+
+```{r}
+
+b2 <- base
+s <- smok
+
+compareDeathAge(b2, smok, 'No Smoking')
+
+```
+
+## Chronic Diseases
+
+```{r}
+
+baseCDVis <- function(base, int, cds, cds.rename, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  selBase <- base %>%
+              select(c('year', all_of(cds)))
+  colnames(selBase) <- c('Year', cds.rename)
+
+  selInt <- int %>%
+              select(c('year', all_of(cds)))
+  colnames(selInt) <- c('Year', cds.rename)
+  
+  pivot.selBase <- pivot_longer(data = selBase,
+                              cols = 'Lung Disease':Diabetes,
+                              names_to = 'Condition',
+                              values_to = 'Prevalence')
+  pivot.selBase$scen <- 'Baseline'
+  
+  pivot.selInt <- pivot_longer(data = selInt,
+                              cols = 'Lung Disease':Diabetes,
+                              names_to = 'Condition',
+                              values_to = 'Prevalence')
+  pivot.selInt$scen <- 'Intervention'
+  
+  merged <- rbind(pivot.selBase, pivot.selInt)
+
+  p <- ggplot(data = merged, aes(x = Year, y = Prevalence, color = scen)) +
+          geom_line() +
+          facet_wrap(. ~ Condition, scales = "free")
+          labs(x = 'Year', y = 'Prevalence')
+          
+  ggsave(filename = 'noSmoke_cd_lattice.png',
+         plot = p,
+         path = path)
+
+  return(p)
+}
+
+cds <- c('p_lunge_all', 'p_hearte_all', 'p_cancre_all', 'p_stroke_all', 'p_diabe_all')
+cds.rename <- c('Lung Disease', 'Heart', 'Cancer', 'Stroke', 'Diabetes')
+baseCDVis(b2, s, cds, cds.rename)
+
+
+```
+
+```{r}
+
+visCDComparison <- function(base, int, int_name, cd, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  # For file naming and stuff
+  if(cd == 'cancre') {
+    dis <- 'Cancer'
+  } else if(cd == 'diabe') {
+    dis <- 'Diabetes'
+  } else if(cd == 'hearte') {
+    dis <- 'Heart Disease'
+  } else if(cd == 'lunge') {
+    dis <- 'Lung Disease'
+  } else if(cd == 'stroke') {
+    dis <- 'Stroke'
+  }
+  
+  var <- paste0('p_', cd, '_all')
+
+  selBase <- base %>%
+              select(c('year', all_of(var))) %>%
+              dplyr::rename('Baseline' = var)
+  
+  selInt <- int %>%
+              select(c('year', all_of(var))) %>%
+              dplyr::rename('Intervention' = var)
+  
+  melted <- merge(selBase, selInt, by = 'year') %>%
+              reshape2::melt(id.var = 'year', value.name = 'Scenario')
+
+  p <- ggplot(data = melted, aes(x = year, y = Scenario, color = variable)) +
+          geom_line() +
+          labs(title = paste(int_name, dis, sep = ' - '), x = 'Year', y = 'Prevalence')
+  
+  ggsave(filename = paste0(int_name, '_', dis, '_prev.png'),
+         plot = p,
+         path = path)
+  
+  return(p)
+  
+}
+
+visCDComparison(b2, s, 'No Smoke', 'cancre')
+visCDComparison(b2, s, 'No Smoke', 'diabe')
+visCDComparison(b2, s, 'No Smoke', 'hearte')
+visCDComparison(b2, s, 'No Smoke', 'lunge')
+visCDComparison(b2, s, 'No Smoke', 'stroke')
+
+```
+
+
+# BMI
+
+```{r}
+
+c <- cohort
+bmi1 <- obese1
+bmi2 <- obese2
+bmi3 <- nomorbid
+
+compareSurvivalCurveBMI <- function(cohort, int1, int2, int3,
+                                 path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  # Calculate age and survival curves
+  cohort$Age <- (cohort$year - 2012) + 50
+  int1$Age <- (int1$year - 2012) + 50
+  int2$Age <- (int2$year - 2012) + 50
+  int3$Age <- (int3$year - 2012) + 50
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  int1$Survival <- int1$m_endpop_all / int1$m_endpop_all[1]
+  int2$Survival <- int2$m_endpop_all / int2$m_endpop_all[1]
+  int3$Survival <- int3$m_endpop_all / int3$m_endpop_all[1]
+  
+  survivals <- data.frame(cohort$Age, cohort$Survival, int1$Survival, int2$Survival, int3$Survival)
+  
+  # Had a small problem when trying to rename using the variable name given as function argument
+  # Found solution here: https://stackoverflow.com/questions/49650394/how-to-rename-a-variable-using-a-dynamic-name-and-dplyr
+  survivals <- survivals %>%
+                 dplyr::rename('Age' = cohort.Age, 'Cohort' = cohort.Survival, 'No Obese 1' = int1.Survival, 'No Obese 2' = int2.Survival, 'No Morbid' = int3.Survival)
+  
+  pivot.survival <- pivot_longer(data = survivals,
+                               cols = Cohort:'No Morbid',
+                               names_to = 'Scenario',
+                               values_to = 'Survival')
+  
+  p1 <-ggplot(data = pivot.survival, aes(x=Age, y=Survival, color = Scenario)) +
+        geom_line() +
+        labs(title = 'BMI Intervention Survival', x = 'Age', y = 'Survival')
+  
+  ggsave(filename = 'BMI_survival_curves.png',
+         plot = p1,
+         path = path)
+  
+  return(p1)
+  
+}
+
+compareSurvivalCurveBMI(cohort, bmi1, bmi2, bmi3)
+
+```
+
+```{r}
+
+c <- cohort
+bmi1 <- obese1
+bmi2 <- obese2
+bmi3 <- nomorbid
+
+# # Calculate age and survival curves
+# c$Age <- (c$year - 2012) + 50
+# bmi1$Age <- (bmi1$year - 2012) + 50
+# bmi2$Age <- (bmi2$year - 2012) + 50
+# bmi3$Age <- (bmi3$year - 2012) + 50
+# c$Survival <- c$m_endpop_all / c$m_endpop_all[1]
+# bmi1$Survival <- bmi1$m_endpop_all / bmi1$m_endpop_all[1]
+# bmi2$Survival <- bmi2$m_endpop_all / bmi2$m_endpop_all[1]
+# bmi3$Survival <- bmi3$m_endpop_all / bmi3$m_endpop_all[1]
+# 
+# cds <- c('p_hearte_all', 'p_cancre_all', 'p_stroke_all', 'p_diabe_all', 'a_bmi_all')
+# 
+# coh <- c %>%
+#             select(Age, all_of(cds)) %>%
+#             dplyr::rename(heart_cohort = p_hearte_all, cancer_cohort = p_cancre_all, 
+#                           stroke_cohort = p_stroke_all, diabetes_cohort = p_diabe_all, 
+#                           bmi_cohort = a_bmi_all)
+# 
+# b1 <- bmi1 %>%
+#             select(Age, all_of(cds)) %>%
+#             dplyr::rename(heart_bmi1 = p_hearte_all, cancer_bmi1 = p_cancre_all, 
+#                           stroke_bmi1 = p_stroke_all, diabetes_bmi1 = p_diabe_all,
+#                           bmi_bmi1 = a_bmi_all)
+# 
+# b2 <- bmi2 %>%
+#             select(Age, all_of(cds)) %>%
+#             dplyr::rename(heart_bmi2 = p_hearte_all, cancer_bmi2 = p_cancre_all, 
+#                           stroke_bmi2 = p_stroke_all, diabetes_bmi2 = p_diabe_all,
+#                           bmi_bmi2 = a_bmi_all)
+# 
+# b3 <- bmi3 %>%
+#             select(Age, all_of(cds)) %>%
+#             dplyr::rename(heart_bmi3 = p_hearte_all, cancer_bmi3 = p_cancre_all, 
+#                           stroke_bmi3 = p_stroke_all, diabetes_bmi3 = p_diabe_all,
+#                           bmi_bmi3 = a_bmi_all)
+# 
+# merged <- Reduce(merge, list(coh, b1, b2, b3))
+# 
+# pivot.merged <- pivot_longer(data = merged,
+#                              cols = heart_cohort:bmi_bmi3,
+#                              names_to = c('Feature', 'Scenario'),
+#                              names_sep = '_',
+#                              values_to = 'Value')
+# 
+# ggplot(data = filter(pivot.merged, Feature == 'bmi'), aes(x = Age, y = Value, color = Scenario)) +
+#   geom_line()
+# 
+# ggplot(data = filter(pivot.merged, Feature == 'heart'), aes(x = Age, y = Value, color = Scenario)) +
+#   geom_line()
+# 
+# ggplot(data = filter(pivot.merged, Feature == 'stroke'), aes(x = Age, y = Value, color = Scenario)) +
+#   geom_line()
+# 
+# ggplot(data = filter(pivot.merged, Feature == 'diabetes'), aes(x = Age, y = Value, color = Scenario)) +
+#   geom_line()
+
+visCDComparisonBMI <- function(cohort, int1, int2, int3, cds, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  # Calculate age and survival curves
+  cohort$Age <- (cohort$year - 2012) + 50
+  int1$Age <- (int1$year - 2012) + 50
+  int2$Age <- (int2$year - 2012) + 50
+  int3$Age <- (int3$year - 2012) + 50
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  int1$Survival <- int1$m_endpop_all / int1$m_endpop_all[1]
+  int2$Survival <- int2$m_endpop_all / int2$m_endpop_all[1]
+  int3$Survival <- int3$m_endpop_all / int3$m_endpop_all[1]
+  
+  coh <- cohort %>%
+              select(Age, all_of(cds)) %>%
+              dplyr::rename(heart_cohort = p_hearte_all, cancer_cohort = p_cancre_all, 
+                            stroke_cohort = p_stroke_all, diabetes_cohort = p_diabe_all, 
+                            bmi_cohort = a_bmi_all)
+
+  b1 <- int1 %>%
+              select(Age, all_of(cds)) %>%
+              dplyr::rename(heart_bmi1 = p_hearte_all, cancer_bmi1 = p_cancre_all, 
+                            stroke_bmi1 = p_stroke_all, diabetes_bmi1 = p_diabe_all,
+                            bmi_bmi1 = a_bmi_all)
+  
+  b2 <- int2 %>%
+              select(Age, all_of(cds)) %>%
+              dplyr::rename(heart_bmi2 = p_hearte_all, cancer_bmi2 = p_cancre_all, 
+                            stroke_bmi2 = p_stroke_all, diabetes_bmi2 = p_diabe_all,
+                            bmi_bmi2 = a_bmi_all)
+  
+  b3 <- int3 %>%
+              select(Age, all_of(cds)) %>%
+              dplyr::rename(heart_bmi3 = p_hearte_all, cancer_bmi3 = p_cancre_all, 
+                            stroke_bmi3 = p_stroke_all, diabetes_bmi3 = p_diabe_all,
+                            bmi_bmi3 = a_bmi_all)
+  
+  merged <- Reduce(merge, list(coh, b1, b2, b3))
+  
+  pivot.merged <- pivot_longer(data = merged,
+                               cols = heart_cohort:bmi_bmi3,
+                               names_to = c('Feature', 'Scenario'),
+                               names_sep = '_',
+                               values_to = 'Value')
+  
+  p1 <-ggplot(data = filter(pivot.merged, Feature == 'bmi'), aes(x = Age, y = Value, color = Scenario)) +
+        geom_line() +
+        labs(title = 'Average BMI', x = 'Age', y = 'BMI')
+  
+  ggsave(filename = 'BMI_abmi.png',
+         plot = p1,
+         path = path)
+  
+  p2 <- ggplot(data = filter(pivot.merged, Feature == 'heart'), aes(x = Age, y = Value, color = Scenario)) +
+        geom_line() +
+        labs(title = 'Heart Disease', x = 'Age', y = 'Prevalence')
+  
+  ggsave(filename = 'BMI_phearte.png',
+         plot = p2,
+         path = path)
+  
+  p3 <- ggplot(data = filter(pivot.merged, Feature == 'stroke'), aes(x = Age, y = Value, color = Scenario)) +
+        geom_line() +
+        labs(title = 'Stroke', x = 'Age', y = 'Prevalence')
+  
+  ggsave(filename = 'BMI_pstroke.png',
+         plot = p3,
+         path = path)
+  
+  p4 <- ggplot(data = filter(pivot.merged, Feature == 'diabetes'), aes(x = Age, y = Value, color = Scenario)) +
+        geom_line() +
+        labs(title = 'Diabetes', x = 'Age', y = 'Prevalence')
+  
+  ggsave(filename = 'BMI_pdiabe.png',
+         plot = p4,
+         path = path)
+  
+  return(list(p1, p2, p3, p4))
+}
+
+cds <- c('p_hearte_all', 'p_cancre_all', 'p_stroke_all', 'p_diabe_all', 'a_bmi_all')
+
+visList <- visCDComparisonBMI(c, bmi1, bmi2, bmi3, cds)
+
+for(graph in visList) {
+  print(graph)
+}
+
+```
+
+```{r}
+
+visCDComparison(c, bmi3, 'No Morbid', 'cancre')
+visCDComparison(c, bmi3, 'No Morbid', 'diabe')
+visCDComparison(c, bmi3, 'No Morbid', 'stroke')
+visCDComparison(c, bmi3, 'No Morbid', 'hearte')
+visCDComparison(c, bmi3, 'No Morbid', 'lunge')
+
+```
+
+

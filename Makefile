@@ -18,9 +18,9 @@ RSCRIPT = Rscript
 
 ### Model runs
 
-complete: ELSA base cross-validation minimal
+complete: model_prep base cross-validation minimal
 
-base: start_data transitions_base est_base summary_out_base simulation_base 
+base: model_prep start_data transitions_base est_base summary_out_base simulation_base 
 
 cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1 simulation_CV2 CV2_detailed_append Ttests_CV
 
@@ -31,15 +31,19 @@ debug: clean_logs clean_output complete debug_doc
 core_prep: start_data transitions_core est_core summary_out_core
 core: core_prep simulation_core
 
-core_complete_prep: core_prep transitions_CV est_CV summary_out_CV transitions_minimal est_minimal summary_out_minimal
-core_complete: ELSA core_complete_prep simulation_core_complete CV2_detailed_append Ttests_CV Ttests_minimal
+core_complete_prep: core_prep transitions_minimal est_minimal summary_out_minimal
+core_complete: ELSA core_complete_prep simulation_core_complete CV2_detailed_append Ttests_core
 
 core_debug: clean_logs clean_output core_complete debug_doc_core
+
+core_scen: core_prep simulation_core_scen
 
 
 ### Combined rules
 
-start_data: ELSA stata_extensions.txt populations imputation projections reweight
+model_prep: ELSA stata_extensions.txt 
+
+start_data: populations imputation projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
 
@@ -105,7 +109,7 @@ $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=min $(STATA) reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=valid $(STATA) reweight_ELSA_stock.do
 
-$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do
+$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do $(MAKEDATA)/gen_bmi_repls.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
 
 
@@ -130,6 +134,9 @@ transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_tran
 
 transitions_core: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core $(STATA) ELSA_init_transition.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV1 $(STATA) ELSA_init_transition.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV2 $(STATA) ELSA_init_transition.do
+	
 
 
 ### Estimates and Summary
@@ -147,6 +154,9 @@ est_minimal:
 
 est_core:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV1/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models $(STATA) save_est_cpp.do
+
 
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
@@ -160,6 +170,8 @@ summary_out_minimal:
 
 summary_out_core:
 	cd FEM_CPP_settings && measures_suffix=ELSA_core $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 $(STATA) summary_output_gen.do
 
 
 ### FEM Simulation
@@ -182,6 +194,9 @@ simulation_core:
 simulation_core_complete:
 	$(MPI) ELSA_core_complete.settings.txt
 
+simulation_core_scen:
+	$(MPI) ELSA_core_scen.settings.txt
+
 
 ### Handovers and Validation
 
@@ -195,6 +210,12 @@ Ttests_CV:
 Ttests_minimal:
 	mkdir -p $(ROOT)/output/ELSA_minimal/T-tests
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA.do
+
+Ttests_core:
+	mkdir -p $(ROOT)/output/ELSA_CV1/T-tests
+	mkdir -p $(ROOT)/output/ELSA_minimal/T-tests
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=CV1 $(STATA) crossvalidation_ELSA_core.do
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA_core.do
 
 
 ### Dealing with detailed output
@@ -259,7 +280,7 @@ $(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta o
 
 ### Housekeeping and cleaning
 
-clean_all: clean_logs clean_total clean_output clean_models
+clean_all: clean_logs clean_output clean_models
 
 clean_logs:
 	rm -f *.log
@@ -269,13 +290,6 @@ clean_logs:
 
 clean_output:
 	rm -rf output/*
-
-clean_total:
-	rm -f output/*/*.dta
-	rm -f output/*/*/*.dta
-	rm -f output/*/*/*.csv
-	rm -f output/*/*/*.txt
-	rm -f output/graphs/*/*.png
 
 clean_debug:
 	rm -f debug/*

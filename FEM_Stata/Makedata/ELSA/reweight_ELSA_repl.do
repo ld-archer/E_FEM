@@ -27,7 +27,7 @@ gen weight2 = .
 * Nested for loops to calculate the denominator and in turn the weight value
 forvalues age = 51/52 {
 	forvalues male = 0/1 {
-		forvalues year = 2012 (2) 2060 {
+		forvalues year = 2012 (2) 2082 {
 			sum cwtresp if age == `age' & male == `male' & year == `year'
 			scalar denom = r(sum)
 			replace weight = (cwtresp * v)/denom if age == `age' & male == `male' & year == `year'
@@ -45,7 +45,7 @@ tab _merge
 drop _merge
 
 * Nested loops over birth year, gender and education level for reweighting
-forvalues rbyr = 1963/2009 {
+forvalues rbyr = 1963/2031 {
 	forvalues male = 0/1 {
 		forvalues educ = 1/3 {
 			sum weight if rbyr == `rbyr' & male == `male' & educ == `educ'
@@ -73,6 +73,9 @@ drop cwtresp v
 if "`scen'" == "base" {
 	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
 	saveold $outdata/ELSA_repl.dta, replace v(12)
+
+	* Produce altered BMI populations for interventions
+	do gen_bmi_repls.do
 }
 else if "`scen'" == "base_nosmoke" {
 	*saveold ../../../input_data/ELSA_stock_CV.dta, replace v(12)

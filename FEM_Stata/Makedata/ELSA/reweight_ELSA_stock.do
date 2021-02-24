@@ -69,6 +69,7 @@ replace weight = 0 if missing(cwtresp)
 if "`scen'" == "base" {
 	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
 	saveold $outdata/ELSA_stock.dta, replace v(12)
+	*do gen_bmi_stocks.do
 }
 else if "`scen'" == "CV1" {
 	saveold $outdata/ELSA_stock_CV1.dta, replace v(12)

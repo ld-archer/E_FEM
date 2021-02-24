@@ -447,7 +447,7 @@ female_au <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
 
 # FEM 2014 summary
 #FEM <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
-FEM <- read_dta('ELSA_AgeUK_valid/ELSA_AgeUK_valid_summary.dta')
+FEM <- read_dta('ELSA_AgeUK_core_valid/ELSA_AgeUK_core_valid_summary.dta')
 
 # Keep only year 2014 from FEM summary
 FEM <- filter(FEM, year == 2014)

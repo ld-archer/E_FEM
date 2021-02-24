@@ -47,6 +47,7 @@ local ster1 "$local_path/Estimates/ELSA"
 local ster2 "$local_path/Estimates/ELSA/CV1"
 local ster3 "$local_path/Estimates/ELSA/CV2"
 local ster4 "$local_path/Estimates/ELSA_minimal"
+local ster5 "$local_path/Estimates/ELSA_core"
 
 dis "oprobit educ `predict_vars'
 
@@ -62,6 +63,7 @@ if r(N)>0 {
     est save "`ster2'/educ.ster", replace
     est save "`ster3'/educ.ster", replace
     est save "`ster4'/educ.ster", replace
+    est save "`ster5'/educ.ster", replace
     est restore o_educ_mfx
         ch_est_title "Education (educ) marginal effects"
         est store o_educ_mfx

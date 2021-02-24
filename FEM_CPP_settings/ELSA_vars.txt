@@ -347,6 +347,3 @@ l2itot = exp(l2logitot) : exp of lag of log itot : float
 
 | For Mortality Adjustment
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
-
-| HChole Interventions
-hchole_elig = not(died) & hchole == 1

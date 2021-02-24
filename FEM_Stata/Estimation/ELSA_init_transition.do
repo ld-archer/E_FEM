@@ -51,7 +51,7 @@ if !missing("`defmod'") {
 	else if "`defmod'" == "minimal" {
 		local ster "$local_path/Estimates/ELSA_minimal"
 	}
-	else if "`defmod'" == "core" {
+	else if "`defmod'" == "core" | "`defmod'" == "core_CV1" | "`defmod'" == "core_CV2" {
 		local ster "$local_path/Estimates/ELSA_core"
 	}
 }
@@ -78,6 +78,9 @@ drop if _m==2
 
 if "`defmod'" == "CV1" | "`defmod'" == "CV2" {
 	include ELSA_covariate_definitionsELSA.do
+}
+else if "`defmod'" == "core_CV1" | "`defmod'" == "core_CV2" {
+	include ELSA_covariate_definitionscore.do
 }
 else {
 	include ELSA_covariate_definitions`defmod'.do
@@ -116,14 +119,14 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
             est store b_`n'_mfx
         
         * For cross validation 1
-        if "`defmod'" == "CV1" {
+        if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
             probit `n' $`x' if `select_`n'' & transition==1
             est save `ster'/CV1/`n'.ster, replace
             eststo cv_`n'
         }
 
 		* For cross validation 2
-        if "`defmod'" == "CV2" {
+        if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
             probit `n' $`x' if `select_`n''
             est save `ster'/CV2/`n'.ster, replace
             eststo cv_`n'
@@ -135,10 +138,10 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
 esttab mod_* using `ster'/estim_parameters`defmod'.csv, replace
 
 * For cross validation
-if "`defmod'" == "CV1" {
+if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
     esttab cv_* using `ster'/CV1/estim_parameters`defmod'.csv, replace
 }
-else if "`defmod'" == "CV2" {
+else if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
 	esttab cv_* using `ster'/CV2/estim_parameters`defmod'.csv, replace
 }
 
@@ -165,13 +168,13 @@ foreach n in $ols {
 			est store ols_`n'_mfx
 			
     	*for cross validation 1
-    	if "`defmod'" == "CV1" {
+    	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
     		reg `n' $`x' if `select_`n'' & transition==1
     		est save `ster'/CV1/`n'.ster, replace
 		}
 
 		*for cross validation 2
-    	if "`defmod'" == "CV2" {
+    	if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
     		reg `n' $`x' if `select_`n''
     		est save `ster'/CV2/`n'.ster, replace
 		}
@@ -204,13 +207,13 @@ foreach n in $order {
 			est store o_`n'_mfx
 			
     	*for cross validation
-    	if "`defmod'" == "CV1" {
+    	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
 	  	  oprobit `n' $`x' if `select_`n'' & transition==1
           est save `ster'/CV1/`n'.ster, replace
 		}
 
 		*for cross validation 2
-    	if "`defmod'" == "CV2" {
+    	if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
 	  	  oprobit `n' $`x' if `select_`n''
           est save `ster'/CV2/`n'.ster, replace
 		}
@@ -242,13 +245,13 @@ foreach n in $unorder {
 			est store o_`n'_mfx
 			
     	*for cross validation
-    	if "`defmod'" == "CV1" {
+    	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1"  {
 	  	  mlogit `n' $`x' if `select_`n'' & transition==1
           est save `ster'/CV1/`n'.ster, replace
 		}
 
 		*for cross validation 2
-    	if "`defmod'" == "CV2" {
+    	if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
 	  	  mlogit `n' $`x' if `select_`n''
           est save `ster'/CV2/`n'.ster, replace
 		}
@@ -279,7 +282,7 @@ if "`defmod'" == "ELSA" {
 	xml_tab o_*, save("`ster'/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/FEM_estimates_table.xml") append sheet(ols) pvalue
 }
-else if "`defmod'" == "CV1" {
+else if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
 	xml_tab b_*, save("`ster'/CV1/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/CV1/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV1/estimates`defmod'.xls") append sheet(ols) pvalue
@@ -288,7 +291,7 @@ else if "`defmod'" == "CV1" {
 	xml_tab o_*, save("`ster'/CV1/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV1/FEM_estimates_table.xml") append sheet(ols) pvalue
 }
-else if "`defmod'" == "CV2" {
+else if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
 	xml_tab b_*, save("`ster'/CV2/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/CV2/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV2/estimates`defmod'.xls") append sheet(ols) pvalue

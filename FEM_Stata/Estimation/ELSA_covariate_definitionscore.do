@@ -75,37 +75,37 @@ local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 *** Now specify the transition models ***
 
 *** For Mortality
-global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe `lvars_srh' `lvars_funclimit'  /* :thumbs-up !!! */
+global allvars_died male $lvars_age l2logbmi l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe l2smoken `lvars_srh'
 
 
 *** Chronic Diseases
 *CANCRE
-global allvars_cancre       $dvars $lvars_age l2logbmi `lvars_smoke' `lvars_srh'
+global allvars_cancre       $dvars $lvars_age l2logbmi l2smoken l2smkint3 `lvars_srh'
 * DIABE
 global allvars_diabe        $dvars $lvars_age l2logbmi l2freq_drinker l2hibpe l2hchole
 * HEARTE
-global allvars_hearte       $dvars $lvars_age l2logbmi l2hibpe l2hchole l2smoken
+global allvars_hearte       $dvars $lvars_age l2logbmi l2smoken l2hibpe l2hchole
 * HIBPE 
-global allvars_hibpe        $dvars $lvars_age l2logbmi l2hchole l2smoken
-global allvars_lunge        $dvars $lvars_age `lvars_smoke'
-global allvars_stroke       $dvars $lvars_age l2logbmi
-global allvars_hchole       $dvars $lvars_age l2logbmi
-global allvars_srh          $dvars $lvars_age 
-global allvars_alzhe        $dvars $lvars_age 
-global allvars_demene       $dvars $lvars_age 
+global allvars_hibpe        $dvars $lvars_age l2logbmi l2smoken l2heavy_drinker l2hchole
+global allvars_lunge        $dvars $lvars_age l2logbmi `lvars_smoke'
+global allvars_stroke       $dvars $lvars_age l2logbmi l2hibpe l2diabe l2hearte l2hchole 
+global allvars_hchole       $dvars $lvars_age l2logbmi l2smoken
+global allvars_srh          $dvars $lvars_age l2logbmi `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
+global allvars_alzhe        $dvars $lvars_age l2logbmi l2hibpe l2smoken l2freq_drinker
+global allvars_demene       $dvars $lvars_age l2logbmi l2hibpe l2smoken l2freq_drinker
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age 
-global allvars_smoke_stop   $dvars $lvars_age 
-global allvars_smkint       $dvars $lvars_age 
+global allvars_smoke_start  $dvars $lvars_age `lvars_workstat'
+global allvars_smoke_stop   $dvars $lvars_age `lvars_workstat'
+global allvars_smkint       $dvars $lvars_age `lvars_workstat'
 
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
-global allvars_drink        $dvars $lvars_age 
-global allvars_heavy_drinker $dvars $lvars_age 
-global allvars_freq_drinker $dvars $lvars_age 
+global allvars_drink        $dvars $lvars_age `lvars_workstat'
+global allvars_heavy_drinker $dvars $lvars_age `lvars_workstat'
+global allvars_freq_drinker $dvars $lvars_age `lvars_workstat'
 
 
 *** Logbmi & other health
@@ -113,8 +113,8 @@ global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 
 
 *** Disabilities
-global allvars_adlstat      $dvars $lvars_age l2logbmi
-global allvars_iadlstat     $dvars $lvars_age l2logbmi
+global allvars_adlstat      $dvars $lvars_age l2logbmi l2stroke l2demene
+global allvars_iadlstat     $dvars $lvars_age l2logbmi l2stroke l2demene
 
 ** Workstat
-global allvars_workstat     $dvars $lvars_age 
+global allvars_workstat     $dvars $lvars_age `lvars_srh'
