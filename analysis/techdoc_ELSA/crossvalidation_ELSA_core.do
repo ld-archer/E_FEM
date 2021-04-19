@@ -37,10 +37,14 @@ local maxwave 8
 
 use `input'/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
+*use ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta, clear
+
+gen hhidpn = idauniq
 
 if "`scen'" == "CV1" {
 	* Keep only those used in the simulation (simulation==1)
 	merge 1:1 idauniq using `input'/cross_validation/crossvalidation.dta, keepusing(simulation)
+	*merge 1:1 hhidpn using ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta/*, keep(match)*/
 	tab _merge
 	keep if simulation == 1
 	drop _merge
@@ -48,6 +52,7 @@ if "`scen'" == "CV1" {
 else if "`scen'" == "minimal" {
 	* Keep the same people from minimal run. Use flag var created in generate_stock_pop.do
 	merge 1:1 idauniq using `input'/ELSA_stock_min_flag.dta /*, keep(match) nogenerate*/
+	*merge 1:1 hhidpn using ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta/*, keep(match)*/
 	tab _merge
 	keep if _merge == 3
 	drop _merge
@@ -84,6 +89,9 @@ keep
 	r*drinkwn_e
 	h*atotb
 	h*itot
+	r*ltactx_e
+	r*mdactx_e
+	r*vgactx_e
 	
 	r*walkra
 	r*dressa
@@ -128,6 +136,9 @@ local shapelist
 	r@drinkwn_e
 	h@atotb
 	h@itot
+	r@ltactx_e
+	r@mdactx_e
+	r@vgactx_e
 	
 	r@walkra
 	r@dressa
@@ -214,7 +225,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in bmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e {
+foreach var in bmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e {
 	ren r`var' `var'
 }
 label var bmi "R Body mass index"
@@ -226,15 +237,41 @@ label var drinkn_e "# drinks/day"
 label var drinkwn_e "# drinks/week"
 
 
-* Smoking intensity variable
-recode smokef (0/0.99=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
-label define smkint 1 "Low" 2 "Medium" 3 "High"
-label values smkint smkint
-label variable smkint "Smoking intensity"
-drop smokef
-* Now assign any missing that don't smoke to equal 0
-replace smkint = 0 if smoken == 0
+* Generate an exercise status variable to hold exercise info in single var
+* Three levels:
+*   1 - No exercise
+*   2 - Light exercise 1+ times per week
+*   3 - Moderate/Vigorous exercise 1+ times per week
+* Third try now
+gen exstat = .
+replace exstat = 1 if (ltactx_e == 4 | ltactx_e == 5) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+replace exstat = 2 if (ltactx_e == 2 | ltactx_e == 3) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+replace exstat = 3 if (mdactx_e == 2 | mdactx_e == 3) | (vgactx_e == 2 | vgactx_e == 3)
+label var exstat "Exercise Status"
+* Now the dummys
+gen exstat1 = 1 if exstat == 1
+replace exstat1 = 0 if exstat != 1
+gen exstat2 = 1 if exstat == 2
+replace exstat2 = 0 if exstat != 2
+gen exstat3 = 1 if exstat == 3
+replace exstat3 = 0 if exstat != 3
 
+* Smoking intensity variable
+*recode smokef (0/0.99=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
+*label define smkint 1 "Low" 2 "Medium" 3 "High"
+*label values smkint smkint
+*label variable smkint "Smoking intensity"
+*drop smokef
+* Now assign any missing that don't smoke to equal 0
+*replace smkint = 0 if smoken == 0
+
+* Second attempt at smoking intensity variable
+* Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
+gen heavy_smoker = (smokef >= 15) if !missing(smokef)
+drop smokef
+
+
+/*
 *** Drinking intensity variable
 * This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
 * Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
@@ -262,6 +299,18 @@ replace freq_drinker = 0 if drink == 0
 drop drinkn drinkwn drinkd
 label variable heavy_drinker "Heavy Drinker (>14 units/week)"
 label variable freq_drinker "Frequent Drinker (>5 days/week)"
+*/
+
+*** Drinking Intensity (Take 2)
+*gen problem_drinker = (drinkwn > 7) if !missing(drinkwn)
+*replace problem_drinker = (drinkd > 5) if missing(problem_drinker) | problem_drinker == 0
+gen problem_drinker = 1 if (drinkwn > 10) & !missing(drinkwn)
+replace problem_drinker = 1 if (drinkn > 6) & !missing(drinkn)
+replace problem_drinker = 0 if (drinkwn <= 10) & !missing(drinkwn)
+replace problem_drinker = 0 if (drinkn > 6) & !missing(drinkn)
+*replace problem_drinker = 1 if (drinkd == 7)
+*replace problem_drinker = 0 if (drinkd < 7)
+label variable problem_drinker "Problem Drinker (binge/too freq)"
 
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
@@ -394,10 +443,15 @@ label var bmi "BMI"
 label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
-label var smkint "Smoking Intensity"
+*label var smkint "Smoking Intensity"
+label var heavy_smoker "Heavy Smoker"
 *label var lnly "Loneliness Score"
-label var heavy_drinker "Heavy Drinker"
-label var freq_drinker "Frequent Drinker"
+*label var heavy_drinker "Heavy Drinker"
+*label var freq_drinker "Frequent Drinker"
+label var problem_drinker "Problem Drinker"
+label var exstat1 "Exstat - Low activity"
+label var exstat2 "Exstat - Moderate activity"
+label var exstat3 "Exstat - High activity"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -426,11 +480,13 @@ restore
 * Removed in core model: psyche lnly itotx atotbx
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev bmi drink smkint heavy_drinker freq_drinker
-local binecon workstat employed unemployed retired
+local risk smoken smokev bmi drink heavy_smoker problem_drinker exstat1 exstat2 exstat3
+local binecon employed unemployed retired
 local cntecon
 local demog age_yrs male white
 local unweighted died
+
+save testing_crossvalidation.dta, replace
 
 * cntecon
 foreach tp in binhlth risk binecon demog {
@@ -446,10 +502,7 @@ foreach tp in binhlth risk binecon demog {
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
-			else if "`var'" == "drinkd" & `wave' == 1 {
-				continue
-			}
-			else if "`var'" == "lnly" & `wave' == 1 {
+			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
 				continue
 			}
 			

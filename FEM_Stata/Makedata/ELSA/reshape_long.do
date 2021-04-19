@@ -8,8 +8,8 @@ local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
-*use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
-use $outdata/H_ELSA_f_2002-2016.dta, clear
+use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
+*use $outdata/H_ELSA_f_2002-2016.dta, clear
 
 global firstwave 1
 global lastwave 8
@@ -129,6 +129,7 @@ r*alzhe
 r*demene
 h*itot
 r*lbrf_e
+r*nssec8
 ;
 #d cr
 
@@ -145,6 +146,8 @@ forvalues wv = $firstwave/$lastwave {
 	if `wv' > 1 {
 		/* drinkd_e not present in wave 1 */
 		rename r`wv'drinkd_e r`wv'drinkd
+        * Remove number 8 from the end of the nssec var
+        rename r`wv'nssec8 r`wv'nssec
     }
     if inlist(`wv', 2, 3) {
         /* drinkn_e only present in waves 2 & 3*/
@@ -214,6 +217,7 @@ foreach var in
     demene
     itot
     lbrf
+    nssec
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -233,7 +237,7 @@ forvalues wv = $firstwave/$lastwave {
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
 * Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
 * This will not affect transitions, as the transition population excludes wave 1
-local wav1missvars hchole lnlys drinkd
+local wav1missvars hchole lnlys drinkd nssec
 foreach var in `wav1missvars' {
     gen `var'1 = .
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
@@ -247,7 +251,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     hearte stroke psyche arthre bmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf
+    lbrf nssec
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -303,6 +307,7 @@ label variable demene "Dementia Ever"
 label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
+label variable nssec "National Statistics Socio-Economic Classification"
 
 
 * Use harmonised education var
@@ -503,20 +508,26 @@ label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
 * Smoking intensity variable
-recode smokef (0/0.99=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
-label define smkint 1 "Low" 2 "Medium" 3 "High"
-label values smkint smkint
-label variable smkint "Smoking intensity"
-drop smokef
+*recode smokef (0=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
+*label define smkint 1 "Low" 2 "Medium" 3 "High"
+*label values smkint smkint
+*label variable smkint "Smoking intensity"
+*drop smokef
 * Now assign any missing that don't smoke to equal 0
-replace smkint = 0 if smoken == 0
-
+*replace smkint = 0 if smoken == 0
 * dummy vars for transition models
-gen smkint1 = smkint == 1
-gen smkint2 = smkint == 2
-gen smkint3 = smkint == 3
+*gen smkint1 = smkint == 1
+*gen smkint2 = smkint == 2
+*gen smkint3 = smkint == 3
+
+* Second attempt at smoking intensity variable
+* Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
+gen heavy_smoker = (smokef >= 15) if !missing(smokef)
+drop smokef
 
 
+
+/*
 *** Drinking intensity variable
 * This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
 * Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
@@ -542,6 +553,20 @@ replace heavy_drinker = 0 if drink == 0
 replace freq_drinker = 0 if drink == 0
 * Now drop drink vars after generating indicators
 drop drinkn drinkwn drinkd
+*/
+
+*** Drinking Intensity (Take 2)
+*gen problem_drinker = (drinkwn > 7) if !missing(drinkwn)
+*replace problem_drinker = (drinkd > 5) if missing(problem_drinker) | problem_drinker == 0
+* Problem drinker == more than 7 drinks/week OR more than 4 drinks/day OR more than 5 days drinking/week
+*gen problem_drinker = 1 if (drinkwn > 7) | (drinkn > 4)
+gen problem_drinker = 1 if (drinkwn > 10) & !missing(drinkwn)
+replace problem_drinker = 1 if (drinkn > 6) & !missing(drinkn)
+replace problem_drinker = 0 if (drinkwn <= 10) & !missing(drinkwn)
+replace problem_drinker = 0 if (drinkn > 6) & !missing(drinkn)
+*replace problem_drinker = 1 if (drinkd == 7)
+*replace problem_drinker = 0 if (drinkd < 7)
+
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -586,6 +611,26 @@ gen unemployed = workstat == 2
 gen retired = workstat == 3
 
 
+*** National Statistics Socio-Economic Classification
+* Generate dummys
+gen nssec1 = (nssec == 1)
+gen nssec2 = (nssec == 2)
+gen nssec3 = (nssec == 3)
+gen nssec4 = (nssec == 4)
+gen nssec5 = (nssec == 5)
+gen nssec6 = (nssec == 6)
+gen nssec7 = (nssec == 7)
+gen nssec8 = (nssec == 8)
+
+*** Generate alcohol in last week var for validation
+gen drink_7d = 1 if (drinkwn > 0) & !missing(drinkwn)
+replace drink_7d = 1 if (drinkn > 0) & !missing(drinkn)
+replace drink_7d = 1 if (drinkd > 0) & !missing(drinkd)
+
+replace drink_7d = 0 if (drink == 0) & !missing(drink)
+replace drink_7d = 0 if (drinkwn == 0) & (drinkn == 0) & (drinkd == 0) & !missing(drinkwn) & !missing(drinkn) & !missing(drinkd)
+
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
@@ -594,7 +639,7 @@ replace smokev = 1 if L.smokev == 1 & smokev == 0
 * L.***, L is lag operator; can use L2 for 2 waves prior also
 * can use this as xtset tells stata that data is panel data
 
-* REMOVED: adlcount, iadlcount, agey, bmi
+* REMOVED: adlcount, iadlcount, agey, bmi, smkint, smkint1, smkint2, smkint3
 #d ;
 foreach var in
     iwstat
@@ -637,10 +682,7 @@ foreach var in
     srh3
     srh4
     srh5
-    smkint
-    smkint1
-    smkint2
-    smkint3
+    heavy_smoker
     lnly
     lnly1
     lnly2
@@ -653,8 +695,16 @@ foreach var in
     employed
     unemployed
     retired
-    heavy_drinker
-    freq_drinker
+    problem_drinker
+    nssec
+    nssec1
+    nssec2
+    nssec3
+    nssec4
+    nssec5
+    nssec6
+    nssec7
+    nssec8
     {;
         gen l2`var' = L.`var';
     };

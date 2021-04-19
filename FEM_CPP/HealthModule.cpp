@@ -306,8 +306,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
 						// Clean up other vars - didn't start, too
 						person->set(Vars::smoke_start,0.0);
-						// Set intensity to non-smoker (smkint == 0)
-						person->set(Vars::smkint, 0.0);
+						// Set intensity to non-smoker (heavy_smoker == 0)
+						person->set(Vars::heavy_smoker, 0.0);
 					}	
 					else {
 						// Didn't stop, so maintain smkstat, smoken, smokev, smkint
@@ -341,7 +341,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::smoken,person->get(Vars::l2smoken));
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
 						//person->set(Vars::smkint,person->get(Vars::l2smkint));
-                        person->set(Vars::smkint, 0.0);
+                        person->set(Vars::heavy_smoker, 0.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
 					}
@@ -351,12 +351,13 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			// If we change drink to 0 then we need to make sure heavy_drinker and freq_drinker are also 0
 			if (elsa_data) {
 			    // previously drinker
-			    if(person->get(Vars::l2drink)) {
+			    if(person->test(Vars::l2drink)) {
 			        // now quit
-			        if(person->get(Vars::drink)) {
+			        if(person->get(Vars::drink) == 0) {
 			            // set heavy and freq to 0
-			            person->set(Vars::heavy_drinker, 0.0);
-			            person->set(Vars::freq_drinker, 0.0);
+			            //person->set(Vars::heavy_drinker, 0.0);
+			            //person->set(Vars::freq_drinker, 0.0);
+			            person->set(Vars::problem_drinker, 0.0);
 			        }
 			    }
 			}

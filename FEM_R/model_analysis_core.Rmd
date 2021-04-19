@@ -461,7 +461,7 @@ f_ages <- paste0('f_', ages)
 # Collect the age suffixes into a vector
 keep_vars <- c(m_ages, f_ages)
 # Now set up the chronic diseases in a list so we can create a bigger list with all of them produced
-diseases <- c('hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'cancre', 'demene', 'asthmae')
+diseases <- c('hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'demene', 'asthmae')
 
 # Don't like using loops but this one was just too simple to bother with figuring out the apply version
 final <- c()
@@ -533,7 +533,7 @@ ageUK <- filter(ageUK, Condition != 'Coronary Heart Disease', Condition != 'Hear
 ageUK <- rbind(ageUK, ageUK_heart)
 
 # Rename a few just for completeness
-ageUK$Condition <- gsub("Cancer, recent", "Cancer", ageUK$Condition)
+#ageUK$Condition <- gsub("Cancer, recent", "Cancer", ageUK$Condition)
 ageUK$Condition <- gsub("COPD", "Lung Disease (COPD)", ageUK$Condition)
 
 # Finally, add column to specify that this is ageUK data
@@ -542,6 +542,7 @@ ageUK$source <- "ageUK"
 # REMOVE CONDITIONS FROM ageUK THAT ARE NOT IN FEM (may change in future)
 #ageUK <- filter(ageUK, Condition != c('Asthma', 'Depression', 'Severe Mental Health Condition'))
 ageUK <- filter(ageUK, Condition != 'Depression', Condition != 'Severe Mental Health Conditions')
+ageUK <- filter(ageUK, Condition != 'Cancer, recent')
 
 # Make copy
 newFEM <- pivoted.FEM
@@ -554,7 +555,7 @@ newFEM$Condition <- gsub("hibpe", "Hypertension", newFEM$Condition)
 newFEM$Condition <- gsub("stroke", "Stroke", newFEM$Condition)
 newFEM$Condition <- gsub("diabe", "Diabetes", newFEM$Condition)
 newFEM$Condition <- gsub("lunge", "Lung Disease (COPD)", newFEM$Condition)
-newFEM$Condition <- gsub("cancre", "Cancer", newFEM$Condition)
+#newFEM$Condition <- gsub("cancre", "Cancer", newFEM$Condition)
 newFEM$Condition <- gsub("demene", "Dementia", newFEM$Condition)
 newFEM$Condition <- gsub("asthmae", "Asthma", newFEM$Condition)
 

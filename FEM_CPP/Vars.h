@@ -79,6 +79,7 @@ namespace Vars
 		drink,						///< Whether drinks alcohol at all, stored asl Boolean
 		heavy_drinker,              ///< Heavy Drinker (>14 units/week), stored as Boolean
 		freq_drinker,               ///< Frequent Drinker (>5 days/week), stored as Boolean
+		problem_drinker,            ///< Problem Drinker (binge/frequent), stored as Boolean
 		//drinkd, 					///< How many days per week drinking alcohol, stored as Short
 		//drinkwn,					///< Number of drinks per week, stored as Double
 		//drinkd1,					///< Drinkd 1 [0, 1], stored as Boolean
@@ -240,6 +241,7 @@ namespace Vars
 		l2drink,					///< Lag of whether drinks alcohol at all, stored as Boolean
 		l2heavy_drinker,            ///< Lag of Heavy Drinker
 		l2freq_drinker,             ///< Lag of Frequent Drinker
+		l2problem_drinker,          ///< Lag of Problem Drinker
 		//l2drinkd,					///< Lag of how many days per week drinking alcohol, stored as Short
 		//l2drinkwn,					///< Lag of number of drinks per week, stored as Double
 		//l2drinkd1,					///< Lag of drinkd 1 [0, 1], stored as Boolean
@@ -427,6 +429,7 @@ namespace Vars
 		pdrink,						///< Probability of whether drinks alcohol at all, stored as Double
 		pheavy_drinker,             ///< Probability of being a heavy drinker, stored as Double
 		pfreq_drinker,              ///< Probability of being a frequent drinker, stored as Double
+		pproblem_drinker,           ///< Probability of being a problem drinker, stored as Double
 		//pdrinkd_stat1,				///< Probability of drinkd_stat==1, stored as Float
 		//pdrinkd_stat2,				///< Probability of drinkd_stat==2, stored as Float
 		//pdrinkd_stat3,				///< Probability of drinkd_stat==3, stored as Float
@@ -629,6 +632,9 @@ namespace Vars
         pworkstat1,                  ///< Probability of Employed (workstat == 1)
         pworkstat2,                ///< Probability of Unemployed (workstat == 2)
         pworkstat3,                   ///< Probability of Retired (workstat == 3)
+        heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
+        l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
+        pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

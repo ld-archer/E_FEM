@@ -36,7 +36,7 @@ core_complete: ELSA core_complete_prep simulation_core_complete CV2_detailed_app
 
 core_debug: clean_logs clean_output core_complete debug_doc_core
 
-core_scen: core_prep simulation_core_scen
+core_scen: clean_logs clean_output core_prep simulation_core_scen move_results
 
 
 ### Combined rules
@@ -232,7 +232,7 @@ $(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_su
 # This is a bit of an experiment
 TIMESTAMP = $(shell date +%m-%d_%T)
 
-debug_doc: $(R)/model_analysis.nb.html
+debug_doc: Ttests_CV Ttests_minimal $(R)/model_analysis.nb.html 
 
 $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
 	# Knit the document
@@ -255,7 +255,7 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/base_$(TIMESTAMP)/model_analysis.nb.html
 
 
-debug_doc_core: $(R)/model_analysis_core.nb.html
+debug_doc_core: Ttests_core $(R)/model_analysis_core.nb.html 
 
 $(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
 	# Knit the document
@@ -280,6 +280,10 @@ $(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta o
 
 ### Housekeeping and cleaning
 
+move_results: 
+	rm -rf ../tmp_output/*
+	cp -r output/* ../tmp_output/
+
 clean_all: clean_logs clean_output clean_models
 
 clean_logs:
@@ -297,7 +301,7 @@ clean_debug:
 clean_models:
 	rm -f FEM_CPP_settings/ELSA/models/*.est
 	rm -f FEM_CPP_settings/ELSA_*/models/*.est
-	rm -f FEM_Stata/Estimates/ELSA/*.ster
-	rm -f FEM_Stata/Estimates/ELSA/CV1/*.ster
-	rm -f FEM_Stata/Estimates/ELSA/CV2/*.ster
-	rm -f FEM_Stata/Estimates/ELSA_minimal/*.ster
+	rm -f FEM_Stata/Estimates/ELSA*/*.ster
+	rm -f FEM_Stata/Estimates/ELSA/*/*.ster
+	#rm -f FEM_Stata/Estimates/ELSA/CV2/*.ster
+	#rm -f FEM_Stata/Estimates/ELSA_minimal/*.ster

@@ -14,6 +14,8 @@ m_startpop -> count (millions)	(ex. m_startpop -> starting population in million
 m_endpop -> count (millions)	(ex. m_endpop -> ending population in millions
 */
 
+
+* a_smkint	p_smkint3
 #d ;
 local measures 	
 			m_startpop
@@ -42,12 +44,11 @@ local measures
 						p_smokev  i_smokev  n_smokev
 						n_smoke_start
 						n_smoke_stop
-						a_smkint	p_smkint3
+						p_heavy_smoker i_heavy_smoker n_heavy_smoker
 						t_atotb 	a_atotb
 						t_itot		a_itot
 					p_drink		i_drink		n_drink
-					p_heavy_drinker i_heavy_drinker n_heavy_drinker
-					p_freq_drinker  i_freq_drinker  n_freq_drinker
+					p_problem_drinker i_problem_drinker n_problem_drinker
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3
@@ -76,5 +77,5 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 60p 5059 6064 m_6064 f_6064 6569 m_6569 f_6569 7074 m_7074 f_7074 7579 m_7579 f_7579 8084 m_8084 f_8084 8589 m_8589 f_8589 9094 m_9094 f_9094 9599 m_9599 f_9599 100p m_100p f_100p
-* 
+local subpop all m f 60p 
+* 5059 6064 m_6064 f_6064 6569 m_6569 f_6569 7074 m_7074 f_7074 7579 m_7579 f_7579 8084 m_8084 f_8084 8589 m_8589 f_8589 9094 m_9094 f_9094 9599 m_9599 f_9599 100p m_100p f_100p

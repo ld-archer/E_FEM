@@ -1,10 +1,10 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene heavy_drinker freq_drinker
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene problem_drinker heavy_smoker
 global bin_econ
 global ols logbmi logatotb logitot
-global order adlstat iadlstat exstat srh smkint lnly
+global order adlstat iadlstat exstat srh
 global unorder mstat workstat
 
 * Variable names
@@ -28,8 +28,8 @@ global bin_hlth_names
     "Hip Fracture"
     "Alzheimers"
     "Dementia"
-    "Heavy Drinker (>14 units/week)"
-    "Frequent Drinker (>5 days/week)"
+    "Problem Drinker (binge/too frequent)"
+    "Heavy Smoker (>10 cigs/day)"
 ;
 global bin_econ_names
 ;
@@ -43,7 +43,7 @@ global order_names
     "IADL status"
     "Exercise status"
     "Self-Reported Health Status"
-    "Smoking Intensity Status"
+    /*"Smoking Intensity Status"*/
     "Loneliness Status"
 ;
 global unorder_names

@@ -620,6 +620,9 @@ VarsInfo::VarsInfo() {
     info[Vars::freq_drinker]        = VarInfo("freq_drinker", "Frequent Drinker (>5 days/week)", VarTypes::Boolean);
     info[Vars::l2freq_drinker]      = VarInfo("l2freq_drinker", "Lag of Frequent Drinker (>5 days/week)", VarTypes::Boolean);
     info[Vars::pfreq_drinker]       = VarInfo("pfreq_drinker", "Probability of Frequent Drinker", VarTypes::Double);
+    info[Vars::problem_drinker]     = VarInfo("problem_drinker", "Problem Drinker (binge/frequent)", VarTypes::Boolean);
+    info[Vars::l2problem_drinker]   = VarInfo("l2problem_drinker", "Lag of Problem Drinker (binge/frequent)", VarTypes::Boolean);
+    info[Vars::pproblem_drinker]    = VarInfo("pproblem_drinker", "Probability of Problem Drinker (binge/frequent)", VarTypes::Double);
 	//info[Vars::l2drinkd]			= VarInfo("l2drinkd", "Lag of Number of days per week drinks alcohol, Range [0,7]", VarTypes::Short);
 	//info[Vars::l2drinkwn]			= VarInfo("l2drinkwn", "Lag of number of drinks per week", VarTypes::Double);
 	//info[Vars::drinkd1]				= VarInfo("drinkd1", "drinkd 1 [0, 1]", VarTypes::Boolean, Vars::drinkd_stat, 1);
@@ -667,6 +670,9 @@ VarsInfo::VarsInfo() {
     info[Vars::psmkint1]            = VarInfo("psmkint1", "Probability of smoking intensity level 1", VarTypes::Double);
     info[Vars::psmkint2]            = VarInfo("psmkint2", "Probability of smoking intensity level 2", VarTypes::Double);
     info[Vars::psmkint3]            = VarInfo("psmkint3", "Probability of smoking intensity level 3", VarTypes::Double);
+    info[Vars::heavy_smoker]        = VarInfo("heavy_smoker", "Heavy Smoker (10+ cigs/day)", VarTypes::Boolean);
+    info[Vars::l2heavy_smoker]      = VarInfo("l2heavy_smoker", "Lag of Heavy Smoker (10+ cigs/day)", VarTypes::Boolean);
+    info[Vars::pheavy_smoker]        = VarInfo("pheavy_smoker", "Probability of Heavy Smoker (10+ cigs/day)", VarTypes::Double);
     info[Vars::lnly]                = VarInfo("lnly", "Loneliness Score, Low to High [1, 3]", VarTypes::Short);
     info[Vars::lnly1]               = VarInfo("lnly1", "Loneliness Score: Low", VarTypes::Boolean, Vars::lnly, 1);
     info[Vars::lnly2]               = VarInfo("lnly2", "Loneliness Score: Medium", VarTypes::Boolean, Vars::lnly, 2);
@@ -825,6 +831,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::drink] = Vars::l2drink;
 	lag_map[Vars::heavy_drinker] = Vars::l2heavy_drinker;
 	lag_map[Vars::freq_drinker] = Vars::l2freq_drinker;
+	lag_map[Vars::problem_drinker] = Vars::l2problem_drinker;
 	//lag_map[Vars::drinkd] = Vars::l2drinkd;
 	//lag_map[Vars::drinkwn] = Vars::l2drinkwn;
 	//lag_map[Vars::drinkd1] = Vars::l2drinkd1;
@@ -861,6 +868,7 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::employed] = Vars::l2employed;
     lag_map[Vars::unemployed] = Vars::l2unemployed;
     lag_map[Vars::retired] = Vars::l2retired;
+    lag_map[Vars::heavy_smoker] = Vars::l2heavy_smoker;
 
 
 
@@ -901,6 +909,8 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::demene] =        Vars::pdemene;
 	prob_map[Vars::heavy_drinker] = Vars::pheavy_drinker;
 	prob_map[Vars::freq_drinker] =  Vars::pfreq_drinker;
+	prob_map[Vars::problem_drinker] = Vars::pproblem_drinker;
+	prob_map[Vars::heavy_smoker] = Vars::pheavy_smoker;
 
 	// Ordered
 	//prob_map[Vars::smokev] =		Vars::psmkstat2;
