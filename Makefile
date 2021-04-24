@@ -3,7 +3,7 @@ DATADIR = $(CURDIR)/input_data
 BASEDIR = $(CURDIR)/base_data
 ESTIMATES = $(CURDIR)/FEM_Stata/Estimates
 ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
-RAW_ELSA = /home/luke/Documents/E_FEM/UKDA-5050-stata/stata/stata11_se
+RAW_ELSA = /home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata/stata/stata13_se/
 ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
 R = $(CURDIR)/FEM_R
@@ -58,10 +58,15 @@ stata_extensions.txt: stata_extensions.do
 
 ELSA: $(DATADIR)/H_ELSA_f_2002-2016.dta
 
+ELSA_lifehistory: $(DATADIR)/H_ELSA_LH_a.dta
+
 populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
 $(DATADIR)/H_ELSA_f_2002-2016.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
+
+$(DATADIR)/H_ELSA_LH_a.dta: $(MAKEDATA)/H_ELSA_LH_long.do
+	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_LH_long.do
 	
 $(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
@@ -100,7 +105,7 @@ $(DATADIR)/education_data.dta: $(DATADIR)/CT0469_2011census_educ.csv $(MAKEDATA)
 
 ### Reweighting
 
-reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV2.dta $(DATADIR)/ELSA_stock_min.dta $(DATADIR)/ELSA_stock_valid.dta $(DATADIR)/ELSA_repl.dta
+reweight: $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV2.dta $(DATADIR)/ELSA_stock_min.dta $(DATADIR)/ELSA_stock_valid.dta $(DATADIR)/ELSA_repl.dta $(MAKEDATA)/gen_bmi_repls.do
 
 $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV2.dta $(DATADIR)/ELSA_stock_min.dta $(DATADIR)/ELSA_stock_valid.dta: $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/pop_projections.dta $(MAKEDATA)/reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_stock.do
@@ -234,7 +239,7 @@ TIMESTAMP = $(shell date +%m-%d_%T)
 
 debug_doc: Ttests_CV Ttests_minimal $(R)/model_analysis.nb.html 
 
-$(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
+$(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta $(R)/model_analysis.Rmd
 	# Knit the document
 	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis.Rmd')"
 	# Create debug dir if not already
@@ -257,7 +262,7 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 
 debug_doc_core: Ttests_core $(R)/model_analysis_core.nb.html 
 
-$(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta
+$(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta $(R)/model_analysis_core.Rmd
 	# Knit the document
 	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis_core.Rmd')"
 	# Create debug dir if not already
