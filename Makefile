@@ -283,6 +283,12 @@ $(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta o
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core_$(TIMESTAMP)/model_analysis_core.nb.html
 
 
+### Validation
+
+roc_validation: $(MAKEDATA)/roc_validation.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) roc_analysis.do
+
+
 ### Housekeeping and cleaning
 
 move_results: 
