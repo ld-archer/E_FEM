@@ -7,7 +7,7 @@
 
 gen obeseGroup = 3 if logbmi >= log(35) & logbmi < log(40)
 replace obeseGroup = 2 if logbmi >= log(30) & logbmi < log(35)
-replace obeseGroup = 1 if logbmi >= log(25) & logbmi < log(30)
+*replace obeseGroup = 1 if logbmi < log(30)
 
 count
 sum bmi logbmi 
@@ -42,7 +42,9 @@ saveold $outdata/ELSA_repl_noobese2.dta, replace v(12)
 restore
 preserve
 
-sum logbmi if obeseGroup == 1
+sum logbmi
+
+di r(mean)
 
 replace logbmi = r(mean) if !missing(logbmi) & logbmi > log(30)
 *replace logbmi = log(bmi) if !missing(bmi)
