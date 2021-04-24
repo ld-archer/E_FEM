@@ -85,7 +85,7 @@ global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke `
 
 *** Chronic Diseases
 *CANCRE
-global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2smoken `lvars_srh'
+global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2smoken `lvars_srh' `lvars_drink'
 * DIABE
 global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2problem_drinker `lvars_exercise'
 * HEARTE
@@ -127,4 +127,4 @@ global allvars_iadlstat     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke
 global allvars_workstat     $dvars $lvars_age `lvars_srh'
 
 *** Exercise
-global allvars_exstat       $dvars $lvars_age `lvars_funclimit' l2arthre l2asthmae
+global allvars_exstat       $dvars $lvars_age `lvars_funclimit'

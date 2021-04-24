@@ -117,6 +117,7 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
         est restore b_`n'_mfx
             ch_est_title "`mfx_name'"
             est store b_`n'_mfx
+		outreg using "`ster'/`n'-outreg.doc", replace
         
         * For cross validation 1
         if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
@@ -166,6 +167,7 @@ foreach n in $ols {
     	est restore ols_`n'_mfx
 			ch_est_title "`mfx_name'"
 			est store ols_`n'_mfx
+		outreg using "`ster'/`n'-outreg.doc", replace
 			
     	*for cross validation 1
     	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
@@ -205,6 +207,7 @@ foreach n in $order {
     	est restore o_`n'_mfx
 			ch_est_title "`mfx_name'"
 			est store o_`n'_mfx
+		outreg using "`ster'/`n'-outreg.doc", replace
 			
     	*for cross validation
     	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
@@ -243,6 +246,7 @@ foreach n in $unorder {
     	est restore o_`n'_mfx
 			ch_est_title "`mfx_name'"
 			est store o_`n'_mfx
+		outreg using "`ster'/`n'-outreg.doc", replace
 			
     	*for cross validation
     	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1"  {
