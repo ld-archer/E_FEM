@@ -461,7 +461,7 @@ f_ages <- paste0('f_', ages)
 # Collect the age suffixes into a vector
 keep_vars <- c(m_ages, f_ages)
 # Now set up the chronic diseases in a list so we can create a bigger list with all of them produced
-diseases <- c('hearte', 'hibpe', 'stroke', 'diabe', 'lunge', 'demene', 'asthmae')
+diseases <- c('hibpe', 'stroke', 'diabe', 'demene', 'asthmae')
 
 # Don't like using loops but this one was just too simple to bother with figuring out the apply version
 final <- c()
@@ -485,7 +485,7 @@ FEM <- FEM %>%
           select(!year)
 
 pivoted.FEM <- pivot_longer(data = FEM,
-                            cols = hearte_m_6064:asthmae_f_100p, 
+                            cols = hibpe_m_6064:asthmae_f_100p, 
                             names_to = c('Condition', 'Gender', 'Age_Group'), 
                             names_sep = '_')
 
@@ -521,20 +521,20 @@ ageUK <-rbind(pivoted.male, pivoted.female)
 
 # Now need to deal with the fact that ageUK data splits heart issues into 3 different conditions
 # extract all heart related conditions for combining
-ageUK_heart <- filter(ageUK, Condition == c('Coronary Heart Disease', 'Heart Failure', 'Atrial Fibrillation'))
+#ageUK_heart <- filter(ageUK, Condition == c('Coronary Heart Disease', 'Heart Failure', 'Atrial Fibrillation'))
 # Aggregate the values by gender and age group
-ageUK_heart <- aggregate(ageUK_heart$value, by = list(ageUK_heart$Gender, ageUK_heart$Age_Group), FUN = sum)
+#ageUK_heart <- aggregate(ageUK_heart$value, by = list(ageUK_heart$Gender, ageUK_heart$Age_Group), FUN = sum)
 # Rename columns and add condition column back
-colnames(ageUK_heart) <- c('Gender', 'Age_Group', 'value')
-ageUK_heart$Condition <- 'Heart Problems'
+#colnames(ageUK_heart) <- c('Gender', 'Age_Group', 'value')
+#ageUK_heart$Condition <- 'Heart Problems'
 
 # Now drop the heart problems from original ageUK and replace with aggregate
 ageUK <- filter(ageUK, Condition != 'Coronary Heart Disease', Condition != 'Heart Failure', Condition != 'Atrial Fibrillation')
-ageUK <- rbind(ageUK, ageUK_heart)
+#ageUK <- rbind(ageUK, ageUK_heart)
 
 # Rename a few just for completeness
 #ageUK$Condition <- gsub("Cancer, recent", "Cancer", ageUK$Condition)
-ageUK$Condition <- gsub("COPD", "Lung Disease (COPD)", ageUK$Condition)
+#ageUK$Condition <- gsub("COPD", "Lung Disease (COPD)", ageUK$Condition)
 
 # Finally, add column to specify that this is ageUK data
 ageUK$source <- "ageUK"
@@ -542,7 +542,7 @@ ageUK$source <- "ageUK"
 # REMOVE CONDITIONS FROM ageUK THAT ARE NOT IN FEM (may change in future)
 #ageUK <- filter(ageUK, Condition != c('Asthma', 'Depression', 'Severe Mental Health Condition'))
 ageUK <- filter(ageUK, Condition != 'Depression', Condition != 'Severe Mental Health Conditions')
-ageUK <- filter(ageUK, Condition != 'Cancer, recent')
+ageUK <- filter(ageUK, Condition != 'Cancer, recent', Condition != 'COPD')
 
 # Make copy
 newFEM <- pivoted.FEM
@@ -550,14 +550,17 @@ newFEM <- pivoted.FEM
 # Rename all the conditions to fit ageUK
 # NOTE: Lung disease is not a perfect match, as ageUK only contains info on COPD
 #       Therefore only validation from this will be that FEM is higher than ageUK
-newFEM$Condition <- gsub("hearte", "Heart Problems", newFEM$Condition)
+#newFEM$Condition <- gsub("hearte", "Heart Problems", newFEM$Condition)
 newFEM$Condition <- gsub("hibpe", "Hypertension", newFEM$Condition)
 newFEM$Condition <- gsub("stroke", "Stroke", newFEM$Condition)
 newFEM$Condition <- gsub("diabe", "Diabetes", newFEM$Condition)
-newFEM$Condition <- gsub("lunge", "Lung Disease (COPD)", newFEM$Condition)
+#newFEM$Condition <- gsub("lunge", "Lung Disease (COPD)", newFEM$Condition)
 #newFEM$Condition <- gsub("cancre", "Cancer", newFEM$Condition)
 newFEM$Condition <- gsub("demene", "Dementia", newFEM$Condition)
 newFEM$Condition <- gsub("asthmae", "Asthma", newFEM$Condition)
+
+
+#force Make to run this again
 
 # Add column to specify this is FEM data
 newFEM$source <- "FEM"
