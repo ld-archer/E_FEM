@@ -1,4 +1,4 @@
-use ELSA_cohort_append.dta, replace
+use ELSA_core_cohort_append.dta, replace
 
 bys hhidpn (year): keep if _n == _N
 

@@ -129,7 +129,6 @@ r*alzhe
 r*demene
 h*itot
 r*lbrf_e
-r*nssec8
 ;
 #d cr
 
@@ -146,8 +145,6 @@ forvalues wv = $firstwave/$lastwave {
 	if `wv' > 1 {
 		/* drinkd_e not present in wave 1 */
 		rename r`wv'drinkd_e r`wv'drinkd
-        * Remove number 8 from the end of the nssec var
-        rename r`wv'nssec8 r`wv'nssec
     }
     if inlist(`wv', 2, 3) {
         /* drinkn_e only present in waves 2 & 3*/
@@ -217,7 +214,6 @@ foreach var in
     demene
     itot
     lbrf
-    nssec
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -237,7 +233,7 @@ forvalues wv = $firstwave/$lastwave {
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
 * Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
 * This will not affect transitions, as the transition population excludes wave 1
-local wav1missvars hchole lnlys drinkd nssec
+local wav1missvars hchole lnlys drinkd
 foreach var in `wav1missvars' {
     gen `var'1 = .
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
@@ -251,7 +247,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     hearte stroke psyche arthre bmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf nssec
+    lbrf
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -307,7 +303,7 @@ label variable demene "Dementia Ever"
 label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
-label variable nssec "National Statistics Socio-Economic Classification"
+*label variable nssec "National Statistics Socio-Economic Classification"
 
 
 * Use harmonised education var
@@ -613,14 +609,14 @@ gen retired = workstat == 3
 
 *** National Statistics Socio-Economic Classification
 * Generate dummys
-gen nssec1 = (nssec == 1)
-gen nssec2 = (nssec == 2)
-gen nssec3 = (nssec == 3)
-gen nssec4 = (nssec == 4)
-gen nssec5 = (nssec == 5)
-gen nssec6 = (nssec == 6)
-gen nssec7 = (nssec == 7)
-gen nssec8 = (nssec == 8)
+*gen nssec1 = (nssec == 1)
+*gen nssec2 = (nssec == 2)
+*gen nssec3 = (nssec == 3)
+*gen nssec4 = (nssec == 4)
+*gen nssec5 = (nssec == 5)
+*gen nssec6 = (nssec == 6)
+*gen nssec7 = (nssec == 7)
+*gen nssec8 = (nssec == 8)
 
 *** Generate alcohol in last week var for validation
 gen drink_7d = 1 if (drinkwn > 0) & !missing(drinkwn)
@@ -630,6 +626,8 @@ replace drink_7d = 1 if (drinkd > 0) & !missing(drinkd)
 replace drink_7d = 0 if (drink == 0) & !missing(drink)
 replace drink_7d = 0 if (drinkwn == 0) & (drinkn == 0) & (drinkd == 0) & !missing(drinkwn) & !missing(drinkn) & !missing(drinkd)
 
+* Now drop drinking vars we don't use
+drop drinkd drinkwn drinkn
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
@@ -696,15 +694,6 @@ foreach var in
     unemployed
     retired
     problem_drinker
-    nssec
-    nssec1
-    nssec2
-    nssec3
-    nssec4
-    nssec5
-    nssec6
-    nssec7
-    nssec8
     {;
         gen l2`var' = L.`var';
     };

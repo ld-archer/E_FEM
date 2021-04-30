@@ -623,6 +623,18 @@ visCDComparison(c, bmi3, 'No Morbid', 'anyiadl')
 
 ```
 
+```{r}
+visCDComparison(c, bmi1, 'No Obesity', 'cancre')
+visCDComparison(c, bmi1, 'No Obesity', 'diabe')
+visCDComparison(c, bmi1, 'No Obesity', 'stroke')
+visCDComparison(c, bmi1, 'No Obesity', 'hearte')
+visCDComparison(c, bmi1, 'No Obesity', 'lunge')
+visCDComparison(c, bmi1, 'No Obesity', 'employed')
+visCDComparison(c, bmi1, 'No Obesity', 'retired')
+visCDComparison(c, bmi1, 'No Obesity', 'anyadl')
+visCDComparison(c, bmi1, 'No Obesity', 'anyiadl')
+```
+
 
 ## Quit Alcohol Intervention (Just out of interest)
 

@@ -12,6 +12,10 @@ use $outdata/ELSA_long.dta, clear
 *use ../../../input_data/ELSA_long.dta, clear
 
 
+* Let's drop a couple of vars we don't need from the data
+drop iwindm iwindy rand
+
+
 *** Need to produce multiple stock populations for cross-validation
 preserve
 
