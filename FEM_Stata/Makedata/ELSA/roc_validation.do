@@ -1,4 +1,4 @@
-/* Construct an ROC analysis of FAM projections 
+/* Construct an ROC analysis of ELSA FEM projections 
 
 Using the cross-validation sample/estimates.
 
@@ -7,8 +7,8 @@ clear all
 
 quietly include ../../../fem_env.do
 
-local maxrep 10
-local minyr 2002
+local maxrep 100
+local minyr 2006
 local maxyr 2016
 
 local scenarios ELSA_CV1 ELSA_minimal
@@ -38,8 +38,10 @@ foreach scn of local scenarios {
 	tempfile ELSA_FEM
 	save `ELSA_FEM'
 	
+    * This file needs to be replaced
 	*use $outdata/psid_analytic.dta, replace
-	*merge m:1 hhidpn using `ELSA_FEM'
+    use ../../../input_data/ELSA_long.dta, replace
+	merge m:1 hhidpn using `ELSA_FEM'
 	
 	
 	* mortality
@@ -55,7 +57,7 @@ foreach scn of local scenarios {
 	save `scn'_data.dta, replace
 	
 	if "`scn'" == "ELSA_CV1" {
-		local label1 "Cross-validation 1"
+		local label1 "Full specification"
 	} 
 	
 	else if "`scn'" == "ELSA_minimal" {
@@ -67,7 +69,7 @@ foreach scn of local scenarios {
 	
 	roctab died died_elsa
 	roctab died died_elsa, graph saving(roc_plots/`scn'_died, replace) title("`label1'") scheme(s1mono)
-	graph export ../img/`scn'_died.pdf, replace
+	graph export roc_img/`scn'_died.pdf, replace
 	
 	
 	foreach var in cancre diabe hearte hibpe lunge stroke {
@@ -92,10 +94,11 @@ foreach scn of local scenarios {
 		
 		roctab `var' `var'_elsa if `var'_init == 0
 		roctab `var' `var'_elsa if `var'_init == 0, graph saving(roc_plots/`scn'_`var', replace) title("`label1'") scheme(s1mono)
-		graph export ../img/`scn'_`var'.pdf, replace
+		graph export roc_img/`scn'_`var'.pdf, replace
 	}
 	
-	foreach var in obese obese_3 {
+    *obese_3
+	foreach var in obese  {
 		if "`var'" == "obese" {
 			local label2 "`minyr'-`maxyr' obese"
 		} 
@@ -105,7 +108,7 @@ foreach scn of local scenarios {
 		
 		roctab `var' `var'_elsa 
 		roctab `var' `var'_elsa , graph saving(roc_plots/`scn'_`var', replace) title("`label1'") scheme(s1mono)
-		graph export ../img/`scn'_`var'.pdf, replace
+		graph export roc_img/`scn'_`var'.pdf, replace
 	}
 
 
@@ -114,8 +117,8 @@ foreach scn of local scenarios {
 	
 }
 
-
-foreach var in died cancre diabe hearte hibpe lunge stroke obese obese_3 {
+*obese_3
+foreach var in died cancre diabe hearte hibpe lunge stroke obese {
 	if "`var'" == "died" {
 		local label2 "`minyr'-`maxyr' mortality"
 	} 
@@ -145,7 +148,7 @@ foreach var in died cancre diabe hearte hibpe lunge stroke obese obese_3 {
 	}
 	
 	graph combine roc_plots/ELSA_minimal_`var'.gph roc_plots/ELSA_CV1_`var'.gph, scheme(s1mono) title("`label2'")
-	graph export ../img/combined_roc_`var'.pdf, replace
+	graph export roc_img/combined_roc_`var'.pdf, replace
 }
 
 

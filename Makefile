@@ -6,6 +6,7 @@ ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
 RAW_ELSA = /home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata/stata/stata13_se/
 ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
+OUTDATA = $(CURDIR)/output
 R = $(CURDIR)/FEM_R
 
 include fem.makefile
@@ -32,11 +33,13 @@ core_prep: start_data transitions_core est_core summary_out_core
 core: core_prep simulation_core
 
 core_complete_prep: core_prep transitions_minimal est_minimal summary_out_minimal
-core_complete: ELSA core_complete_prep simulation_core_complete CV2_detailed_append Ttests_core
+core_complete: ELSA core_complete_prep simulation_core_complete CV2_detailed_append_core Ttests_core
 
 core_debug: clean_logs clean_output core_complete debug_doc_core
 
 core_scen: clean_logs clean_output core_prep simulation_core_scen move_results
+
+roc: core_prep simulation_core_roc roc_validation
 
 
 ### Combined rules
@@ -202,11 +205,16 @@ simulation_core_complete:
 simulation_core_scen:
 	$(MPI) ELSA_core_scen.settings.txt
 
+simulation_core_roc:
+	$(MPI) ELSA_roc_validation.settings.txt
+
 
 ### Handovers and Validation
 
+validation: handovers roc_validation
+
 handovers:
-	cd analysis/techdoc_ELSA $(STATA) handover_ELSA.do
+	cd analysis/techdoc_ELSA && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) handover_ELSA.do
 
 Ttests_CV: 
 	mkdir -p $(ROOT)/output/ELSA_CV1/T-tests
@@ -222,13 +230,22 @@ Ttests_core:
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=CV1 $(STATA) crossvalidation_ELSA_core.do
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA_core.do
 
+roc_validation: $(MAKEDATA)/roc_validation.do
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) roc_validation.do
+
 
 ### Dealing with detailed output
 
-CV2_detailed_append: $(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta
+detailed_append_core_CV2: $(DATADIR)/detailed_output/ELSA_core_CV2_append.dta
 
-$(ROOT)/output/ELSA_CV2/ELSA_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_summary.dta
-	cd $(MAKEDATA) && datain=output/ dataout=output/ scen=CV2 $(STATA) detailed_output_append.do
+$(DATADIR)/detailed_output/ELSA_core_CV2/ELSA_core_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_summary.dta
+	cd $(MAKEDATA) && datain=output/ dataout=$(DATADIR)/detailed_output scen=core_CV2 $(STATA) detailed_output_append.do
+
+detailed_append_core_cohort: $(OUTDATA)/ELSA_core_cohort/ELSA_core_cohort_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_cohort $(STATA) detailed_output_append.do
+
+detailed_append_core_hearte: $(OUTDATA)/ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_remove_hearte_c $(STATA) detailed_output_append.do
 
 
 ### Debugging
@@ -281,12 +298,6 @@ $(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta o
 	cp -r FEM_CPP_settings/ debug/core_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core_$(TIMESTAMP)/model_analysis_core.nb.html
-
-
-### Validation
-
-roc_validation: $(MAKEDATA)/roc_validation.do
-	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) roc_analysis.do
 
 
 ### Housekeeping and cleaning
