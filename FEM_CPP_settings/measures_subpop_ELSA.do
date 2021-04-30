@@ -56,6 +56,10 @@ local measures
 					p_employed  i_employed  n_employed
 					p_unemployed i_unemployed n_unemployed
 					p_retired	i_retired	n_retired
+					n_anydisease 	p_anydisease
+					n_nodisease		p_nodisease
+					n_disabled		p_disabled
+					n_not_disabled  p_not_disabled
 			
 										
 ;
@@ -77,5 +81,5 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 60p 
+local subpop all m f 55p_f_l 55p_m_l 60p 
 * 5059 6064 m_6064 f_6064 6569 m_6569 f_6569 7074 m_7074 f_7074 7579 m_7579 f_7579 8084 m_8084 f_8084 8589 m_8589 f_8589 9094 m_9094 f_9094 9599 m_9599 f_9599 100p m_100p f_100p

@@ -1,0 +1,148 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Going to have a go at producing estimates of disease free life years and disability free life years.
+
+To do this we need to use the 'disabled' and 'anydisease' variables that are defined in ELSA_vars.txt.
+
+First setup and reading in data files.
+
+# Setup
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/tmp_output/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+#require(reshape2)
+require(ggplot2)
+#require(ggpubr)
+#require(plyr)
+#require(data.table)
+
+```
+
+# Read in Data
+```{r}
+## Read in all the data
+# Baselines
+base <- read_dta('ELSA_core_base/ELSA_core_base_summary.dta')
+cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+
+# Hearte (cohort and pop)
+#heart_c <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta')
+heart_p <- read_dta('ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
+
+# Smoking (cohort)
+smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
+
+# BMI
+nomorbid <- read_dta('ELSA_core_nomorbid/ELSA_core_nomorbid_summary.dta')
+obese2 <- read_dta('ELSA_core_noobese2/ELSA_core_noobese2_summary.dta')
+obese1 <- read_dta('ELSA_core_noobese1/ELSA_core_noobese1_summary.dta')
+
+# Drinking
+nodrink <- read_dta('ELSA_core_remove_drink_p/ELSA_core_remove_drink_p_summary.dta')
+noBadDrink <- read_dta('ELSA_core_remove_problem_drink_p/ELSA_core_remove_problem_drink_p_summary.dta')
+```
+
+# Disability Free Life Years
+
+Going to attempt disease free first.
+
+What we are looking for is a change in the total number of people with no diseases. i.e. change in n_anydisease_all
+
+Bryan said to 'sum it up for the whole duration of the simulation'. I don't know what this means, but if I have a good go at it now I can always ask him next time we meet.
+
+```{r}
+c <- cohort
+s <- smok
+
+cSel <- c %>%
+          select('year', n_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_disabled_all, 'total' = m_endpop_all)
+
+sSel <- s %>%
+          select('year', n_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_disabled_all, 'total' = m_endpop_all)
+
+#combined <- merge(cSel, sSel, by='year')
+
+# Add source and rbind
+cSel$source <- 'cohort'
+sSel$source <- 'intervention'
+
+combined <- rbind(cSel, sSel)
+
+ggplot(combined, aes(x = year, y = disabled, color = source)) +
+  geom_line()
+```
+
+The graph above shows why we cannot rely on graphical interpretations of the 'n_' var alone.
+
+Let's try to get the number of disabled years per person.
+
+```{r}
+cSel2 <- cSel
+sSel2 <- sSel
+
+# Population is in millions initially
+cSel2$total <- cSel2$total * 1000000
+sSel2$total <- sSel2$total * 1000000
+
+cSel2$dis_by_person <- cSel2$disabled / cSel2$total
+sSel2$dis_by_person <- sSel2$disabled / sSel2$total
+
+combined2 <- rbind(cSel2, sSel2)
+
+ggplot(data = combined2, aes(x = year, y = dis_by_person, color = source)) +
+  geom_line()
+
+```
+
+## Try again, this time with the correct variable (not disabled)
+
+```{r}
+c <- cohort
+s <- smok
+
+cSel <- c %>%
+          select('year', n_not_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_not_disabled_all, 'total' = m_endpop_all)
+
+sSel <- s %>%
+          select('year', n_not_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_not_disabled_all, 'total' = m_endpop_all)
+
+#combined <- merge(cSel, sSel, by='year')
+
+# Add source and rbind
+cSel$source <- 'cohort'
+sSel$source <- 'intervention'
+
+combined <- rbind(cSel, sSel)
+
+ggplot(combined, aes(x = year, y = disabled, color = source)) +
+  geom_line()
+```
+
+```{r}
+cSel2 <- cSel
+sSel2 <- sSel
+
+# Population is in millions initially
+cSel2$total <- cSel2$total * 1000000
+sSel2$total <- sSel2$total * 1000000
+
+cSel2$dis_by_person <- cSel2$disabled / cSel2$total
+sSel2$dis_by_person <- sSel2$disabled / sSel2$total
+
+combined2 <- rbind(cSel2, sSel2)
+
+ggplot(data = combined2, aes(x = year, y = dis_by_person, color = source)) +
+  geom_line()
+
+```
