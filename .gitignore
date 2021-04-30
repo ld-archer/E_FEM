@@ -103,3 +103,7 @@ FEM_Stata/Makedata/ELSA/hotdeck_data/
 
 # stata_extensions
 stata_extensions.txt
+
+# ROC
+FEM_Stata/Makedata/ELSA/roc_img/
+FEM_Stata/Makedata/ELSA/roc_plots/
