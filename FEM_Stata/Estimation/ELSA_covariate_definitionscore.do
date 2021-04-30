@@ -50,6 +50,9 @@ global dvars male white hsless college
 *** Lagged Age splines
 global lvars_age l2age65l l2age6574 l2age75p
 
+*** Lagged BMI splines
+global bmi_vars l2logbmi_l20 l2logbmi_2025 l2logbmi_2530 l2logbmi_3035 l2logbmi_3540 l2logbmi_40p
+
 
 * For age and gender interactions
 global lvars_age_sex male_l2age65l male_l2age6574 male_l2age75p
@@ -80,24 +83,24 @@ local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7
 *** Now specify the transition models ***
 
 *** For Mortality
-*global allvars_died male $lvars_age l2logbmi_l30 l2logbmi_30p l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe l2smoken `lvars_srh'
+*global allvars_died male $lvars_age $bmi_vars l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe l2smoken `lvars_srh'
 global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke `lvars_smoke' l2demene
 
 *** Chronic Diseases
 *CANCRE
-global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2smoken `lvars_srh' `lvars_drink'
+global allvars_cancre       $dvars $lvars_age $bmi_vars l2smokev l2smoken `lvars_srh' `lvars_drink'
 * DIABE
-global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2problem_drinker `lvars_exercise'
+global allvars_diabe        $dvars $lvars_age $bmi_vars l2hibpe l2hchole l2problem_drinker `lvars_exercise'
 * HEARTE
-global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2smoken l2hibpe l2hchole l2diabe l2drink l2problem_drinker `lvars_exercise'
+global allvars_hearte       $dvars $lvars_age $bmi_vars l2smokev l2smoken l2hibpe l2hchole l2diabe l2drink l2problem_drinker `lvars_exercise'
 * HIBPE 
-global allvars_hibpe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole l2problem_drinker `lvars_exercise'
-global allvars_lunge        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
-global allvars_stroke       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken l2heavy_smoker
-global allvars_hchole       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_exercise'
-global allvars_srh          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
-global allvars_alzhe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2smoken l2problem_drinker
-global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2smoken l2problem_drinker
+global allvars_hibpe        $dvars $lvars_age $bmi_vars `lvars_smoke' l2hchole l2problem_drinker `lvars_exercise'
+global allvars_lunge        $dvars $lvars_age $bmi_vars `lvars_smoke'
+global allvars_stroke       $dvars $lvars_age $bmi_vars l2hibpe l2diabe l2hchole l2smoken l2heavy_smoker
+global allvars_hchole       $dvars $lvars_age $bmi_vars `lvars_smoke' `lvars_exercise'
+global allvars_srh          $dvars $lvars_age $bmi_vars `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
+global allvars_alzhe        $dvars $lvars_age $bmi_vars l2hibpe l2smoken l2problem_drinker
+global allvars_demene       $dvars $lvars_age $bmi_vars l2hibpe l2smoken l2problem_drinker
 
 
 *** Smoking 
@@ -116,12 +119,12 @@ global allvars_problem_drinker $dvars $lvars_age `lvars_workstat' `lvars_srh'
 
 
 *** Logbmi & other health
-global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
+global allvars_logbmi       $dvars $lvars_age $bmi_vars `lvars_exercise'
 
 
 *** Disabilities
-global allvars_adlstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2demene l2problem_drinker
-global allvars_iadlstat     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2demene l2problem_drinker
+global allvars_adlstat      $dvars $lvars_age $bmi_vars l2stroke l2demene l2problem_drinker
+global allvars_iadlstat     $dvars $lvars_age $bmi_vars l2stroke l2demene l2problem_drinker
 
 *** Workstat
 global allvars_workstat     $dvars $lvars_age `lvars_srh'
