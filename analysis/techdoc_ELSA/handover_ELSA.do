@@ -14,6 +14,7 @@ This is to validate our early simulated data against known true trajectories
 in the raw data.
 
 */
+clear all
 
 quietly include ../../fem_env.do
 
@@ -40,16 +41,16 @@ keep if age >= 55
 
 * Outcomes, most of whats in measures_subpop_ELSA.do
 local outcome cancre diabe hearte hibpe lunge stroke
-local outcome2 work
+local outcome2 employed
 local outcome3 bmi
 local outcome4 anyadl adl3p anyiadl iadl2p
 
 local seoutcome secancre=cancre sediabe=diabe sehearte=hearte sehibpe=hibpe selunge=lunge sestroke=stroke
-local seoutcome2 sework=work
+local seoutcome2 seemployed=employed
 local seoutcome3 sebmi=bmi
 local seoutcome4 seanyadl=anyadl seadl3p=adl3p seanyiadl=anyiadl seiadl2p=iadl2p
 
-collapse (mean) `outcome' `outcome2' `outcome3' `outcome4' (semean) `seoutcome' `seoutcome2' `seoutcome3' `seoutcome4' [aw=weight], by(year male)
+collapse (mean) `outcome' `outcome2' `outcome3' `outcome4' (semean) `seoutcome' `seoutcome2' `seoutcome3' `seoutcome4' [aw=cwtresp], by(year male)
 
 * Get bounds for CI
 foreach var of varlist `outcome' `outcome2' `outcome3' `outcome4' {
@@ -80,7 +81,8 @@ save `ELSA'
 
 local output $output_dir
 
-merge m:1 year using `output'/ELSA_Baseline/ELSA_Baseline_summary.dta
+*merge m:1 year using `output'/ELSA_core_base/ELSA_core_base_summary.dta
+merge m:1 year using ../../output/ELSA_core_base/ELSA_core_base_summary.dta
 *merge m:1 year using ../../output/vBaseline_ELSA/vBaseline_ELSA_summary.dta
 
 * Males
