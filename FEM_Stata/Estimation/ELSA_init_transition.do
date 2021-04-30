@@ -241,11 +241,11 @@ foreach n in $unorder {
     if r(N)>0{
     	mlogit `n' $`x' if `select_`n''
     	ch_est_title "`coef_name'"
-    	mfx2, stub(o_`n') nose
+    	mfx2, stub(m_`n') nose
     	est save "`ster'/`n'.ster", replace
-    	est restore o_`n'_mfx
+    	est restore m_`n'_mfx
 			ch_est_title "`mfx_name'"
-			est store o_`n'_mfx
+			est store m_`n'_mfx
 		outreg using "`ster'/`n'-outreg.doc", replace
 			
     	*for cross validation
@@ -277,10 +277,11 @@ else {
 
 *** Output models
 * also write default estimates as a sheet in the file to be distributed with tech appendix
-if "`defmod'" == "ELSA" {
+if "`defmod'" == "ELSA_core" {
 	xml_tab b_*, save("`ster'/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
+	*xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
 
 	xml_tab b_*, save("`ster'/FEM_estimates_table.xml") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
