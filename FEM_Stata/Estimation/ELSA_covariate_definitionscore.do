@@ -51,7 +51,7 @@ global dvars male white hsless college
 global lvars_age l2age65l l2age6574 l2age75p
 
 *** Lagged BMI splines
-global bmi_vars l2logbmi_l20 l2logbmi_2025 l2logbmi_2530 l2logbmi_3035 l2logbmi_3540 l2logbmi_40p
+global bmi_vars l2logbmi_l20 l2logbmi_2025 l2logbmi_2530 l2logbmi_3035 l2logbmi_35p
 
 
 * For age and gender interactions

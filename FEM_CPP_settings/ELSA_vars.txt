@@ -35,11 +35,24 @@ obese_3 = bmi >= 40 :: boolean
 obese =  logbmi >= 3.401197382 : indicator for any obesity : boolean
 l2obese = l2logbmi >= 3.401197382 : lagged indicator for any obesity : boolean
 
+| old obesity splines
 l2logbmi_l30 = min(l2logbmi, 3.401197) : min of lag log BMI and 3.4 (BMI of 30) : float
 l2logbmi_30p = max(l2logbmi - 3.401197, 0) : max of lag log BMI - 3.4 and zero : float
 
 flogbmi50_l30 = min(flogbmi50, 3.401197) : min of init log BMI and 3.4 (BMI of 30) : float
 flogbmi50_30p = max(flogbmi50 -  3.401197, 0) : max of init log BMI - 3.4 and zero : float
+
+| new obesity splines
+l2logbmi_l20 = min(l2logbmi, 2.995732) : min of lag log BMI and 2.99 (BMI of 20) : float
+l2logbmi_2025 = min(max(0.0, l2logbmi - 2.995732), 3.218876 - 2.995732) : logbmi between 2.99 & 3.22 (BMI between 20 & 25) : float
+l2logbmi_2530 = min(max(0.0, l2logbmi - 3.218876), 3.401197 - 3.218876) : logbmi between 3.22 & 3.40 (BMI between 25 & 30) : float
+l2logbmi_3035 = min(max(0.0, l2logbmi - 3.401197), 3.555348 - 3.401197) : logbmi between 3.40 & 3.56 (BMI between 30 & 35) : float
+l2logbmi_35p = max(l2logbmi - 3.555348, 0.0) : max of lag log BMI and 3.69 (BMI of 40) : float
+
+|l2logbmi_3540 = min(max(0.0, l2logbmi - 3.555348), 3.688879 - 3.555348) : logbmi between 4.56 & 3.69 (BMI between 35 & 40) : float
+|l2logbmi_40p = max(l2logbmi - 3.688879, 0.0) : max of lag log BMI and 3.69 (BMI of 40) : float
+
+
 
 underwt = bmi < 18.5    : for alzhmr and cogstate models
 l2underwt = l2bmi < 18.5  : for alzhmr and cogstate models

@@ -53,8 +53,10 @@ local log_25 = log(25)
 local log_30 = log(30)
 local log_35 = log(35)
 local log_40 = log(40)
-mkspline l2logbmi_l20 `log_20' l2logbmi_2025 `log_25' l2logbmi_2530 `log_30' l2logbmi_3035 `log_35' l2logbmi_3540 `log_40' l2logbmi_40p = l2logbmi
+
 *mkspline l2logbmi_l30 `log_30' l2logbmi_30p = l2logbmi
+*mkspline l2logbmi_l20 `log_20' l2logbmi_2025 `log_25' l2logbmi_2530 `log_30' l2logbmi_3035 `log_35' l2logbmi_3540 `log_40' l2logbmi_40p = l2logbmi
+mkspline l2logbmi_l20 `log_20' l2logbmi_2025 `log_25' l2logbmi_2530 `log_30' l2logbmi_3035 `log_35' l2logbmi_35p = l2logbmi
 
 *label var l2logbmi_l30 "Splined two-year lag of BMI <= log(30)"
 *label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
@@ -63,8 +65,9 @@ label var l2logbmi_l20 "Splined two-year lag of BMI < log(20)"
 label var l2logbmi_2025 "Splined two-year lag of BMI between log(20) - log(25)"
 label var l2logbmi_2530 "Splined two-year lag of BMI between log(25) - log(30)"
 label var l2logbmi_3035 "Splined two-year lag of BMI between log(30) - log(35)"
-label var l2logbmi_3540 "Splined two-year lag of BMI between log(35) - log(40)"
-label var l2logbmi_40p "Splined two-year lag of BMI > log(40)"
+label var l2logbmi_35p "Splined two-year lag of BMI > log(35)"
+*label var l2logbmi_3540 "Splined two-year lag of BMI between log(35) - log(40)"
+*label var l2logbmi_40p "Splined two-year lag of BMI > log(40)"
 
 * Label the variables to use for technical appendix
 label variable male "Male"
