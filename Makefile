@@ -236,10 +236,8 @@ roc_validation: $(MAKEDATA)/roc_validation.do
 
 ### Dealing with detailed output
 
-detailed_append_core_CV2: $(DATADIR)/detailed_output/ELSA_core_CV2_append.dta
-
-$(DATADIR)/detailed_output/ELSA_core_CV2/ELSA_core_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_summary.dta
-	cd $(MAKEDATA) && datain=output/ dataout=$(DATADIR)/detailed_output scen=core_CV2 $(STATA) detailed_output_append.do
+detailed_append_CV2: $(OUTDATA)/ELSA_CV2/ELSA_CV2_summary.dta
+	cd $(MAKEDATA) && datain=output/ dataout=$(DATADIR)/detailed_output scen=CV2 $(STATA) detailed_output_append.do
 
 detailed_append_core_cohort: $(OUTDATA)/ELSA_core_cohort/ELSA_core_cohort_summary.dta
 	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_cohort $(STATA) detailed_output_append.do
