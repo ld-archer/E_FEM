@@ -642,7 +642,7 @@ smok.combined <- data.frame(source = c('FEM', 'FEM', 'Observed', 'Observed'), ag
 
 smok.plot <-ggplot(data = smok.combined, aes(x = age, y = value)) +
                 geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
-                labs(title = 'Comparison of smoking prevalence in the elderly in 2018', x = ' ', y = 'Prevalence (%)')
+                labs(title = 'Prevalence of Smoking (2018)', x = ' ', y = 'Prevalence (%)')
 
 ggsave(filename = 'smoking_prev_2018.png',
        plot = smok.plot,

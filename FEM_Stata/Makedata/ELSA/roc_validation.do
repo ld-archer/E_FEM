@@ -122,7 +122,7 @@ foreach scn of local scenarios {
 		}
 		
 		roctab `var' `var'_elsa if `var'_init == 0
-		roctab `var' `var'_elsa if `var'_init == 0, graph saving(roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
+		roctab `var' `var'_elsa if `var'_init == 0, graph saving(roc_plots/`scn'_`var', replace) title("`label1'") scheme(s1mono)
 		graph export roc_img/`scn'_`var'.pdf, replace
 	}
 	
@@ -136,7 +136,7 @@ foreach scn of local scenarios {
 		} 
 		
 		roctab `var' `var'_elsa 
-		roctab `var' `var'_elsa , graph saving(roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
+		roctab `var' `var'_elsa , graph saving(roc_plots/`scn'_`var', replace) title("`label1'") scheme(s1mono)
 		graph export roc_img/`scn'_`var'.pdf, replace
 	}
 
