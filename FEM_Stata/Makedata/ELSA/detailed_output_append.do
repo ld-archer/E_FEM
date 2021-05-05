@@ -8,7 +8,7 @@ local scen: env scen
 local maxrep 10
 
 * locals for start and stop year
-if "`scen'" == "core_CV2" {
+if "`scen'" == "CV2" {
 	local minyr 2010
 	local maxyr 2016
 }
@@ -39,6 +39,7 @@ forvalues yr = `minyr' (2) `maxyr' {
 
 * save the appended files
 save $outdata/detailed_output/ELSA_`scen'_append.dta, replace
+save $output_dir/ELSA_`scen'/ELSA_`scen'_append.dta, replace
 
 
 capture log close

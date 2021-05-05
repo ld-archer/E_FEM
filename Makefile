@@ -33,7 +33,7 @@ core_prep: start_data transitions_core est_core summary_out_core
 core: core_prep simulation_core
 
 core_complete_prep: core_prep transitions_minimal est_minimal summary_out_minimal
-core_complete: ELSA core_complete_prep simulation_core_complete CV2_detailed_append_core Ttests_core
+core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_core_CV2 Ttests_core
 
 core_debug: clean_logs clean_output core_complete debug_doc_core
 
@@ -231,15 +231,16 @@ Ttests_core:
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA_core.do
 
 roc_validation: $(MAKEDATA)/roc_validation.do
+	mkdir -p $(MAKEDATA)/roc_img/old/
+	rm -f $(MAKEDATA)/roc_img/old/*.pdf
+	cp -f $(MAKEDATA)/roc_img/*.pdf $(MAKEDATA)/roc_img/old/
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) roc_validation.do
 
 
 ### Dealing with detailed output
 
-detailed_append_core_CV2: $(DATADIR)/detailed_output/ELSA_core_CV2_append.dta
-
-$(DATADIR)/detailed_output/ELSA_core_CV2/ELSA_core_CV2_append.dta: $(ROOT)/output/ELSA_CV2/ELSA_CV2_summary.dta
-	cd $(MAKEDATA) && datain=output/ dataout=$(DATADIR)/detailed_output scen=core_CV2 $(STATA) detailed_output_append.do
+detailed_append_core_CV2: $(OUTDATA)/ELSA_CV2/ELSA_CV2_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=CV2 $(STATA) detailed_output_append.do
 
 detailed_append_core_cohort: $(OUTDATA)/ELSA_core_cohort/ELSA_core_cohort_summary.dta
 	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_cohort $(STATA) detailed_output_append.do

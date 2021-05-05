@@ -518,7 +518,7 @@ label values smkstat smkstat
 
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
-gen heavy_smoker = (smokef >= 15) if !missing(smokef)
+gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 drop smokef
 
 
@@ -556,10 +556,10 @@ drop drinkn drinkwn drinkd
 *replace problem_drinker = (drinkd > 5) if missing(problem_drinker) | problem_drinker == 0
 * Problem drinker == more than 7 drinks/week OR more than 4 drinks/day OR more than 5 days drinking/week
 *gen problem_drinker = 1 if (drinkwn > 7) | (drinkn > 4)
-gen problem_drinker = 1 if (drinkwn > 10) & !missing(drinkwn)
-replace problem_drinker = 1 if (drinkn > 6) & !missing(drinkn)
-replace problem_drinker = 0 if (drinkwn <= 10) & !missing(drinkwn)
-replace problem_drinker = 0 if (drinkn > 6) & !missing(drinkn)
+gen problem_drinker = 1 if (drinkwn > 12) & !missing(drinkwn)
+replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
+replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
+replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 *replace problem_drinker = 1 if (drinkd == 7)
 *replace problem_drinker = 0 if (drinkd < 7)
 
