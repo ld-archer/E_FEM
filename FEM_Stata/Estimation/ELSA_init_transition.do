@@ -117,7 +117,6 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
         est restore b_`n'_mfx
             ch_est_title "`mfx_name'"
             est store b_`n'_mfx
-		outreg using "`ster'/`n'-outreg.doc", replace
         
         * For cross validation 1
         if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
@@ -167,7 +166,6 @@ foreach n in $ols {
     	est restore ols_`n'_mfx
 			ch_est_title "`mfx_name'"
 			est store ols_`n'_mfx
-		outreg using "`ster'/`n'-outreg.doc", replace
 			
     	*for cross validation 1
     	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
@@ -207,7 +205,6 @@ foreach n in $order {
     	est restore o_`n'_mfx
 			ch_est_title "`mfx_name'"
 			est store o_`n'_mfx
-		outreg using "`ster'/`n'-outreg.doc", replace
 			
     	*for cross validation
     	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
@@ -246,7 +243,6 @@ foreach n in $unorder {
     	est restore m_`n'_mfx
 			ch_est_title "`mfx_name'"
 			est store m_`n'_mfx
-		outreg using "`ster'/`n'-outreg.doc", replace
 			
     	*for cross validation
     	if "`defmod'" == "CV1" | "`defmod'" == "core_CV1"  {
@@ -281,11 +277,12 @@ if "`defmod'" == "ELSA_core" {
 	xml_tab b_*, save("`ster'/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
-	*xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
+	xml_tab m_*, save("`ster'/estimates`defmod'.xls") append sheet(m) pvalue
 
 	xml_tab b_*, save("`ster'/FEM_estimates_table.xml") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/FEM_estimates_table.xml") append sheet(ols) pvalue
+	xml_tab m_*, save("`ster'/FEM_estimates_table.xml") append sheet(m) pvalue
 }
 else if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
 	xml_tab b_*, save("`ster'/CV1/estimates`defmod'.xls") replace sheet(binaries) pvalue
