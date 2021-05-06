@@ -273,7 +273,7 @@ else {
 
 *** Output models
 * also write default estimates as a sheet in the file to be distributed with tech appendix
-if "`defmod'" == "ELSA_core" {
+if "`defmod'" == "ELSA_core" | "`defmod'" == "core" {
 	xml_tab b_*, save("`ster'/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
