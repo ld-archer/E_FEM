@@ -139,6 +139,64 @@ cohortCDVis <- function(cohort, intervention, cds, save=FALSE, path='/home/luke/
   }
   
   return(p1)
+  
+}
+
+visCDComparisonCohort <- function(cohort, int, int_name, cd, save=FALSE, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+  
+  # For file naming and stuff
+  if(cd == 'cancre') {
+    dis <- 'Cancer'
+  } else if(cd == 'diabe') {
+    dis <- 'Diabetes'
+  } else if(cd == 'hearte') {
+    dis <- 'Heart Disease'
+  } else if(cd == 'lunge') {
+    dis <- 'Lung Disease'
+  } else if(cd == 'stroke') {
+    dis <- 'Stroke'
+  } else if(cd == 'smoken') {
+    dis <- 'Smoking'
+  } else if(cd == 'employed') {
+    dis <- 'Employed'
+  } else if(cd == 'retired') {
+    dis <- 'Retired'
+  } else if(cd == 'anyadl') {
+    dis <- 'ADLs'
+  } else if(cd == 'anyiadl') {
+    dis <- 'IADLs'
+  }
+  
+  var <- paste0('p_', cd, '_all')
+  
+  # Calculate age and survival curves
+  cohort$Age <- (cohort$year - 2012) + 50
+  intervention$Age <- (intervention$year - 2012) + 50
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
+
+  selcohort <- cohort %>%
+              dplyr::select(c('Age', all_of(var))) %>%
+              dplyr::rename('Cohort' = var)
+  
+  selInt <- int %>%
+              dplyr::select(c('Age', all_of(var))) %>%
+              dplyr::rename('Intervention' = var)
+  
+  melted <- merge(selcohort, selInt, by = 'year') %>%
+              reshape2::melt(id.var = 'Age', value.name = 'Scenario')
+
+  p <- ggplot(data = melted, aes(x = Age, y = Scenario, color = variable)) +
+          geom_smooth(lwd = 0.5) +
+          labs(title = paste(int_name, dis, sep = ' - '), x = 'Year', y = 'Prevalence')
+  
+  if(save) {
+    ggsave(filename = paste0(int_name, '_', dis, '_prev.png'),
+         plot = p,
+         path = path)
+  }
+  
+  return(p)
 }
 
 baseCDVis <- function(base, intervention, int.name, cds, save=FALSE, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
@@ -244,7 +302,7 @@ visCDComparison <- function(base, int, int_name, cd, save=FALSE, path='/home/luk
               reshape2::melt(id.var = 'year', value.name = 'Scenario')
 
   p <- ggplot(data = melted, aes(x = year, y = Scenario, color = variable)) +
-          geom_line() +
+          geom_smooth(lwd = 0.5) +
           labs(title = paste(int_name, dis, sep = ' - '), x = 'Year', y = 'Prevalence')
   
   if(save) {
@@ -387,7 +445,7 @@ visCDComparisonBMI <- function(cohort, int1, int2, int3, cds, save=FALSE, path='
                                values_to = 'Value')
   
   p1 <-ggplot(data = filter(pivot.merged, Feature == 'bmi'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'Average BMI', x = 'Age', y = 'BMI')
   
   if(save) {
@@ -397,7 +455,7 @@ visCDComparisonBMI <- function(cohort, int1, int2, int3, cds, save=FALSE, path='
   }
   
   p2 <- ggplot(data = filter(pivot.merged, Feature == 'heart'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'Heart Disease', x = 'Age', y = 'Prevalence')
   
   if(save) {
@@ -407,7 +465,7 @@ visCDComparisonBMI <- function(cohort, int1, int2, int3, cds, save=FALSE, path='
   }
   
   p3 <- ggplot(data = filter(pivot.merged, Feature == 'stroke'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'Stroke', x = 'Age', y = 'Prevalence')
   
   if(save) {
@@ -417,7 +475,7 @@ visCDComparisonBMI <- function(cohort, int1, int2, int3, cds, save=FALSE, path='
   }
   
   p4 <- ggplot(data = filter(pivot.merged, Feature == 'diabetes'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'Diabetes', x = 'Age', y = 'Prevalence')
   
   if(save) {
@@ -427,19 +485,19 @@ visCDComparisonBMI <- function(cohort, int1, int2, int3, cds, save=FALSE, path='
   }
   
   p5 <- ggplot(data = filter(pivot.merged, Feature == 'employed'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'Employed', x = 'Age', y = 'Prevalence')
   
   p6 <- ggplot(data = filter(pivot.merged, Feature == 'retired'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'Retired', x = 'Age', y = 'Prevalence')
   
   p7 <- ggplot(data = filter(pivot.merged, Feature == 'adl'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'ADLs', x = 'Age', y = 'Prevalence')
   
   p8 <- ggplot(data = filter(pivot.merged, Feature == 'iadl'), aes(x = Age, y = Value, color = Scenario)) +
-        geom_line() +
+        geom_smooth(lwd = 0.5) +
         labs(title = 'IADLs', x = 'Age', y = 'Prevalence')
   
   return(list(p1, p2, p3, p4, p5, p6, p7, p8))
@@ -526,16 +584,16 @@ cds.rename <- c('Lung Disease', 'Heart', 'Cancer', 'Smoking', 'Stroke', 'Diabete
 baseCDVis2(c, s, cds, cds.rename)
 
 
-visCDComparison(c, s, 'No Smoke', 'cancre')
-visCDComparison(c, s, 'No Smoke', 'diabe')
-visCDComparison(c, s, 'No Smoke', 'hearte')
-visCDComparison(c, s, 'No Smoke', 'lunge')
-visCDComparison(c, s, 'No Smoke', 'stroke')
-visCDComparison(c, s, 'No Smoke', 'smoken')
-visCDComparison(c, s, 'No Smoke', 'employed')
-visCDComparison(c, s, 'No Smoke', 'retired')
-visCDComparison(c, s, 'No Smoke', 'anyadl')
-visCDComparison(c, s, 'No Smoke', 'anyiadl')
+visCDComparisonCohort(c, s, 'No Smoke', 'cancre')
+visCDComparisonCohort(c, s, 'No Smoke', 'diabe')
+visCDComparisonCohort(c, s, 'No Smoke', 'hearte')
+visCDComparisonCohort(c, s, 'No Smoke', 'lunge')
+visCDComparisonCohort(c, s, 'No Smoke', 'stroke')
+visCDComparisonCohort(c, s, 'No Smoke', 'smoken')
+visCDComparisonCohort(c, s, 'No Smoke', 'employed')
+visCDComparisonCohort(c, s, 'No Smoke', 'retired')
+visCDComparisonCohort(c, s, 'No Smoke', 'anyadl')
+visCDComparisonCohort(c, s, 'No Smoke', 'anyiadl')
 
 
 smok.prev <- visCDComparisonCustom(c, s, 'No Smoke', 'smoken')
@@ -604,7 +662,7 @@ compareSurvivalCurveBMI(cohort, bmi1, bmi2, bmi3)
 cds <- c('p_hearte_all', 'p_cancre_all', 'p_stroke_all', 'p_diabe_all', 'a_bmi_all', 
          'p_employed_all', 'p_retired_all', 'p_anyadl_all', 'p_anyiadl_all')
 
-visList <- visCDComparisonBMI(c, bmi1, bmi2, bmi3, cds)
+visList <- visCDComparisonBMI(c, bmi1, bmi2, bmi3, cds, save=TRUE)
 
 for(graph in visList) {
   print(graph)
@@ -625,7 +683,7 @@ visCDComparison(c, bmi3, 'No Morbid', 'anyiadl')
 
 ```{r}
 visCDComparison(c, bmi1, 'No Obesity', 'cancre')
-visCDComparison(c, bmi1, 'No Obesity', 'diabe')
+visCDComparison(c, bmi1, 'No Obesity', 'diabe', save=TRUE)
 visCDComparison(c, bmi1, 'No Obesity', 'stroke')
 visCDComparison(c, bmi1, 'No Obesity', 'hearte')
 visCDComparison(c, bmi1, 'No Obesity', 'lunge')
