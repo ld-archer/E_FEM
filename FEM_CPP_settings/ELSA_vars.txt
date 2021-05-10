@@ -204,6 +204,7 @@ anyiadl = iadl1 | iadl2p :: boolean
 l2anyadl = l2adlstat > 1 :: boolean
 l2anyiadl = l2iadlstat>1  : for alzhmr and cogstate models
 anydisease = cancre | diabe | hearte | hibpe | lunge | stroke :: boolean
+nodisease = not(cancre) & not(diabe) & not(hearte) & not(hibpe) & not(lunge) & not(stroke) :: boolean
 numdisease = hearte + lunge + stroke + hibpe + diabe + cancre : Total number of major health conditions ever diagnosed with : short
 l2numdisease = l2hearte + l2lunge + l2stroke + l2hibpe + l2diabe + l2cancre : Lag of Total number of major health conditions ever diagnosed with : short
 
@@ -279,6 +280,8 @@ elig_heart = fheart50 == 1
 nhmliv_alzhe  = nhmliv * alzhe :: boolean
 
 disabled = adl1 | adl2 | adl3p | iadl1 | iadl2p | nhmliv
+
+not_disabled = not(adl1) & not(adl2) & not(adl3p) & not(iadl1) & not(iadl2p)
 
 | Interaction terms for the hearta model
 

@@ -1,0 +1,397 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Going to have a go at producing estimates of disease free life years and disability free life years.
+
+To do this we need to use the 'disabled' and 'anydisease' variables that are defined in ELSA_vars.txt.
+
+First setup and reading in data files.
+
+# Setup
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/tmp_output/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+#require(reshape2)
+require(ggplot2)
+#require(ggpubr)
+#require(plyr)
+#require(data.table)
+
+```
+
+# Read in Data
+```{r}
+## Read in all the data
+# Baselines
+#base <- read_dta('ELSA_core_base/ELSA_core_base_summary.dta')
+cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+
+# Hearte (cohort and pop)
+heart_c <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta')
+#heart_p <- read_dta('ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
+
+# Smoking (cohort)
+smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
+
+# BMI (cohort)
+#nomorbid <- read_dta('ELSA_core_nomorbid/ELSA_core_nomorbid_summary.dta')
+#obese2 <- read_dta('ELSA_core_noobese2/ELSA_core_noobese2_summary.dta')
+obese1 <- read_dta('ELSA_core_noobese1/ELSA_core_noobese1_summary.dta')
+
+# Drinking (pop)
+nodrink_p <- read_dta('ELSA_core_remove_drink_p/ELSA_core_remove_drink_p_summary.dta')
+nodrink_c <- read_dta('ELSA_core_remove_drink_c/ELSA_core_remove_drink_c_summary.dta')
+#noBadDrink <- read_dta('ELSA_core_remove_problem_drink_p/ELSA_core_remove_problem_drink_p_summary.dta')
+```
+
+# IDEA!!!
+
+Think we need to get the average of disabled var and multiply by the total endpop of corresponding year.
+This way, we'll calculate the average number of diseased (or disabled) years, and then we can do the 
+opposite calculation to get non-diseased or non-disabled. 
+
+Got this idea from looking at the `summary_file_statistics.do` file in input_data/detailed_output/, lines 72-77. Check out the whole idea, this script goes:
+
+- Calculate total_lifeyear for each person m_endpop_xxx * 2
+- Calculate summed_total_lifeyear for whole population ( sum(total_lifeyear) )
+- Calculate average_lifeyear (summed_total_lifeyear / m_endpop_xxx)
+
+Same can be done for disability free life years and disease free life years, see script for details.
+
+## LifeYears
+
+### Functions
+```{r}
+cohortLifeyear <- function(c) {
+  c.tot.lfyrs <- c$m_endpop_all * 2
+  c.sum.tot.lfyrs <- sum(c.tot.lfyrs)
+  c.avg.lfyr <- c.sum.tot.lfyrs / c$m_endpop_all[1]
+  return(c.avg.lfyr)
+}
+
+lifeyearComparison <- function(c, i, int.name) {
+  
+  c.avg.lfyr <- cohortLifeyear(c)
+  
+  i.avg.lfyr <- cohortLifeyear(i)
+  
+  print(int.name)
+  print(paste('Cohort Average Lifeyears:        ', signif(c.avg.lfyr, digits=4)))
+  print(paste('Intervention Average Lifeyears:  ', signif(i.avg.lfyr, digits=4)))
+  print(paste('Increase:                        ', signif(x = (i.avg.lfyr - c.avg.lfyr), digits=4)))
+}
+
+diseaseVarLifeyear <- function(c, var) {
+  
+  prevVar <- paste0('p_', var, '_all')
+  
+  c.tot.var.lfyrs <- c[prevVar] * c$m_endpop_all * 2
+  c.sum.var.lfyrs <- sum(c.tot.var.lfyrs)
+  c.avg.var.lfyrs <- c.sum.var.lfyrs / c$m_endpop_all[1]
+  
+  print(paste0(var, ':    ', signif(c.avg.var.lfyrs, digits=4)))
+}
+
+```
+
+### Cohort
+```{r}
+# Cohort life years
+c <- cohort
+c.ly <- cohortLifeyear(c)
+print(paste0('Cohort Life Years: ', signif(c.ly, digits=4)))
+print('-------------------')
+
+# Cohort disease life years
+diseaseVarLifeyear(c, 'cancre')
+diseaseVarLifeyear(c, 'diabe')
+diseaseVarLifeyear(c, 'hearte')
+diseaseVarLifeyear(c, 'lunge')
+diseaseVarLifeyear(c, 'hibpe')
+diseaseVarLifeyear(c, 'stroke')
+diseaseVarLifeyear(c, 'alzhe')
+diseaseVarLifeyear(c, 'demene')
+diseaseVarLifeyear(c, 'smoken')
+diseaseVarLifeyear(c, 'drink')
+diseaseVarLifeyear(c, 'heavy_smoker')
+diseaseVarLifeyear(c, 'problem_drinker')
+```
+
+### Smoking
+```{r}
+# Cohort
+c <- cohort
+# No smoking
+s <- smok
+
+lifeyearComparison(c, s, 'No Smoking')
+```
+
+### Heart Disease
+```{r}
+# Cohort
+c <- cohort
+# No Heart Disease
+h <- heart_c
+
+lifeyearComparison(c, h, 'No Heart Disease')
+```
+
+### Obesity
+```{r}
+c <- cohort
+o <- obese1
+lifeyearComparison(c, o, 'No Obesity')
+```
+
+### Drink
+```{r}
+c <- cohort
+d <- nodrink_c
+lifeyearComparison(c, d, 'No Drink')
+```
+
+
+## Disability
+
+### Functions
+```{r}
+disabilityLifeYearsCohort <- function(c) {
+  total_dis <- c$a_disabled_all * c$m_endpop_all
+  sum_tot_dis <- sum(total_dis)
+  avg_dis <- sum_tot_dis / c$m_endpop_all[1]
+  return(avg_dis)
+}
+
+disabilityLifeYearComp <- function(c, i, int.name) {
+  
+  c.avg.dis <- disabilityLifeYearsCohort(c)
+  
+  i.avg.dis <- disabilityLifeYearsCohort(i)
+  
+  print(int.name)
+  print(paste('Cohort Average Lifeyears:        ', signif(c.avg.dis, digits=4)))
+  print(paste('Intervention Average Lifeyears:  ', signif(i.avg.dis, digits=4)))
+  print(paste('Increase:                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+}
+
+disabilityFreeLifeYearsCohort <- function(c) {
+  total_disfree <- c$a_not_disabled_all * c$m_endpop_all
+  sum_tot_disfree <- sum(total_disfree)
+  avg_disfree <- sum_tot_disfree / c$m_endpop_all[1]
+  return(avg_disfree)
+}
+```
+
+### Cohort
+```{r}
+# Cohort life years
+c <- cohort
+c.dly <- disabilityLifeYearsCohort(c)
+print(paste0('Cohort Disabled Life Years: ', signif(c.dly, digits=4)))
+print('-------------------')
+c.dfly <- disabilityFreeLifeYearsCohort(c)
+print(paste0('Cohort Disability Free Life Years: ', signif(c.dfly, digits=4)))
+
+# Cohort disease life years
+#diseaseVarLifeyear(c, 'cancre')
+#diseaseVarLifeyear(c, 'diabe')
+#diseaseVarLifeyear(c, 'hearte')
+#diseaseVarLifeyear(c, 'lunge')
+#diseaseVarLifeyear(c, 'hibpe')
+#diseaseVarLifeyear(c, 'stroke')
+#diseaseVarLifeyear(c, 'alzhe')
+#diseaseVarLifeyear(c, 'demene')
+#diseaseVarLifeyear(c, 'smoken')
+#diseaseVarLifeyear(c, 'drink')
+#diseaseVarLifeyear(c, 'heavy_smoker')
+#diseaseVarLifeyear(c, 'problem_drinker')
+```
+
+
+### Smoking
+```{r}
+c <- cohort
+# No Heart Disease
+s <- smok
+
+total_dflys_s <- s$a_disabled_all * s$m_endpop_all
+sum_tot_dflys_s <- sum(total_dflys_s)
+avg_dflys_s <- sum_tot_dflys_s / s$m_endpop_all[1]
+
+avg_dflys
+avg_dflys_s
+
+```
+
+### Heart Disease
+
+```{r}
+
+c <- cohort
+
+total_dflys <- c$a_disabled_all * c$m_endpop_all
+sum_tot_dflys <- sum(total_dflys)
+avg_dflys <- sum_tot_dflys / c$m_endpop_all[1]
+
+# No Heart Disease
+h <- heart_c
+
+total_dflys_h <- h$a_disabled_all * h$m_endpop_all
+sum_tot_dflys_h <- sum(total_dflys_h)
+avg_dflys_h <- sum_tot_dflys_h / h$m_endpop_all[1]
+
+avg_dflys
+avg_dflys_h
+
+```
+
+### Not Disabled
+```{r}
+
+disabilityFreeComparison <- function(c, i, int.name) {
+  tot.df <- c$a_not_disabled_all * c$m_endpop_all
+  sum.tot.df <- sum(tot.df)
+  avg.df <- sum.tot.df / c$m_endpop_all[1]
+  
+  tot.df.i <- i$a_not_disabled_all * i$m_endpop_all
+  sum.tot.df.i <- sum(tot.df.i)
+  avg.df.i <- sum.tot.df.i / i$m_endpop_all[1]
+  
+  print(int.name)
+  print(paste('Cohort Average Disability Free:', signif(avg.df, digits=4)))
+  print(paste('Intervention Disability Free:', signif(avg.df.i, digits=4)))
+  print(paste('Difference:', signif(x = (avg.df.i - avg.df), digits=4)))
+}
+
+c <- cohort
+# No Heart Disease
+h <- heart_c
+
+disabilityFreeComparison(c, h, 'No Heart Disease')
+
+```
+
+```{r}
+c <- cohort
+s <- smok
+
+disabilityFreeComparison(c, s, 'No Smoking')
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Defunkt
+## Disability Free Life Years
+
+Going to attempt disease free first.
+
+What we are looking for is a change in the total number of people with no diseases. i.e. change in n_anydisease_all
+
+Bryan said to 'sum it up for the whole duration of the simulation'. I don't know what this means, but if I have a good go at it now I can always ask him next time we meet.
+
+```{r}
+c <- cohort
+s <- smok
+
+cSel <- c %>%
+          select('year', n_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_disabled_all, 'total' = m_endpop_all)
+
+sSel <- s %>%
+          select('year', n_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_disabled_all, 'total' = m_endpop_all)
+
+#combined <- merge(cSel, sSel, by='year')
+
+# Add source and rbind
+cSel$source <- 'cohort'
+sSel$source <- 'intervention'
+
+combined <- rbind(cSel, sSel)
+
+ggplot(combined, aes(x = year, y = disabled, color = source)) +
+  geom_line()
+```
+
+The graph above shows why we cannot rely on graphical interpretations of the 'n_' var alone.
+
+Let's try to get the number of disabled years per person.
+
+```{r}
+cSel2 <- cSel
+sSel2 <- sSel
+
+# Population is in millions initially
+cSel2$total <- cSel2$total * 1000000
+sSel2$total <- sSel2$total * 1000000
+
+cSel2$dis_by_person <- cSel2$disabled / cSel2$total
+sSel2$dis_by_person <- sSel2$disabled / sSel2$total
+
+combined2 <- rbind(cSel2, sSel2)
+
+ggplot(data = combined2, aes(x = year, y = dis_by_person, color = source)) +
+  geom_line()
+
+```
+
+### Try again, this time with the correct variable (not disabled)
+
+```{r}
+c <- cohort
+s <- smok
+
+cSel <- c %>%
+          select('year', n_not_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_not_disabled_all, 'total' = m_endpop_all)
+
+sSel <- s %>%
+          select('year', n_not_disabled_all, m_endpop_all) %>%
+          dplyr::rename('disabled' = n_not_disabled_all, 'total' = m_endpop_all)
+
+#combined <- merge(cSel, sSel, by='year')
+
+# Add source and rbind
+cSel$source <- 'cohort'
+sSel$source <- 'intervention'
+
+combined <- rbind(cSel, sSel)
+
+ggplot(combined, aes(x = year, y = disabled, color = source)) +
+  geom_line()
+```
+
+```{r}
+cSel2 <- cSel
+sSel2 <- sSel
+
+# Population is in millions initially
+cSel2$total <- cSel2$total * 1000000
+sSel2$total <- sSel2$total * 1000000
+
+cSel2$dis_by_person <- cSel2$disabled / cSel2$total
+sSel2$dis_by_person <- sSel2$disabled / sSel2$total
+
+combined2 <- rbind(cSel2, sSel2)
+
+ggplot(data = combined2, aes(x = year, y = dis_by_person, color = source)) +
+  geom_line()
+
+```
