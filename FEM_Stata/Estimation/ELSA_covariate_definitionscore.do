@@ -109,14 +109,14 @@ global allvars_heavy_smoker $dvars $lvars_age `lvars_workstat'
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
-global allvars_drink        $dvars $lvars_age `lvars_workstat' `lvars_srh'
-global allvars_problem_drinker $dvars $lvars_age `lvars_workstat' `lvars_srh'
+global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise' 
+global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise'
 *global allvars_heavy_drinker $dvars $lvars_age `lvars_workstat'
 *global allvars_freq_drinker $dvars $lvars_age `lvars_workstat'
 
 
 *** Logbmi & other health
-global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
+global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' 
 
 
 *** Disabilities
