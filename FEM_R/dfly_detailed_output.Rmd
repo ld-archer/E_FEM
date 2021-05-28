@@ -1,0 +1,79 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This script will attempt a couple of things using detailed output data files. We will attempt:
+- Disability free life years (and disease free)
+- Treatment on the treated analysis
+
+First we're going to have a go at replicating the file tot_test.do, saved in E_FEM_clean/Bryan_scripts
+
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/tmp_output/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(reshape2)
+require(ggplot2)
+require(ggpubr)
+#require(plyr)
+#require(data.table)
+
+theme('minimal')
+```
+
+Setup is complete (including the working directory), so let's read in some of the data files.
+
+We are using detailed output, so need the appended data files that should be in the output folders. 
+
+```{r}
+cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_append.dta')
+heart <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_append.dta')
+smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_append.dta')
+```
+
+Now start with the cohort file, and try to calculate a host of things like life years, dflys, and other things like that.
+
+Generate stats for lung disease and heart disease.
+
+```{r}
+
+# generate flag for initial wave with disease and year died (if known)
+new <- cohort %>%
+          group_by(hhidpn, mcrep, year) %>%
+          
+
+```
+
+
+
+```{r}
+
+aData <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/input_data/detailed_output/tot/base_treated_merged_smoken_tot.dta')
+
+```
+
+```{r}
+
+educ <- aData %>%
+          group_by(educ) %>%
+          summarise(improv.ly = mean(improved_lifeyears), improv.dfly = mean(improved_dflys))
+
+educ
+
+
+
+```
+
+```{r}
+educ2 <- aData %>%
+          group_by(educ) %>%
+          summarise(base.ly = mean(total_lifeyears_basecase), int.ly = mean(total_lifeyears),
+                    base.dfly = mean(total_dflys_basecase), int.dfly = mean(total_dflys))
+
+educ2
+```
+

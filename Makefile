@@ -239,6 +239,8 @@ roc_validation: $(MAKEDATA)/roc_validation.do
 
 ### Dealing with detailed output
 
+detailed_appends: detailed_append_core_cohort detailed_append_core_hearte detailed_append_core_smok
+
 detailed_append_core_CV2: $(OUTDATA)/ELSA_CV2/ELSA_CV2_summary.dta
 	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=CV2 $(STATA) detailed_output_append.do
 
@@ -247,6 +249,9 @@ detailed_append_core_cohort: $(OUTDATA)/ELSA_core_cohort/ELSA_core_cohort_summar
 
 detailed_append_core_hearte: $(OUTDATA)/ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta
 	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_remove_hearte_c $(STATA) detailed_output_append.do
+
+detailed_append_core_smok: $(OUTDATA)/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_remove_smoken $(STATA) detailed_output_append.do
 
 
 ### Debugging

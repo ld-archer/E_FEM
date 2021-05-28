@@ -92,6 +92,7 @@ keep
 	r*ltactx_e
 	r*mdactx_e
 	r*vgactx_e
+	r*mstat
 	
 	r*walkra
 	r*dressa
@@ -139,6 +140,7 @@ local shapelist
 	r@ltactx_e
 	r@mdactx_e
 	r@vgactx_e
+	r@mstat
 	
 	r@walkra
 	r@dressa
@@ -236,6 +238,32 @@ label var drinkd_e "# days/week drinking"
 label var drinkn_e "# drinks/day"
 label var drinkwn_e "# drinks/week"
 
+*** Relationship Status
+foreach var in mstat {
+	ren r`var' `var'
+}
+
+* Generate partnership status vars, then drop mstat
+* mstat values: 1 - Married
+*               3 - Partnered
+*               4 - Separated
+*               5 - Divorced
+*               7 - Widowed
+*               8 - Never Married
+replace mstat = 2 if inlist(mstat, 4,5,8)
+replace mstat = 4 if mstat == 7
+label variable mstat "Marriage Status"
+label define mstat 1 "Married" 2 "Single" 3 "Cohabiting" 4 "Widowed"
+label values mstat mstat
+
+gen married = mstat == 1
+gen single = mstat == 2
+gen cohab = mstat == 3
+gen widowed = mstat == 4
+label variable married "Married"
+label variable single "Single"
+label variable cohab "Cohabiting"
+label variable widowed "Widowed"
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -452,6 +480,11 @@ label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
+label var mstat "Marriage Status"
+label var married "Married"
+label var single "Single"
+label var cohab "Cohabiting"
+label var widowed "Widowed"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -481,7 +514,7 @@ restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
 local risk smoken smokev bmi drink heavy_smoker problem_drinker exstat1 exstat2 exstat3
-local binecon employed unemployed retired
+local binecon employed unemployed retired married single cohab widowed
 local cntecon
 local demog age_yrs male white
 local unweighted died

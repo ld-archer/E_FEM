@@ -117,10 +117,10 @@ diseaseVarLifeyear(c, 'hibpe')
 diseaseVarLifeyear(c, 'stroke')
 diseaseVarLifeyear(c, 'alzhe')
 diseaseVarLifeyear(c, 'demene')
-diseaseVarLifeyear(c, 'smoken')
-diseaseVarLifeyear(c, 'drink')
-diseaseVarLifeyear(c, 'heavy_smoker')
-diseaseVarLifeyear(c, 'problem_drinker')
+#diseaseVarLifeyear(c, 'smoken')
+#diseaseVarLifeyear(c, 'drink')
+#diseaseVarLifeyear(c, 'heavy_smoker')
+#diseaseVarLifeyear(c, 'problem_drinker')
 ```
 
 ### Smoking
@@ -170,11 +170,8 @@ disabilityLifeYearsCohort <- function(c) {
 }
 
 disabilityLifeYearComp <- function(c, i, int.name) {
-  
   c.avg.dis <- disabilityLifeYearsCohort(c)
-  
   i.avg.dis <- disabilityLifeYearsCohort(i)
-  
   print(int.name)
   print(paste('Cohort Average Lifeyears:        ', signif(c.avg.dis, digits=4)))
   print(paste('Intervention Average Lifeyears:  ', signif(i.avg.dis, digits=4)))
@@ -187,6 +184,25 @@ disabilityFreeLifeYearsCohort <- function(c) {
   avg_disfree <- sum_tot_disfree / c$m_endpop_all[1]
   return(avg_disfree)
 }
+
+disabilityFreeLifeYearsComp <- function(c, i, int.name) {
+  c.avg.dis <- disabilityFreeLifeYearsCohort(c)
+  i.avg.dis <- disabilityFreeLifeYearsCohort(i)
+  print(int.name)
+  print(paste('Cohort Average Disability Free Lifeyears:        ', signif(c.avg.dis, digits=4)))
+  print(paste('Intervention Average Disability Free Lifeyears:  ', signif(i.avg.dis, digits=4)))
+  print(paste('Increase:                                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+}
+
+disVarDFLY <- function(c, var) {
+  prevVar <- paste0('p_', var, '_all')
+  
+  c.tot.var.dfly <- c[prevVar] * c$a_not_disabled_all * c$m_endpop_all
+  c.sum.var.dfly <- sum(c.tot.var.dfly)
+  c.avg.var.dfly <- c.sum.var.dfly / c$m_endpop_all[1]
+  
+  print(paste0(var, ':    ', signif(c.avg.var.dfly, digits=4)))
+}
 ```
 
 ### Cohort
@@ -198,20 +214,21 @@ print(paste0('Cohort Disabled Life Years: ', signif(c.dly, digits=4)))
 print('-------------------')
 c.dfly <- disabilityFreeLifeYearsCohort(c)
 print(paste0('Cohort Disability Free Life Years: ', signif(c.dfly, digits=4)))
+print('-------------------')
 
-# Cohort disease life years
-#diseaseVarLifeyear(c, 'cancre')
-#diseaseVarLifeyear(c, 'diabe')
-#diseaseVarLifeyear(c, 'hearte')
-#diseaseVarLifeyear(c, 'lunge')
-#diseaseVarLifeyear(c, 'hibpe')
-#diseaseVarLifeyear(c, 'stroke')
-#diseaseVarLifeyear(c, 'alzhe')
-#diseaseVarLifeyear(c, 'demene')
-#diseaseVarLifeyear(c, 'smoken')
-#diseaseVarLifeyear(c, 'drink')
-#diseaseVarLifeyear(c, 'heavy_smoker')
-#diseaseVarLifeyear(c, 'problem_drinker')
+# Cohort disability life years
+disVarDFLY(c, 'cancre')
+disVarDFLY(c, 'diabe')
+disVarDFLY(c, 'hearte')
+disVarDFLY(c, 'lunge')
+disVarDFLY(c, 'hibpe')
+disVarDFLY(c, 'stroke')
+disVarDFLY(c, 'alzhe')
+disVarDFLY(c, 'demene')
+#disVarDFLY(c, 'smoken')
+#disVarDFLY(c, 'drink')
+#disVarDFLY(c, 'heavy_smoker')
+#disVarDFLY(c, 'problem_drinker')
 ```
 
 
@@ -221,61 +238,26 @@ c <- cohort
 # No Heart Disease
 s <- smok
 
-total_dflys_s <- s$a_disabled_all * s$m_endpop_all
-sum_tot_dflys_s <- sum(total_dflys_s)
-avg_dflys_s <- sum_tot_dflys_s / s$m_endpop_all[1]
-
-avg_dflys
-avg_dflys_s
-
+disabilityFreeLifeYearsComp(c, s, 'No Smoking')
 ```
 
 ### Heart Disease
 
 ```{r}
-
 c <- cohort
-
-total_dflys <- c$a_disabled_all * c$m_endpop_all
-sum_tot_dflys <- sum(total_dflys)
-avg_dflys <- sum_tot_dflys / c$m_endpop_all[1]
-
 # No Heart Disease
 h <- heart_c
-
-total_dflys_h <- h$a_disabled_all * h$m_endpop_all
-sum_tot_dflys_h <- sum(total_dflys_h)
-avg_dflys_h <- sum_tot_dflys_h / h$m_endpop_all[1]
-
-avg_dflys
-avg_dflys_h
-
+disabilityFreeLifeYearsComp(c, h, 'No Heart Disease')
+cohortLifeyear(c)
 ```
 
 ### Not Disabled
 ```{r}
-
-disabilityFreeComparison <- function(c, i, int.name) {
-  tot.df <- c$a_not_disabled_all * c$m_endpop_all
-  sum.tot.df <- sum(tot.df)
-  avg.df <- sum.tot.df / c$m_endpop_all[1]
-  
-  tot.df.i <- i$a_not_disabled_all * i$m_endpop_all
-  sum.tot.df.i <- sum(tot.df.i)
-  avg.df.i <- sum.tot.df.i / i$m_endpop_all[1]
-  
-  print(int.name)
-  print(paste('Cohort Average Disability Free:', signif(avg.df, digits=4)))
-  print(paste('Intervention Disability Free:', signif(avg.df.i, digits=4)))
-  print(paste('Difference:', signif(x = (avg.df.i - avg.df), digits=4)))
-}
-
 c <- cohort
 # No Heart Disease
 h <- heart_c
 
-disabilityFreeComparison(c, h, 'No Heart Disease')
-
+disabilityFreeLifeYearsComp(c, h, 'No Heart Disease')
 ```
 
 ```{r}

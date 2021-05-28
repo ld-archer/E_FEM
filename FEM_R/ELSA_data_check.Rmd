@@ -73,11 +73,39 @@ drink <- H_ELSA_base %>% select(matches('r[0-9]drink$'))
 apply(drink, 2, pMiss)
 print(' ')
 
+rm(cancre, diabe, lunge, smoken, smokev, smokef, drink)
+
 ```
 
 
+```{r}
+
+# Now get the proportion of missing data in variables in raw stock file
+stock <- read_dta('ELSA_stock_preImpute.dta')
+
+```
 
 
+```{r}
+
+pMiss(stock$age)
+pMiss(stock$male)
+pMiss(stock$bmi)
+pMiss(stock$logbmi)
+pMiss(stock$smoken)
+pMiss(stock$smokev)
+pMiss(stock$educ)
+
+print('-----------')
+
+pMiss(stock$cancre)
+pMiss(stock$diabe)
+pMiss(stock$hearte)
+pMiss(stock$stroke)
+pMiss(stock$lunge)
+pMiss(stock$hibpe)
+
+```
 
 
 

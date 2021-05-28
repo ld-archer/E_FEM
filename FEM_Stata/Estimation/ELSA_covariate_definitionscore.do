@@ -5,7 +5,7 @@ global bin_hlth cancre diabe hearte stroke hibpe lunge died drink smoke_start sm
 global bin_econ
 global ols logbmi
 global order adlstat iadlstat srh exstat
-global unorder workstat
+global unorder workstat mstat
 
 * Variable names
 #d ;
@@ -39,6 +39,7 @@ global order_names
 ;
 global unorder_names
     "Work Status"
+    "Marriage Status"
 ;
 #d cr
 
@@ -74,6 +75,8 @@ local lvars_workstat l2employed l2unemployed                        /*Control: l
 local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 * National Statistics Socio-Economic Classification
 local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7 l2nssec8
+* Relationship Status vars
+local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
 
 
 
@@ -128,3 +131,7 @@ global allvars_workstat     $dvars $lvars_age `lvars_srh'
 
 *** Exercise
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit'
+
+*** Marriage Status
+global allvars_mstat        $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p l2problem_drinker l2heavy_smoker
+ 

@@ -450,6 +450,7 @@ label variable lnly3 "Loneliness level: high"
 * Drop original
 drop lnlys
 
+save $outdata/before_bmi_impute.dta, replace
 
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
@@ -490,7 +491,8 @@ gen obese = (logbmi > log(30.0)) if !missing(bmi)
 
 * Generate a categorical variable for BMI to get summary stats by group
 * cut() has to include both the lower and upper limits (which is why both 0 and 100 are included)
-*egen bmi_cat = cut(logbmi), at(0 18.5 25 30 40)
+gen bmi2 = exp(logbmi)
+egen bmi_cat = cut(bmi2), at(0 25 30 200)
 
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
 *count if smokev==0 & smoken==1
@@ -503,53 +505,11 @@ replace smkstat = 3 if smoken == 1
 label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
-* Smoking intensity variable
-*recode smokef (0=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
-*label define smkint 1 "Low" 2 "Medium" 3 "High"
-*label values smkint smkint
-*label variable smkint "Smoking intensity"
-*drop smokef
-* Now assign any missing that don't smoke to equal 0
-*replace smkint = 0 if smoken == 0
-* dummy vars for transition models
-*gen smkint1 = smkint == 1
-*gen smkint2 = smkint == 2
-*gen smkint3 = smkint == 3
-
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
 gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 drop smokef
 
-
-
-/*
-*** Drinking intensity variable
-* This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
-* Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
-* drinkstat will be defined by an intersection between the drinkd, drinkwn, and potentially drinkn vars
-* if ANY of the variables are at the extreme end (will find cut off values for weekly/daily drinking), then person.drinkstat == high
-* First find binge drinkers 
-gen binge = 1 if male & drinkn > 4 & !missing(drinkn)
-replace binge = 1 if !male & drinkn > 3 & !missing(drinkn)
-replace binge = 0 if male & drinkn <= 4 & !missing(drinkn)
-replace binge = 0 if drinkn <= 3 & !missing(drinkn)
-* Now heavy drinkers (>14 units ~=~ 7 drinks)
-gen heavy = 1 if drinkwn > 7 & !missing(drinkwn)
-replace heavy = 0 if drinkwn <= 7 & !missing(drinkwn)
-* Now generate heavy_drinker as either of binge or heavy
-gen heavy_drinker = 1 if binge == 1 | heavy == 1 & !missing(binge) | !missing(heavy)
-replace heavy_drinker = 0 if binge == 0 & missing(heavy)
-replace heavy_drinker = 0 if heavy == 0 & missing(binge)
-* Now find frequent drinkers (the decision of 6 or more days was arbitrary)
-gen freq_drinker = drinkd > 5 if !missing(drinkd)
-replace freq_drinker = 0 if drinkd <= 5 & !missing(drinkd)
-* Can't be heavy or frequent drinker in the last week if they didn't drink
-replace heavy_drinker = 0 if drink == 0
-replace freq_drinker = 0 if drink == 0
-* Now drop drink vars after generating indicators
-drop drinkn drinkwn drinkd
-*/
 
 *** Drinking Intensity (Take 2)
 *gen problem_drinker = (drinkwn > 7) if !missing(drinkwn)

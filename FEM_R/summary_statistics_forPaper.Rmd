@@ -1,0 +1,193 @@
+---
+title: "Starting Populations Summary Stats"
+output: html_notebook
+---
+
+# Setup
+
+## WorkDir & Libraries
+```{r "setup", include=FALSE}
+# Need to set up the environment
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/input_data/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(ggplot2)
+require(Hmisc)
+
+rm(workingDir)
+```
+
+## Data
+```{r}
+
+stock <- read_dta('ELSA_stock.dta')
+repl <- read_dta('ELSA_repl.dta')
+trans <- read_dta('ELSA_transition.dta')
+
+```
+
+# Summary Statistics
+## Stock
+```{r}
+# What do we need to know?
+# Population average of:
+# - Year
+# - Age
+# - Gender
+# - BMI
+#   - % Distribution in BMI categories (<25, 25-30, >30)
+# - Smoking Status
+#   - Ever Smoked
+#   - Current Smoker
+# - Education Level
+#   - Level 1
+#   - Level 2
+#   - Level 3
+# - Initial Disease Prevalence
+#   - Cancer
+#   - Diabetes
+#   - Heart Disease
+#   - MORE!
+
+# Try this:
+# https://thatdatatho.com/easily-create-descriptive-summary-statistic-tables-r-studio/
+
+stock.sum <- stock %>%
+            summarise(count = n(),
+                      year = median(entry, na.rm = TRUE),
+                      wave = median(wave, na.rm = TRUE),
+                      age.mean = mean(age, na.rm = TRUE),
+                      age.sd = sd(age, na.rm = TRUE),
+                      male = mean(male, na.rm = TRUE),
+                      bmi = mean(bmi, na.rm = TRUE))
+
+stock.sum
+
+
+
+
+#bmi.cut <- cut(stock$bmi, breaks = c(20, 25, 30))
+```
+
+# Weighted Means
+```{r}
+weighted.mean(stock$male, stock$weight)
+
+weighted.mean(stock$cancre, stock$weight)
+weighted.mean(stock$diabe, stock$weight)
+weighted.mean(stock$hearte, stock$weight)
+weighted.mean(stock$stroke, stock$weight)
+weighted.mean(stock$lunge, stock$weight)
+weighted.mean(stock$hibpe, stock$weight)
+
+```
+
+
+```{r}
+s2 <- stock
+
+s2$bmi_cat <- cut(s2$bmi, breaks = c(25, 30))
+
+#weighted.mean()
+```
+
+```{r}
+require(survey)
+
+stock.design <- svydesign(id = ~idauniq,
+                          weights = ~weight,
+                          data = stock)
+
+svymean(~male, stock.design, na.rm=TRUE)
+svymean(~cancre, stock.design, na.rm=TRUE)
+svymean(~age, stock.design, na.rm=TRUE)
+
+print('Standard deviation')
+dev <- 0.1444 * sqrt(length(stock.design$variables))
+dev
+
+
+
+
+```
+
+```{r}
+require(survey)
+weighted.survey.means <- function(init.pop, transition=FALSE) {
+  
+  if(!transition) {
+    design <- svydesign(id = ~idauniq,
+                      weights = ~weight,
+                      data = init.pop)
+  } else if(transition) {
+    # Error from missing cwtresp var - drop all that are missing to solve
+    init.pop <- init.pop[complete.cases(init.pop$cwtresp),]
+    design <- svydesign(id = ~idauniq,
+                      weights = ~cwtresp,
+                      data = init.pop)
+  }
+  print(svymean(~age, design, na.rm=TRUE))
+  print(svyvar(~age, design, na.rm=TRUE))
+  print(svymean(~male, design, na.rm=TRUE))
+  print(svymean(~bmi, design, na.rm=TRUE))
+  print(svyvar(~bmi, design, na.rm=TRUE))
+  print(svymean(~smoken, design, na.rm=TRUE))
+  print(svymean(~smokev, design, na.rm=TRUE))
+  print(svymean(~hsless, design, na.rm=TRUE))
+  print(svymean(~college, design, na.rm=TRUE))
+  print('---------------------')
+  print(svymean(~cancre, design, na.rm=TRUE))
+  print(svymean(~diabe, design, na.rm=TRUE))
+  print(svymean(~hearte, design, na.rm=TRUE))
+  print(svymean(~stroke, design, na.rm=TRUE))
+  print(svymean(~lunge, design, na.rm=TRUE))
+  print(svymean(~hibpe, design, na.rm=TRUE))
+}
+
+weighted.survey.means(stock)
+```
+
+```{r}
+# Replenishing
+weighted.survey.means(repl)
+```
+
+```{r}
+# Transition
+weighted.survey.means(trans, transition=TRUE)
+```
+
+```{r}
+# Now calculate incidence rates of chronic diseases (& some other stuff)
+# incidence = total no. new cases / number of people at risk
+
+# I think we'll need to group by year (or wave), and get counts of chronic disease ==1
+
+getIncidenceRate <- function(t, var) {
+  
+  l2var <- paste0('l2', var)
+  
+  select.vars <- c(var, l2var)
+  
+  t <- select(t, year, all_of(select.vars))
+  t$incidence.counts <- (t[,var] == 1) & (t[,l2var] == 0)
+  
+  t <- t %>%
+          summarise(n = n(), newIn = sum(incidence.counts, na.rm=TRUE)) %>%
+          mutate(incidence.rate = (newIn / n) * 100)
+  
+  return(t)
+}
+
+
+
+getIncidenceRate(trans, 'cancre')
+getIncidenceRate(trans, 'diabe')
+getIncidenceRate(trans, 'hearte')
+getIncidenceRate(trans, 'stroke')
+getIncidenceRate(trans, 'lunge')
+getIncidenceRate(trans, 'hibpe')
+```
+

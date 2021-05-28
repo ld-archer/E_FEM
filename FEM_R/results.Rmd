@@ -19,6 +19,7 @@ require(ggpubr)
 #require(plyr)
 #require(data.table)
 
+theme('minimal')
 ```
 
 ```{r}

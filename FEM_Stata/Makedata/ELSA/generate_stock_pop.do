@@ -28,6 +28,8 @@ drop if died == 1
 
 replace l2age = age - 2 if missing(l2age)
 
+saveold $outdata/ELSA_stock_preImpute.dta, replace v(12)
+
 *** KLUDGE ***
 do kludge.do base
 

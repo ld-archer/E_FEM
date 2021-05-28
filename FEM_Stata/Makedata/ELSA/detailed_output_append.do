@@ -12,7 +12,7 @@ if "`scen'" == "CV2" {
 	local minyr 2010
 	local maxyr 2016
 }
-else if "`scen'" == "core_cohort" | "`scen'" == "core_remove_hearte_c" {
+else if "`scen'" == "core_cohort" | "`scen'" == "core_remove_hearte_c" | "`scen'" == "core_remove_smoken" {
 	local minyr 2012
 	local maxyr 2068
 }
