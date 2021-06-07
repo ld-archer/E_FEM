@@ -83,12 +83,12 @@ local lvars_mstat l2single l2cohab l2widowed                        /*Control: l
 *** Now specify the transition models ***
 
 *** For Mortality
-*global allvars_died male $lvars_age l2logbmi_l30 l2logbmi_30p l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe l2smoken `lvars_srh'
+*global allvars_died male $lvars_age l2logbmi_l30 l2logbmi_30p l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe l2smoken
 global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke `lvars_smoke' l2demene
 
 *** Chronic Diseases
 *CANCRE
-global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_srh' `lvars_drink'
+global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_drink'
 * DIABE
 global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2problem_drinker `lvars_exercise'
 * HEARTE
@@ -123,11 +123,11 @@ global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_e
 
 
 *** Disabilities
-global allvars_adlstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2demene l2problem_drinker
-global allvars_iadlstat     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2demene l2problem_drinker
+global allvars_adlstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene
+global allvars_iadlstat     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene
 
 *** Workstat
-global allvars_workstat     $dvars $lvars_age `lvars_srh'
+global allvars_workstat     $dvars $lvars_age `lvars_funclimit'
 
 *** Exercise
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit'

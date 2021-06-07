@@ -11,7 +11,7 @@ local maxrep 500
 local minyr 2002
 local maxyr 2012
 
-local scenarios ELSA_CV1 ELSA_minimal
+local scenarios ELSA_ROC ELSA_minimal
 
 foreach scn of local scenarios {
 
@@ -135,7 +135,7 @@ foreach scn of local scenarios {
 		
 		* & if `select'
 		roctab `var' `var'_elsa if `var'_init == 0 
-		roctab `var' `var'_elsa if `var'_init == 0, graph saving(roc_plots/`scn'_`var', replace) title("`label1'") scheme(s1mono)
+		roctab `var' `var'_elsa if `var'_init == 0, graph saving(roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
 		graph export roc_img/`scn'_`var'.pdf, replace
 	}
 	

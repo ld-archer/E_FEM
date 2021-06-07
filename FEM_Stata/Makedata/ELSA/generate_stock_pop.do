@@ -43,7 +43,7 @@ restore
 preserve
 
 * Keep from wave 1?
-keep if wave == 1
+keep if wave == 2
 gen entry = 2002
 
 * Drop deceased
@@ -123,9 +123,10 @@ saveold $outdata/ELSA_stock_base_CV2.dta, replace v(12)
 
 *** Now AgeUK Validation sim
 restore
+preserve
 
-keep if wave == 3
-gen entry = 2006
+keep if wave == 2
+gen entry = 2004
 
 drop if died == 1
 
@@ -137,3 +138,18 @@ do kludge.do valid
 saveold $outdata/ELSA_stock_base_valid.dta, replace v(12)
 
 capture log close
+
+
+*** Now ROC analysis population
+restore
+
+keep if wave == 2
+gen entry = 2002
+
+drop if died == 1
+replace l2age = age - 2 if missing(age)
+
+*** KLUDGE ***
+do kludge.do CV1
+
+saveold $outdata/ELSA_stock_base_ROC.dta, replace v(12)

@@ -23,9 +23,10 @@ require(ggpubr)
 #require(data.table)
 
 theme('minimal')
+rm(workingDir)
 ```
 
-Setup is complete (including the working directory), so let's read in some of the data files.
+Setup is complete, so let's read in some of the data files.
 
 We are using detailed output, so need the appended data files that should be in the output folders. 
 
@@ -43,12 +44,27 @@ Generate stats for lung disease and heart disease.
 
 # generate flag for initial wave with disease and year died (if known)
 new <- cohort %>%
-          group_by(hhidpn, mcrep, year) %>%
-          
+          group_by(hhidpn, mcrep) %>%
+          arrange(year, .by_group = TRUE) %>%
+          mutate(hearte_init = min(year[hearte == 1]), hearte_died = max(year[hearte == 1])) %>%
+          mutate(lunge_init = min(year[lunge == 1]), lunge_died = max(year[lunge == 1]))
+
+
+
+
+new$hearte_init[is.infinite(new$hearte_init)] <- 0
+new$hearte_died[is.infinite(new$hearte_died)] <- 0
+new$lunge_init[is.infinite(new$lunge_init)] <- 0
+new$lunge_died[is.infinite(new$lunge_died)] <- 0
 
 ```
 
 
+
+
+
+
+# Using output from stata script treatment_on_treated.do or some version of it
 
 ```{r}
 
