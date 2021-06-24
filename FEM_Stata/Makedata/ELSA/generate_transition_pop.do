@@ -86,6 +86,16 @@ label variable l2iadl1 "Lag: 1 IADL"
 label variable l2iadl2p "Lag: 2 or more IADLs"
 label variable l2logbmi_l30 "Lag: BMI less than 30"
 label variable l2logbmi_30p "Lag: BMI over 30"
+label variable l2heavy_smoker "Lag: Heavy smoker (20+ cigs/day)"
+label variable l2hchole "Lag: High Cholesterol"
+label variable l2problem_drinker "Problem Drinker (12+ drinks in a week OR 7+ drinks in a day)"
+label variable l2exstat1 "Lag: Activity level - Low"
+label variable l2exstat2 "Lag: Activity level - Moderate"
+label variable l2exstat3 "Lag: Activity level - High"
+label variable l2drink "Lag: Drank alcohol in last 12 months"
+label variable l2demene "Lag: Dementia"
+label variable l2employed "Lag: Employed"
+label variable l2unemployed "Lag: Unemployed"
 
 
 * Save the file

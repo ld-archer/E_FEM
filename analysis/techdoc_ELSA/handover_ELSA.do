@@ -23,7 +23,7 @@ quietly include ../../FEM_CPP_settings/measures_subpop_ELSA.do
 
 * Load reshaped data
 *use ../../input_data/H_ELSA_f_2002-2016.dta, clear
-use ../../input_data/ELSA_long.dta, clear
+use $outdata/ELSA_long.dta, clear
 
 * Keep people ages 55+
 keep if age >= 55
@@ -40,12 +40,12 @@ keep if age >= 55
 
 
 * Outcomes, most of whats in measures_subpop_ELSA.do
-local outcome cancre diabe hearte hibpe lunge stroke
+local outcome cancre diabe hearte hibpe lunge stroke demene alzhe
 local outcome2 employed
 local outcome3 bmi
 local outcome4 anyadl adl3p anyiadl iadl2p
 
-local seoutcome secancre=cancre sediabe=diabe sehearte=hearte sehibpe=hibpe selunge=lunge sestroke=stroke
+local seoutcome secancre=cancre sediabe=diabe sehearte=hearte sehibpe=hibpe selunge=lunge sestroke=stroke sedemene=demene sealzhe=alzhe
 local seoutcome2 seemployed=employed
 local seoutcome3 sebmi=bmi
 local seoutcome4 seanyadl=anyadl seadl3p=adl3p seanyiadl=anyiadl seiadl2p=iadl2p
@@ -82,7 +82,7 @@ save `ELSA'
 local output $output_dir
 
 *merge m:1 year using `output'/ELSA_core_base/ELSA_core_base_summary.dta
-merge m:1 year using ../../output/ELSA_core_base/ELSA_core_base_summary.dta
+merge m:1 year using `output'/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta
 *merge m:1 year using ../../output/vBaseline_ELSA/vBaseline_ELSA_summary.dta
 
 * Males
@@ -115,6 +115,12 @@ forvalues sex = 0/1 {
 		else if "`var'" == "stroke" {
 			local title "Stroke Ever"
 		}
+		else if "`var'" == "demene" {
+			local title "Dementia ever"
+		}
+		else if "`var'" == "alzhe" {
+			local title "Alzheimers ever"
+		}
 		else if "`var'" == "anyadl" {
 			local title "Any ADL difficulties"
 		}
@@ -131,7 +137,7 @@ forvalues sex = 0/1 {
 		
 		twoway scatter p_`var'_all_ELSA55p year if male == `sex', mstyle(p1) msize(small) || ///
 			line p_`var'_55p_`s'_l year, lpattern(shortdash) ///
-			, title("`title'") legend(off) xtitle("") ///
+			, title("`title'") legend(off) xtitle("") ylabel(, nolabels) ///
 			scheme(s1mono) ///
 			saving(`var'_`suf', replace)
 		* Individual graphs if we want them

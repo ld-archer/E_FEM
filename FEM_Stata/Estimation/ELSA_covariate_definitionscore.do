@@ -1,7 +1,7 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte stroke hibpe lunge died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
+global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
 global bin_econ
 global ols logbmi
 global order adlstat iadlstat srh exstat
@@ -16,6 +16,7 @@ global bin_hlth_names
     "Stroke"
     "Hypertension"
     "Lung Disease"
+    "Asthma"
     "Died"
     "Drinks Alcohol"
     "Started Smoking"
@@ -84,29 +85,34 @@ local lvars_mstat l2single l2cohab l2widowed                        /*Control: l
 
 *** For Mortality
 *global allvars_died male $lvars_age l2logbmi_l30 l2logbmi_30p l2cancre l2hearte l2diabe l2stroke l2demene l2alzhe l2smoken
-global allvars_died male $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke `lvars_smoke' l2demene
+* 16/6/21 - now includes l2hibpe & `lvars_funclimit'
+global allvars_died         male $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2hibpe `lvars_smoke' l2alzhe l2demene `lvars_funclimit' `lvars_srh'
 
 *** Chronic Diseases
 *CANCRE
-global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_drink'
+global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2heavy_smoker l2asthmae
 * DIABE
 global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2problem_drinker `lvars_exercise'
 * HEARTE
-global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2drink l2problem_drinker `lvars_exercise'
-* HIBPE 
-global allvars_hibpe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole l2problem_drinker `lvars_exercise'
+global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
+
+* HIBPE (16/6/21 Now includes l2diabe)
+global allvars_hibpe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2diabe l2hchole l2problem_drinker `lvars_exercise'
 global allvars_lunge        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
 global allvars_stroke       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken l2heavy_smoker
 global allvars_hchole       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_exercise'
 global allvars_srh          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
-global allvars_alzhe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2smoken l2problem_drinker
-global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2smoken l2problem_drinker
+global allvars_asthmae      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
+
+* Alzhe & Demene (16/6/21 now includes l2stroke)
+global allvars_alzhe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2hibpe l2smoken
+global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2hibpe l2smoken
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age `lvars_workstat'
-global allvars_smoke_stop   $dvars $lvars_age `lvars_workstat'
-global allvars_heavy_smoker $dvars $lvars_age `lvars_workstat'
+global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
+global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
+global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
 *global allvars_smkint       $dvars $lvars_age `lvars_workstat'
 
 
@@ -123,14 +129,15 @@ global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_e
 
 
 *** Disabilities
-global allvars_adlstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene
-global allvars_iadlstat     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene
+* 16/6/21 - Now includes l2alzhe
+global allvars_adlstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe
+global allvars_iadlstat     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe
 
 *** Workstat
 global allvars_workstat     $dvars $lvars_age `lvars_funclimit'
 
 *** Exercise
-global allvars_exstat       $dvars $lvars_age `lvars_funclimit'
+global allvars_exstat       $dvars $lvars_age `lvars_funclimit' `lvars_exercise'
 
 *** Marriage Status
 global allvars_mstat        $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p l2problem_drinker l2heavy_smoker

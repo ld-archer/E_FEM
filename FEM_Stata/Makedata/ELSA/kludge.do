@@ -109,6 +109,11 @@ else if "`scen'" == "valid" {
                         lunge smoken logitot lnly heavy_smoker workstat alzhe arthre asthmae demene ///
                         parkine psyche hipe hchole problem_drinker
 }
+else if "`scen'" == "ROC" {
+    local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+                        psyche asthmae parkine logitot problem_drinker educl workstat alzhe demene ///
+                        hchole hipe
+}
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
 }
@@ -171,6 +176,10 @@ replace l2heavy_smoker = 0 if missing(l2heavy_smoker)
 replace problem_drinker = 0 if missing(problem_drinker)
 replace l2problem_drinker = 0 if missing(l2problem_drinker)
 
+* Handle missing values for white (only 2 missing in ageUK valid stock population)
+if "`scen'" == "valid" {
+    replace white = 1 if missing(white)
+}
 
 * Still missing logatotb, so impute with mean
 quietly summ logatotb

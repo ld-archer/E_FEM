@@ -14,7 +14,7 @@ Do all this for both minimal models and cross-validation.
 
 ```{r setup, include=FALSE}
 # Need to set up the working directory
-workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/COMPLETE/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
@@ -295,7 +295,7 @@ vis_CV2_prev <- function(long, CV2) {
 }
 
 # Load in whole stock pop, plus the CV2 summary output file
-long <- read_dta('../input_data/ELSA_long.dta')
+long <- read_dta('../../input_data/ELSA_long.dta')
 CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
 
 vis_CV2_prev(long, CV2)
@@ -358,7 +358,7 @@ vis_CV2_prev <- function(long, CV2) {
 }
 
 # Load in whole stock pop, plus the CV2 summary output file
-long <- read_dta('../input_data/ELSA_long.dta')
+long <- read_dta('../../input_data/ELSA_long.dta')
 CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
 
 vis_CV2_prev(long, CV2)
@@ -436,8 +436,8 @@ ggplot(cohort, aes(x=age, y=survival)) +
 ```{r echo = FALSE}
 
 #AgeUK
-male_au <- read.csv('../../Validation/AgeUK-chronDisease-MALE.csv')
-female_au <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
+male_au <- read.csv('../../../Validation/AgeUK-chronDisease-MALE.csv')
+female_au <- read.csv('../../../Validation/AgeUK-chronDisease-FEMALE.csv')
 
 # FEM 2014 detailed output
 #FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
@@ -573,7 +573,7 @@ combined$Age_Group <- factor(combined$Age_Group, levels = c('6064', '6569', '707
 combined <- arrange(combined, source, Condition, Gender, Age_Group)
 
 # Function to filter the combined dataset and visualise
-visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Validation/ageUK/') {
+visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/ageUK/') {
   
   if(gender == 'm') {
     full_gender <- 'Male'
@@ -646,7 +646,7 @@ smok.plot <-ggplot(data = smok.combined, aes(x = age, y = value)) +
 
 ggsave(filename = 'smoking_prev_2018.png',
        plot = smok.plot,
-       path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Validation/',
+       path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/',
        width = 7,
        height = 5)
 

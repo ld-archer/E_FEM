@@ -65,22 +65,24 @@ stock.sum <- stock %>%
 
 stock.sum
 
-
-
-
 #bmi.cut <- cut(stock$bmi, breaks = c(20, 25, 30))
+
+rm(stock.sum)
 ```
 
 # Weighted Means
 ```{r}
 weighted.mean(stock$male, stock$weight)
-
+print('-------')
 weighted.mean(stock$cancre, stock$weight)
 weighted.mean(stock$diabe, stock$weight)
 weighted.mean(stock$hearte, stock$weight)
 weighted.mean(stock$stroke, stock$weight)
 weighted.mean(stock$lunge, stock$weight)
 weighted.mean(stock$hibpe, stock$weight)
+weighted.mean(stock$alzhe, stock$weight)
+weighted.mean(stock$demene, stock$weight)
+weighted.mean(stock$hchole, stock$weight)
 
 ```
 
@@ -144,6 +146,9 @@ weighted.survey.means <- function(init.pop, transition=FALSE) {
   print(svymean(~stroke, design, na.rm=TRUE))
   print(svymean(~lunge, design, na.rm=TRUE))
   print(svymean(~hibpe, design, na.rm=TRUE))
+  print(svymean(~alzhe, design, na.rm=TRUE))
+  print(svymean(~demene, design, na.rm=TRUE))
+  print(svymean(~hchole, design, na.rm=TRUE))
 }
 
 weighted.survey.means(stock)
@@ -189,5 +194,8 @@ getIncidenceRate(trans, 'hearte')
 getIncidenceRate(trans, 'stroke')
 getIncidenceRate(trans, 'lunge')
 getIncidenceRate(trans, 'hibpe')
+getIncidenceRate(trans, 'alzhe')
+getIncidenceRate(trans, 'demene')
+getIncidenceRate(trans, 'hchole')
 ```
 

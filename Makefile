@@ -35,9 +35,9 @@ core: core_prep simulation_core
 core_complete_prep: core_prep transitions_minimal est_minimal summary_out_minimal
 core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_core_CV2 Ttests_core
 
-core_debug: clean_logs clean_output core_complete debug_doc_core
+core_debug: clean_logs core_complete debug_doc_core
 
-core_scen: clean_logs clean_output core_prep simulation_core_scen move_results
+core_scen: clean_logs core_prep simulation_core_scen detailed_appends
 
 roc: core_prep simulation_core_roc roc_validation
 
@@ -226,33 +226,39 @@ Ttests_minimal:
 	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA.do
 
 Ttests_core:
-	mkdir -p $(ROOT)/output/ELSA_CV1/T-tests
-	mkdir -p $(ROOT)/output/ELSA_minimal/T-tests
-	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=CV1 $(STATA) crossvalidation_ELSA_core.do
-	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/ scen=minimal $(STATA) crossvalidation_ELSA_core.do
+	mkdir -p $(ROOT)/output/COMPLETE/ELSA_CV1/T-tests
+	mkdir -p $(ROOT)/output/COMPLETE/ELSA_minimal/T-tests
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/COMPLETE/ scen=CV1 $(STATA) crossvalidation_ELSA_core.do
+	cd $(ANALYSIS) && datain=$(DATADIR) dataout=$(ROOT)/output/COMPLETE/ scen=minimal $(STATA) crossvalidation_ELSA_core.do
 
-roc_validation: $(MAKEDATA)/roc_validation.do
+roc_validation2: $(MAKEDATA)/roc_validation.do
 	mkdir -p $(MAKEDATA)/roc_img/old/
 	rm -f $(MAKEDATA)/roc_img/old/*.pdf
 	cp -f $(MAKEDATA)/roc_img/*.pdf $(MAKEDATA)/roc_img/old/
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) roc_validation.do
 
+roc_validation: $(MAKEDATA)/roc_validation.do
+	mkdir -p $(OUTDATA)/ROC/roc_img/old/
+	rm -f $(OUTDATA)/ROC/old/*.pdf
+	cp -f $(OUTDATA)/ROC/roc_img/*.pdf ../ROC_Analysis/old/
+	cd $(MAKEDATA) && datain=$(OUTDATA)/ROC dataout=$(OUTDATA)/ROC $(STATA) roc_validation.do
+
 
 ### Dealing with detailed output
 
-detailed_appends: detailed_append_core_cohort detailed_append_core_hearte detailed_append_core_smok
+detailed_appends: detailed_append_core_cohort detailed_append_core_smok
 
-detailed_append_core_CV2: $(OUTDATA)/ELSA_CV2/ELSA_CV2_summary.dta
-	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=CV2 $(STATA) detailed_output_append.do
+detailed_append_core_CV2: $(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA)/COMPLETE dataout=$(DATADIR)/detailed_output scen=CV2 $(STATA) detailed_output_append.do
 
-detailed_append_core_cohort: $(OUTDATA)/ELSA_core_cohort/ELSA_core_cohort_summary.dta
-	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_cohort $(STATA) detailed_output_append.do
+detailed_append_core_cohort: $(OUTDATA)/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA)/SCENARIO dataout=$(DATADIR)/detailed_output scen=core_cohort $(STATA) detailed_output_append.do
 
-detailed_append_core_hearte: $(OUTDATA)/ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta
-	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_remove_hearte_c $(STATA) detailed_output_append.do
+#detailed_append_core_hearte: $(OUTDATA)/SCENARIO/ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta
+#	cd $(MAKEDATA) && datain=$(OUTDATA)/SCENARIO dataout=$(DATADIR)/detailed_output scen=core_remove_hearte_c $(STATA) detailed_output_append.do
 
-detailed_append_core_smok: $(OUTDATA)/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta
-	cd $(MAKEDATA) && datain=$(OUTDATA) dataout=$(DATADIR)/detailed_output scen=core_remove_smoken $(STATA) detailed_output_append.do
+detailed_append_core_smok: $(OUTDATA)/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA)/SCENARIO dataout=$(DATADIR)/detailed_output scen=core_remove_smoken $(STATA) detailed_output_append.do
 
 
 ### Debugging
@@ -265,7 +271,7 @@ debug_doc: Ttests_CV Ttests_minimal $(R)/model_analysis.nb.html
 
 $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta $(R)/model_analysis.Rmd
 	# Knit the document
-	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis.Rmd')"
+	cd FEM_R/ && datain=output/COMPLETE && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis.Rmd')"
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
 	# Create dir with current time
@@ -286,7 +292,7 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 
 debug_doc_core: Ttests_core $(R)/model_analysis_core.nb.html 
 
-$(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output/ELSA_CV1/ELSA_CV1_summary.dta $(R)/model_analysis_core.Rmd
+$(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta output/COMPLETE/ELSA_CV1/ELSA_CV1_summary.dta $(R)/model_analysis_core.Rmd
 	# Knit the document
 	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis_core.Rmd')"
 	# Create debug dir if not already
@@ -295,7 +301,7 @@ $(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta o
 	mkdir -p debug/core_$(TIMESTAMP)
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
 	mv FEM_R/model_analysis_core.nb.html debug/core_$(TIMESTAMP)
-	cp -r output/ debug/core_$(TIMESTAMP)
+	cp -r output/COMPLETE/ debug/core_$(TIMESTAMP)
 	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core_$(TIMESTAMP)
 	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core_$(TIMESTAMP)
 	mkdir -p debug/core_$(TIMESTAMP)/logs/
@@ -311,18 +317,15 @@ $(R)/model_analysis_core.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta o
 
 move_results: 
 	rm -rf ../tmp_output/*
-	cp -r output/* ../tmp_output/
+	cp -r output/SCENARIO/* ../tmp_output/
 
-clean_all: clean_logs clean_output clean_models
+clean_all: clean_logs clean_models
 
 clean_logs:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
 	rm -f FEM_R/*.nb.html
-
-clean_output:
-	rm -rf output/*
 
 clean_debug:
 	rm -f debug/*

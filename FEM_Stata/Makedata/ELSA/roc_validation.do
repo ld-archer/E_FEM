@@ -18,7 +18,9 @@ foreach scn of local scenarios {
 	* append all of the simulations
 	forvalues yr = `minyr' (2) `maxyr' {
 		forvalues rep = 1/`maxrep' {
-			append using ../../../output/`scn'/detailed_output/y`yr'_rep`rep'.dta
+			*append using /home/luke/Documents/E_FEM_clean/ROC_Analysis/`scn'/detailed_output/y`yr'_rep`rep'.dta
+			*append using /home/luke/Documents/E_FEM_clean/E_FEM/output/ROC/`scn'/detailed_output/y`yr'_rep`rep'.dta
+			append using $output_dir/ROC/`scn'/detailed_output/y`yr'_rep`rep'.dta
 		}
 	}
 	
@@ -40,8 +42,9 @@ foreach scn of local scenarios {
 	save `ELSA_FEM'
 	
 	*use $outdata/psid_analytic.dta, replace
-    use ../../../input_data/ELSA_long.dta, replace
-	*keep if wave >= 3
+    *use ../../../input_data/ELSA_long.dta, replace
+	use $outdata/ELSA_long.dta, replace
+	keep if wave >= 3
 	merge m:1 hhidpn using `ELSA_FEM'
 	
 	* Should we be only keeping the people in the simulation here? If we limit to only matched records then only hhidpns from simulation will be kept, will do the job that cwtresp is doing later on
@@ -58,7 +61,7 @@ foreach scn of local scenarios {
 	bys hhidpn (year): keep if _n == _N
 	save `scn'_data.dta, replace
 	
-	if "`scn'" == "ELSA_CV1" {
+	if "`scn'" == "ELSA_ROC" {
 		local label1 "Full specification"
 	} 
 	
@@ -69,10 +72,8 @@ foreach scn of local scenarios {
     
 	
 	roctab died died_elsa
-	roctab died died_elsa, graph saving(roc_plots/`scn'_died, replace) title("`label1'") scheme(s1mono)
-	graph export roc_img/`scn'_died.pdf, replace
-	
-	* smoken heavy_smoker  drink problem_drinker Look at sample_selections.do
+	roctab died died_elsa, graph saving($output_dir/ROC/roc_plots/`scn'_died, replace) title("2002-2012 Mortality") scheme(s1mono)
+	graph export $output_dir/ROC/roc_img/`scn'_died.pdf, replace
 
 	gen wv1Check = 0
 	gen wv6Check = 0
@@ -95,7 +96,7 @@ foreach scn of local scenarios {
 	bys hhidpn (year): keep if _n == _N
 	
 
-	bys hhidpn (year): keep if wave == 6
+	*bys hhidpn (year): keep if wave == 6
 
 	save test_`scn'.dta, replace
 
@@ -135,8 +136,8 @@ foreach scn of local scenarios {
 		
 		* & if `select'
 		roctab `var' `var'_elsa if `var'_init == 0 
-		roctab `var' `var'_elsa if `var'_init == 0, graph saving(roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
-		graph export roc_img/`scn'_`var'.pdf, replace
+		roctab `var' `var'_elsa if `var'_init == 0, graph saving($output_dir/ROC/roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
+		graph export $output_dir/ROC/roc_img/`scn'_`var'.pdf, replace
 	}
 	
 	*obese_3
@@ -149,8 +150,8 @@ foreach scn of local scenarios {
 		}
 		
 		roctab `var' `var'_elsa 
-		roctab `var' `var'_elsa , graph saving(roc_plots/`scn'_`var', replace) title("`label1'") scheme(s1mono)
-		graph export roc_img/`scn'_`var'.pdf, replace
+		roctab `var' `var'_elsa , graph saving($output_dir/ROC/roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
+		graph export $output_dir/ROC/roc_img/`scn'_`var'.pdf, replace
 	}
 
 
@@ -195,8 +196,8 @@ foreach var in died cancre diabe hearte hibpe lunge stroke obese demene alzhe {
 		local label2 "`minyr'-`maxyr' incident alzheimers"
 	}
 	
-	graph combine roc_plots/ELSA_minimal_`var'.gph roc_plots/ELSA_CV1_`var'.gph, scheme(s1mono) title("`label2'")
-	graph export roc_img/combined_roc_`var'.pdf, replace
+	graph combine $output_dir/ROC/roc_plots/ELSA_minimal_`var'.gph $output_dir/ROC/roc_plots/ELSA_ROC_`var'.gph, scheme(s1mono) title("`label2'")
+	graph export $output_dir/ROC/roc_img/combined_roc_`var'.pdf, replace
 }
 
 

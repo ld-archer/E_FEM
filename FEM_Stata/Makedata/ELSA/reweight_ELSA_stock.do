@@ -26,16 +26,15 @@ merge m:1 male age year using $outdata/pop_projections.dta, keep(matched)
 if "`scen'" == "base" {
 	keep if year == 2012	
 }
-else if "`scen'" == "CV1" | "`scen'" == "min" | "`scen'" == "ROC" | "`scen'" == "valid" {
+else if "`scen'" == "CV1" | "`scen'" == "valid" {
 	keep if year == 2004
 }
 else if "`scen'" == "CV2" {
 	keep if year == 2010
 }
-
-*else if "`scen'" == "min" | "`scen'" == "ROC" {
-*	keep if year == 2002
-*}
+else if "`scen'" == "min" | "`scen'" == "ROC" {
+	keep if year == 2002
+}
 
 * Check the merge
 tab _merge

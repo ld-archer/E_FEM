@@ -14,12 +14,12 @@ log using crossvalidation_ELSA_`scen'.log, replace
 
 * Path to files
 if "`scen'" == "CV1" {
-	local output "../../output/ELSA_CV1"
-	*local output "$output_dir/ELSA_CV1"
+	*local output "../../output/ELSA_CV1"
+	local output "$output_dir/COMPLETE/ELSA_CV1"
 }
 else if "`scen'" == "minimal" {
-	local output "../../output/ELSA_minimal"
-	*local output "$output_dir/output/ELSA_minimal"
+	*local output "../../output/ELSA_minimal"
+	local output "$output_dir/COMPLETE/ELSA_minimal"
 }
 *local input "../../input_data"
 local input "$outdata"
@@ -73,6 +73,7 @@ keep
 	r*hibpe
 	r*lunge
 	r*stroke
+	r*asthmae
 	r*smoken
 	r*smokev
 	r*bmi
@@ -92,7 +93,6 @@ keep
 	r*ltactx_e
 	r*mdactx_e
 	r*vgactx_e
-	r*mstat
 	
 	r*walkra
 	r*dressa
@@ -121,6 +121,7 @@ local shapelist
 	r@hibpe
 	r@lunge
 	r@stroke
+	r@asthmae
 	r@smoken
 	r@smokev
 	r@bmi
@@ -140,7 +141,6 @@ local shapelist
 	r@ltactx_e
 	r@mdactx_e
 	r@vgactx_e
-	r@mstat
 	
 	r@walkra
 	r@dressa
@@ -220,6 +220,7 @@ label var stroke "R ever had stroke"
 label var psyche "R ever had psychological problems"
 label var alzhe "R ever had Alzheimers"
 label var demene "R ever had dementia"
+label var asthmae "R ever had asthma"
 
 *** Mortality
 gen died = riwstat
@@ -239,9 +240,9 @@ label var drinkn_e "# drinks/day"
 label var drinkwn_e "# drinks/week"
 
 *** Relationship Status
-foreach var in mstat {
-	ren r`var' `var'
-}
+*foreach var in mstat {
+*	ren r`var' `var'
+*}
 
 * Generate partnership status vars, then drop mstat
 * mstat values: 1 - Married
@@ -250,20 +251,20 @@ foreach var in mstat {
 *               5 - Divorced
 *               7 - Widowed
 *               8 - Never Married
-replace mstat = 2 if inlist(mstat, 4,5,8)
-replace mstat = 4 if mstat == 7
-label variable mstat "Marriage Status"
-label define mstat 1 "Married" 2 "Single" 3 "Cohabiting" 4 "Widowed"
-label values mstat mstat
+*replace mstat = 2 if inlist(mstat, 4,5,8)
+*replace mstat = 4 if mstat == 7
+*label variable mstat "Marriage Status"
+*label define mstat 1 "Married" 2 "Single" 3 "Cohabiting" 4 "Widowed"
+*label values mstat mstat
 
-gen married = mstat == 1
-gen single = mstat == 2
-gen cohab = mstat == 3
-gen widowed = mstat == 4
-label variable married "Married"
-label variable single "Single"
-label variable cohab "Cohabiting"
-label variable widowed "Widowed"
+*gen married = mstat == 1
+*gen single = mstat == 2
+*gen cohab = mstat == 3
+*gen widowed = mstat == 4
+*label variable married "Married"
+*label variable single "Single"
+*label variable cohab "Cohabiting"
+*label variable widowed "Widowed"
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -466,6 +467,7 @@ label var stroke "Stroke ever"
 *label var psyche "Psychological problems ever"
 label var alzhe "Alzheimers ever"
 label var demene "Dementia ever"
+label var asthmae "Asthma ever"
 
 label var bmi "BMI"
 label var smokev "Smoke ever"
@@ -480,11 +482,11 @@ label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
-label var mstat "Marriage Status"
-label var married "Married"
-label var single "Single"
-label var cohab "Cohabiting"
-label var widowed "Widowed"
+*label var mstat "Marriage Status"
+*label var married "Married"
+*label var single "Single"
+*label var cohab "Cohabiting"
+*label var widowed "Widowed"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -512,9 +514,9 @@ restore
 
 * Removed in core model: psyche lnly itotx atotbx
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene asthmae
 local risk smoken smokev bmi drink heavy_smoker problem_drinker exstat1 exstat2 exstat3
-local binecon employed unemployed retired married single cohab widowed
+local binecon employed unemployed retired
 local cntecon
 local demog age_yrs male white
 local unweighted died

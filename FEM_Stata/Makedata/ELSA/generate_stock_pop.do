@@ -43,7 +43,7 @@ restore
 preserve
 
 * Keep from wave 1?
-keep if wave == 2
+keep if wave == 1
 gen entry = 2002
 
 * Drop deceased
@@ -143,13 +143,13 @@ capture log close
 *** Now ROC analysis population
 restore
 
-keep if wave == 2
+keep if wave == 1
 gen entry = 2002
 
 drop if died == 1
-replace l2age = age - 2 if missing(age)
+replace l2age = age - 2 if missing(l2age)
 
 *** KLUDGE ***
-do kludge.do CV1
+do kludge.do ROC
 
 saveold $outdata/ELSA_stock_base_ROC.dta, replace v(12)

@@ -46,7 +46,6 @@ noBadDrink <- read_dta('ELSA_core_remove_problem_drink_p/ELSA_core_remove_proble
 ```
 
 
-
 ## Functions
 
 Define some functions here to run common visualisations.

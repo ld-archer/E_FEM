@@ -22,7 +22,6 @@ require(ggpubr)
 #require(plyr)
 #require(data.table)
 
-theme('minimal')
 rm(workingDir)
 ```
 
@@ -32,7 +31,7 @@ We are using detailed output, so need the appended data files that should be in 
 
 ```{r}
 cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_append.dta')
-heart <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_append.dta')
+#heart <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_append.dta')
 smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_append.dta')
 ```
 
@@ -43,7 +42,7 @@ Generate stats for lung disease and heart disease.
 ```{r}
 
 # generate flag for initial wave with disease and year died (if known)
-new <- cohort %>%
+new.c <- cohort %>%
           group_by(hhidpn, mcrep) %>%
           arrange(year, .by_group = TRUE) %>%
           mutate(hearte_init = min(year[hearte == 1]), hearte_died = max(year[hearte == 1])) %>%
@@ -51,12 +50,16 @@ new <- cohort %>%
 
 
 
-
+# Replace all infinite values with 0 (infinites generated in mutate calls above)
 new$hearte_init[is.infinite(new$hearte_init)] <- 0
 new$hearte_died[is.infinite(new$hearte_died)] <- 0
 new$lunge_init[is.infinite(new$lunge_init)] <- 0
 new$lunge_died[is.infinite(new$lunge_died)] <- 0
 
+# now generate flag variable if 
+
+
+#rm(new)
 ```
 
 
@@ -64,14 +67,34 @@ new$lunge_died[is.infinite(new$lunge_died)] <- 0
 
 
 
-# Using output from stata script treatment_on_treated.do or some version of it
+## Using output from stata script treatment_on_treated.do or some version of it
 
 ```{r}
 
-aData <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/input_data/detailed_output/tot/base_treated_merged_smoken_tot.dta')
+aData <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/input_data/detailed_output/tot/base_treated_merged_smoken_tot_test.dta')
 
 ```
 
+### Whole Population
+```{r}
+
+all <- aData %>%
+        summarise(improv.ly = mean(improved_lifeyears), improv.dfly = mean(improved_dflys))
+
+all
+
+```
+
+```{r}
+all2 <- aData %>%
+          summarise(base.ly = mean(total_lifeyears_basecase), int.ly = mean(total_lifeyears),
+                    base.dfly = mean(total_dflys_basecase), int.dfly = mean(total_dflys))
+
+all2
+```
+
+
+### By Education
 ```{r}
 
 educ <- aData %>%

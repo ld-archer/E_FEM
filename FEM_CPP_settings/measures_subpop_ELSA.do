@@ -82,6 +82,8 @@ f - female
 */
 
 local subpop all m f educ1 educ2 educ3 exstat1 exstat2 exstat3
-* 60p 5059 6064 m_6064 f_6064 6569 m_6569 f_6569 7074 m_7074 f_7074 7579 m_7579 f_7579 8084 m_8084 f_8084 8589 m_8589 f_8589 9094 m_9094 f_9094 9599 m_9599 f_9599 100p m_100p f_100p
-* 55p_f_l 55p_m_l  
-* 
+* CORE_DEBUG: 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
+* HANDOVERS: 55p_f_l 55p_m_l
+* ANALYSIS: 
+*
+* DEFUNKT: 5059 6569 7074 7579 8084 8589 9094 9599 100p

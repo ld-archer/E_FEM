@@ -589,6 +589,10 @@ replace drink_7d = 0 if (drinkwn == 0) & (drinkn == 0) & (drinkd == 0) & !missin
 * Now drop drinking vars we don't use
 drop drinkd drinkwn drinkn
 
+*Label vars generated in this script (not read directly from ELSA)
+label variable heavy_smoker "Heavy smoker (20+ cigs/day)"
+
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
