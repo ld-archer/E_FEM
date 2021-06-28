@@ -208,7 +208,7 @@ label var iadl2p "Two or more IADL limitations"
 
 
 *** Health conditions
-foreach var in cancre diabe hearte hibpe lunge stroke psyche alzhe demene {
+foreach var in cancre diabe hearte hibpe lunge stroke psyche alzhe demene asthmae {
 	ren r`var' `var'
 }
 label var cancre "R ever had cancer"
@@ -514,7 +514,7 @@ restore
 
 * Removed in core model: psyche lnly itotx atotbx
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene asthmae
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
 local risk smoken smokev bmi drink heavy_smoker problem_drinker exstat1 exstat2 exstat3
 local binecon employed unemployed retired
 local cntecon

@@ -81,9 +81,9 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f educ1 educ2 educ3 exstat1 exstat2 exstat3
+local subpop all m f 60p 5059
 * CORE_DEBUG: 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
 * HANDOVERS: 55p_f_l 55p_m_l
-* ANALYSIS: 
+* ANALYSIS: educ1 educ2 educ3 exstat1 exstat2 exstat3
 *
-* DEFUNKT: 5059 6569 7074 7579 8084 8589 9094 9599 100p
+* DEFUNKT: 6569 7074 7579 8084 8589 9094 9599 100p
