@@ -37,7 +37,7 @@ core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_
 
 core_debug: clean_logs core_complete debug_doc_core
 
-core_scen: clean_logs core_prep simulation_core_scen detailed_appends
+core_scen: clean_logs core_prep simulation_core_scen detailed_appends scen_doc
 
 roc: core_prep simulation_core_roc roc_validation
 
@@ -311,6 +311,17 @@ $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summ
 	cp -r FEM_CPP_settings/ debug/core_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core_$(TIMESTAMP)/model_analysis_core.nb.html
+
+
+scen_doc: $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html $(DATADIR)/detailed_output/tot/tot_test_smoken_int[2].do
+
+$(R)/IJM_PAPER1_ALL_ANALYSES.nb.html: output/SCENARIO/ELSA_core_base/ELSA_core_base_summary.dta $(R)/IJM_PAPER1_ALL_ANALYSES.Rmd
+	# Run Treatment on Treated script
+	cd $(DATADIR)/detailed_output/tot/ && datain=$(DATADIR)/detailed_output/tot/ && dataout=$(DATADIR)/detailed_output/tot/ $(STATA) tot_test_smoken_int[2].do
+	# Knit
+	cd FEM_R/ && datain=output/SCENARIO/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('IJM_PAPER1_ALL_ANALYSES.Rmd')"
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/FEM_R/IJM_PAPER1_ALL_ANALYSES.nb.html
+
 
 
 ### Housekeeping and cleaning

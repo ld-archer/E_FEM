@@ -11,6 +11,7 @@ require(tidyverse)
 require(haven)
 require(ggplot2)
 require(Hmisc)
+require(reshape2)
 
 theme_set(theme_bw())
 
@@ -351,34 +352,34 @@ smok.plot
 
 ## Heart Disease Intervention
 ```{r}
-compareDeathAge <- function(base, int, int_name, save=FALSE, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
-  
-  aDeath <- data.frame(base$year, base$d_age_all, int$d_age_all)
-  
-  aDeath <- aDeath %>%
-                dplyr::rename('Year' = base.year, 'Baseline' = base.d_age_all, !!quo_name(int_name) := int.d_age_all) %>%
-                reshape2::melt(id.var = 'Year', value.name = 'Age')
-  
-  p1 <- ggplot(data = aDeath, aes(x = Year, y = Age, color = variable)) +
-        geom_smooth(lwd = 0.5, se=FALSE) +
-        labs(x = 'Year', y = 'Age at Death') +
-  
-  if(save) {
-    ggsave(filename = 'hearte_dAge_all.png',
-         plot = p1,
-         path = path)
-  }
-  
-  return(p1)
-}
+# compareDeathAge <- function(base, int, int_name, save=FALSE, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+#   
+#   aDeath <- data.frame(base$year, base$d_age_all, int$d_age_all)
+#   
+#   aDeath <- aDeath %>%
+#                 dplyr::rename('Year' = base.year, 'Baseline' = base.d_age_all, !!quo_name(int_name) := int.d_age_all) %>%
+#                 reshape2::melt(id.var = 'Year', value.name = 'Age')
+#   
+#   p1 <- ggplot(data = aDeath, aes(x = Year, y = Age, color = variable)) +
+#         geom_smooth(lwd = 0.5, se=FALSE) +
+#         labs(x = 'Year', y = 'Age at Death') +
+#   
+#   if(save) {
+#     ggsave(filename = 'hearte_dAge_all.png',
+#          plot = p1,
+#          path = path)
+#   }
+#   
+#   return(p1)
+# }
 ```
 
 ### Life-Expectancy
 ```{r}
-b <- read_dta('output/SCENARIO/ELSA_core_base/ELSA_core_base_summary.dta')
-h_p <- read_dta('output/SCENARIO/ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
-
-compareDeathAge(b, h_p, 'No Heart Disease', save=FALSE)
+# b <- read_dta('output/SCENARIO/ELSA_core_base/ELSA_core_base_summary.dta')
+# h_p <- read_dta('output/SCENARIO/ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
+# 
+# compareDeathAge(b, h_p, 'No Heart Disease', save=FALSE)
 ```
 
 #### With Confidence Intervals
@@ -475,54 +476,105 @@ ggsave(filename = 'hearte_dAge_exstat3.png',
 
 ```
 
-## Smoking Intervention
+### SplitbyEduc
 ```{r}
-compareSurvivalCurve <- function(cohort, intervention, int_name, save=FALSE,
-                                 path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
-  
-  # Calculate age and survival curves
-  cohort$Age <- (cohort$year - 2012) + 50
-  intervention$Age <- (intervention$year - 2012) + 50
-  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
-  intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
-  
-  survivals <- data.frame(cohort$Age, cohort$rep, cohort$Survival, intervention$Survival)
-  
-  # Had a small problem when trying to rename using the variable name given as function argument
-  # Found solution here: https://stackoverflow.com/questions/49650394/how-to-rename-a-variable-using-a-dynamic-name-and-dplyr
-  #survivals <- survivals %>%
-  #               dplyr::rename('Age' = cohort.Age, 'Baseline' = cohort.Survival, !!quo_name(int_name) := intervention.Survival) %>%
-  #               melt(id.var = 'Age', value.name = 'Survival')
-  
-  survivals <- survivals %>%
-                 dplyr::rename('Age' = cohort.Age, 'Rep' = cohort.rep, 'Baseline' = cohort.Survival, !!quo_name(int_name) := intervention.Survival) %>%
-                 pivot_longer(
-                   cols = Baseline:'No Smoking',
-                   names_to = 'Source',
-                   values_to = 'Life_Exp'
-                 )
-  
-  p1 <-ggplot(data = survivals, aes(x=Age, y=Life_Exp, color = Source)) +
-        geom_smooth(lwd = 0.5) +
-        labs(x = 'Age', y = 'Survival')
-  
-  if(save) {
-    ggsave(filename = paste0(int_name, '_survival_curve.png'),
+b <- b_rep
+h <- h_rep
+
+d.educ1 <- data.frame(b$year, b$rep, b$d_age_educ1, h$d_age_educ1)
+d.educ1 <- d.educ1 %>%
+                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ1, 'Intervention' = h.d_age_educ1)
+d.educ1.pivot <- pivot_longer(d.educ1,
+                              cols = Baseline:Intervention,
+                              names_to = 'Source',
+                              values_to = 'Life_Expectancy')
+p1 <- ggplot(data = d.educ1.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+      geom_smooth(lwd = 0.5) +
+      labs(title = 'Low', x = 'Year', y = 'Life Expectancy')
+p1
+
+d.educ2 <- data.frame(b$year, b$rep, b$d_age_educ2, h$d_age_educ2)
+d.educ2 <- d.educ2 %>%
+                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ2, 'Intervention' = h.d_age_educ2)
+d.educ2.pivot <- pivot_longer(d.educ2,
+                              cols = Baseline:Intervention,
+                              names_to = 'Source',
+                              values_to = 'Life_Expectancy')
+p2 <- ggplot(data = d.educ2.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+      geom_smooth(lwd = 0.5) +
+      labs(title = 'Moderate', x = 'Year', y = 'Life Expectancy') +
+      scale_fill_grey()
+p2
+
+d.educ3 <- data.frame(b$year, b$rep, b$d_age_educ3, h$d_age_educ3)
+d.educ3 <- d.educ3 %>%
+                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ3, 'Intervention' = h.d_age_educ3)
+d.educ3.pivot <- pivot_longer(d.educ3,
+                              cols = Baseline:Intervention,
+                              names_to = 'Source',
+                              values_to = 'Life_Expectancy')
+p3 <- ggplot(data = d.educ3.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+      geom_smooth(lwd = 0.5) +
+      labs(title = 'High', x = 'Year', y = 'Life Expectancy')
+p3
+
+path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/test/'
+
+ggsave(filename = 'hearte_dAge_educ1.png',
          plot = p1,
          path = path)
-  }
-  
-  return(p1)
-}
+
+ggsave(filename = 'hearte_dAge_educ2.png',
+         plot = p2,
+         path = path)
+
+ggsave(filename = 'hearte_dAge_educ3.png',
+         plot = p3,
+         path = path)
+
+```
+
+
+## Smoking Intervention
+```{r}
+# compareSurvivalCurve <- function(cohort, intervention, int_name, save=FALSE,
+#                                  path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+#   
+#   # Calculate age and survival curves
+#   cohort$Age <- (cohort$year - 2012) + 50
+#   intervention$Age <- (intervention$year - 2012) + 50
+#   cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+#   intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
+#   
+#   survivals <- data.frame(cohort$Age, cohort$Survival, intervention$Survival)
+#   
+#   # Had a small problem when trying to rename using the variable name given as function argument
+#   # Found solution here: https://stackoverflow.com/questions/49650394/how-to-rename-a-variable-using-a-dynamic-name-and-dplyr
+#   survivals <- survivals %>%
+#                  dplyr::rename('Age' = cohort.Age, 'Baseline' = cohort.Survival, !!quo_name(int_name) := intervention.Survival) %>%
+#                  melt(id.var = 'Age', value.name = 'Survival')
+#   
+#   p1 <-ggplot(data = survivals, aes(x=Age, y=Survival, color = variable)) +
+#         geom_line() +
+#         labs(x = 'Age', y = 'Survival')
+#   
+#   if(save) {
+#     ggsave(filename = paste0(int_name, '_survival_curve.png'),
+#          plot = p1,
+#          path = path)
+#   }
+#   
+#   return(p1)
+# }
 ```
 
 
 ### Survival Curve
 ```{r}
-c <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_by_rep.dta')
-s <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_by_rep.dta')
-
-compareSurvivalCurve(c, s, 'No Smoking', save=FALSE)
+# c <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+# s <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
+# 
+# compareSurvivalCurve(c, s, 'No Smoking', save=FALSE)
 ```
 
 #### Confidence Intervals
@@ -542,10 +594,14 @@ compareSurvivalCurveConfints <- function(cohort, intervention, int_name, save=FA
   # Found solution here: https://stackoverflow.com/questions/49650394/how-to-rename-a-variable-using-a-dynamic-name-and-dplyr
   survivals <- survivals %>%
                  dplyr::rename('Age' = cohort.Age, 'Rep' = cohort.rep, 'Baseline' = cohort.Survival, !!quo_name(int_name) := intervention.Survival) %>%
-                 melt(id.var = 'Age', value.name = 'Survival')
+                 pivot_longer(
+                   cols = Baseline:'No Smoking',
+                   names_to = 'Source',
+                   values_to = 'Life_Exp'
+                 )
   
-  p <-ggplot(data = survivals, aes(x=Age, y=Survival, color = variable)) +
-        geom_line() +
+  p <-ggplot(data = survivals, aes(x=Age, y=Life_Exp, color = Source)) +
+        geom_smooth(lwd = 0.5) +
         labs(x = 'Age', y = 'Survival')
   
   if(save) {
@@ -560,14 +616,14 @@ compareSurvivalCurveConfints <- function(cohort, intervention, int_name, save=FA
 c_rep <- read_dta('output/COMPLETE/ELSA_core_cohort/ELSA_core_cohort_by_rep.dta')
 s_rep <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_by_rep.dta')
 
-compareSurvivalCurveConfints(c_rep, s_rep)
+compareSurvivalCurveConfints(c_rep, s_rep, 'No Smoking', save=TRUE)
 ```
 
 
 ### Lung Disease Prevalence All
 ```{r}
-c <- c
-s <- s
+c <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+s <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
 
 # Calculate age and survival curves
 c$Age <- (c$year - 2012) + 50
@@ -584,6 +640,35 @@ d.all.pivot <- pivot_longer(d.all,
                               values_to = 'Prevalence')
 p1 <- ggplot(data = d.all.pivot, aes(x = Age, y = Prevalence, color = Source)) +
       geom_smooth(lwd = 0.5, se=FALSE) +
+      labs(x = 'Age', y = 'Prevalence')
+p1
+
+path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results'
+
+#ggsave(filename = 'smok_lunge_all.png',
+#         plot = p1,
+#         path = path)
+```
+
+```{r}
+c <- c_rep
+s <- s_rep
+
+# Calculate age and survival curves
+c$Age <- (c$year - 2012) + 50
+s$Age <- (s$year - 2012) + 50
+c$Survival <- c$m_endpop_all / c$m_endpop_all[1]
+s$Survival <- s$m_endpop_all / s$m_endpop_all[1]
+
+d.all <- data.frame(c$Age, c$rep, c$p_lunge_all, s$p_lunge_all)
+d.all <- d.all %>%
+                dplyr::rename('Age' = c.Age, 'Rep' = c.rep, 'Baseline' = c.p_lunge_all, 'Intervention' = s.p_lunge_all)
+d.all.pivot <- pivot_longer(d.all,
+                              cols = Baseline:Intervention,
+                              names_to = 'Source',
+                              values_to = 'Prevalence')
+p1 <- ggplot(data = d.all.pivot, aes(x = Age, y = Prevalence, color = Source)) +
+      geom_smooth(lwd = 0.5) +
       labs(x = 'Age', y = 'Prevalence')
 p1
 
