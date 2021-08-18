@@ -600,7 +600,7 @@ local varlist "fem_mean fem_n fem_sd elsa_mean elsa_n elsa_sd p_value"
 * cntecon
 foreach tabl in binhlth risk binecon demog unweighted {
 	
-	foreach wave in 3 5 8 {
+	foreach wave in 3 4 5 6 8 {
 		tempfile wave`wave'
 		insheet using "`output'/fem_elsa_ttest_`tabl'_`wave'.txt",clear
 	
@@ -613,7 +613,9 @@ foreach tabl in binhlth risk binecon demog unweighted {
 	di "Table is `tabl'"
 
 	use "`wave3'", replace
+	merge 1:1 variable using "`wave4'", nogen
 	merge 1:1 variable using "`wave5'", nogen
+	merge 1:1 variable using "`wave6'", nogen
 	merge 1:1 variable using "`wave8'", nogen
 	
 	recast str10 variable

@@ -121,6 +121,9 @@ forvalues sex = 0/1 {
 		else if "`var'" == "alzhe" {
 			local title "Alzheimers ever"
 		}
+		else if "`var'" == "employed" {
+			local title "Employed"
+		}
 		else if "`var'" == "anyadl" {
 			local title "Any ADL difficulties"
 		}
@@ -137,7 +140,7 @@ forvalues sex = 0/1 {
 		
 		twoway scatter p_`var'_all_ELSA55p year if male == `sex', mstyle(p1) msize(small) || ///
 			line p_`var'_55p_`s'_l year, lpattern(shortdash) ///
-			, title("`title'") legend(off) xtitle("") ylabel(, nolabels) ///
+			, title("`title'") legend(off) xtitle("") ylabel(,format(%9.2f) angle(horizontal)) ///
 			scheme(s1mono) ///
 			saving(`var'_`suf', replace)
 		* Individual graphs if we want them

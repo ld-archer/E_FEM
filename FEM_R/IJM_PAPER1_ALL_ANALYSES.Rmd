@@ -179,8 +179,8 @@ ROC plots are also generated via a Stata script. The entire workflow for generat
 #           select(!year)
 # 
 # pivoted.FEM <- pivot_longer(data = FEM,
-#                             cols = hibpe_m_6064:asthmae_f_100p, 
-#                             names_to = c('Condition', 'Gender', 'Age_Group'), 
+#                             cols = hibpe_m_6064:asthmae_f_100p,
+#                             names_to = c('Condition', 'Gender', 'Age_Group'),
 #                             names_sep = '_')
 # 
 # # Convert value from fraction to percentage
@@ -188,14 +188,14 @@ ROC plots are also generated via a Stata script. The entire workflow for generat
 # 
 # # Rename cols to enable reshaping
 # male_au <- male_au %>%
-#                 dplyr::rename(m_6064 = X60.64, m_6569 = X65.69, m_7074 = X70.74, 
-#                        m_7579 = X75.79, m_8084 = X80.84, m_8589 = X85.89, 
+#                 dplyr::rename(m_6064 = X60.64, m_6569 = X65.69, m_7074 = X70.74,
+#                        m_7579 = X75.79, m_8084 = X80.84, m_8589 = X85.89,
 #                        m_9094 = X90.94, m_9599 = X95.99, m_100p = Over.100) %>%
 #                 select(!Total)
 # 
 # female_au <- female_au %>%
-#                 dplyr::rename(f_6064 = X60.64, f_6569 = X65.69, f_7074 = X70.74, 
-#                        f_7579 = X75.79, f_8084 = X80.84, f_8589 = X85.89, 
+#                 dplyr::rename(f_6064 = X60.64, f_6569 = X65.69, f_7074 = X70.74,
+#                        f_7579 = X75.79, f_8084 = X80.84, f_8589 = X85.89,
 #                        f_9094 = X90.94, f_9599 = X95.99, f_100p = Over.100) %>%
 #                 select(!Total)
 # 
@@ -268,38 +268,38 @@ ROC plots are also generated via a Stata script. The entire workflow for generat
 # 
 # # Function to filter the combined dataset and visualise
 # visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/ageUK/') {
-#   
+# 
 #   if(gender == 'm') {
 #     full_gender <- 'Male'
 #   }
 #   else if(gender == 'f') {
 #     full_gender <- 'Female'
 #   }
-#   
+# 
 #   # filter by gender and condition
 #   data <- data %>%
 #             filter(Gender == gender) %>%
 #             filter(Condition == cd)
-#   
+# 
 #   # now plot!
 #   p <- ggplot(data = data, aes(x = Age_Group, y = value)) +
 #           geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
 #           labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
-#   
+# 
 #   # Save plot into in E-FEM_Paper/figures/
 #   ggsave(filename = paste0(cd, '_', gender, '.png'),
 #          plot = p,
 #          path = path,
 #          width = 6,
 #          height = 4)
-#   
+# 
 #   return(p)
 # }
 
 ```
 
 ```{r echo=FALSE}
-# Collect all conditions (and both genders) into a list, and apply the function above to that list
+# # Collect all conditions (and both genders) into a list, and apply the function above to that list
 # cd_list <- unique(combined$Condition)
 # gender_list <- unique(combined$Gender)
 # 
@@ -419,118 +419,121 @@ compareDeathAgeConfints(b_rep, h_rep, int_name = 'No Heart Disease', save=TRUE)
 
 
 ### Split by Activity Level
-```{r}
-b <- b_rep
-h <- h_rep
-
-d.exstat1 <- data.frame(b$year, b$rep, b$d_age_exstat1, h$d_age_exstat1)
-d.exstat1 <- d.exstat1 %>%
-                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_exstat1, 'Intervention' = h.d_age_exstat1)
-d.exstat1.pivot <- pivot_longer(d.exstat1,
-                              cols = Baseline:Intervention,
-                              names_to = 'Source',
-                              values_to = 'Life_Expectancy')
-p1 <- ggplot(data = d.exstat1.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
-      geom_smooth(lwd = 0.5) +
-      labs(title = 'Low', x = 'Year', y = 'Life Expectancy')
-p1
-
-d.exstat2 <- data.frame(b$year, b$rep, b$d_age_exstat2, h$d_age_exstat2)
-d.exstat2 <- d.exstat2 %>%
-                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_exstat2, 'Intervention' = h.d_age_exstat2)
-d.exstat2.pivot <- pivot_longer(d.exstat2,
-                              cols = Baseline:Intervention,
-                              names_to = 'Source',
-                              values_to = 'Life_Expectancy')
-p2 <- ggplot(data = d.exstat2.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
-      geom_smooth(lwd = 0.5) +
-      labs(title = 'Moderate', x = 'Year', y = 'Life Expectancy') +
-      scale_fill_grey()
-p2
-
-d.exstat3 <- data.frame(b$year, b$rep, b$d_age_exstat3, h$d_age_exstat3)
-d.exstat3 <- d.exstat3 %>%
-                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_exstat3, 'Intervention' = h.d_age_exstat3)
-d.exstat3.pivot <- pivot_longer(d.exstat3,
-                              cols = Baseline:Intervention,
-                              names_to = 'Source',
-                              values_to = 'Life_Expectancy')
-p3 <- ggplot(data = d.exstat3.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
-      geom_smooth(lwd = 0.5) +
-      labs(title = 'High', x = 'Year', y = 'Life Expectancy')
-p3
-
-path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/'
-
-ggsave(filename = 'hearte_dAge_exstat1.png',
-         plot = p1,
-         path = path)
-
-ggsave(filename = 'hearte_dAge_exstat2.png',
-         plot = p2,
-         path = path)
-
-ggsave(filename = 'hearte_dAge_exstat3.png',
-         plot = p3,
-         path = path)
+```{r echo=FALSE}
+# b_rep <- read_dta('output/SCENARIO/ELSA_core_base/ELSA_core_base_by_rep.dta')
+# h_rep <- read_dta('output/SCENARIO/ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_by_rep.dta')
+# 
+# b <- b_rep
+# h <- h_rep
+# 
+# d.exstat1 <- data.frame(b$year, b$rep, b$d_age_exstat1, h$d_age_exstat1)
+# d.exstat1 <- d.exstat1 %>%
+#                 dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_exstat1, 'Intervention' = h.d_age_exstat1)
+# d.exstat1.pivot <- pivot_longer(d.exstat1,
+#                               cols = Baseline:Intervention,
+#                               names_to = 'Source',
+#                               values_to = 'Life_Expectancy')
+# p1 <- ggplot(data = d.exstat1.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+#       geom_smooth(lwd = 0.5) +
+#       labs(title = 'Low', x = 'Year', y = 'Life Expectancy')
+# p1
+# 
+# d.exstat2 <- data.frame(b$year, b$rep, b$d_age_exstat2, h$d_age_exstat2)
+# d.exstat2 <- d.exstat2 %>%
+#                 dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_exstat2, 'Intervention' = h.d_age_exstat2)
+# d.exstat2.pivot <- pivot_longer(d.exstat2,
+#                               cols = Baseline:Intervention,
+#                               names_to = 'Source',
+#                               values_to = 'Life_Expectancy')
+# p2 <- ggplot(data = d.exstat2.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+#       geom_smooth(lwd = 0.5) +
+#       labs(title = 'Moderate', x = 'Year', y = 'Life Expectancy') +
+#       scale_fill_grey()
+# p2
+# 
+# d.exstat3 <- data.frame(b$year, b$rep, b$d_age_exstat3, h$d_age_exstat3)
+# d.exstat3 <- d.exstat3 %>%
+#                 dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_exstat3, 'Intervention' = h.d_age_exstat3)
+# d.exstat3.pivot <- pivot_longer(d.exstat3,
+#                               cols = Baseline:Intervention,
+#                               names_to = 'Source',
+#                               values_to = 'Life_Expectancy')
+# p3 <- ggplot(data = d.exstat3.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+#       geom_smooth(lwd = 0.5) +
+#       labs(title = 'High', x = 'Year', y = 'Life Expectancy')
+# p3
+# 
+# path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/'
+# 
+# ggsave(filename = 'hearte_dAge_exstat1.png',
+#          plot = p1,
+#          path = path)
+# 
+# ggsave(filename = 'hearte_dAge_exstat2.png',
+#          plot = p2,
+#          path = path)
+# 
+# ggsave(filename = 'hearte_dAge_exstat3.png',
+#          plot = p3,
+#          path = path)
 
 ```
 
 ### SplitbyEduc
-```{r}
-b <- b_rep
-h <- h_rep
-
-d.educ1 <- data.frame(b$year, b$rep, b$d_age_educ1, h$d_age_educ1)
-d.educ1 <- d.educ1 %>%
-                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ1, 'Intervention' = h.d_age_educ1)
-d.educ1.pivot <- pivot_longer(d.educ1,
-                              cols = Baseline:Intervention,
-                              names_to = 'Source',
-                              values_to = 'Life_Expectancy')
-p1 <- ggplot(data = d.educ1.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
-      geom_smooth(lwd = 0.5) +
-      labs(title = 'Low', x = 'Year', y = 'Life Expectancy')
-p1
-
-d.educ2 <- data.frame(b$year, b$rep, b$d_age_educ2, h$d_age_educ2)
-d.educ2 <- d.educ2 %>%
-                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ2, 'Intervention' = h.d_age_educ2)
-d.educ2.pivot <- pivot_longer(d.educ2,
-                              cols = Baseline:Intervention,
-                              names_to = 'Source',
-                              values_to = 'Life_Expectancy')
-p2 <- ggplot(data = d.educ2.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
-      geom_smooth(lwd = 0.5) +
-      labs(title = 'Moderate', x = 'Year', y = 'Life Expectancy') +
-      scale_fill_grey()
-p2
-
-d.educ3 <- data.frame(b$year, b$rep, b$d_age_educ3, h$d_age_educ3)
-d.educ3 <- d.educ3 %>%
-                dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ3, 'Intervention' = h.d_age_educ3)
-d.educ3.pivot <- pivot_longer(d.educ3,
-                              cols = Baseline:Intervention,
-                              names_to = 'Source',
-                              values_to = 'Life_Expectancy')
-p3 <- ggplot(data = d.educ3.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
-      geom_smooth(lwd = 0.5) +
-      labs(title = 'High', x = 'Year', y = 'Life Expectancy')
-p3
-
-path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/test/'
-
-ggsave(filename = 'hearte_dAge_educ1.png',
-         plot = p1,
-         path = path)
-
-ggsave(filename = 'hearte_dAge_educ2.png',
-         plot = p2,
-         path = path)
-
-ggsave(filename = 'hearte_dAge_educ3.png',
-         plot = p3,
-         path = path)
+```{r echo=FALSE}
+# b <- b_rep
+# h <- h_rep
+# 
+# d.educ1 <- data.frame(b$year, b$rep, b$d_age_educ1, h$d_age_educ1)
+# d.educ1 <- d.educ1 %>%
+#                 dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ1, 'Intervention' = h.d_age_educ1)
+# d.educ1.pivot <- pivot_longer(d.educ1,
+#                               cols = Baseline:Intervention,
+#                               names_to = 'Source',
+#                               values_to = 'Life_Expectancy')
+# p1 <- ggplot(data = d.educ1.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+#       geom_smooth(lwd = 0.5) +
+#       labs(title = 'Low', x = 'Year', y = 'Life Expectancy')
+# p1
+# 
+# d.educ2 <- data.frame(b$year, b$rep, b$d_age_educ2, h$d_age_educ2)
+# d.educ2 <- d.educ2 %>%
+#                 dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ2, 'Intervention' = h.d_age_educ2)
+# d.educ2.pivot <- pivot_longer(d.educ2,
+#                               cols = Baseline:Intervention,
+#                               names_to = 'Source',
+#                               values_to = 'Life_Expectancy')
+# p2 <- ggplot(data = d.educ2.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+#       geom_smooth(lwd = 0.5) +
+#       labs(title = 'Moderate', x = 'Year', y = 'Life Expectancy') +
+#       scale_fill_grey()
+# p2
+# 
+# d.educ3 <- data.frame(b$year, b$rep, b$d_age_educ3, h$d_age_educ3)
+# d.educ3 <- d.educ3 %>%
+#                 dplyr::rename('Year' = b.year, 'Rep' = b.rep, 'Baseline' = b.d_age_educ3, 'Intervention' = h.d_age_educ3)
+# d.educ3.pivot <- pivot_longer(d.educ3,
+#                               cols = Baseline:Intervention,
+#                               names_to = 'Source',
+#                               values_to = 'Life_Expectancy')
+# p3 <- ggplot(data = d.educ3.pivot, aes(x = Year, y = Life_Expectancy, color = Source)) +
+#       geom_smooth(lwd = 0.5) +
+#       labs(title = 'High', x = 'Year', y = 'Life Expectancy')
+# p3
+# 
+# path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/test/'
+# 
+# ggsave(filename = 'hearte_dAge_educ1.png',
+#          plot = p1,
+#          path = path)
+# 
+# ggsave(filename = 'hearte_dAge_educ2.png',
+#          plot = p2,
+#          path = path)
+# 
+# ggsave(filename = 'hearte_dAge_educ3.png',
+#          plot = p3,
+#          path = path)
 
 ```
 
@@ -613,7 +616,7 @@ compareSurvivalCurveConfints <- function(cohort, intervention, int_name, save=FA
   return(p)
 }
 
-c_rep <- read_dta('output/COMPLETE/ELSA_core_cohort/ELSA_core_cohort_by_rep.dta')
+c_rep <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_by_rep.dta')
 s_rep <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_by_rep.dta')
 
 compareSurvivalCurveConfints(c_rep, s_rep, 'No Smoking', save=TRUE)
@@ -698,5 +701,18 @@ educ2 <- aData %>%
                     base.dfly = mean(total_dflys_basecase), int.dfly = mean(total_dflys))
 
 educ2
+```
+
+
+# Comparing Output Values
+```{r}
+b <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/output/SCENARIO/ELSA_core_base/ELSA_core_base_summary.dta')
+h <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/output/SCENARIO/ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
+
+new.df <- data.frame(b$year, b$d_age_all, h$d_age_all)
+
+new.df$diff <- new.df$h.d_age_all - new.df$b.d_age_all
+
+new.df
 ```
 

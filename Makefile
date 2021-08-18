@@ -290,7 +290,7 @@ $(R)/model_analysis.nb.html: output/ELSA_minimal/ELSA_minimal_summary.dta output
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/base_$(TIMESTAMP)/model_analysis.nb.html
 
 
-debug_doc_core: Ttests_core $(R)/model_analysis_core.nb.html 
+debug_doc_core: $(R)/model_analysis_core.nb.html 
 
 $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta output/COMPLETE/ELSA_CV1/ELSA_CV1_summary.dta $(R)/model_analysis_core.Rmd
 	# Knit the document
@@ -305,8 +305,8 @@ $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summ
 	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core_$(TIMESTAMP)
 	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core_$(TIMESTAMP)
 	mkdir -p debug/core_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Estimation/*.log debug/core_$(TIMESTAMP)/logs/
+#	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core_$(TIMESTAMP)/logs/
+#	cp -r FEM_Stata/Estimation/*.log debug/core_$(TIMESTAMP)/logs/
 	mkdir -p debug/core_$(TIMESTAMP)/settings/
 	cp -r FEM_CPP_settings/ debug/core_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
@@ -346,5 +346,5 @@ clean_models:
 	rm -f FEM_CPP_settings/ELSA_*/models/*.est
 	rm -f FEM_Stata/Estimates/ELSA*/*.ster
 	rm -f FEM_Stata/Estimates/ELSA/*/*.ster
-	#rm -f FEM_Stata/Estimates/ELSA/CV2/*.ster
-	#rm -f FEM_Stata/Estimates/ELSA_minimal/*.ster
+#rm -f FEM_Stata/Estimates/ELSA/CV2/*.ster
+#rm -f FEM_Stata/Estimates/ELSA_minimal/*.ster
