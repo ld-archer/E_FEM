@@ -1,0 +1,2 @@
+scenario_name,output_dir,settings,simutype,base_cohort_name,new_cohort_model,startyr,stpyr,endyr,nreps,medicare_elig_age,init_interventions,interventions,condlist,bin_hzd,bin_trst,ordered,cenbin,cencont,xsectional,continuous,detailed_output,hrs_data,psid_data,elsa_data
+bootstrap,output/BOOTSTRAP,hrs ELSA_core no_immigration mortality_adj_ELSA,3,ELSA_stock,input_bstrend,2012,2068,2068,5,65,,,cancre diabe hibpe hearte lunge stroke hchole alzhe demene asthmae,,,logbmi adlstat iadlstat smoke_start smoke_stop drink problem_drinker srh heavy_smoker workstat exstat,,,,,1,0,0,1

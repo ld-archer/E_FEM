@@ -37,11 +37,12 @@ quietly include ../../fem_env.do
 * Define paths
 local defmod: env SUFFIX
 local datain: env DATAIN
-*local bsamp: env BREP
+local bsamp: env BREP
 *local extval: env EXTVAL
 
-log using "./ELSA_init_transition_`defmod'.log", replace
+* bsamp - Bootstrap sample
 
+/* log using "./ELSA_init_transition_`defmod'.log", replace
 * Use the `scen` argument from Makefile to pick the ster directory
 if !missing("`defmod'") {
 	* Either baseline or one of cross validation models
@@ -58,6 +59,39 @@ if !missing("`defmod'") {
 else {
 	di as error "The ELSA_init_transition.do script requires a suffix input"
 	exit 197
+} */
+
+if missing("`bsamp'") {
+	log using "./ELSA_init_transition_`defmod'.log", replace
+	* Use the `scen` argument from Makefile to pick the ster directory
+	if !missing("`defmod'") {
+		* Either baseline or one of cross validation models
+		if "`defmod'" == "ELSA" | "`defmod'" == "CV1" | "`defmod'" == "CV2" {
+			local ster "$local_path/Estimates/ELSA"
+		}
+		else if "`defmod'" == "minimal" {
+			local ster "$local_path/Estimates/ELSA_minimal"
+		}
+		else if "`defmod'" == "core" | "`defmod'" == "core_CV1" | "`defmod'" == "core_CV2" {
+			local ster "$local_path/Estimates/ELSA_core"
+		}
+	}
+	else {
+		di as error "The ELSA_init_transition.do script requires a suffix input"
+		exit 197
+	}
+}
+else {
+	log using "./bootstrap_logs/ELSA_init_transition_bootstrap`bsamp'_`defmod'.log", replace
+	if !missing("`defmod'"){
+		if "`defmod'" == "core" | "`defmod'" == "core_CV1" | "`defmod'" == "core_CV2" {
+			local ster "$local_path/Estimates/ELSA_core/models_rep`bsamp'"
+		}
+	}
+	else {
+          di as error "the init_transition script now requires a suffix input"
+          exit 197
+	}
 }
 
 /*********************************************************************/

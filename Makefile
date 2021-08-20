@@ -57,6 +57,15 @@ stata_extensions.txt: stata_extensions.do
 	$(STATA) stata_extensions.do
 
 
+### Bootstrapping
+
+# Set a bsamp value here
+BREP = 5
+
+bstrap_dirs: bootstrap_directories.sh
+	bash bootstrap_directories.sh $(BREP)
+
+
 ### Populations
 
 ELSA: $(DATADIR)/H_ELSA_f_2002-2016.dta
