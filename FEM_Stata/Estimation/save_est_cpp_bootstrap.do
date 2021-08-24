@@ -26,15 +26,24 @@ cap ssc install estout
 * these define important paths, specific to the user
 include "../../fem_env.do"
 
+log using "../../FEM_CPP_settings/ELSA_core_bootstrap/save_est_cpp_bootstrap.log", replace
+
 local ster : env datain
 local est_out_dir : env dataout
 local maxbsamp : env MAXBREP
 
-forval i=1/`maxbsamp' {
+*di `ster'
+di `maxbsamp'
+
+forval i = 1/`maxbsamp' {
+
+di `i'
 
 noi di "Loading estimates from [`ster']"
 	* Loads all estimates
 		local all_ests :dir "`ster'" files "*.ster"
+
+		di `all_ests'
 	
 	foreach est in `all_ests' {
 		noi di "Loading estimate: `est'"
@@ -63,6 +72,6 @@ noi di "Loading estimates from [`ster']/models_rep`i'"
 	}
 	
 	** explicitly copy admin_ssi.est and isret_wd.est to models_rep folders
-	cp `est_out_dir'/admin_ssi.est `est_out_dir'/models_rep`i'/admin_ssi.est, replace
-	cp `est_out_dir'/isret_wd.est `est_out_dir'/models_rep`i'/isret_wd.est, replace
+	*cp `est_out_dir'/admin_ssi.est `est_out_dir'/models_rep`i'/admin_ssi.est, replace
+	*cp `est_out_dir'/isret_wd.est `est_out_dir'/models_rep`i'/isret_wd.est, replace
 }

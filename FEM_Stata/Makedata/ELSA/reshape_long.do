@@ -67,7 +67,7 @@ Individual employment earnings; Public pension income;
 drop r*lwtresp
 
 * Keep these variables from the harmonized ELSA
-* REMOVED: r*strat, r*clust, raeduc_e
+* REMOVED: r*strat, raeduc_e
 #d ;
 keep idauniq
 h*coupid
@@ -75,6 +75,7 @@ r*iwstat
 r*cwtresp
 r*iwindy
 r*iwindm
+r*clust
 rabyear
 radyear
 r*agey
@@ -160,13 +161,13 @@ forvalues wv = $firstwave/$lastwave {
 
 * Rename variables to make reshape easier and have names consistent with US FEM
 * Respondent?
-* REMOVED: strat,
 #d ;
 foreach var in 
     iwstat
     cwtresp
     iwindy
     iwindm
+    clust
     agey
     walkra
     dressa
@@ -239,10 +240,19 @@ foreach var in `wav1missvars' {
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
 }
 
+* Replace cluster variable for waves 1 & 2 (numeric) with character values as in wave 3 onwards
+*egen new1flust = cut(clust1), group(9) label
+*egen new2flust = cut(clust2), group(9) label
+
+*recode new1flust (0=1 A) (1=2 B) (2=3 D) (3=4 E) (4=5 F) (5=6 G) (6=7 H) (7=8 I) (8=9 J) (9=10 K), gen(new1flust1)
+*recode new2flust (0="A") (1="B") (2="D") (3="E") (4="F") (5="G") (6="H") (7="I") (8="J") (9="K")
+
+* Drop the clustering variable for first 2 waves as it is not the same type as wave 3 onwards
+drop clust1 clust2 clust6 clust7 clust8
+
 * Reshape data from wide to long
-* REMOVED: strat
 #d ;
-reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
+reshape long iwstat cwtresp iwindy iwindm clust agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre bmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
@@ -255,6 +265,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
 
 label variable iwindy "Interview Year"
 label variable iwindm "Interview Month"
+label variable clust "HSE clustering variable"
 label variable agey "Age at Interview (yrs)"
 label variable walkra "Difficulty walking across room"
 label variable dressa "Difficulty dressing"
@@ -305,6 +316,17 @@ label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
 *label variable nssec "National Statistics Socio-Economic Classification"
 
+* Try to use the HSE clustering variable to split the population into 9 strata
+* Despite the harmonized documentation stating that the stratification variable
+* is split into 9 categories (from waves 3-5) and 11 categories (from wave 6 onwards),
+* this is actually seen in the clustering variable. Therefore, to stratify the population
+* for non-parametric bootstrapping, we will use the clustering variable.
+gen cluster = clust
+*replace cluster = clust4 if missing(cluster)
+*replace cluster = clust5 if missing(cluster)
+
+
+splitsample, generate(random_strata) nsplit(10)
 
 * Use harmonised education var
 gen educ = raeducl

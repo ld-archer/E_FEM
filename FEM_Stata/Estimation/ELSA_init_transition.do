@@ -34,13 +34,19 @@ est drop _all
 
 quietly include ../../fem_env.do
 
+local bsamp = `1'
+local defmod = "`2'"
+
 * Define paths
-local defmod: env SUFFIX
-local datain: env DATAIN
-local bsamp: env BREP
+if missing("`bsamp'") {
+	local defmod: env SUFFIX
+	local datain: env DATAIN
+}
+
+*local bsamp: env BREP
 *local extval: env EXTVAL
 
-* bsamp - Bootstrap sample
+* bsamp - Bootstrap sample number
 
 /* log using "./ELSA_init_transition_`defmod'.log", replace
 * Use the `scen` argument from Makefile to pick the ster directory
@@ -82,10 +88,10 @@ if missing("`bsamp'") {
 	}
 }
 else {
-	log using "./bootstrap_logs/ELSA_init_transition_bootstrap`bsamp'_`defmod'.log", replace
+	*log using "./bootstrap_logs/ELSA_init_transition_bootstrap`bsamp'_`defmod'.log", replace
 	if !missing("`defmod'"){
 		if "`defmod'" == "core" | "`defmod'" == "core_CV1" | "`defmod'" == "core_CV2" {
-			local ster "$local_path/Estimates/ELSA_core/models_rep`bsamp'"
+			local ster "$local_path/Estimates/ELSA_core_bootstrap/models_rep`bsamp'"
 		}
 	}
 	else {
@@ -102,8 +108,21 @@ dis "Current time is: " c(current_time) " on " c(current_date)
 
 * Load in data
 *use "`datain'"
-use $outdata/ELSA_transition.dta
+*use $outdata/ELSA_transition.dta
 *use ../../input_data/ELSA_transition.dta
+
+* Load data (and handle bootstrap stuff)
+if missing("`bsamp'") {
+	use $outdata/ELSA_transition.dta
+}
+else if !missing("`bsamp'") {
+	use $outdata/ELSA_transition.dta
+	bsample, strata(random_strata)
+}
+
+dis "`ster'"
+
+count
 
 * merge on transition ID for cross-validation
 merge m:1 idauniq using "$outdata/cross_validation/crossvalidation.dta", keepusing(transition)
@@ -146,7 +165,7 @@ foreach n of varlist $bin_hlth $bin_econ /*$bin_treatments*/ {
         probit `n' $`x' if `select_`n''
         ch_est_title "`coef_name'"
         mfx2, stub(b_`n') nose
-        est save "`ster'/`n'.ster", replace
+		est save "`ster'/`n'.ster", replace
         eststo mod_`n'
         est restore b_`n'_mfx
             ch_est_title "`mfx_name'"
@@ -336,3 +355,6 @@ else if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
 	xml_tab o_*, save("`ster'/CV2/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV2/FEM_estimates_table.xml") append sheet(ols) pvalue
 }
+
+
+capture log close

@@ -107,3 +107,6 @@ stata_extensions.txt
 # ROC
 FEM_Stata/Makedata/ELSA/roc_img/
 FEM_Stata/Makedata/ELSA/roc_plots/
+
+# bootstrap folders and models
+FEM_Stata/Estimates/ELSA_core_bootstrap/*

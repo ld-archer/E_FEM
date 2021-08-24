@@ -60,11 +60,18 @@ stata_extensions.txt: stata_extensions.do
 ### Bootstrapping
 
 # Set a bsamp value here
-BREP = 5
+MAXBREP = 5
+
+bootstrap: bstrap_dirs bstrap_transition bstrap_est
 
 bstrap_dirs: bootstrap_directories.sh
-	bash bootstrap_directories.sh $(BREP)
+	bash bootstrap_directories.sh $(MAXBREP)
 
+bstrap_transition: $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_bootstrap_transition.do
+	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) MAXBREP=$(MAXBREP) $(STATA) ELSA_bootstrap_transition.do
+
+bstrap_est:
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core_bootstrap/models_rep dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_bootstrap/models_rep MAXBREP=$(MAXBREP) $(STATA) save_est_cpp_bootstrap.do
 
 ### Populations
 
