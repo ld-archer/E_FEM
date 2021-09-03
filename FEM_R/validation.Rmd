@@ -6,7 +6,7 @@ output: html_notebook
 
 ```{r setup, include=FALSE}
 # Need to set up the working directory
-workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/"
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/COMPLETE/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
@@ -28,8 +28,8 @@ require(readODS)
 ```{r}
 # Just read in the data in this chunk, then don't have to have everything in the environment all the time
 #AgeUK
-mAGE_UK <- read.csv('../../Validation/AgeUK-chronDisease-MALE.csv')
-fAGE_UK <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
+mAGE_UK <- read.csv('../../../Validation/AgeUK-chronDisease-MALE.csv')
+fAGE_UK <- read.csv('../../../Validation/AgeUK-chronDisease-FEMALE.csv')
 
 # FEM 2014 detailed output
 #FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
@@ -38,7 +38,7 @@ fAGE_UK <- read.csv('../../Validation/AgeUK-chronDisease-FEMALE.csv')
 #fFEM_2014 <- FEM_2014 %>% filter(male == 0)
 
 # FEM 2014 summary
-FEM_sum <- read_dta('ELSA_AgeUK_valid/ELSA_AgeUK_valid_summary.dta')
+FEM_sum <- read_dta('ELSA_AgeUK_core_valid/ELSA_AgeUK_core_valid_summary.dta')
 
 ```
 
@@ -274,7 +274,7 @@ visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_c
   #       width = 7,
   #       height = 5)
   
-  p
+  return(p)
 }
 
 visAgeUKValid(combined, 'Hypertension', 'm')
@@ -289,12 +289,49 @@ gender_list <- unique(combined$Gender)
 
 for(cd in cd_list) {
   for(gen in gender_list) {
-    visAgeUKValid(combined, cd, gen)
+    plot <- visAgeUKValid(combined, cd, gen)
+    print(plot)
   }
 }
 
 
 ```
+
+## With Error Bars
+```{r}
+# Function to filter the combined dataset and visualise
+visAgeUKValidError <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/Validation/ageUK/') {
+  
+  if(gender == 'm') {
+    full_gender <- 'Male'
+  }
+  else if(gender == 'f') {
+    full_gender <- 'Female'
+  }
+  
+  # filter by gender and condition
+  data <- data %>%
+            filter(Gender == gender) %>%
+            filter(Condition == cd)
+  
+  # now plot!
+  p <- ggplot(data = data, aes(x = Age_Group, y = value)) +
+          geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+          labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
+  
+  # Save plot into in E-FEM_Paper/figures/
+  #ggsave(filename = paste0(cd, '_', gender, '.png'),
+  #       plot = p,
+  #       path = path,
+  #       width = 7,
+  #       height = 5)
+  
+  return(p)
+}
+
+visAgeUKValid(combined, 'Hypertension', 'm')
+```
+
 
 
 # Smoking
