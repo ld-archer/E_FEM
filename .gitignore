@@ -107,3 +107,7 @@ stata_extensions.txt
 # ROC
 FEM_Stata/Makedata/ELSA/roc_img/
 FEM_Stata/Makedata/ELSA/roc_plots/
+
+FEM_Stata/Estimates/ELSA_core/FEM_estimates_table.xml
+FEM_Stata/Estimates/ELSA_core/estimatescore.xls
+
