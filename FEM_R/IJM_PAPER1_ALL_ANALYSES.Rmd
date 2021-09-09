@@ -375,7 +375,7 @@ FEM.smok <- FEM.smok * 100
 smok.combined <- data.frame(FEM = FEM.smok[1,1], ASH = 10.2)
 smok.combined <- data.frame(source = c('FEM', 'FEM', 'ASH', 'ASH'), age = c('50 - 59', '60+', '50 - 59', '60+'), value = c(FEM.smok[1,2], FEM.smok[1,1], 15.2, 10.2))
 
-group.colours <- c(FEM = '#f8766d', ASH = '#00FF  00')
+group.colours <- c(FEM = '#00bfc4', ASH = '#f8766d')
 
 smok.plot <-ggplot(data = smok.combined, aes(x = age, y = value)) +
                 geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
