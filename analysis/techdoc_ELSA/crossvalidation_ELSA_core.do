@@ -29,7 +29,7 @@ local iter 10
 
 * For processing ELSA
 local minwave 1
-local maxwave 8
+local maxwave 9
 
 ********************************
 * PROCESS ELSA
@@ -600,7 +600,7 @@ local varlist "fem_mean fem_n fem_sd elsa_mean elsa_n elsa_sd p_value"
 * cntecon
 foreach tabl in binhlth risk binecon demog unweighted {
 	
-	foreach wave in 3 4 5 6 8 {
+	foreach wave in 3 4 5 6 8 9 {
 		tempfile wave`wave'
 		insheet using "`output'/fem_elsa_ttest_`tabl'_`wave'.txt",clear
 	
@@ -639,7 +639,7 @@ foreach tabl in binhlth risk binecon demog unweighted {
 * cntecon
 foreach tabl in binhlth risk binecon demog unweighted {
 	
-	foreach wave in 1 2 3 4 5 6 7 8 {
+	foreach wave in 1 2 3 4 5 6 7 8 9 {
 		tempfile wave`wave'
 		insheet using "`output'/fem_elsa_ttest_`tabl'_`wave'.txt",clear
 	

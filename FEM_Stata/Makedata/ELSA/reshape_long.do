@@ -13,7 +13,7 @@ local scr : env SCENARIO
 use $outdata/H_ELSA_g2.dta, clear
 
 global firstwave 1
-global lastwave 8
+global lastwave 9
 
 local seed 5000
 set seed `seed'
