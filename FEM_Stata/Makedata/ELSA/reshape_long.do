@@ -1,5 +1,5 @@
 clear
-set maxvar 10000
+set maxvar 15000
 log using reshape_long.log, replace
 
 quietly include ../../../fem_env.do
