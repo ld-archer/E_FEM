@@ -64,6 +64,10 @@ drop weight2
 * seen in education_data.dta
 tab rbyr educ [aw=weight] if inrange(rbyr, 1963, 1982), row
 
+
+* Set weight to 0 if missing cwtresp as in stock file
+replace weight = 0 if missing(cwtresp)
+
 * Now drop cwtresp and v as no longer needed
 drop cwtresp v
 
@@ -75,7 +79,7 @@ if "`scen'" == "base" {
 	saveold $outdata/ELSA_repl.dta, replace v(12)
 
 	* Produce altered BMI populations for interventions
-	do gen_bmi_repls.do
+	*do gen_bmi_repls.do
 }
 else if "`scen'" == "base_nosmoke" {
 	*saveold ../../../input_data/ELSA_stock_CV.dta, replace v(12)

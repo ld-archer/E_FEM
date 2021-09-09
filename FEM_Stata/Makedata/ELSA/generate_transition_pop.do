@@ -56,12 +56,6 @@ mkspline l2logbmi_l30 `log_30' l2logbmi_30p = l2logbmi
 label var l2logbmi_l30 "Splined two-year lag of BMI <= log(30)"
 label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
 
-* First attempt didn't work, try a different idea (Didn't work either)
-*gen l2logbmi_l30 = logbmi if logbmi < log(30) & !missing(logbmi)
-*replace l2logbmi_l30 = . if logbmi >= log(30) & !missing(logbmi)
-*gen l2logbmi_30p = logbmi if logbmi >= log(30) & !missing(logbmi)
-*replace l2logbmi_30p = . if logbmi < log(30) & !missing(logbmi)
-
 * Label the variables to use for technical appendix
 label variable male "Male"
 label variable hsless "Less than secondary school"

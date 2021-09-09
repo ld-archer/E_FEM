@@ -88,11 +88,13 @@ gen medicare_elig = 0
 *** ELSA Specific Imputation ***
 
 if "`scen'" == "base" {
-    local hotdeck_vars logbmi white logitot problem_drinker
+    local hotdeck_vars logbmi white logitot problem_drinker educl cancre hibpe diabe hearte stroke ///
+                        smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
+                        smoken hchole
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine logitot problem_drinker
+                        psyche asthmae parkine logitot problem_drinker educl
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///

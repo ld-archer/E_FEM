@@ -106,7 +106,7 @@ r*hearte
 r*stroke 
 r*psyche
 r*arthre
-r*bmi 
+r*mbmi 
 r*smokev
 r*smoken
 r*asthmae
@@ -190,7 +190,7 @@ foreach var in
     stroke 
     psyche
     arthre
-    bmi
+    mbmi
     smokev
     smoken
     hhid
@@ -245,13 +245,16 @@ foreach var in `wav1missvars' {
 #d ;
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre bmi smokev smoken hhid
+    hearte stroke psyche arthre mbmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf
 , i(idauniq) j(wave)
 ;
 #d cr
+
+* Changed bmi to mbmi in Harmonized ELSA G.2 release, rename back
+rename mbmi bmi
 
 
 label variable iwindy "Interview Year"
@@ -305,7 +308,6 @@ label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
 *label variable nssec "National Statistics Socio-Economic Classification"
-
 
 * Use harmonised education var
 gen educ = raeducl
@@ -451,7 +453,7 @@ label variable lnly3 "Loneliness level: high"
 * Drop original
 drop lnlys
 
-save $outdata/before_bmi_impute.dta, replace
+*save $outdata/before_bmi_impute.dta, replace
 
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate

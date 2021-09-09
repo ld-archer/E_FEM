@@ -192,7 +192,8 @@ createTTT <- function(t) {
               P_Value_5 = pValColDef2,
               P_Value_6 = pValColDef2,
               P_Value_7 = pValColDef2,
-              P_Value_8 = pValColDef2
+              P_Value_8 = pValColDef2,
+              P_Value_9 = pValColDef2
             ),
             bordered = TRUE,
             highlight = TRUE,

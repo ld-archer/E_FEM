@@ -5,7 +5,7 @@ Cross-validation results using ELSA
 *ssc install descsave
 
 clear all
-set maxvar 10000
+set maxvar 15000
 include ../../fem_env.do
 
 local scen: env scen
@@ -35,9 +35,10 @@ local maxwave 9
 * PROCESS ELSA
 ********************************
 
-use `input'/H_ELSA_f_2002-2016.dta, clear
+*use `input'/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta, clear
+use `input'/H_ELSA_g2.dta, clear
 
 gen hhidpn = idauniq
 
@@ -76,7 +77,7 @@ keep
 	r*asthmae
 	r*smoken
 	r*smokev
-	r*bmi
+	r*mbmi
 	r*cwtresp
 	r*drink
 	r*psyche
@@ -124,7 +125,7 @@ local shapelist
 	r@asthmae
 	r@smoken
 	r@smokev
-	r@bmi
+	r@mbmi
 	r@cwtresp
 	r@drink
 	r@psyche
@@ -228,9 +229,13 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in bmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e {
+foreach var in mbmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e {
 	ren r`var' `var'
 }
+
+* rename bmi after name change in ELSA release g.2
+rename mbmi bmi
+
 label var bmi "R Body mass index"
 label var smoken "R smokes now"
 label var smokev "R smoke ever"
@@ -412,7 +417,7 @@ gen year = iwyear
 
 tempfile ELSA
 save `ELSA'
-save ELSA_2002_2016.dta, replace
+save ELSA_2002_2018.dta, replace
 clear all
 
 ********************************
@@ -420,7 +425,7 @@ clear all
 * iter = numbers of reps
 ********************************
 forvalues i = 1/`iter' {
-	forvalues yr = 2002 (2) 2016 {
+	forvalues yr = 2002 (2) 2018 {
 		append using "`output'/detailed_output/y`yr'_rep`i'.dta"
 	}
 }
@@ -534,7 +539,7 @@ foreach tp in binhlth risk binecon demog {
 		foreach var in ``tp'' {
 		
 			* BMI has no data for odd waves, skip over these in the loop
-			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
+			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7 | `wave' == 9) {
 				continue
 			}
 			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
@@ -617,6 +622,7 @@ foreach tabl in binhlth risk binecon demog unweighted {
 	merge 1:1 variable using "`wave5'", nogen
 	merge 1:1 variable using "`wave6'", nogen
 	merge 1:1 variable using "`wave8'", nogen
+	merge 1:1 variable using "`wave9'", nogen
 	
 	recast str10 variable
 	
@@ -657,6 +663,7 @@ foreach tabl in binhlth risk binecon demog unweighted {
 	merge 1:1 variable using "`wave6'", nogen
 	merge 1:1 variable using "`wave7'", nogen
 	merge 1:1 variable using "`wave8'", nogen
+	merge 1:1 variable using "`wave9'", nogen
 	
 	* Add variable labels
 	merge 1:1 variable using `varlabs'
