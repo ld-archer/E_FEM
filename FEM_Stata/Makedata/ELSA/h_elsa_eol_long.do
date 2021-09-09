@@ -11,7 +11,7 @@ set maxvar 10000
 **************************************************
 
 ***define folder locations***
-local stataraw "/home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se/"
+local stataraw "/home/luke/Documents/E_FEM_clean/ELSA/UKDA_5050_stata_EOL_data"
 local output "/home/luke/Documents/E_FEM_clean/E_FEM/input_data/"
 
 ***define raw files***

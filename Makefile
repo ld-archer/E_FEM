@@ -3,7 +3,7 @@ DATADIR = $(CURDIR)/input_data
 BASEDIR = $(CURDIR)/base_data
 ESTIMATES = $(CURDIR)/FEM_Stata/Estimates
 ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
-RAW_ELSA = /home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata/stata/stata13_se/
+RAW_ELSA = /home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se/
 ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
 OUTDATA = $(CURDIR)/output
@@ -63,6 +63,8 @@ ELSA: $(DATADIR)/H_ELSA_f_2002-2016.dta
 
 ELSA_lifehistory: $(DATADIR)/H_ELSA_LH_a.dta
 
+ELSA_EOL: $(DATADIR)/H_ELSA_EOL_a2.dta
+
 populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
 $(DATADIR)/H_ELSA_f_2002-2016.dta: $(MAKEDATA)/H_ELSA_long.do
@@ -70,6 +72,9 @@ $(DATADIR)/H_ELSA_f_2002-2016.dta: $(MAKEDATA)/H_ELSA_long.do
 
 $(DATADIR)/H_ELSA_LH_a.dta: $(MAKEDATA)/H_ELSA_LH_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_LH_long.do
+
+$(DATADIR)/H_ELSA_EOL_a2.dta: $(MAKEDATA)/h_elsa_eol_long.do
+	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) h_elsa_eol_long.do
 	
 $(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
