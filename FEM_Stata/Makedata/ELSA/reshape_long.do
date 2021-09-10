@@ -130,6 +130,8 @@ r*alzhe
 r*demene
 h*itot
 r*lbrf_e
+r*mheight
+r*mweight
 ;
 #d cr
 
@@ -215,6 +217,8 @@ foreach var in
     demene
     itot
     lbrf
+    mheight
+    mweight
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -229,6 +233,10 @@ foreach var in
 forvalues wv = $firstwave/$lastwave {
     rename s`wv'educl educl`wv'
 }
+
+* Calculate an mbmi value for wave 9 using wave 8 height and wave 9 weight then drop height and weight
+generate mbmi9 = mweight9 / mheight8^2
+drop mheight* mweight*
 
 *** Impute missing wave 1 for minimal ***
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
@@ -453,36 +461,17 @@ label variable lnly3 "Loneliness level: high"
 * Drop original
 drop lnlys
 
-*save $outdata/before_bmi_impute.dta, replace
-
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
 replace bmi = bmi_ipolate if missing(bmi)
 drop bmi_ipolate
 
-*** Now add some noise to the BMI interpolation ***
-* Decision for rnormal boundaries (-2,2) was based on the RMSE of US bmi regression model
-*gen rand = rnormal(0, 1.8) if (wave==1 | wave==3 | wave==5 | wave==7)
-*replace bmi = bmi + rand if !missing(rand)
-*drop rand
-
 * The interpolation step for BMI produces a couple of completely impossible values. Removing anything under 14, as 14 is the lowest I've seen in ELSA that didn't look like a typo
 * Let kludge.do handle it with hotdeck
 replace bmi = . if bmi < 14
 
-* Introduce perturbation in logbmi, maybe not symetrical when added to bmi
-* Maybe don't perturb at all, see what happens
-
 * log(bmi)
 gen logbmi = log(bmi) if !missing(bmi)
-
-*** Now add noise
-* Take the exponential of rnormal distribution, then add this
-*gen rand = exp(rnormal(0, 0.08)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*gen rand = exp(rnormal(-2, 2)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*gen rand = exp(rnormal(0, 0.5)) if (wave==1 | wave==3 | wave==5 | wave==7)
-*replace logbmi = logbmi + rand if !missing(rand)
-*drop rand
 
 * 
 gen rand = rnormal(0, 0.05)
@@ -523,8 +512,6 @@ gen problem_drinker = 1 if (drinkwn > 12) & !missing(drinkwn)
 replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
 replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
 replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
-*replace problem_drinker = 1 if (drinkd == 7)
-*replace problem_drinker = 0 if (drinkd < 7)
 
 
 * Generate an exercise status variable to hold exercise info in single var
