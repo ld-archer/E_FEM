@@ -73,6 +73,7 @@ input_data/detailed_output/
 
 # Cross validation data
 analysis/techdoc_ELSA/ELSA_2002_2016.dta
+analysis/techdoc_ELSA/ELSA_2002_2018.dta
 analysis/techdoc_ELSA/*.dta
 analysis/techdoc_ELSA/FEM/img/*.pdf
 
