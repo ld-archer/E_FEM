@@ -130,6 +130,8 @@ r*alzhe
 r*demene
 h*itot
 r*lbrf_e
+r*mheight
+r*mweight
 ;
 #d cr
 
@@ -215,6 +217,8 @@ foreach var in
     demene
     itot
     lbrf
+    mheight
+    mweight
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -229,6 +233,12 @@ foreach var in
 forvalues wv = $firstwave/$lastwave {
     rename s`wv'educl educl`wv'
 }
+
+* Calculate an mbmi value for wave 9 using wave 8 height and wave 9 weight then drop height and weight
+generate mbmi9 = mweight9 / mheight8^2
+drop mheight* mweight*
+
+codebook mbmi9
 
 *** Impute missing wave 1 for minimal ***
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
