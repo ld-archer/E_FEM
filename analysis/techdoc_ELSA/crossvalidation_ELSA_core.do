@@ -108,8 +108,14 @@ keep
 	r*shopa
 	r*mealsa
 	r*housewka
+	r*mheight
+	r*mweight
 ;
 #d cr
+
+* Calculate an mbmi value for wave 9 using wave 8 height and wave 9 weight then drop height and weight
+generate r9mbmi = r9mweight / r8mheight^2
+drop r*mheight r*mweight
 
 * Reshape this data to long
 #d ;
@@ -539,7 +545,7 @@ foreach tp in binhlth risk binecon demog {
 		foreach var in ``tp'' {
 		
 			* BMI has no data for odd waves, skip over these in the loop
-			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7 | `wave' == 9) {
+			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
 			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
