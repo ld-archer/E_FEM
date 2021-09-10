@@ -436,18 +436,11 @@ ggplot(cohort, aes(x=age, y=survival)) +
 
 ```{r echo = FALSE}
 #AgeUK
-male_au <- read.csv('../../../Validation/AgeUK-chronDisease-MALE.csv')
-female_au <- read.csv('../../../Validation/AgeUK-chronDisease-FEMALE.csv')
-
-# FEM 2014 detailed output
-#FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
-## extract males and females
-#mFEM_2014 <- FEM_2014 %>% filter(male == 1)
-#fFEM_2014 <- FEM_2014 %>% filter(male == 0)
+male_au <- read.csv('../Validation/AgeUK-chronDisease-MALE_CI.csv')
+female_au <- read.csv('../Validation/AgeUK-chronDisease-FEMALE_CI.csv')
 
 # FEM 2014 summary
-#FEM <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
-FEM <- read_dta('ELSA_AgeUK_core_valid/ELSA_AgeUK_core_valid_summary.dta')
+FEM <- read_dta('output/COMPLETE/ELSA_AgeUK_core_valid/ELSA_AgeUK_core_valid_summary.dta')
 
 # Keep only year 2014 from FEM summary
 FEM <- filter(FEM, year == 2014)
@@ -491,50 +484,59 @@ pivoted.FEM <- pivot_longer(data = FEM,
 
 # Convert value from fraction to percentage
 pivoted.FEM$value <- pivoted.FEM$value * 100
+# Set gender codes to upper case
+pivoted.FEM$Gender <- toupper(pivoted.FEM$Gender)
 
-# Rename cols to enable reshaping
+# Rename variables for the pivot
 male_au <- male_au %>%
-                dplyr::rename(m_6064 = X60.64, m_6569 = X65.69, m_7074 = X70.74,
-                       m_7579 = X75.79, m_8084 = X80.84, m_8589 = X85.89,
-                       m_9094 = X90.94, m_9599 = X95.99, m_100p = Over.100) %>%
-                select(!Total)
+                dplyr::rename(M_6064_total = M_60.64_total, M_6064_lower = M_60.64_l, M_6064_upper = M_60.64_u, 
+                              M_6569_total = M_65.69_total, M_6569_lower = M_65.69_l, M_6569_upper = M_65.69_u,
+                              M_7074_total = M_70.74_total, M_7074_lower = M_70.74_l, M_7074_upper = M_70.74_u,
+                              M_7579_total = M_75.79_total, M_7579_lower = M_75.79_l, M_7579_upper = M_75.79_u,
+                              M_8084_total = M_80.84_total, M_8084_lower = M_80.84_l, M_8084_upper = M_80.84_u,
+                              M_8589_total = M_85.89_total, M_8589_lower = M_85.89_l, M_8589_upper = M_85.89_u,
+                              M_9094_total = M_90.94_total, M_9094_lower = M_90.94_l, M_9094_upper = M_90.94_u,
+                              M_9599_total = M_95.99_total, M_9599_lower = M_95.99_l, M_9599_upper = M_95.99_u,
+                              M_100p_total = M_Over.100_total, M_100p_lower = M_Over.100_l, M_100p_upper = M_Over.100_u) %>%
+                select(-M_Total_total, -M_Total_l, -M_Total_u)
 
 female_au <- female_au %>%
-                dplyr::rename(f_6064 = X60.64, f_6569 = X65.69, f_7074 = X70.74,
-                       f_7579 = X75.79, f_8084 = X80.84, f_8589 = X85.89,
-                       f_9094 = X90.94, f_9599 = X95.99, f_100p = Over.100) %>%
-                select(!Total)
+                dplyr::rename(F_6064_total = F_60.64_total, F_6064_lower = F_60.64_l, F_6064_upper = F_60.64_u, 
+                              F_6569_total = F_65.69_total, F_6569_lower = F_65.69_l, F_6569_upper = F_65.69_u,
+                              F_7074_total = F_70.74_total, F_7074_lower = F_70.74_l, F_7074_upper = F_70.74_u,
+                              F_7579_total = F_75.79_total, F_7579_lower = F_75.79_l, F_7579_upper = F_75.79_u,
+                              F_8084_total = F_80.84_total, F_8084_lower = F_80.84_l, F_8084_upper = F_80.84_u,
+                              F_8589_total = F_85.89_total, F_8589_lower = F_85.89_l, F_8589_upper = F_85.89_u,
+                              F_9094_total = F_90.94_total, F_9094_lower = F_90.94_l, F_9094_upper = F_90.94_u,
+                              F_9599_total = F_95.99_total, F_9599_lower = F_95.99_l, F_9599_upper = F_95.99_u,
+                              F_100p_total = F_Over.100_total, F_100p_lower = F_Over.100_l, F_100p_upper = F_Over.100_u) %>%
+                select(-F_Total_total, -F_Total_l, -F_Total_u)
 
 # Now need to reshape these datasets to long format
 pivoted.male <- pivot_longer(data = male_au,
-                             cols = m_6064:m_100p,
-                             names_to = c('Gender', 'Age_Group'),
+                             cols = M_6064_total:M_100p_upper,
+                             names_to = c('Gender', 'Age_Group', 'Type'),
                              names_sep = '_')
 
 pivoted.female <- pivot_longer(data = female_au,
-                             cols = f_6064:f_100p,
-                             names_to = c('Gender', 'Age_Group'),
+                             cols = F_6064_total:F_100p_upper,
+                             names_to = c('Gender', 'Age_Group', 'Type'),
                              names_sep = '_')
+
+# Now bring the confidence intervals back into columns because ggplot needs that format
+# to plot them. Seems pretty daft to be honest but thats what we've got
+pivoted.male <- pivot_wider(pivoted.male,
+                            names_from = Type,
+                            values_from = value)
+pivoted.female <- pivot_wider(pivoted.female,
+                            names_from = Type,
+                            values_from = value)
 
 # Now row bind these frames together, combining male and female data
 ageUK <-rbind(pivoted.male, pivoted.female)
 
-# Now need to deal with the fact that ageUK data splits heart issues into 3 different conditions
-# extract all heart related conditions for combining
-#ageUK_heart <- filter(ageUK, Condition == c('Coronary Heart Disease', 'Heart Failure', 'Atrial Fibrillation'))
-# Aggregate the values by gender and age group
-#ageUK_heart <- aggregate(ageUK_heart$value, by = list(ageUK_heart$Gender, ageUK_heart$Age_Group), FUN = sum)
-# Rename columns and add condition column back
-#colnames(ageUK_heart) <- c('Gender', 'Age_Group', 'value')
-#ageUK_heart$Condition <- 'Heart Problems'
-
 # Now drop the heart problems from original ageUK and replace with aggregate
 ageUK <- filter(ageUK, Condition != 'Coronary Heart Disease', Condition != 'Heart Failure', Condition != 'Atrial Fibrillation')
-#ageUK <- rbind(ageUK, ageUK_heart)
-
-# Rename a few just for completeness
-#ageUK$Condition <- gsub("Cancer, recent", "Cancer", ageUK$Condition)
-#ageUK$Condition <- gsub("COPD", "Lung Disease (COPD)", ageUK$Condition)
 
 # Finally, add column to specify that this is ageUK data
 ageUK$source <- "ageUK"
@@ -559,11 +561,16 @@ newFEM$Condition <- gsub("diabe", "Diabetes", newFEM$Condition)
 newFEM$Condition <- gsub("demene", "Dementia", newFEM$Condition)
 newFEM$Condition <- gsub("asthmae", "Asthma", newFEM$Condition)
 
-
-#force Make to run this again
+# Add column to specify this is FEM data
+newFEM$source <- "FEM"
+newFEM$total <- newFEM$value
+newFEM <- select(newFEM, -value)
 
 # Add column to specify this is FEM data
 newFEM$source <- "FEM"
+# Add column to specify these are all totals (no confidence intervals)
+newFEM$lower <- NA
+newFEM$upper <- NA
 
 # Now row bind the datasets
 combined <- rbind(newFEM, ageUK)
@@ -573,32 +580,33 @@ combined$Age_Group <- factor(combined$Age_Group, levels = c('6064', '6569', '707
 combined <- arrange(combined, source, Condition, Gender, Age_Group)
 
 # Function to filter the combined dataset and visualise
-visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/ageUK/') {
-
-  if(gender == 'm') {
+visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/ageUK') {
+  
+  if(gender == 'M') {
     full_gender <- 'Male'
   }
-  else if(gender == 'f') {
+  else if(gender == 'F') {
     full_gender <- 'Female'
   }
-
+  
   # filter by gender and condition
   data <- data %>%
             filter(Gender == gender) %>%
             filter(Condition == cd)
-
+  
   # now plot!
-  p <- ggplot(data = data, aes(x = Age_Group, y = value)) +
-          geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
+  p <- ggplot(data = data, aes(x = Age_Group, y = total)) +
+          geom_bar(aes(fill = source), stat = "identity", position = position_dodge2()) +
+          geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge2(width = 1, padding = 0.5)) +
           labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
-
+  
   # Save plot into in E-FEM_Paper/figures/
-  ggsave(filename = paste0(cd, '_', gender, '.png'),
-         plot = p,
-         path = path,
-         width = 6,
-         height = 4)
-
+  #ggsave(filename = paste0(cd, '_', gender, '.png'),
+  #      plot = p,
+  #      path = path,
+  #      width = 7,
+  #      height = 5)
+  
   return(p)
 }
 
@@ -613,13 +621,13 @@ for(cd in cd_list) {
   for(gen in gender_list) {
     plot <- visAgeUKValid(combined, cd, gen)
     print(plot)
-  }
+  } 
 }
 ```
 
 # Smoking
 
-```{r}
+```{r echo=False}
 FEM_base <- read_dta('ELSA_core_base/ELSA_core_base_summary.dta')
 
 # Smoking prevalence stats
