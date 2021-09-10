@@ -436,11 +436,11 @@ ggplot(cohort, aes(x=age, y=survival)) +
 
 ```{r echo = FALSE}
 #AgeUK
-male_au <- read.csv('../Validation/AgeUK-chronDisease-MALE_CI.csv')
-female_au <- read.csv('../Validation/AgeUK-chronDisease-FEMALE_CI.csv')
+male_au <- read.csv('../../FEM_R/AgeUK_Validation/AgeUK-chronDisease-MALE_CI.csv')
+female_au <- read.csv('../../FEM_R/AgeUK_Validation/AgeUK-chronDisease-FEMALE_CI.csv')
 
 # FEM 2014 summary
-FEM <- read_dta('output/COMPLETE/ELSA_AgeUK_core_valid/ELSA_AgeUK_core_valid_summary.dta')
+FEM <- read_dta('ELSA_AgeUK_core_valid/ELSA_AgeUK_core_valid_summary.dta')
 
 # Keep only year 2014 from FEM summary
 FEM <- filter(FEM, year == 2014)
@@ -627,7 +627,7 @@ for(cd in cd_list) {
 
 # Smoking
 
-```{r echo=False}
+```{r echo=FALSE}
 FEM_base <- read_dta('ELSA_core_base/ELSA_core_base_summary.dta')
 
 # Smoking prevalence stats
@@ -652,11 +652,11 @@ smok.plot <-ggplot(data = smok.combined, aes(x = age, y = value)) +
                 geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
                 labs(title = 'Prevalence of Smoking (2018)', x = ' ', y = 'Prevalence (%)')
 
-ggsave(filename = 'smoking_prev_2018.png',
-       plot = smok.plot,
-       path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/',
-       width = 7,
-       height = 5)
+#ggsave(filename = 'smoking_prev_2018.png',
+#       plot = smok.plot,
+#       path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/',
+#       width = 7,
+#       height = 5)
 
 smok.plot
 
