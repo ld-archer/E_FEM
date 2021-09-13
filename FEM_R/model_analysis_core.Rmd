@@ -66,10 +66,11 @@ min_uw <- read.csv(paste0(min, stem, "unweighted.csv"))
 min_demog <- read.csv(paste0(min, stem, "demog.csv"))
 min_binhlth <- read.csv(paste0(min, stem, "binhlth.csv"))
 min_binecon <- read.csv(paste0(min, stem, "binecon.csv"))
+min_cntecon <- read.csv(paste0(min, stem, "cntecon.csv"))
 min_risk <- read.csv(paste0(min, stem, "risk.csv"))
 
 # Collect in a list to do some formatting
-min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_risk)
+min_list <- list(min_uw, min_demog, min_binhlth, min_binecon, min_cntecon, min_risk)
 # Add prefix 'min_' onto every variable name for clarity
 min_list <- lapply(min_list, rename_first_var, prefix='min')
 # Rename columns to be more succinct
@@ -88,9 +89,10 @@ cv_uw <- read.csv(paste0(CV1, stem, "unweighted.csv"))
 cv_demog <- read.csv(paste0(CV1, stem, "demog.csv"))
 cv_binhlth <- read.csv(paste0(CV1, stem, "binhlth.csv"))
 cv_binecon <- read.csv(paste0(CV1, stem, "binecon.csv"))
+cv_cntecon <- read.csv(paste0(CV1, stem, "cntecon.csv"))
 cv_risk <- read.csv(paste0(CV1, stem, "risk.csv"))
 # Now collect into list and rename vars and cols for clarity
-cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_risk)
+cv_list <- list(cv_uw, cv_demog, cv_binhlth, cv_binecon, cv_cntecon, cv_risk)
 cv_list <- lapply(cv_list, rename_first_var, prefix='CV')
 cv_list <- lapply(cv_list, shorten_columns)
 cv_list <- lapply(cv_list, function(x) { x[is.na(x)] <- 0; x} )
@@ -100,7 +102,7 @@ cv_list <- lapply(cv_list, function(x) { x[is.na(x)] <- 0; x} )
 
 ```{r include=FALSE}
 # Set up vector with all p-value column names. Require these for table formatting
-pValNames <- c('P_Value_3', 'P_Value_4', 'P_Value_5', 'P_Value_6', 'P_Value_7', 'P_Value_8')
+pValNames <- c('P_Value_3', 'P_Value_4', 'P_Value_5', 'P_Value_6', 'P_Value_7', 'P_Value_8', 'P_Value_9')
 ```
 
 <!-- Lets build the combined tables now. -->
@@ -123,8 +125,12 @@ binhlth <- arrange(binhlth, Variable)
 binecon <- rbind(min_list[[4]], cv_list[[4]])
 binecon <- arrange(binecon, Variable)
 
+# cntecon
+cntecon <- rbind(min_list[[5]], cv_list[[5]])
+cntecon <- arrange(cntecon, Variable)
+
 # risk
-risk <- rbind(min_list[[5]], cv_list[[5]])
+risk <- rbind(min_list[[6]], cv_list[[6]])
 risk <- arrange(risk, Variable)
 ```
 
@@ -137,7 +143,7 @@ For the purpose of this document, we are going to include a sticky first column 
 
 ```{r echo = FALSE}
 ## This block will define the logic for creating the tables with Reactable
-# The tables are formatted exaclty the same for each group of vars so makes sense to define this only once
+# The tables are formatted exactly the same for each group of vars so makes sense to define this only once
 
 # createTTT - create T-Test Table
 # Have a default column definition, to handle the basic formatting, then specific formatting for the first column (Variable) and P Val cols
@@ -232,137 +238,17 @@ binhlthTab
 bineconTab <- createTTT(binecon)
 bineconTab
 ```
+### Count Economic
+```{r echo = FALSE}
+# Create the actual table!
+cnteconTab <- createTTT(cntecon)
+cnteconTab
+```
 ### Risk Behaviours
 ```{r echo = FALSE}
 # Create the actual table!
 riskTab <- createTTT(risk)
 riskTab
-```
-
-# Cross Validation 2 - 'Handover' plots (Still WIP need fixing)
-
-```{r echo = FALSE}
-vis_CV2_prev <- function(long, CV2) {
-  
-  # Keep only waves 1 - 4
-  longC <- subset(long, wave < 5)
-  longC <- as.data.table(longC)
-  
-  # Replace all NA with 0
-  longC[is.na(longC)] <- 0
-  
-  # Have to drop r*clust vars as they contain strings
-  longC <- select(longC, -contains('clust'))
-  
-  # Now get the weighted mean by wave of every column based on cwtresp
-  l2 <- longC[ , lapply(.SD,weighted.mean,w=cwtresp), by = list(wave)]
-  
-  # ELSA_long is now processed to the point where we can start extracting and combining variables
-  # Better start by adding year to l2 and reordering the columns
-  l2$year <- seq(from=2002, to = 2008, by = 2)
-  setcolorder(l2, c('year', 'wave'))
-  
-  # Now lets extract chronic disease variables from both dataframes and do a row combine
-  # Start with cancre, diabe, hearte
-  cd_l2 <- select(l2, c(year, age, cancre, diabe, hearte, lunge, smoken, bmi, employed, anyadl)) #, anyiadl, adl1, adl2, adl3p))
-  cd_CV2 <- select(CV2, c(year, a_age_all, p_cancre_all, p_diabe_all, 
-                            p_hearte_all, p_lunge_all, p_smoken_all, 
-                            a_bmi_all, p_employed_all,  p_anyadl_all))
-                            #, p_anyiadl_all p_adl1_all, p_adl2_all, p_adl3p_all))
-  
-  CV2_rename <- cd_CV2 %>% dplyr::rename('age' = a_age_all,
-                                        'cancre' = p_cancre_all, 
-                                        'diabe' = p_diabe_all, 
-                                        'hearte' = p_hearte_all,
-                                        'lunge' = p_lunge_all,
-                                        'smoken' = p_smoken_all,
-                                        'bmi' = a_bmi_all,
-                                        'employed' = p_employed_all,
-                                        'anyadl' = p_anyadl_all)
-                                        #'anyiadl' = p_anyiadl_all)
-                                        #'adl1' = p_adl1_all,
-                                        #'adl2' = p_adl2_all,
-                                        #'adl3p' = p_adl3p_all)
-  
-  combine <- rbind(cd_l2, CV2_rename)
-  
-  melted <- reshape2::melt(combine, id.var = 'year', value.name = 'Prevalence')
-  
-  ggplot(data = melted, aes(x = year, y = Prevalence, color = variable)) +
-          geom_line() +
-          facet_wrap(. ~ variable, scales = "free")
-          #theme(panel.spacing.x = unit(1.5, 'lines')) +
-          #labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
-}
-
-# Load in whole stock pop, plus the CV2 summary output file
-long <- read_dta('../../input_data/ELSA_long.dta')
-CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
-
-vis_CV2_prev(long, CV2)
-```
-
-Second go at this cross-validation, attempting to solve some issues by using the 60 plus population.
-
-```{r echo = FALSE}
-vis_CV2_prev <- function(long, CV2) {
-  
-  # Keep only waves 1 - 4
-  longC <- subset(long, wave < 5)
-  longC <- as.data.table(longC)
-  
-  # Replace all NA with 0
-  longC[is.na(longC)] <- 0
-  
-  # Have to drop r*clust vars as they contain strings
-  longC <- select(longC, -contains('clust'))
-  
-  # Now get the weighted mean by wave of every column based on cwtresp
-  l2 <- longC[ , lapply(.SD,weighted.mean,w=cwtresp), by = list(wave)]
-  
-  # ELSA_long is now processed to the point where we can start extracting and combining variables
-  # Better start by adding year to l2 and reordering the columns
-  l2$year <- seq(from=2002, to = 2008, by = 2)
-  setcolorder(l2, c('year', 'wave'))
-  
-  # Now lets extract chronic disease variables from both dataframes and do a row combine
-  # Start with cancre, diabe, hearte
-  cd_l2 <- select(l2, c(year, age, cancre, diabe, hearte, lunge, smoken, bmi, employed, anyadl)) #, anyiadl, adl1, adl2, adl3p))
-  cd_CV2 <- select(CV2, c(year, a_age_60p, p_cancre_60p, p_diabe_60p, 
-                            p_hearte_60p, p_lunge_60p, p_smoken_60p, 
-                            a_bmi_60p, p_employed_60p,  p_anyadl_60p))
-                            #, p_anyiadl_60p p_adl1_60p, p_adl2_60p, p_adl3p_60p))
-  
-  CV2_rename <- cd_CV2 %>% dplyr::rename('age' = a_age_60p,
-                                        'cancre' = p_cancre_60p, 
-                                        'diabe' = p_diabe_60p, 
-                                        'hearte' = p_hearte_60p,
-                                        'lunge' = p_lunge_60p,
-                                        'smoken' = p_smoken_60p,
-                                        'bmi' = a_bmi_60p,
-                                        'employed' = p_employed_60p,
-                                        'anyadl' = p_anyadl_60p)
-                                        #'anyiadl' = p_anyiadl_60p)
-                                        #'adl1' = p_adl1_60p,
-                                        #'adl2' = p_adl2_60p,
-                                        #'adl3p' = p_adl3p_60p)
-  
-  combine <- rbind(cd_l2, CV2_rename)
-  
-  melted <- reshape2::melt(combine, id.var = 'year', value.name = 'Prevalence')
-  
-  ggplot(data = melted, aes(x = year, y = Prevalence, color = variable)) +
-          geom_line() +
-          facet_wrap(. ~ variable, scales = "free")
-          #theme(panel.spacing.x = unit(1.5, 'lines')) +
-          #labs(title = 'Prevalence of Chronic Disease', x = 'Year', y = 'Prevalence')
-}
-
-# Load in whole stock pop, plus the CV2 summary output file
-long <- read_dta('../../input_data/ELSA_long.dta')
-CV2 <- read_dta('ELSA_CV2/ELSA_CV2_summary.dta')
-
-vis_CV2_prev(long, CV2)
 ```
 
 # Intervention Scenarios
