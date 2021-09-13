@@ -36,7 +36,7 @@ global bin_econ_names
 global ols_names
     "Log(BMI)"
     "Log(Total Family Wealth)"
-    "Log(Total Family Income)"
+    "Log(Total Couple Level Income)"
 ;
 global order_names 
     "ADL status"

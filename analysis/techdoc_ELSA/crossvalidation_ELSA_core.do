@@ -440,12 +440,12 @@ gen FEM = 1
 gen rep = mcrep + 1
 
 * Earnings
-*gen itotx = itot/1000
-*replace itotx = min(itotx, 200) if !missing(itotx)
+gen itotx = itot/1000
+replace itotx = min(itotx, 200) if !missing(itotx)
 
 * Wealth
-*gen atotbx = atotb/1000
-*replace atotbx = min(atotbx, 2000) if !missing(atotbx)
+gen atotbx = atotb/1000
+replace atotbx = min(atotbx, 2000) if !missing(atotbx)
 
 *replace hicap = hicap/1000
 
@@ -504,8 +504,8 @@ label var employed "Employed"
 label var unemployed "Unemployed"
 label var retired "Retired"
 
-*label var itotx "Total Family Income (thou.)"
-*label var atotbx "Total Family Wealth (thou.)"
+label var itotx "Total Family Income (thou.)"
+label var atotbx "Total Family Wealth (thou.)"
 
 label var age_yrs "Age at interview"
 label var male "Male"
@@ -523,19 +523,18 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-* Removed in core model: psyche lnly itotx atotbx
+* Removed in core model: psyche lnly 
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
 local risk smoken smokev bmi drink heavy_smoker problem_drinker exstat1 exstat2 exstat3
 local binecon employed unemployed retired
-local cntecon
+local cntecon itotx atotbx
 local demog age_yrs male white
 local unweighted died
 
-save testing_crossvalidation.dta, replace
+*save testing_crossvalidation.dta, replace
 
-* cntecon
-foreach tp in binhlth risk binecon demog {
+foreach tp in binhlth risk binecon cntecon demog {
 	forvalues wave = `minwave'/`maxwave' {
 		file open myfile using "`output'/fem_elsa_ttest_`tp'_`wave'.txt", write replace
 		file write myfile "variable" _tab "fem_mean" _tab "fem_n" _tab "fem_sd" _tab "elsa_mean" _tab "elsa_n" _tab "elsa_sd" _tab "p_value" _n
@@ -608,8 +607,7 @@ foreach tp in unweighted {
 local varlist "fem_mean fem_n fem_sd elsa_mean elsa_n elsa_sd p_value"
 
 * Produce tables
-* cntecon
-foreach tabl in binhlth risk binecon demog unweighted {
+foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	
 	foreach wave in 3 4 5 6 8 9 {
 		tempfile wave`wave'
@@ -648,8 +646,7 @@ foreach tabl in binhlth risk binecon demog unweighted {
 
 ///*
 * Produce tables of all years
-* cntecon
-foreach tabl in binhlth risk binecon demog unweighted {
+foreach tabl in binhlth risk binecon cntecon demog unweighted {
 	
 	foreach wave in 1 2 3 4 5 6 7 8 9 {
 		tempfile wave`wave'
