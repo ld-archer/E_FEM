@@ -84,7 +84,7 @@ foreach scn of local scenarios {
 	* Keep only if weight is present and positive
 	keep if cwtresp > 0 & cwtresp < .
 	* Generate flag for first year with var
-	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe {	
+	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe anyadl anyiadl {	
 		bys hhidpn: egen `var'_init = min(`var')
 	}
 
