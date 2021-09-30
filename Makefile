@@ -27,7 +27,7 @@ cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: clean_logs clean_output complete debug_doc 
+debug: clean_output complete debug_doc 
 
 core_prep: start_data transitions_core est_core summary_out_core
 core: core_prep simulation_core
@@ -35,9 +35,9 @@ core: core_prep simulation_core
 core_complete_prep: core_prep transitions_minimal est_minimal summary_out_minimal
 core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_core_CV2 Ttests_core
 
-core_debug: clean_logs core_complete debug_doc_core
+core_debug: core_complete debug_doc_core
 
-core_scen: clean_logs core_prep simulation_core_scen detailed_appends scen_doc
+core_scen: core_prep simulation_core_scen detailed_appends scen_doc
 
 roc: core_prep simulation_core_roc roc_validation
 
@@ -49,6 +49,8 @@ model_prep: ELSA stata_extensions.txt
 start_data: populations imputation projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
+
+retest_CV: Ttests_core debug_doc_core
 
 
 ### Install required Stata extensions

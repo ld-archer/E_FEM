@@ -4,14 +4,14 @@
 * Luke Archer
 * 27/07/2019
 clear
-set maxvar 10000
+set maxvar 15000
 set seed 5000
 
 quietly include ../../../fem_env.do
 
 log using ID_selection_CV.log, replace
 
-use $outdata/H_ELSA_f_2002-2016.dta, clear
+use $outdata/H_ELSA_g2.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 
 keep idauniq r2iwstat

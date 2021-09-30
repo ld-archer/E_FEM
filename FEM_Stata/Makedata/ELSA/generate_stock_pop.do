@@ -43,7 +43,7 @@ restore
 preserve
 
 * Keep from wave 1?
-keep if wave == 1
+keep if wave == 2
 gen entry = 2002
 
 * Drop deceased

@@ -88,32 +88,32 @@ gen medicare_elig = 0
 *** ELSA Specific Imputation ***
 
 if "`scen'" == "base" {
-    local hotdeck_vars logbmi white logitot problem_drinker educl cancre hibpe diabe hearte stroke ///
+    local hotdeck_vars logbmi white itot problem_drinker educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
                         smoken hchole
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine logitot problem_drinker educl
+                        psyche asthmae parkine itot problem_drinker educl
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine logitot hchole hipe educl ///
+                        psyche asthmae parkine itot hchole hipe educl ///
                         heavy_smoker mstat lnly alzhe demene workstat problem_drinker
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine logitot hchole hipe educl ///
+                        psyche asthmae parkine itot hchole hipe educl ///
                         heavy_smoker lnly alzhe demene workstat problem_drinker
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
-                        lunge smoken logitot lnly heavy_smoker workstat alzhe arthre asthmae demene ///
+                        lunge smoken itot lnly heavy_smoker workstat alzhe arthre asthmae demene ///
                         parkine psyche hipe hchole problem_drinker
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine logitot problem_drinker educl workstat alzhe demene ///
+                        psyche asthmae parkine itot problem_drinker educl workstat alzhe demene ///
                         hchole hipe
 }
 else {
@@ -137,7 +137,7 @@ replace srh5 = 0 if srh3 == 1
 * Impute some vars by simply copying lag to current and/or vice versa
 foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 logatotb logitot hipe mstat heavy_smoker alzhe demene employed unemployed ///
+                        srh3 srh4 srh5 atotb itot hipe mstat heavy_smoker alzhe demene employed unemployed ///
                         retired problem_drinker {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
@@ -183,10 +183,18 @@ if "`scen'" == "valid" {
     replace white = 1 if missing(white)
 }
 
-* Still missing logatotb, so impute with mean
-quietly summ logatotb
-replace logatotb = r(mean) if missing(logatotb)
-replace l2logatotb = logatotb if missing(l2logatotb) & !missing(logatotb)
+* Still missing atotb, so impute with mean
+quietly summ atotb
+replace atotb = r(mean) if missing(atotb)
+replace l2atotb = atotb if missing(l2atotb) & !missing(atotb)
+* Same for itot
+quietly summ itot
+replace itot = r(mean) if missing(itot)
+replace l2itot = itot if missing(l2itot) & !missing(itot)
+
+* Still missing some hchole
+replace hchole = 0 if missing(hchole)
+replace l2hchole = 0 if missing(l2hchole)
 
 * Exstat more complicated still due to dummy variables
 * Exstat == 3 is most common value, 3 is moderate/heavy exercise more than once a week

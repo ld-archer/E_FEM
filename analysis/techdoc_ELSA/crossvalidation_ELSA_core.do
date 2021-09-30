@@ -543,7 +543,7 @@ foreach tp in binhlth risk binecon cntecon demog {
 		
 		foreach var in ``tp'' {
 		
-			* BMI has no data for odd waves, skip over these in the loop
+			* BMI has no data for odd waves (except wave 9), skip over these in the loop
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}

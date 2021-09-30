@@ -535,12 +535,15 @@ replace exstat3 = 0 if exstat != 3
 
 * Drop the exercise vars now
 drop ltactx_e mdactx_e vgactx_e
+
+
+                                ** STOP TAKING LOGS **
 *** Income and Wealth
 * These vars need to be converted to logs
-gen logitot = log(itot) if !missing(itot)
-gen logatotb = log(atotb) if !missing(atotb)
+*gen logitot = log(itot) if !missing(itot)
+*gen logatotb = log(atotb) if !missing(atotb)
 * Now drop non-logged vars
-drop atotb itot
+*drop atotb itot
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
@@ -641,8 +644,8 @@ foreach var in
     lnly3
     alzhe
     demene
-    logitot
-    logatotb
+    itot
+    atotb
     workstat
     employed
     unemployed
