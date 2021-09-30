@@ -31,12 +31,12 @@ foreach scn of local scenarios {
 	gen obese = (bmi > 30) if !missing(bmi)
 	gen obese_3 = (bmi > 40) if !missing(bmi)
 	
-	foreach var in died cancre diabe hearte hibpe lunge stroke obese obese_3 demene alzhe {
+	foreach var in died cancre diabe hearte hibpe lunge stroke obese obese_3 demene alzhe anyadl anyiadl {
 		rename `var' `var'_elsa
 	}
 	
-	keep hhidpn died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese_elsa obese_3_elsa demene_elsa alzhe_elsa mcrep
-	collapse died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese_elsa obese_3_elsa demene_elsa alzhe_elsa, by(hhidpn)
+	keep hhidpn died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa mcrep
+	collapse died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa, by(hhidpn)
 	
 	tempfile ELSA_FEM
 	save `ELSA_FEM'
@@ -100,7 +100,7 @@ foreach scn of local scenarios {
 
 	save test_`scn'.dta, replace
 
-	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe {
+	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe anyadl anyiadl {
 		if "`var'" == "cancre" {
 			local label2 "`minyr'-`maxyr' incident cancer"
 			local label3 "Cancer"
@@ -133,6 +133,14 @@ foreach scn of local scenarios {
 			local label2 "`minyr'-`maxyr' incident alzheimers"
 			local label3 "Alzheimers"
 		}
+		else if "`var'" == "anyadl" {
+			local label2 "`minyr'-`maxyr' incident ADL"
+			local label3 "ADL"
+		}
+		else if "`var'" == "anyiadl" {
+			local label2 "`minyr'-`maxyr' incident IADL"
+			local label3 "IADL"
+		}
 		
 		* & if `select'
 		roctab `var' `var'_elsa if `var'_init == 0 
@@ -161,7 +169,7 @@ foreach scn of local scenarios {
 }
 
 *obese_3
-foreach var in died cancre diabe hearte hibpe lunge stroke obese demene alzhe {
+foreach var in died cancre diabe hearte hibpe lunge stroke obese demene alzhe anyadl anyiadl {
 	if "`var'" == "died" {
 		local label2 "`minyr'-`maxyr' mortality"
 	} 
@@ -194,6 +202,12 @@ foreach var in died cancre diabe hearte hibpe lunge stroke obese demene alzhe {
 	}
 	else if "`var'" == "alzhe" {
 		local label2 "`minyr'-`maxyr' incident alzheimers"
+	}
+	else if "`var'" == "anyadl" {
+		local label2 "`minyr'-`maxyr' incident ADL"
+	}
+	else if "`var'" == "anyiadl" {
+		local label2 "`minyr'-`maxyr' incident IADL"
 	}
 	
 	graph combine $output_dir/ROC/roc_plots/ELSA_minimal_`var'.gph $output_dir/ROC/roc_plots/ELSA_ROC_`var'.gph, scheme(s1mono) title("`label2'")
