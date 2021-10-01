@@ -568,6 +568,13 @@ forvalues n = 2001/2019 {
 replace newatotb = newatotb - (newatotb * 2) if negatotb == 1
 replace newitot = newitot - (newitot * 2) if newitot == 1
 
+* Finally replace the original financial vars and drop the intermediate things plus the CPI
+replace atotb = newatotb
+replace itot = newitot
+drop newatotb newitot negatotb negitot
+forvalues n = 2001/2019 {
+    drop c`n'cpindex
+}
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
