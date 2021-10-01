@@ -132,6 +132,7 @@ h*itot
 r*lbrf_e
 r*mheight
 r*mweight
+c*cpindex
 ;
 #d cr
 
@@ -537,13 +538,16 @@ replace exstat3 = 0 if exstat != 3
 drop ltactx_e mdactx_e vgactx_e
 
 
-                                ** STOP TAKING LOGS **
+
 *** Income and Wealth
-* These vars need to be converted to logs
-*gen logitot = log(itot) if !missing(itot)
-*gen logatotb = log(atotb) if !missing(atotb)
-* Now drop non-logged vars
-*drop atotb itot
+* Rebase cpindex var from 2010 to 2012 (start year of simulation)
+* Formula for this: updatedValue = oldValue / newBaseBalue * 100
+* Example of this given here: https://mba-lectures.com/statistics/descriptive-statistics/508/shifting-of-base-year.html
+forvalues n = 2001/2019 {
+    gen newc`n'cpindex = (c`n'cpindex / c2012cpindex) * 100
+}
+
+
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
