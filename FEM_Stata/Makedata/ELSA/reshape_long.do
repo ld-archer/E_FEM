@@ -138,7 +138,10 @@ c*cpindex
 
 * Rename household vars to a more useful form
 forvalues wv = $firstwave/$lastwave {
-    rename h`wv'coupid r`wv'hhid
+    *rename h`wv'coupid r`wv'hhid // No longer want to drop the coupid var, just use it to generate hhid
+    generate r`wv'hhid = h`wv'coupid
+    rename h`wv'coupid r`wv'coupid // Still rename to r`var' for the rename and reshape below (r is removed anyway)
+
     rename h`wv'atotb r`wv'atotb
     rename h`wv'itot r`wv'itot
 }
@@ -220,6 +223,7 @@ foreach var in
     lbrf
     mheight
     mweight
+    coupid
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -257,7 +261,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     hearte stroke psyche arthre mbmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf
+    lbrf coupid
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -575,6 +579,15 @@ drop newatotb newitot negatotb negitot
 forvalues n = 2001/2019 {
     drop c`n'cpindex
 }
+
+** Now adjust couple level (benefit unit level) data into individual values
+* To do this, multiply those in a couple by sqrt(2)
+bysort coupid wave (year): gen atotb_adjusted = atotb / sqrt(2) if _N == 2
+bysort coupid wave (year): gen itot_adjusted = itot / sqrt(2) if _N == 2
+
+* Now replace original value with values adjusted for benefit unit level
+replace atotb = atotb_adjusted if !missing(atotb_adjusted)
+replace itot = itot_adjusted if !missing(itot_adjusted)
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
