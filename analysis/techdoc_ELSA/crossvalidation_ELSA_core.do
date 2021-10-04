@@ -412,6 +412,7 @@ foreach var in atotb itot {
 *** Income and Wealth
 * rename iwindy for inflation adjustment
 ren riwindy iwindy
+ren hcoupid coupid
 ** Rebase cpindex var from 2010 to 2012 (start year of simulation)
 * Formula for this: updatedValue = oldValue / newBaseBalue(2012) * 100
 * Example of this given here: https://mba-lectures.com/statistics/descriptive-statistics/508/shifting-of-base-year.html
@@ -450,8 +451,12 @@ forvalues n = 2001/2019 {
 
 ** Now adjust couple level (benefit unit level) data into individual values
 * To do this, multiply those in a couple by sqrt(2)
-bysort coupid wave (year): gen atotb_adjusted = atotb / sqrt(2) if _N == 2
-bysort coupid wave (year): gen itot_adjusted = itot / sqrt(2) if _N == 2
+bysort coupid wave: gen atotb_adjusted = atotb / sqrt(2) if _N == 2
+bysort coupid wave: gen itot_adjusted = itot / sqrt(2) if _N == 2
+
+* Now replace original value with values adjusted for benefit unit level
+replace atotb = atotb_adjusted if !missing(atotb_adjusted)
+replace itot = itot_adjusted if !missing(itot_adjusted)
 
 * Now replace original value with values adjusted for benefit unit level
 replace atotb = atotb_adjusted if !missing(atotb_adjusted)
