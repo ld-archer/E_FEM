@@ -544,6 +544,9 @@ drop ltactx_e mdactx_e vgactx_e
 
 
 *** Income and Wealth
+** Replace top-coded values of itot with 900000 (see p599 harmonised codebook)
+replace itot = 900000 if itot == .t
+
 ** Rebase cpindex var from 2010 to 2012 (start year of simulation)
 * Formula for this: updatedValue = oldValue / newBaseBalue(2012) * 100
 * Example of this given here: https://mba-lectures.com/statistics/descriptive-statistics/508/shifting-of-base-year.html

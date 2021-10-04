@@ -410,6 +410,9 @@ foreach var in atotb itot {
 }
 
 *** Income and Wealth
+** Replace top-coded values of itot with 900000 (see p599 harmonised codebook)
+replace itot = 900000 if itot == .t
+
 * rename iwindy for inflation adjustment
 ren riwindy iwindy
 ren hcoupid coupid
