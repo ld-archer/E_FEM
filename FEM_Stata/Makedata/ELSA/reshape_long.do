@@ -517,6 +517,9 @@ gen problem_drinker = 1 if (drinkwn > 12) & !missing(drinkwn)
 replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
 replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
 replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
+******** FIX HERE ABOVE!!! Change to define by drinkwn & drinkn i.e.:
+*       (= 1 if (drinkwn > 12) & (drinkn > 7) & !missing(drinkwn) & !missing(drinkn))
+*       This will need some assessment to who have missing values, as there will be some with an answer for 1 and not the other
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -591,6 +594,35 @@ bysort coupid wave: gen itot_adjusted = itot / sqrt(2) if _N == 2
 * Now replace original value with values adjusted for benefit unit level
 replace atotb = atotb_adjusted if !missing(atotb_adjusted)
 replace itot = itot_adjusted if !missing(itot_adjusted)
+
+
+*** POVERTY
+** Wealth poverty
+* First generate the median level of wealth, then calculate people who are at least 60% below the median
+sum atotb, detail
+local med_wealth r(p50)
+gen wealth_poverty = 1 if atotb < (0.6 * `med_wealth') & !missing(atotb) // wealth poverty if wealth < (0.6 * median wealth)
+replace wealth_poverty = 0 if atotb > (0.6 * `med_wealth') & !missing(atotb)
+
+** Income poverty
+sum itot, detail
+local med_income r(p50)
+gen income_poverty = 1 if itot < (0.6 * `med_income') & !missing(itot) // income poverty if income < (0.6 * median income)
+replace income_poverty = 0 if itot > (0.6 * `med_income') & !missing(itot)
+
+*** TOBIT models for predicting above the cut off threshold
+* within wave on non-adjusted amount
+* fill in high value numbers then adjust
+** OR
+* Modify threshold values by inflation over time after 2012
+
+**** THINK ABOUT BINS!!!
+* Lets put everyone into deciles instead and transition these
+egen wealth_group = cut(atotb), group(10) icodes
+egen income_group = cut(itot), group(10) icodes
+
+table wealth_group, contents(min atotb max atotb)
+table income_group, contents(min itot max itot)
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
