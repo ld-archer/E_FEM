@@ -465,6 +465,20 @@ replace itot = itot_adjusted if !missing(itot_adjusted)
 replace atotb = atotb_adjusted if !missing(atotb_adjusted)
 replace itot = itot_adjusted if !missing(itot_adjusted)
 
+*** POVERTY
+** Wealth poverty
+* First generate the median level of wealth, then calculate people who are at least 60% below the median
+sum atotb, detail
+local med_wealth r(p50)
+gen wealth_poverty = 1 if atotb < (0.6 * `med_wealth') & !missing(atotb) // wealth poverty if wealth < (0.6 * median wealth)
+replace wealth_poverty = 0 if atotb > (0.6 * `med_wealth') & !missing(atotb)
+
+** Income poverty
+sum itot, detail
+local med_income r(p50)
+gen income_poverty = 1 if itot < (0.6 * `med_income') & !missing(itot) // income poverty if income < (0.6 * median income)
+replace income_poverty = 0 if itot > (0.6 * `med_income') & !missing(itot)
+
 * Earnings
 gen itotx = itot/1000
 replace itotx = min(itotx, 200) if !missing(itotx)
@@ -567,6 +581,8 @@ label var retired "Retired"
 
 label var itotx "Total Family Income (thou.)"
 label var atotbx "Total Family Wealth (thou.)"
+label var wealth_poverty "Wealth Poverty (wealth < 60% of median)"
+label var income_poverty "Income Poverty (income < 60% of median)"
 
 label var age_yrs "Age at interview"
 label var male "Male"
