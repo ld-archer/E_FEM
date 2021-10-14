@@ -114,18 +114,18 @@ global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
-global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
-global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
+global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 *global allvars_smkint       $dvars $lvars_age `lvars_workstat'
 
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
-global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise' 
-global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise'
+global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 *global allvars_heavy_drinker $dvars $lvars_age `lvars_workstat'
-*global allvars_freq_drinker $dvars $lvars_age `lvars_workstat'
+*global allvars_freq_drinker $dvars $lvars_age `lvars_workstat' 
 
 
 *** Logbmi & other health
@@ -143,10 +143,10 @@ global allvars_adlstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_s
 global allvars_iadlstat     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe
 
 *** Workstat
-global allvars_workstat     $dvars $lvars_age `lvars_funclimit'
+global allvars_workstat     $dvars $lvars_age `lvars_funclimit' `lvars_smoke' `lvars_drink'
 
 *** Exercise
-global allvars_exstat       $dvars $lvars_age `lvars_funclimit' `lvars_exercise'
+global allvars_exstat       $dvars $lvars_age `lvars_funclimit' `lvars_exercise' `lvars_smoke' `lvars_drink'
 
 *** Marriage Status
 global allvars_mstat        $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p l2problem_drinker l2heavy_smoker
