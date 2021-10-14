@@ -65,7 +65,8 @@ keep
 	raracem
 	ragender
 	rabyear
-	
+
+	r*iwindy
 	r*iwstat
 	r*agey
 	r*cancre
@@ -91,6 +92,7 @@ keep
 	r*drinkwn_e
 	h*atotb
 	h*itot
+	h*coupid
 	r*ltactx_e
 	r*mdactx_e
 	r*vgactx_e
@@ -110,6 +112,7 @@ keep
 	r*housewka
 	r*mheight
 	r*mweight
+	c*cpindex
 ;
 #d cr
 
@@ -120,6 +123,7 @@ drop r*mheight r*mweight
 * Reshape this data to long
 #d ;
 local shapelist
+	r@iwindy
 	r@iwstat
 	r@agey
 	r@cancre
@@ -145,6 +149,7 @@ local shapelist
 	r@drinkwn_e
 	h@atotb
 	h@itot
+	h@coupid
 	r@ltactx_e
 	r@mdactx_e
 	r@vgactx_e
@@ -403,6 +408,62 @@ gen retired = workstat == 3
 foreach var in atotb itot {
 	ren h`var' `var'
 }
+
+*** Income and Wealth
+** Replace top-coded values of itot with 900000 (see p599 harmonised codebook)
+replace itot = 900000 if itot == .t
+
+* rename iwindy for inflation adjustment
+ren riwindy iwindy
+ren hcoupid coupid
+** Rebase cpindex var from 2010 to 2012 (start year of simulation)
+* Formula for this: updatedValue = oldValue / newBaseBalue(2012) * 100
+* Example of this given here: https://mba-lectures.com/statistics/descriptive-statistics/508/shifting-of-base-year.html
+forvalues n = 2001/2019 {
+    gen newc`n'cpindex = (c`n'cpindex / c2012cpindex) * 100 // generate new index with 2012 base year
+    drop c`n'cpindex // drop original cpindex
+    ren newc`n'cpindex c`n'cpindex // rename new base to match old varnames
+}
+
+** Now modify all financial vars for inflation using the rebased CPI
+* Adjusted value = (oldValue / cpindex) * 100
+* https://timeseriesreasoning.com/contents/inflation-adjustment/
+* Problem here with negative values, need to do this with absolute values then flip the sign back
+* First take absolute values
+gen newatotb = abs(atotb)
+gen newitot = abs(itot)
+* Generate flag if financial values are negative
+gen negatotb = 1 if atotb < 0
+gen negitot = 1 if itot < 0
+* Loop through values so we only change values from specific years
+forvalues n = 2001/2019 {
+    replace newatotb = (newatotb / c`n'cpindex ) * 100 if iwindy == `n' // Generate updated atotb values based on interview year
+    replace newitot = (newitot / c`n'cpindex ) * 100 if iwindy == `n' // Same for itot
+}
+* Do some hacky thing to turn the value negative if the flag == 1
+replace newatotb = newatotb - (newatotb * 2) if negatotb == 1
+replace newitot = newitot - (newitot * 2) if newitot == 1
+
+* Finally replace the original financial vars and drop the intermediate things plus the CPI
+replace atotb = newatotb
+replace itot = newitot
+drop newatotb newitot negatotb negitot
+forvalues n = 2001/2019 {
+    drop c`n'cpindex
+}
+
+** Now adjust couple level (benefit unit level) data into individual values
+* To do this, multiply those in a couple by sqrt(2)
+bysort coupid wave: gen atotb_adjusted = atotb / sqrt(2) if _N == 2
+bysort coupid wave: gen itot_adjusted = itot / sqrt(2) if _N == 2
+
+* Now replace original value with values adjusted for benefit unit level
+replace atotb = atotb_adjusted if !missing(atotb_adjusted)
+replace itot = itot_adjusted if !missing(itot_adjusted)
+
+* Now replace original value with values adjusted for benefit unit level
+replace atotb = atotb_adjusted if !missing(atotb_adjusted)
+replace itot = itot_adjusted if !missing(itot_adjusted)
 
 * Earnings
 gen itotx = itot/1000

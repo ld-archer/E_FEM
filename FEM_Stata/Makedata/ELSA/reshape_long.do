@@ -132,12 +132,16 @@ h*itot
 r*lbrf_e
 r*mheight
 r*mweight
+c*cpindex
 ;
 #d cr
 
 * Rename household vars to a more useful form
 forvalues wv = $firstwave/$lastwave {
-    rename h`wv'coupid r`wv'hhid
+    *rename h`wv'coupid r`wv'hhid // No longer want to drop the coupid var, just use it to generate hhid
+    generate r`wv'hhid = h`wv'coupid
+    rename h`wv'coupid r`wv'coupid // Still rename to r`var' for the rename and reshape below (r is removed anyway)
+
     rename h`wv'atotb r`wv'atotb
     rename h`wv'itot r`wv'itot
 }
@@ -219,6 +223,7 @@ foreach var in
     lbrf
     mheight
     mweight
+    coupid
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -256,7 +261,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     hearte stroke psyche arthre mbmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf
+    lbrf coupid
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -537,13 +542,55 @@ replace exstat3 = 0 if exstat != 3
 drop ltactx_e mdactx_e vgactx_e
 
 
-                                ** STOP TAKING LOGS **
+
 *** Income and Wealth
-* These vars need to be converted to logs
-*gen logitot = log(itot) if !missing(itot)
-*gen logatotb = log(atotb) if !missing(atotb)
-* Now drop non-logged vars
-*drop atotb itot
+** Replace top-coded values of itot with 900000 (see p599 harmonised codebook)
+replace itot = 900000 if itot == .t
+
+** Rebase cpindex var from 2010 to 2012 (start year of simulation)
+* Formula for this: updatedValue = oldValue / newBaseBalue(2012) * 100
+* Example of this given here: https://mba-lectures.com/statistics/descriptive-statistics/508/shifting-of-base-year.html
+forvalues n = 2001/2019 {
+    gen newc`n'cpindex = (c`n'cpindex / c2012cpindex) * 100 // generate new index with 2012 base year
+    drop c`n'cpindex // drop original cpindex
+    ren newc`n'cpindex c`n'cpindex // rename new base to match old varnames
+}
+
+** Now modify all financial vars for inflation using the rebased CPI
+* Adjusted value = (oldValue / cpindex) * 100
+* https://timeseriesreasoning.com/contents/inflation-adjustment/
+* Problem here with negative values, need to do this with absolute values then flip the sign back
+* First take absolute values
+gen newatotb = abs(atotb)
+gen newitot = abs(itot)
+* Generate flag if financial values are negative
+gen negatotb = 1 if atotb < 0
+gen negitot = 1 if itot < 0
+* Loop through values so we only change values from specific years
+forvalues n = 2001/2019 {
+    replace newatotb = (newatotb / c`n'cpindex ) * 100 if iwindy == `n' // Generate updated atotb values based on interview year
+    replace newitot = (newitot / c`n'cpindex ) * 100 if iwindy == `n' // Same for itot
+}
+* Do some hacky thing to turn the value negative if the flag == 1
+replace newatotb = newatotb - (newatotb * 2) if negatotb == 1
+replace newitot = newitot - (newitot * 2) if newitot == 1
+
+* Finally replace the original financial vars and drop the intermediate things plus the CPI
+replace atotb = newatotb
+replace itot = newitot
+drop newatotb newitot negatotb negitot
+forvalues n = 2001/2019 {
+    drop c`n'cpindex
+}
+
+** Now adjust couple level (benefit unit level) data into individual values
+* To do this, multiply those in a couple by sqrt(2)
+bysort coupid wave: gen atotb_adjusted = atotb / sqrt(2) if _N == 2
+bysort coupid wave: gen itot_adjusted = itot / sqrt(2) if _N == 2
+
+* Now replace original value with values adjusted for benefit unit level
+replace atotb = atotb_adjusted if !missing(atotb_adjusted)
+replace itot = itot_adjusted if !missing(itot_adjusted)
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
