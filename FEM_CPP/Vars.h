@@ -30,7 +30,7 @@ namespace Vars
 		anyrx_meps,								///< Any prescriptions from MEPS model
 		arthre,					///< Arthritis ever, stored as Boolean
 		asthmae,				///< Asthma ever, stored as Boolean
-		atotb,                  ///< Total Family Wealth
+		atotb,                  ///< Total Family income
 		itot,                    ///< Total Family Income
 		births,                   ///< Count of childbirth events (0,1,2), stored as Short
 		black,                    ///< Non-Hispanic black [0, 1], stored as Boolean
@@ -635,6 +635,72 @@ namespace Vars
         heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
         l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
         pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
+        wealth_group,               ///< Wealth Group [1, 10]
+        wealth1,                    ///< Wealth Group: 1
+        wealth2,                    ///< Wealth Group: 2
+        wealth3,                    ///< Wealth Group: 3
+        wealth4,                    ///< Wealth Group: 4
+        wealth5,                    ///< Wealth Group: 5
+        wealth6,                    ///< Wealth Group: 6
+        wealth7,                    ///< Wealth Group: 7
+        wealth8,                    ///< Wealth Group: 8
+        wealth9,                    ///< Wealth Group: 9
+        wealth10,                    ///< Wealth Group: 10
+        l2wealth_group,             ///< Lag of Wealth Group [1, 1]
+        l2wealth1,                    ///< Lag of Wealth Group: 1
+        l2wealth2,                    ///< Lag of Wealth Group: 2
+        l2wealth3,                    ///< Lag of Wealth Group: 3
+        l2wealth4,                    ///< Lag of Wealth Group: 4
+        l2wealth5,                    ///< Lag of Wealth Group: 5
+        l2wealth6,                    ///< Lag of Wealth Group: 6
+        l2wealth7,                    ///< Lag of Wealth Group: 7
+        l2wealth8,                    ///< Lag of Wealth Group: 8
+        l2wealth9,                    ///< Lag of Wealth Group: 9
+        l2wealth10,                    ///< Lag of Wealth Group: 10
+        pwealth1,                   ///< Probability of wealth_group == 1,
+        pwealth2,                   ///< Probability of wealth_group == 2,
+        pwealth3,                   ///< Probability of wealth_group == 3,
+        pwealth4,                   ///< Probability of wealth_group == 4,
+        pwealth5,                   ///< Probability of wealth_group == 5,
+        pwealth6,                   ///< Probability of wealth_group == 6,
+        pwealth7,                   ///< Probability of wealth_group == 7,
+        pwealth8,                   ///< Probability of wealth_group == 8,
+        pwealth9,                   ///< Probability of wealth_group == 9,
+        pwealth10,                   ///< Probability of wealth_group == 10,
+        income_group,               ///< Income Group [1, 10]
+        income1,                    ///< Income Group: 1
+        income2,                    ///< Income Group: 2
+        income3,                    ///< income Group: 3
+        income4,                    ///< Income Group: 4
+        income5,                    ///< Income Group: 5
+        income6,                    ///< Income Group: 6
+        income7,                    ///< Income Group: 7
+        income8,                    ///< Income Group: 8
+        income9,                    ///< Income Group: 9
+        income10,                    ///< Income Group: 10
+        l2income_group,             ///< Lag of Income Group [1, 10]
+        l2income1,                    ///< Lag of income Group: 1
+        l2income2,                    ///< Lag of income Group: 2
+        l2income3,                    ///< Lag of income Group: 3
+        l2income4,                    ///< Lag of income Group: 4
+        l2income5,                    ///< Lag of income Group: 5
+        l2income6,                    ///< Lag of income Group: 6
+        l2income7,                    ///< Lag of income Group: 7
+        l2income8,                    ///< Lag of income Group: 8
+        l2income9,                    ///< Lag of income Group: 9
+        l2income10,                    ///< Lag of income Group: 10
+        pincome1,                   ///< Probability of income_group == 1,
+        pincome2,                   ///< Probability of income_group == 2,
+        pincome3,                   ///< Probability of income_group == 3,
+        pincome4,                   ///< Probability of income_group == 4,
+        pincome5,                   ///< Probability of income_group == 5,
+        pincome6,                   ///< Probability of income_group == 6,
+        pincome7,                   ///< Probability of income_group == 7,
+        pincome8,                   ///< Probability of income_group == 8,
+        pincome9,                   ///< Probability of income_group == 9,
+        pincome10,                   ///< Probability of income_group == 10,
+        wealth_poverty,             ///< Indicator of wealth poverty (wealth < 60% of median wealth)
+        income_poverty,             ///< Indicator of income poverty (income < 60% of median income)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

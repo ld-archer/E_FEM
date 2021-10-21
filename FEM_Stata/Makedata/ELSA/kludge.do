@@ -90,31 +90,31 @@ gen medicare_elig = 0
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot problem_drinker educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole
+                        smoken hchole wealth_decile income_decile
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot problem_drinker educl
+                        psyche asthmae parkine itot problem_drinker educl wealth_decile income_decile
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker mstat lnly alzhe demene workstat problem_drinker
+                        heavy_smoker mstat lnly alzhe demene workstat problem_drinker wealth_decile income_decile
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker lnly alzhe demene workstat problem_drinker
+                        heavy_smoker lnly alzhe demene workstat problem_drinker wealth_decile income_decile
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly heavy_smoker workstat alzhe arthre asthmae demene ///
-                        parkine psyche hipe hchole problem_drinker
+                        parkine psyche hipe hchole problem_drinker wealth_decile income_decile
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot problem_drinker educl workstat alzhe demene ///
-                        hchole hipe
+                        hchole hipe wealth_decile income_decile
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -162,14 +162,28 @@ replace l2single = l2mstat == 2
 replace l2cohab = l2mstat == 3
 replace l2widowed = l2mstat == 4
 
-* Handle missing dummy l2smkint information after imputing lag above
-*replace l2smkint1 = l2smkint == 1
-*replace l2smkint2 = l2smkint == 2
-*replace l2smkint3 = l2smkint == 3
-* If still missing
-*replace l2smkint1 = 0 if missing(l2smkint1)
-*replace l2smkint2 = 0 if missing(l2smkint2)
-*replace l2smkint3 = 0 if missing(l2smkint3)
+* Replace dummys with newly hotdecked wealth and income group missings
+replace wealth1 = wealth_decile == 1 if missing(wealth1)
+replace wealth2 = wealth_decile == 2 if missing(wealth2)
+replace wealth3 = wealth_decile == 3 if missing(wealth3)
+replace wealth4 = wealth_decile == 4 if missing(wealth4)
+replace wealth5 = wealth_decile == 5 if missing(wealth5)
+replace wealth6 = wealth_decile == 6 if missing(wealth6)
+replace wealth7 = wealth_decile == 7 if missing(wealth7)
+replace wealth8 = wealth_decile == 8 if missing(wealth8)
+replace wealth9 = wealth_decile == 9 if missing(wealth9)
+replace wealth10 = wealth_decile == 10 if missing(wealth10)
+
+replace income1 = income_decile == 1 if missing(income1)
+replace income2 = income_decile == 2 if missing(income2)
+replace income3 = income_decile == 3 if missing(income3)
+replace income4 = income_decile == 4 if missing(income4)
+replace income5 = income_decile == 5 if missing(income5)
+replace income6 = income_decile == 6 if missing(income6)
+replace income7 = income_decile == 7 if missing(income7)
+replace income8 = income_decile == 8 if missing(income8)
+replace income9 = income_decile == 9 if missing(income9)
+replace income10 = income_decile == 10 if missing(income10)
 
 * If still missing heavy_smoker data, replace with not heavy
 replace heavy_smoker = 0 if missing(heavy_smoker)

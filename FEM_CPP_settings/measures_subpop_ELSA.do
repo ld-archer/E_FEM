@@ -47,6 +47,10 @@ local measures
 						p_heavy_smoker i_heavy_smoker n_heavy_smoker
 						t_atotb 	a_atotb 	q50_atotb
 						t_itot		a_itot	 q50_itot
+						a_wealth_group 	p_wealth1	p_wealth2	p_wealth10
+						a_income_group 	p_income1	p_income2	p_income10
+						p_wealth_poverty	n_wealth_poverty
+						p_income_poverty 	n_income_poverty
 					p_drink		i_drink		n_drink
 					p_problem_drinker i_problem_drinker n_problem_drinker
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3

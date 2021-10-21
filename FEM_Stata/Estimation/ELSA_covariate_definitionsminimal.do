@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene problem_drinker heavy_smoker
 global bin_econ
 global ols logbmi atotb itot
-global order adlstat iadlstat exstat srh
+global order adlstat iadlstat srh exstat wealth_group income_group
 global unorder mstat workstat
 
 * Variable names
@@ -41,10 +41,10 @@ global ols_names
 global order_names 
     "ADL status"
     "IADL status"
-    "Exercise status"
     "Self-Reported Health Status"
-    /*"Smoking Intensity Status"*/
-    "Loneliness Status"
+    "Exercise status"
+    "Wealth Group (1-10)"
+    "Income Group (1-10)"
 ;
 global unorder_names
     "Marriage Status"

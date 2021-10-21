@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
 global bin_econ
 global ols logbmi atotb itot
-global order adlstat iadlstat srh exstat
+global order adlstat iadlstat srh exstat wealth_group income_group
 global unorder workstat mstat
 
 * Variable names
@@ -39,6 +39,8 @@ global order_names
     "IADL status"
     "Self-Reported Health Status"
     "Exercise status"
+    "Wealth Group (1-10)"
+    "Income Group (1-10)"
 ;
 global unorder_names
     "Work Status"
@@ -135,6 +137,9 @@ global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_e
 *** Economic vars (atotb & itot)
 global allvars_atotb     $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
 global allvars_itot      $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
+
+global allvars_wealth_group $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
+global allvars_income_group $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
 
 
 *** Disabilities

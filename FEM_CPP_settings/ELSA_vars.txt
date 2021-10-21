@@ -353,5 +353,5 @@ age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
 
 | Poverty Indicators
 
-|wealth_poverty = if(atotb < 0.6 * q50_atotb) : Wealth less than 60% of median population wealth
-|income_poverty = if(itot < 0.6 * q50_itot) : Income less than 60% of median population income
+|wealth_poverty = if(atotb < 0.6 * med_wealth) : Wealth less than 60% of median population wealth
+|income_poverty = if(itot < 0.6 * med_income) : Income less than 60% of median population income

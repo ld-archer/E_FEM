@@ -600,15 +600,15 @@ replace itot = itot_adjusted if !missing(itot_adjusted)
 ** Wealth poverty
 * First generate the median level of wealth, then calculate people who are at least 60% below the median
 sum atotb, detail
-local med_wealth r(p50)
-gen wealth_poverty = 1 if atotb < (0.6 * `med_wealth') & !missing(atotb) // wealth poverty if wealth < (0.6 * median wealth)
-replace wealth_poverty = 0 if atotb > (0.6 * `med_wealth') & !missing(atotb)
+gen med_wealth = r(p50)
+gen wealth_poverty = 1 if atotb < (0.6 * med_wealth) & !missing(atotb) // wealth poverty if wealth < (0.6 * median wealth)
+replace wealth_poverty = 0 if atotb > (0.6 * med_wealth) & !missing(atotb)
 
 ** Income poverty
 sum itot, detail
-local med_income r(p50)
-gen income_poverty = 1 if itot < (0.6 * `med_income') & !missing(itot) // income poverty if income < (0.6 * median income)
-replace income_poverty = 0 if itot > (0.6 * `med_income') & !missing(itot)
+gen med_income = r(p50)
+gen income_poverty = 1 if itot < (0.6 * med_income) & !missing(itot) // income poverty if income < (0.6 * median income)
+replace income_poverty = 0 if itot > (0.6 * med_income) & !missing(itot)
 
 *** TOBIT models for predicting above the cut off threshold
 * within wave on non-adjusted amount
@@ -616,13 +616,53 @@ replace income_poverty = 0 if itot > (0.6 * `med_income') & !missing(itot)
 ** OR
 * Modify threshold values by inflation over time after 2012
 
+*** Wealth and Income Groups
 **** THINK ABOUT BINS!!!
-* Lets put everyone into deciles instead and transition these
-egen wealth_group = cut(atotb), group(10) icodes
-egen income_group = cut(itot), group(10) icodes
+* This needs to be done by age group because this will heavily influence wealth
+egen age_group = cut(age), at(50,60,70,80,90,100,130)
 
-table wealth_group, contents(min atotb max atotb)
-table income_group, contents(min itot max itot)
+*bysort age_group: egen wealth_group = cut(atotb), group(10) icodes
+*replace wealth_group = wealth_group + 1 // Shift everything by 1 to avoid using group 0 (FEM doesn't like it)
+*bysort age_group: egen income_group = cut(itot), group(10) icodes
+*replace income_group = income_group + 1
+
+/* foreach age in age_group {
+    egen wealth_group = cut(atotb), group(10) icodes if age_group == `age'
+    egen income_group = cut(itot), group(10) icodes if age_group == `age'
+} */
+
+*bysort age_group wave: xtile wealth_quantile = 
+
+* Generate quintiles within age groups and by wave
+egen wealth_decile=xtile(atotb), n(10) by(age_group wave)
+egen income_decile = xtile(itot), n(10) by(age_group wave)
+
+* Take a look at our quintiles
+bysort age_group: table wealth_decile, contents(min atotb max atotb)
+bysort age_group: table income_decile, contents(min itot max itot)
+
+** Generate dummys
+gen wealth1 = wealth_decile == 1 if !missing(wealth_decile)
+gen wealth2 = wealth_decile == 2 if !missing(wealth_decile)
+gen wealth3 = wealth_decile == 3 if !missing(wealth_decile)
+gen wealth4 = wealth_decile == 4 if !missing(wealth_decile)
+gen wealth5 = wealth_decile == 5 if !missing(wealth_decile)
+gen wealth6 = wealth_decile == 6 if !missing(wealth_decile)
+gen wealth7 = wealth_decile == 7 if !missing(wealth_decile)
+gen wealth8 = wealth_decile == 8 if !missing(wealth_decile)
+gen wealth9 = wealth_decile == 9 if !missing(wealth_decile)
+gen wealth10 = wealth_decile == 10 if !missing(wealth_decile)
+
+gen income1 = income_decile == 1 if !missing(income_decile)
+gen income2 = income_decile == 2 if !missing(income_decile)
+gen income3 = income_decile == 3 if !missing(income_decile)
+gen income4 = income_decile == 4 if !missing(income_decile)
+gen income5 = income_decile == 5 if !missing(income_decile)
+gen income6 = income_decile == 6 if !missing(income_decile)
+gen income7 = income_decile == 7 if !missing(income_decile)
+gen income8 = income_decile == 8 if !missing(income_decile)
+gen income9 = income_decile == 9 if !missing(income_decile)
+gen income10 = income_decile == 10 if !missing(income_decile)
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
@@ -638,17 +678,6 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
-
-*** National Statistics Socio-Economic Classification
-* Generate dummys
-*gen nssec1 = (nssec == 1)
-*gen nssec2 = (nssec == 2)
-*gen nssec3 = (nssec == 3)
-*gen nssec4 = (nssec == 4)
-*gen nssec5 = (nssec == 5)
-*gen nssec6 = (nssec == 6)
-*gen nssec7 = (nssec == 7)
-*gen nssec8 = (nssec == 8)
 
 *** Generate alcohol in last week var for validation
 gen drink_7d = 1 if (drinkwn > 0) & !missing(drinkwn)
@@ -730,6 +759,28 @@ foreach var in
     unemployed
     retired
     problem_drinker
+    wealth_decile
+    wealth1
+    wealth2
+    wealth3
+    wealth4
+    wealth5
+    wealth6
+    wealth7
+    wealth8
+    wealth9
+    wealth10
+    income_decile
+    income1
+    income2
+    income3
+    income4
+    income5
+    income6
+    income7
+    income8
+    income9
+    income10
     {;
         gen l2`var' = L.`var';
     };

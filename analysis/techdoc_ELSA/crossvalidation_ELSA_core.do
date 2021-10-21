@@ -489,6 +489,38 @@ gen atotbx = atotb/1000
 replace atotbx = min(atotbx, 2000) if !missing(atotbx)
 label var atotbx "Total Family Wealth in 1000s (max 2000) if positive, zero otherwise"
 
+*** Wealth and Income Groups
+egen wealth_group = cut(atotb), group(10) icodes
+replace wealth_group = wealth_group + 1
+egen income_group = cut(itot), group(10) icodes
+replace income_group = income_group + 1
+
+table wealth_group, contents(min atotb max atotb)
+table income_group, contents(min itot max itot)
+
+** Generate dummys
+gen wealth1 = wealth_group == 1 if !missing(wealth_group)
+gen wealth2 = wealth_group == 2 if !missing(wealth_group)
+gen wealth3 = wealth_group == 3 if !missing(wealth_group)
+gen wealth4 = wealth_group == 4 if !missing(wealth_group)
+gen wealth5 = wealth_group == 5 if !missing(wealth_group)
+gen wealth6 = wealth_group == 6 if !missing(wealth_group)
+gen wealth7 = wealth_group == 7 if !missing(wealth_group)
+gen wealth8 = wealth_group == 8 if !missing(wealth_group)
+gen wealth9 = wealth_group == 9 if !missing(wealth_group)
+gen wealth10 = wealth_group == 10 if !missing(wealth_group)
+
+gen income1 = income_group == 1 if !missing(income_group)
+gen income2 = income_group == 2 if !missing(income_group)
+gen income3 = income_group == 3 if !missing(income_group)
+gen income4 = income_group == 4 if !missing(income_group)
+gen income5 = income_group == 5 if !missing(income_group)
+gen income6 = income_group == 6 if !missing(income_group)
+gen income7 = income_group == 7 if !missing(income_group)
+gen income8 = income_group == 8 if !missing(income_group)
+gen income9 = income_group == 9 if !missing(income_group)
+gen income10 = income_group == 10 if !missing(income_group)
+
 * Interview year
 gen iwyear = 2000 + 2*wave
 
@@ -521,6 +553,12 @@ replace itotx = min(itotx, 200) if !missing(itotx)
 * Wealth
 gen atotbx = atotb/1000
 replace atotbx = min(atotbx, 2000) if !missing(atotbx)
+
+* Poverty indicators (using local from above)
+gen wealth_poverty = 1 if atotb < (0.6 * `med_wealth') & !missing(atotb) // wealth poverty if wealth < (0.6 * median wealth)
+replace wealth_poverty = 0 if atotb > (0.6 * `med_wealth') & !missing(atotb)
+gen income_poverty = 1 if itot < (0.6 * `med_income') & !missing(itot) // income poverty if income < (0.6 * median income)
+replace income_poverty = 0 if itot > (0.6 * `med_income') & !missing(itot)
 
 *replace hicap = hicap/1000
 
@@ -583,6 +621,8 @@ label var itotx "Total Family Income (thou.)"
 label var atotbx "Total Family Wealth (thou.)"
 label var wealth_poverty "Wealth Poverty (wealth < 60% of median)"
 label var income_poverty "Income Poverty (income < 60% of median)"
+label var wealth_group "Wealth Group [1, 10]"
+label var income_group "Income Group [1, 10]"
 
 label var age_yrs "Age at interview"
 label var male "Male"
@@ -604,7 +644,7 @@ restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
 local risk smoken smokev bmi drink heavy_smoker problem_drinker exstat1 exstat2 exstat3
-local binecon employed unemployed retired
+local binecon employed unemployed retired wealth_poverty income_poverty wealth1 wealth2 wealth5 wealth9 wealth10 income1 income2 income5 income9 income10
 local cntecon itotx atotbx
 local demog age_yrs male white
 local unweighted died

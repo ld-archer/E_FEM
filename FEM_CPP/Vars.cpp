@@ -704,6 +704,72 @@ VarsInfo::VarsInfo() {
     info[Vars::pworkstat1]          = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
     info[Vars::pworkstat2]          = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
     info[Vars::pworkstat3]          = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
+    info[Vars::wealth_group]        = VarInfo("wealth_group", "Wealth Group [1, 10]", VarTypes::Short);
+    info[Vars::wealth1]             = VarInfo("wealth1", "Wealth Group: 1", VarTypes::Boolean, Vars::wealth_group, 1);
+    info[Vars::wealth2]             = VarInfo("wealth2", "Wealth Group: 2", VarTypes::Boolean, Vars::wealth_group, 2);
+    info[Vars::wealth3]             = VarInfo("wealth3", "Wealth Group: 3", VarTypes::Boolean, Vars::wealth_group, 3);
+    info[Vars::wealth4]             = VarInfo("wealth4", "Wealth Group: 4", VarTypes::Boolean, Vars::wealth_group, 4);
+    info[Vars::wealth5]             = VarInfo("wealth5", "Wealth Group: 5", VarTypes::Boolean, Vars::wealth_group, 5);
+    info[Vars::wealth6]             = VarInfo("wealth6", "Wealth Group: 6", VarTypes::Boolean, Vars::wealth_group, 6);
+    info[Vars::wealth7]             = VarInfo("wealth7", "Wealth Group: 7", VarTypes::Boolean, Vars::wealth_group, 7);
+    info[Vars::wealth8]             = VarInfo("wealth8", "Wealth Group: 8", VarTypes::Boolean, Vars::wealth_group, 8);
+    info[Vars::wealth9]             = VarInfo("wealth9", "Wealth Group: 9", VarTypes::Boolean, Vars::wealth_group, 9);
+    info[Vars::wealth10]            = VarInfo("wealth10", "Wealth Group: 10", VarTypes::Boolean, Vars::wealth_group, 10);
+    info[Vars::l2wealth_group]      = VarInfo("l2wealth_group", "Lag of Wealth Group [1, 10]", VarTypes::Short);
+    info[Vars::l2wealth1]           = VarInfo("l2wealth1", "Lag of Wealth Group: 1", VarTypes::Boolean, Vars::l2wealth_group, 1);
+    info[Vars::l2wealth2]           = VarInfo("l2wealth2", "Lag of Wealth Group: 2", VarTypes::Boolean, Vars::l2wealth_group, 2);
+    info[Vars::l2wealth3]           = VarInfo("l2wealth3", "Lag of Wealth Group: 3", VarTypes::Boolean, Vars::l2wealth_group, 3);
+    info[Vars::l2wealth4]           = VarInfo("l2wealth4", "Lag of Wealth Group: 4", VarTypes::Boolean, Vars::l2wealth_group, 4);
+    info[Vars::l2wealth5]           = VarInfo("l2wealth5", "Lag of Wealth Group: 5", VarTypes::Boolean, Vars::l2wealth_group, 5);
+    info[Vars::l2wealth6]           = VarInfo("l2wealth6", "Lag of Wealth Group: 6", VarTypes::Boolean, Vars::l2wealth_group, 6);
+    info[Vars::l2wealth7]           = VarInfo("l2wealth7", "Lag of Wealth Group: 7", VarTypes::Boolean, Vars::l2wealth_group, 7);
+    info[Vars::l2wealth8]           = VarInfo("l2wealth8", "Lag of Wealth Group: 8", VarTypes::Boolean, Vars::l2wealth_group, 8);
+    info[Vars::l2wealth9]           = VarInfo("l2wealth9", "Lag of Wealth Group: 9", VarTypes::Boolean, Vars::l2wealth_group, 9);
+    info[Vars::l2wealth10]          = VarInfo("l2wealth10", "Lag of Wealth Group: 10", VarTypes::Boolean, Vars::l2wealth_group, 10);
+    info[Vars::pwealth1]            = VarInfo("pwealth1", "Probability of wealth_group == 1", VarTypes::Float);
+    info[Vars::pwealth2]            = VarInfo("pwealth2", "Probability of wealth_group == 2", VarTypes::Float);
+    info[Vars::pwealth3]            = VarInfo("pwealth3", "Probability of wealth_group == 3", VarTypes::Float);
+    info[Vars::pwealth4]            = VarInfo("pwealth4", "Probability of wealth_group == 4", VarTypes::Float);
+    info[Vars::pwealth5]            = VarInfo("pwealth5", "Probability of wealth_group == 5", VarTypes::Float);
+    info[Vars::pwealth6]            = VarInfo("pwealth6", "Probability of wealth_group == 6", VarTypes::Float);
+    info[Vars::pwealth7]            = VarInfo("pwealth7", "Probability of wealth_group == 7", VarTypes::Float);
+    info[Vars::pwealth8]            = VarInfo("pwealth8", "Probability of wealth_group == 8", VarTypes::Float);
+    info[Vars::pwealth9]            = VarInfo("pwealth9", "Probability of wealth_group == 9", VarTypes::Float);
+    info[Vars::pwealth10]           = VarInfo("pwealth10", "Probability of wealth_group == 10", VarTypes::Float);
+    info[Vars::income_group]        = VarInfo("income_group", "income Group [1, 10]", VarTypes::Short);
+    info[Vars::income1]             = VarInfo("income1", "Income Group: 1", VarTypes::Boolean, Vars::income_group, 1);
+    info[Vars::income2]             = VarInfo("income2", "Income Group: 2", VarTypes::Boolean, Vars::income_group, 2);
+    info[Vars::income3]             = VarInfo("income3", "Income Group: 3", VarTypes::Boolean, Vars::income_group, 3);
+    info[Vars::income4]             = VarInfo("income4", "Income Group: 4", VarTypes::Boolean, Vars::income_group, 4);
+    info[Vars::income5]             = VarInfo("income5", "Income Group: 5", VarTypes::Boolean, Vars::income_group, 5);
+    info[Vars::income6]             = VarInfo("income6", "Income Group: 6", VarTypes::Boolean, Vars::income_group, 6);
+    info[Vars::income7]             = VarInfo("income7", "Income Group: 7", VarTypes::Boolean, Vars::income_group, 7);
+    info[Vars::income8]             = VarInfo("income8", "Income Group: 8", VarTypes::Boolean, Vars::income_group, 8);
+    info[Vars::income9]             = VarInfo("income9", "Income Group: 9", VarTypes::Boolean, Vars::income_group, 9);
+    info[Vars::income10]            = VarInfo("income10", "Income Group: 10", VarTypes::Boolean, Vars::income_group, 10);
+    info[Vars::l2income_group]      = VarInfo("l2income_group", "Lag of Income Group [1, 10]", VarTypes::Short);
+    info[Vars::l2income1]           = VarInfo("l2income1", "Lag of Income Group: 1", VarTypes::Boolean, Vars::l2income_group, 1);
+    info[Vars::l2income2]           = VarInfo("l2income2", "Lag of Income Group: 2", VarTypes::Boolean, Vars::l2income_group, 2);
+    info[Vars::l2income3]           = VarInfo("l2income3", "Lag of Income Group: 3", VarTypes::Boolean, Vars::l2income_group, 3);
+    info[Vars::l2income4]           = VarInfo("l2income4", "Lag of Income Group: 4", VarTypes::Boolean, Vars::l2income_group, 4);
+    info[Vars::l2income5]           = VarInfo("l2income5", "Lag of Income Group: 5", VarTypes::Boolean, Vars::l2income_group, 5);
+    info[Vars::l2income6]           = VarInfo("l2income6", "Lag of Income Group: 6", VarTypes::Boolean, Vars::l2income_group, 6);
+    info[Vars::l2income7]           = VarInfo("l2income7", "Lag of Income Group: 7", VarTypes::Boolean, Vars::l2income_group, 7);
+    info[Vars::l2income8]           = VarInfo("l2income8", "Lag of Income Group: 8", VarTypes::Boolean, Vars::l2income_group, 8);
+    info[Vars::l2income9]           = VarInfo("l2income9", "Lag of Income Group: 9", VarTypes::Boolean, Vars::l2income_group, 9);
+    info[Vars::l2income10]          = VarInfo("l2income10", "Lag of Income Group: 10", VarTypes::Boolean, Vars::l2income_group, 10);
+    info[Vars::pincome1]            = VarInfo("pincome1", "Probability of income_group == 1", VarTypes::Float);
+    info[Vars::pincome2]            = VarInfo("pincome2", "Probability of income_group == 2", VarTypes::Float);
+    info[Vars::pincome3]            = VarInfo("pincome3", "Probability of income_group == 3", VarTypes::Float);
+    info[Vars::pincome4]            = VarInfo("pincome4", "Probability of income_group == 4", VarTypes::Float);
+    info[Vars::pincome5]            = VarInfo("pincome5", "Probability of income_group == 5", VarTypes::Float);
+    info[Vars::pincome6]            = VarInfo("pincome6", "Probability of income_group == 6", VarTypes::Float);
+    info[Vars::pincome7]            = VarInfo("pincome7", "Probability of income_group == 7", VarTypes::Float);
+    info[Vars::pincome8]            = VarInfo("pincome8", "Probability of income_group == 8", VarTypes::Float);
+    info[Vars::pincome9]            = VarInfo("pincome9", "Probability of income_group == 9", VarTypes::Float);
+    info[Vars::pincome10]           = VarInfo("pincome10", "Probability of income_group == 10", VarTypes::Float);
+    info[Vars::wealth_poverty]      = VarInfo("wealth_poverty", "Indicator for wealth poverty (wealth < 60% of median wealth", VarTypes::Boolean);
+    info[Vars::income_poverty]      = VarInfo("income_poverty", "Indicator for income poverty (income < 60% of median income", VarTypes::Boolean);
 
 
 	
@@ -869,6 +935,28 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::unemployed] = Vars::l2unemployed;
     lag_map[Vars::retired] = Vars::l2retired;
     lag_map[Vars::heavy_smoker] = Vars::l2heavy_smoker;
+    lag_map[Vars::wealth_group] = Vars::l2wealth_group;
+    lag_map[Vars::wealth1] = Vars::l2wealth1;
+    lag_map[Vars::wealth2] = Vars::l2wealth2;
+    lag_map[Vars::wealth3] = Vars::l2wealth3;
+    lag_map[Vars::wealth4] = Vars::l2wealth4;
+    lag_map[Vars::wealth5] = Vars::l2wealth5;
+    lag_map[Vars::wealth6] = Vars::l2wealth6;
+    lag_map[Vars::wealth7] = Vars::l2wealth7;
+    lag_map[Vars::wealth8] = Vars::l2wealth8;
+    lag_map[Vars::wealth9] = Vars::l2wealth9;
+    lag_map[Vars::wealth10] = Vars::l2wealth10;
+    lag_map[Vars::income_group] = Vars::l2income_group;
+    lag_map[Vars::income1] = Vars::l2income1;
+    lag_map[Vars::income2] = Vars::l2income2;
+    lag_map[Vars::income3] = Vars::l2income3;
+    lag_map[Vars::income4] = Vars::l2income4;
+    lag_map[Vars::income5] = Vars::l2income5;
+    lag_map[Vars::income6] = Vars::l2income6;
+    lag_map[Vars::income7] = Vars::l2income7;
+    lag_map[Vars::income8] = Vars::l2income8;
+    lag_map[Vars::income9] = Vars::l2income9;
+    lag_map[Vars::income10] = Vars::l2income10;
 
 
 
@@ -941,6 +1029,26 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::employed] =      Vars::pworkstat1;
     prob_map[Vars::unemployed] =    Vars::pworkstat2;
     prob_map[Vars::retired] =       Vars::pworkstat3;
+    prob_map[Vars::wealth1] =       Vars::pwealth1;
+    prob_map[Vars::wealth2] =       Vars::pwealth2;
+    prob_map[Vars::wealth3] =       Vars::pwealth3;
+    prob_map[Vars::wealth4] =       Vars::pwealth4;
+    prob_map[Vars::wealth5] =       Vars::pwealth5;
+    prob_map[Vars::wealth6] =       Vars::pwealth6;
+    prob_map[Vars::wealth7] =       Vars::pwealth7;
+    prob_map[Vars::wealth8] =       Vars::pwealth8;
+    prob_map[Vars::wealth9] =       Vars::pwealth9;
+    prob_map[Vars::wealth10] =       Vars::pwealth10;
+    prob_map[Vars::income1] =       Vars::pincome1;
+    prob_map[Vars::income2] =       Vars::pincome2;
+    prob_map[Vars::income3] =       Vars::pincome3;
+    prob_map[Vars::income4] =       Vars::pincome4;
+    prob_map[Vars::income5] =       Vars::pincome5;
+    prob_map[Vars::income6] =       Vars::pincome6;
+    prob_map[Vars::income7] =       Vars::pincome7;
+    prob_map[Vars::income8] =       Vars::pincome8;
+    prob_map[Vars::income9] =       Vars::pincome9;
+    prob_map[Vars::income10] =       Vars::pincome10;
 
 
 
