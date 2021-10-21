@@ -591,6 +591,8 @@ bysort coupid wave: gen itot_adjusted = itot / sqrt(2) if _N == 2
 * Now replace original value with values adjusted for benefit unit level
 replace atotb = atotb_adjusted if !missing(atotb_adjusted)
 replace itot = itot_adjusted if !missing(itot_adjusted)
+* Finally drop the adjusted vars
+drop atotb_adjusted itot_adjusted
 
 *** Labour Force Status
 * Recoding the lbrf var to three categories
