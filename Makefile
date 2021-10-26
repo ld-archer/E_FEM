@@ -41,6 +41,8 @@ core_scen: core_prep simulation_core_scen detailed_appends scen_doc
 
 roc: core_prep simulation_core_roc roc_validation
 
+wealth: core_prep simulation_wealth
+
 
 ### Combined rules
 
@@ -215,6 +217,9 @@ simulation_core_scen:
 
 simulation_core_roc:
 	$(MPI) ELSA_roc_validation.settings.txt
+
+simulation_wealth:
+	$(MPI) ELSA_WEALTH.settings.txt
 
 
 ### Handovers and Validation
