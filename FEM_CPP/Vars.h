@@ -635,6 +635,7 @@ namespace Vars
         heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
         l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
         pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
+        wealth_quint,               ///< Quintile by wealth (defined from atotb)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

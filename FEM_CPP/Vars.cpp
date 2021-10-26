@@ -704,6 +704,7 @@ VarsInfo::VarsInfo() {
     info[Vars::pworkstat1]          = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
     info[Vars::pworkstat2]          = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
     info[Vars::pworkstat3]          = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
+    info[Vars::wealth_quint]        = VarInfo("wealth_quint", "Quintile by wealth (defined from atotb)", VarTypes::Short);
 
 
 	
