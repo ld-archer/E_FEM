@@ -349,6 +349,7 @@ clean_logs:
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
 	rm -f FEM_R/*.nb.html
+	rm -f analysis/techdoc_ELSA/*.log
 
 clean_debug:
 	rm -f debug/*
