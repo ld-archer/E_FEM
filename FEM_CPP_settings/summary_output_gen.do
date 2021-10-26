@@ -282,6 +282,26 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age >= 100"
 			local samp "female age 100 plus"
 		}
+		else if "`b'" == "wealth_q1" {
+			local sel "& wealth_quint == 1"
+			local samp "wealth quintile 1"
+		}
+		else if "`b'" == "wealth_q2" {
+			local sel "& wealth_quint == 2"
+			local samp "wealth quintile 2"
+		}
+		else if "`b'" == "wealth_q3" {
+			local sel "& wealth_quint == 3"
+			local samp "wealth quintile 3"
+		}
+		else if "`b'" == "wealth_q4" {
+			local sel "& wealth_quint == 4"
+			local samp "wealth quintile 4"
+		}
+		else if "`b'" == "wealth_q5" {
+			local sel "& wealth_quint == 5"
+			local samp "wealth quintile 5"
+		}
 
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {
