@@ -21,21 +21,9 @@ keep if inlist(age, 51, 52)
 replace rbyr = rbyr + 2 if year == 2010
 replace rbyr = rbyr - 2 if year == 2014
 
-/*
-* Keep respondents in wave 6
-keep if year == 2012
-keep if inlist(age, 51, 52)
-*/
-
-*** Kludge section - fix these when we get the chance
-*do kludge.do
-
-/*
-foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
-    replace `var' = 0 if missing(`var')
-    replace l2`var' = 0 if missing(l2`var')
-}
-*/
+*** Separate into quintiles by wealth for replacement intervention
+egen wealth_quint = cut(atotb), group(5) icodes
+replace wealth_quint = wealth_quint + 1
 
 * Expand the sample based on expansion factor
 *multiply_persons `expansion'
