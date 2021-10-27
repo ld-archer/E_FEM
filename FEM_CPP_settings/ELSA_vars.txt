@@ -350,3 +350,10 @@ married_educl_interaction = married * educl : Interaction between married and sp
 
 | For Mortality Adjustment
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
+
+
+|| Divide diseases into severe conditions and mild conditions
+| Severe conditions are acutely life-threatening (i.e. Stroke, Cancer)
+| Mild conditions are not (i.e. Diabetes, Arthritis)
+severeCondition = cancre | hearte | stroke | demene | lunge
+mildCondition = diabe | hibpe | arthre | asthmae

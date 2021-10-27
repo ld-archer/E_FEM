@@ -60,6 +60,8 @@ local measures
 					n_nodisease		p_nodisease		a_nodisease
 					n_disabled		p_disabled		a_disabled
 					n_not_disabled  p_not_disabled	a_not_disabled
+					p_severeCondition
+					p_mildCondition
 			
 										
 ;
@@ -81,7 +83,7 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f wealth_q1 wealth_q2 wealth_q3 wealth_q4 wealth_q5
+local subpop all m f wq1 wq2 wq3 wq4 wq5
 * CORE_DEBUG: 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
 * HANDOVERS: 55p_f_l 55p_m_l
 * ANALYSIS: educ1 educ2 educ3 exstat1 exstat2 exstat3 anyadl noadl
