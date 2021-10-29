@@ -17,11 +17,159 @@ require(foreign)
 # for multiple imputation replacement
 require(mice)
 
+# for hotdecking
+require(VIM)
+
 workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 rm(workingDir)
 ```
+
+# Replacement Counterfactual
+
+```{r}
+## Read in ELSA_repl.dta file for replacement
+repl <- read_dta('input_data/ELSA_repl.dta')
+```
+
+
+In this counterfactual, we will be using wealth as an input to health without directly using wealth. We want to replace the health and risk behaviour status distribution of the poorest quintile with that of the median or higher quintile to assess how differently the health outcomes would be.
+
+Practically, I think we need to have a few different versions of this to see the impact we can create. 
+
+1. Just risk behaviours. 
+  - Drinking, smoking, BMI, exercise status, more?
+2. Risk behaviours and disability
+3. Risk behaviours, disability, and health status
+
+NEED TO REMEMBER ACCOUNTING!! If changing smoking status especially, need to make sure that the smoke_start and smoke_stop variables both make sense after changes.
+
+## Ideas
+
+### IPF
+
+One way to go about this is IPF, so lets figure out what we need for IPF.
+
+- Seed
+  - Just the variables of interest organised into a matrix of rows = length(people) & cols = length(variables)
+- Constraints
+  - Totals of each variable by age and sex
+
+IPF actually could be a bit tricky, as I would need to collapse my seed down to counts by group, and would then need to integerise the population after this happens. I could do this using the algorithm from humanleague that is built for this purpose. Could even do the whole thing using humanleague functions? I know they are efficient and it would be nice to cite them. However this is an added layer of complexity which I could probably do to stay away from. 
+
+### Multiple imputation
+
+This is not a bad idea, because I can run a multiple imputation by age and sex just like I can do IPF. The `mice` package in R looks the best, and we can do different imputation methods for different variables (i.e. different methods for BMI - continuous, drinking & smoking - ordered).
+
+```{r}
+# Set up lists of id vars, demographic vars (for imputation) and risk vars to be imputed
+id.var <- 'idauniq'
+demog.vars <- c('wealth_quint', 'age', 'male')
+risk.vars <- c('smokev', 'l2smokev', 'smoken', 'l2smoken', 'heavy_smoker',
+               'l2heavy_smoker', 'drink', 'l2drink', 'problem_drinker',
+               'l2problem_drinker', 'logbmi', 'l2logbmi', 'exstat',
+               'l2exstat')
+
+
+test <- repl %>% filter(year == 2012, wealth_quint %in% c(1, 3)) %>%
+                  select(all_of(id.var), all_of(demog.vars), all_of(risk.vars))
+
+# separate test df by quintile so we can remove data for quint1
+test.1 <- test %>% filter(wealth_quint == 1)
+test.3 <- test %>% filter(wealth_quint == 3)
+test.1[risk.vars] <- NA
+test <- rbind(test.1, test.3)
+
+# Run mi & get a complete version of the imputed dataset
+imp <- mice(data=test, m=5, maxit=10, printFlag = FALSE)
+test2 <- complete(imp)
+
+### ACCOUNTING
+# if smoken == 1 then most likely l2smoken == 1 also
+test2$l2smoken[is.na(test2$l2smoken)] <- test2$smoken
+
+# if l2smokev == 1 then smokev must also == 1
+test2$smokev[is.na(test2$smokev)] <- test2$l2smokev
+# also, if l2smoken == 1 then l2smokev must also equal 1
+test2$l2smokev[test2$l2smoken == 1] <- 1
+# same for smoken
+test2$l2smoken[test2$smoken == 1] <- 1
+
+# no variability in problem_drinker -> l2problem_drinker in median wealth group,
+# so assume same here
+test2$l2problem_drinker[is.na(test2$l2problem_drinker)] <- test2$problem_drinker
+
+## OK!
+## The test2 dataset now contains fully imputed data for quintile 1 based on
+## values from quintile 3 so far. Can easily turn this into a function and 
+## use different quintiles (or just do them without the function)
+
+rm(imp, test, test.1, test.3)
+```
+
+```{r}
+## Next step is to replace the values from the original repl dataset and save 
+# this as an alternative for running through the model
+
+# copy this so we don't mess with the original repl
+repl.replaced <- repl %>% filter(wealth_quint == 1) %>%
+                          select(-all_of(risk.vars), -all_of(demog.vars))
+
+# get just the quint 1 people
+quint1.replaced <- test2 %>% filter(wealth_quint == 1)
+
+# merge the modified repl with the newly replaced quint1 people
+repl.replaced <- merge(repl.replaced, quint1.replaced, by='idauniq', all.x = TRUE)
+
+# Now filter all the quint1 people from original repl and row bind the new people
+repl2 <- repl %>% filter(wealth_quint != 1)
+
+repl.final <- rbind(repl.replaced, repl2)
+
+rm(quint1.replaced, repl.replaced, repl2)
+```
+
+Need to deal with some missing data and problems that are created by loading the data in R and saving to dta format.
+
+Specifically, loading data in R loses the special missing characters that stata keeps and can deal with, just replaces with a simple (.) missing. One of the problem vars is educl (spouse education level), which is needed for the education imputation model. We can replace all missings with 0 as educl is used in the equation educl * married, which will be 0 if not married anyway.
+
+```{r}
+
+## Whatever we do in here have to do to the baseline repl as well just to make 
+# sure things are standardised
+
+repl.final2 <- repl.final
+repl2 <- repl
+
+## handle missing educl data as described above
+repl.final2$educl[is.na(repl.final2$educl)] <- 0
+repl2$educl[is.na(repl$educl)] <- 0
+
+#table(repl.final2$educl)
+#summary(repl.final2$educl)
+#print('---------')
+
+repl.final2$radadeduage[is.na(repl.final2$radadeduage)] <- 0
+repl2$radadeduage[is.na(repl$radadeduage)] <- 0
+
+repl.final2$ramomeduage[is.na(repl.final2$ramomeduage)] <- 0
+repl2$ramomeduage[is.na(repl$ramomeduage)] <- 0
+
+## USE THIS SPACE TO HOTDECK LOTS OF MISSING VARIABLES (start with lnly)
+hotdeck.vars <- c('lnly', 'workstat', 'smokev')
+
+repl.final2 <- hotdeck(repl.final2, variable = hotdeck.vars)
+repl2 <- hotdeck(repl2, variable = hotdeck.vars)
+```
+
+```{r}
+## FINALLY SAVE THE DATA
+write_dta(repl.final2, 'input_data/ELSA_repl_modified_quint1.dta', version = 12)
+write_dta(repl2, 'input_data/ELSA_repl_standard.dta', version = 12)
+```
+
+# Output Visualisation
 
 ## Data
 ```{r}
@@ -174,221 +322,11 @@ someSubgroupPrevalence(cohort, 'disabled', subgroups = c(1,4,5))
 
 
 
-# Replacement Counterfactual
-
-```{r}
-## Read in ELSA_repl.dta file for replacement
-repl <- read_dta('input_data/ELSA_repl.dta')
-```
-
-
-In this counterfactual, we will be using wealth as an input to health without directly using wealth. We want to replace the health and risk behaviour status distribution of the poorest quintile with that of the median or higher quintile to assess how differently the health outcomes would be.
-
-Practically, I think we need to have a few different versions of this to see the impact we can create. 
-
-1. Just risk behaviours. 
-  - Drinking, smoking, BMI, exercise status, more?
-2. Risk behaviours and disability
-3. Risk behaviours, disability, and health status
-
-NEED TO REMEMBER ACCOUNTING!! If changing smoking status especially, need to make sure that the smoke_start and smoke_stop variables both make sense after changes.
-
-## Ideas
-
-### IPF
-
-One way to go about this is IPF, so lets figure out what we need for IPF.
-
-- Seed
-  - Just the variables of interest organised into a matrix of rows = length(people) & cols = length(variables)
-- Constraints
-  - Totals of each variable by age and sex
-
-IPF actually could be a bit tricky, as I would need to collapse my seed down to counts by group, and would then need to integerise the population after this happens. I could do this using the algorithm from humanleague that is built for this purpose. Could even do the whole thing using humanleague functions? I know they are efficient and it would be nice to cite them. However this is an added layer of complexity which I could probably do to stay away from. 
-
-### Multiple imputation
-
-This is not a bad idea, because I can run a multiple imputation by age and sex just like I can do IPF. The `mice` package in R looks the best, and we can do different imputation methods for different variables (i.e. different methods for BMI - continuous, drinking & smoking - ordered).
-
-```{r}
-## REMEMBER ACCOUNTING! SMOKING VARS AND EXSTAT
-
-# which variables to select and impute
-# Need to do this in parts because some of the lags wouldn't impute when 
-# the current vars were included. Specifically smoken, smokev, and problem_drinker
-demog.vars <- c('idauniq', 'wealth_quint', 'age', 'male')
-risk.vars.fir <- c('smokev', 'smoken', 'heavy_smoker', 'drink', 
-                   'problem_drinker', 'logbmi',  'exstat', 'l2drink', 
-                   'l2logbmi', 'l2exstat')
-risk.vars.sec <- c('heavy_smoker', 'drink', 'logbmi',  'exstat', 'l2smoken',
-                   'l2smokev', 'l2heavy_smoker', 'l2drink', 'l2problem_drinker',
-                   'l2logbmi', 'l2exstat')
-
-## Have a go at multiple imputation using distribution from median quintile first
-# First generate a test dataset with only the variables we need to impute and age,sex
-test.fir <- repl %>% filter(year == 2012, wealth_quint %in% c(1, 3)) %>%
-                  select(all_of(demog.vars), all_of(risk.vars.fir))
-
-test.sec <- repl %>% filter(year == 2012, wealth_quint %in% c(1, 3)) %>%
-                  select(all_of(demog.vars), all_of(risk.vars.sec))
-
-# Remove data for the risk behaviours for wealth_quint == 1
-# Doing this in chunks as not sure of a better way
-#test.1 <- test[test$wealth_quint == 1]
-#test.3 <- test[test$wealth_quint == 3]
-
-test.1.fir <- filter(test.fir, wealth_quint == 1)
-test.1.sec <- filter(test.sec, wealth_quint == 1)
-test.3.fir <- filter(test.fir, wealth_quint == 3)
-test.3.sec <- filter(test.sec, wealth_quint == 3)
-
-# replace all risk var information with NA for lowest quintile
-test.1.fir[risk.vars.fir] <- NA
-test.1.sec[risk.vars.sec] <- NA
-
-# Now put them all back together with a rbind
-test.fir <- rbind(test.1.fir, test.3.fir)
-test.sec <- rbind(test.1.sec, test.3.sec)
-
-
-# Now have a go at imputing all missings
-imp <- mice(data=test.fir, m=5, maxit=10, printFlag = FALSE)
-
-# get a complete version of the dataset
-test2.fir <- complete(imp)
-
-imp2 <- mice(data=test.sec, m=5, maxit=10, printFlag = FALSE)
-
-test2.sec <- complete(imp2)
-
-test2 <- merge(test2.fir, test2.sec, by = 'idauniq')
-
-rm(test.1.fir, test.1.sec, test.3.fir, test.3.sec, risk.vars.fir, risk.vars.sec,
-   test.fir, test.sec)
-```
-
-```{r}
-
-id.var <- 'idauniq'
-demog.vars <- c('wealth_quint', 'age', 'male')
-risk.vars <- c('smokev', 'l2smokev', 'smoken', 'l2smoken', 'heavy_smoker',
-               'l2heavy_smoker', 'drink', 'l2drink', 'problem_drinker',
-               'l2problem_drinker', 'logbmi', 'l2logbmi', 'exstat',
-               'l2exstat')
-
-test <- repl %>% filter(year == 2012, wealth_quint %in% c(1, 3)) %>%
-                  select(all_of(id.var), all_of(demog.vars), all_of(risk.vars))
-
-#test.1 <- test[test$wealth_quint == 1]
-#test.3 <- test[test$wealth_quint == 3]
-
-test.1 <- test %>% filter(wealth_quint == 1)
-test.3 <- test %>% filter(wealth_quint == 3)
-
-test.1[risk.vars] <- NA
-
-test <- rbind(test.1, test.3)
-
-imp <- mice(data=test, m=5, maxit=10, printFlag = FALSE)
-
-# get a complete version of the dataset
-test2 <- complete(imp)
-
-### ACCOUNTING
-# if smoken == 1 then most likely l2smoken == 1 also
-# if (is.na(test2$l2smoken)) {
-#   test2$l2smoken <- test2$smoken
-# }
-test2$l2smoken[is.na(test2$l2smoken)] <- test2$smoken
-
-# if l2smokev == 1 then smokev must also == 1
-# if (is.na(test2$smokev)) {
-#   test2$smokev <- test2$l2smokev
-#   # also, if l2smoken == 1 then l2smokev must also equal 1
-#   if (test2$l2smoken == 1) {
-#     test2$l2smokev <- 1
-#   }
-#   # same for smoken
-#   if (test2$smoken == 1)
-#     test2$l2smoken <- 1
-# }
-test2$smokev[is.na(test2$smokev)] <- test2$l2smokev
-test2$l2smokev[test2$l2smoken == 1] <- 1
-test2$l2smoken[test2$smoken == 1] <- 1
-
-# no variability in problem_drinker -> l2problem_drinker in median wealth group,
-# so assume same here
-# if (is.na(test2$l2problem_drinker)) {
-#   test2$l2problem_drinker <- test2$problem_drinker
-# }
-test2$l2problem_drinker[is.na(test2$l2problem_drinker)] <- test2$problem_drinker
-
-## OK!
-## The test2 dataset now contains fully imputed data for quintile 1 based on
-## values from quintile 3 so far. Can easily turn this into a function and 
-## use different quintiles (or just do them without the function)
-
-rm(imp, test, test.1, test.3)
-```
-
-```{r}
-## Step 2 is now to replace the values from the original repl dataset and save 
-# this as an alternative for running through the model
-
-# copy this so we don't mess with the original repl
-repl.replaced <- repl %>% filter(wealth_quint == 1) %>%
-                          select(-all_of(risk.vars), -all_of(demog.vars))
-
-# get just the quint 1 people
-quint1.replaced <- test2 %>% filter(wealth_quint == 1)
-
-# merge the modified repl with the newly replaced quint1 people
-repl.replaced <- merge(repl.replaced, quint1.replaced, by='idauniq', all.x = TRUE)
-
-# Now filter all the quint1 people from original repl and row bind the new people
-repl2 <- repl %>% filter(wealth_quint != 1)
-
-repl.final <- rbind(repl.replaced, repl2)
-
-rm(quint1.replaced, repl.replaced, repl2)
-```
-
-Need to deal with some missing data and problems that are created by loading the data in R and saving to dta format.
-
-Specifically, loading data in R loses the special missing characters that stata keeps and can deal with, just replaces with a simple (.) missing. One of the problem vars is educl (spouse education level), which is needed for the education imputation model. We can replace all missings with 0 as educl is used in the equation educl * married, which will be 0 if not married anyway.
-
-```{r}
-
-## Whatever we do in here have to do to the baseline repl as well just to make 
-# sure things are standardised
-
-repl.final2 <- repl.final
-repl2 <- repl
-
-## handle missing educl data as described above
-repl.final2$educl[is.na(repl.final2$educl)] <- 0
-repl2$educl[is.na(repl$educl)] <- 0
-
-table(repl.final2$educl)
-summary(repl.final2$educl)
-print('---------')
-
-repl.final2$radadeduage[is.na(repl.final2$radadeduage)] <- 0
-repl2$radadeduage[is.na(repl$radadeduage)] <- 0
-
-repl.final2$ramomeduage[is.na(repl.final2$ramomeduage)] <- 0
-repl2$ramomeduage[is.na(repl$ramomeduage)] <- 0
-
-## USE THIS SPACE TO HOTDECK LOTS OF MISSING VARIABLES (start with lnly)
-```
 
 
 
-```{r}
-## FINALLY SAVE THE DATA
-write_dta(repl.final2, 'input_data/ELSA_repl_modified_quint1.dta', version = 12)
-write_dta(repl2, 'input_data/ELSA_repl_standard.dta', version = 12)
-```
+
+
 
 
 
