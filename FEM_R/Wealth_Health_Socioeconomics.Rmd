@@ -6,13 +6,16 @@ output: html_notebook
 
 ```{r "setup", include=FALSE}
 
+# Data manipulation and visualisation
 require(tidyverse)
-require(haven)
 require(ggplot2)
+
+# Handling Stata data files
+require(haven)
+require(foreign)
 
 # for multiple imputation replacement
 require(mice)
-require(data.table)
 
 workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
 knitr::opts_knit$set(root.dir = workingDir)
@@ -293,37 +296,44 @@ test2 <- complete(imp)
 
 ### ACCOUNTING
 # if smoken == 1 then most likely l2smoken == 1 also
-if (is.na(test2$l2smoken)) {
-  test2$l2smoken <- test2$smoken
-}
+# if (is.na(test2$l2smoken)) {
+#   test2$l2smoken <- test2$smoken
+# }
+test2$l2smoken[is.na(test2$l2smoken)] <- test2$smoken
 
 # if l2smokev == 1 then smokev must also == 1
-if (is.na(test2$smokev)) {
-  test2$smokev <- test2$l2smokev
-  # also, if l2smoken == 1 then l2smokev must also equal 1
-  if (test2$l2smoken == 1) {
-    test2$l2smokev <- 1
-  }
-  # same for smoken
-  if (test2$smoken == 1)
-    test2$l2smoken <- 1
-}
+# if (is.na(test2$smokev)) {
+#   test2$smokev <- test2$l2smokev
+#   # also, if l2smoken == 1 then l2smokev must also equal 1
+#   if (test2$l2smoken == 1) {
+#     test2$l2smokev <- 1
+#   }
+#   # same for smoken
+#   if (test2$smoken == 1)
+#     test2$l2smoken <- 1
+# }
+test2$smokev[is.na(test2$smokev)] <- test2$l2smokev
+test2$l2smokev[test2$l2smoken == 1] <- 1
+test2$l2smoken[test2$smoken == 1] <- 1
 
 # no variability in problem_drinker -> l2problem_drinker in median wealth group,
 # so assume same here
-if (is.na(test2$l2problem_drinker)) {
-  test2$l2problem_drinker <- test2$problem_drinker
-}
+# if (is.na(test2$l2problem_drinker)) {
+#   test2$l2problem_drinker <- test2$problem_drinker
+# }
+test2$l2problem_drinker[is.na(test2$l2problem_drinker)] <- test2$problem_drinker
 
 ## OK!
 ## The test2 dataset now contains fully imputed data for quintile 1 based on
 ## values from quintile 3 so far. Can easily turn this into a function and 
 ## use different quintiles (or just do them without the function)
+
+rm(imp, test, test.1, test.3)
 ```
 
 ```{r}
-## Step 2 is now to replace the values from the original repl dataset and save this as an alternative for running
-# through the model
+## Step 2 is now to replace the values from the original repl dataset and save 
+# this as an alternative for running through the model
 
 # copy this so we don't mess with the original repl
 repl.replaced <- repl %>% filter(wealth_quint == 1) %>%
@@ -340,11 +350,44 @@ repl2 <- repl %>% filter(wealth_quint != 1)
 
 repl.final <- rbind(repl.replaced, repl2)
 
+rm(quint1.replaced, repl.replaced, repl2)
 ```
+
+Need to deal with some missing data and problems that are created by loading the data in R and saving to dta format.
+
+Specifically, loading data in R loses the special missing characters that stata keeps and can deal with, just replaces with a simple (.) missing. One of the problem vars is educl (spouse education level), which is needed for the education imputation model. We can replace all missings with 0 as educl is used in the equation educl * married, which will be 0 if not married anyway.
+
+```{r}
+
+## Whatever we do in here have to do to the baseline repl as well just to make 
+# sure things are standardised
+
+repl.final2 <- repl.final
+repl2 <- repl
+
+## handle missing educl data as described above
+repl.final2$educl[is.na(repl.final2$educl)] <- 0
+repl2$educl[is.na(repl$educl)] <- 0
+
+table(repl.final2$educl)
+summary(repl.final2$educl)
+print('---------')
+
+repl.final2$radadeduage[is.na(repl.final2$radadeduage)] <- 0
+repl2$radadeduage[is.na(repl$radadeduage)] <- 0
+
+repl.final2$ramomeduage[is.na(repl.final2$ramomeduage)] <- 0
+repl2$ramomeduage[is.na(repl$ramomeduage)] <- 0
+
+## USE THIS SPACE TO HOTDECK LOTS OF MISSING VARIABLES (start with lnly)
+```
+
+
 
 ```{r}
 ## FINALLY SAVE THE DATA
-write_dta(repl.final, 'input_data/ELSA_repl_modified_quint1.dta')
+write_dta(repl.final2, 'input_data/ELSA_repl_modified_quint1.dta', version = 12)
+write_dta(repl2, 'input_data/ELSA_repl_standard.dta', version = 12)
 ```
 
 
