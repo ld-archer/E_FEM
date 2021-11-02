@@ -418,10 +418,10 @@ gen adl3p = adlstat==4 if !missing(adlstat)
 gen iadl1 = iadlstat==2 if !missing(iadlstat)
 gen iadl2p = iadlstat==3 if !missing(iadlstat)
 
-* Now drop vars if no longer needed
-drop adlcount iadlcount
-drop walkra dressa batha eata beda toilta
-drop mapa phonea moneya medsa shopa mealsa housewka
+** Now drop vars if no longer needed
+*drop adlcount iadlcount
+*drop walkra dressa batha eata beda toilta
+*drop mapa phonea moneya medsa shopa mealsa housewka
 
 
 *** Self Reported Health
@@ -643,7 +643,7 @@ replace smokev = 1 if L.smokev == 1 & smokev == 0
 * L.***, L is lag operator; can use L2 for 2 waves prior also
 * can use this as xtset tells stata that data is panel data
 
-* REMOVED: adlcount, iadlcount, agey, bmi, smkint, smkint1, smkint2, smkint3
+* REMOVED: agey, bmi, smkint, smkint1, smkint2, smkint3
 #d ;
 foreach var in
     iwstat
@@ -664,6 +664,8 @@ foreach var in
     anyadl
     iadlstat
     anyiadl
+    adlcount
+    iadlcount
     smkstat
     asthmae
     parkine
@@ -711,6 +713,30 @@ gen smoke_start = 1 if l2smoken == 0 & smoken == 1
 replace smoke_start = 0 if l2smoken == 0 & smoken == 0
 gen smoke_stop = 1 if l2smoken == 1 & smoken == 0
 replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
+
+* Generate lags of adlstat and iadlstat because missing
+recode l2adlcount (0=1) (1=2) (2=3) (3/7 = 4), gen(tmpl2adlstat)
+recode l2adlcount (0=0) (1/6 = 1), gen(tmpl2anyadl)
+recode l2iadlcount (0=1) (1=2) (2/7=3), gen(tmpl2iadlstat)
+recode l2iadlcount (0=0) (1/7=1), gen(tmpl2anyiadl)
+
+replace l2adlstat = tmpl2adlstat
+replace l2anyadl = tmpl2anyadl
+replace l2iadlstat = tmpl2iadlstat
+replace l2anyiadl = tmpl2anyiadl
+
+/* * Handle dummys for lag adls (DONT NEED THESE)
+replace l2adl1 = l2adlstat == 2 if !missing(l2adlstat)
+replace l2adl2 = l2adlstat == 3 if !missing(l2adlstat)
+replace l2adl3p = l2adlstat == 4 if !missing(l2adlstat)
+
+replace l2iadl1 = l2iadlstat == 2 if !missing(l2iadlstat)
+replace l2iadl2p = l2iadlstat == 3 if !missing(l2iadlstat) */
+
+* now drop adl/iadl vars
+drop l2adlcount l2iadlcount tmpl2adlstat tmpl2anyadl tmpl2anyiadl tmpl2iadlstat adlcount iadlcount
+
+
 
 *** Imputation Section ***
 * Be aware of what this section is doing, particularly for missing cases!
