@@ -12,7 +12,6 @@ require(ggplot2)
 
 # Handling Stata data files
 require(haven)
-require(foreign)
 
 # for multiple imputation replacement
 require(mice)
@@ -333,7 +332,7 @@ rm(hotdeck.vars, var)
 write_dta(repl.final2, 'input_data/ELSA_repl_rdh_quint4.dta', version = 12)
 write_dta(repl2, 'input_data/ELSA_repl_standard.dta', version = 12)
 
-rm(repl.final, repl.final2, repl2, absorbing_vars, change.vars, demog.vars, id.var)
+rm(repl.final, repl.final2, repl2, absorbing_vars, change.vars, demog.vars, id.var, repl)
 ```
 
 
@@ -341,13 +340,80 @@ rm(repl.final, repl.final2, repl2, absorbing_vars, change.vars, demog.vars, id.v
 
 ## Baseline
 
+### Initial Conditions
+
+We want to check the initial conditions of each population (or at least for each quintile). Focus on these variables first:
+- Gender
+- Risk behaviours (Smoking, Drinking, BMI, Exercise status)
+- ADLs/IADLs (Disabled?)
+- Severe/Mild Condition?
+
+```{r "summary output FAIL"}
+cohort <- read_dta('output/WEALTH/ELSA_cohort/ELSA_cohort_summary.dta')
+
+### For first run through of this lets look at the summary output. Half of the work is already done for us here
+
+select.vars <- c('male', 'smoke', 'drink', 'exstat', 'bmi', 'disabled', 'disease', 'Condition')
+
+## To check the initial conditions we only need 2012 info (as this is before simulation)
+# Then remove the _all _m & _f columns as we only want outputs by wealth quintile
+init.c <- cohort %>% filter(year == 2012) %>%
+                      select(-ends_with(c('_all', '_m', '_f'))) %>%
+                      select(year, contains(all_of(select.vars))) %>%
+                      select(-starts_with(c('i', 'n')))
+# remove the p_ prefix
+colnames(init.c) <- gsub('p_', '', colnames(init.c))
+# now pivot to get data by quintile
+init.c.pivot <-  pivot_longer(data = init.c,
+                              cols = male_wq1:severeCondition_wq5,
+                              names_to = c('Variable', 'Quintile'),
+                              names_sep = '_w',
+                              values_to = 'Prevalence')
+
+## Summary output is actually making this a bit more difficult than it has to be
+# Instead lets look at the repl populations and make a function to do all this
+
+rm(init.c, init.c.pivot, cohort)
+```
+
+```{r "repl_populations"}
+
+repl <- read_dta('input_data/ELSA_repl_standard.dta')
+repl <- zap_labels(repl)
+repl.2012 <- repl %>% filter(year == 2012)
+
+## First step is to group by wealth_quint and then start producing summary stats
+repl.sum <- repl.2012 %>%
+                group_by(wealth_quint) %>%
+                summarise(
+                  count = n(),
+                  mean_age = mean(age),
+                  mean_male = mean(male),
+                  smoken = mean(smoken),
+                  smokev = mean(smokev),
+                  heavy_smoker = mean(heavy_smoker),
+                  mean_BMI = mean(bmi, na.rm = TRUE),
+                  sd_BMI = sd(bmi, na.rm = TRUE),
+                  missing_BMI_percent = ((sum(is.na(bmi)) / n()) * 100)
+                )
+
+## histogram of BMI by quintile
+repl.bmi <- repl.2012 %>% select(wealth_quint, bmi) %>%
+                          filter(wealth_quint %in% c(1,3))
+repl.bmi <- drop_na(repl.bmi)
+repl.bmi$wealth_quint <- as.factor(repl.bmi$wealth_quint)
+
+ggplot(repl.bmi, aes(x = bmi, color = wealth_quint)) +
+  geom_histogram()
+```
+
+
 ### Data
 ```{r}
 
 cohort <- read_dta("output/WEALTH/ELSA_cohort/ELSA_cohort_summary.dta")
 
 ```
-
 
 ### Survival Curve
 ```{r}
