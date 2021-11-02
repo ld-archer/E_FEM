@@ -259,7 +259,7 @@ foreach var in `wav1missvars' {
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre mbmi smokev smoken hhid
-    asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
+    asthmae parkine vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid
 , i(idauniq) j(wave)
@@ -735,6 +735,8 @@ replace l2iadl2p = l2iadlstat == 3 if !missing(l2iadlstat) */
 
 * now drop adl/iadl vars
 drop l2adlcount l2iadlcount tmpl2adlstat tmpl2anyadl tmpl2anyiadl tmpl2iadlstat adlcount iadlcount
+drop walkra dressa batha eata beda toilta
+drop mapa phonea moneya medsa shopa mealsa housewka
 
 
 

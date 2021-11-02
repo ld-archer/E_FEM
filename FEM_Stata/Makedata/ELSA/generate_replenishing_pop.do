@@ -21,8 +21,21 @@ keep if inlist(age, 51, 52)
 replace rbyr = rbyr + 2 if year == 2010
 replace rbyr = rbyr - 2 if year == 2014
 
+/* count
+count if male
+count if !male */
+
 *** Separate into quintiles by wealth for replacement intervention
+preserve
+* Need to do this by gender
+drop if male == 0
 egen wealth_quint = cut(atotb), group(5) icodes
+tempfile notMale
+save `notMale'
+restore
+drop if male == 1
+egen wealth_quint = cut(atotb), group(5) icodes
+append using `notMale'
 replace wealth_quint = wealth_quint + 1
 
 * Expand the sample based on expansion factor
