@@ -20,6 +20,7 @@ m_endpop -> count (millions)	(ex. m_endpop -> ending population in millions
 local measures 	
 			m_startpop
 			m_endpop
+			p_male
 					p_diabe     i_diabe 	n_diabe 
 					p_hibpe	    i_hibpe 	n_hibpe
 					p_lunge	    i_lunge 	n_lunge 
