@@ -62,6 +62,8 @@ IPF actually could be a bit tricky, as I would need to collapse my seed down to 
 
 This is not a bad idea, because I can run a multiple imputation by age and sex just like I can do IPF. The `mice` package in R looks the best, and we can do different imputation methods for different variables (i.e. different methods for BMI - continuous, drinking & smoking - ordered).
 
+#### Risk Behaviours only
+
 ```{r}
 # Set up lists of id vars, demographic vars (for imputation) and risk vars to be imputed
 id.var <- 'idauniq'
@@ -106,6 +108,7 @@ test2$l2problem_drinker[is.na(test2$l2problem_drinker)] <- test2$problem_drinker
 ## use different quintiles (or just do them without the function)
 
 rm(imp, test, test.1, test.3)
+
 ```
 
 ```{r}
@@ -165,13 +168,180 @@ repl2 <- hotdeck(repl2, variable = hotdeck.vars)
 
 ```{r}
 ## FINALLY SAVE THE DATA
-write_dta(repl.final2, 'input_data/ELSA_repl_modified_quint1.dta', version = 12)
+write_dta(repl.final2, 'input_data/ELSA_repl_risk_quint3.dta', version = 12)
 write_dta(repl2, 'input_data/ELSA_repl_standard.dta', version = 12)
+
+rm(repl.final2, repl2, hotdeck.vars, demog.vars, risk.vars, id.var,
+   repl.final, test2)
 ```
+
+#### Risk Behaviours, ADLs, and Health Status
+
+```{r}
+# Set up lists of id vars, demographic vars (for imputation) and risk vars to be imputed
+id.var <- 'idauniq'
+demog.vars <- c('wealth_quint', 'age', 'male')
+change.vars <- c('smokev', 'l2smokev', 'smoken', 'l2smoken', 'heavy_smoker',
+               'l2heavy_smoker', 
+               'drink', 'l2drink', 'problem_drinker', 'l2problem_drinker', 
+               'logbmi', 'l2logbmi', 
+               'exstat', 'l2exstat', 
+               'adlstat', 'l2adlstat', 'iadlstat', 'l2iadlstat',
+               'cancre', 'l2cancre', 'diabe', 'l2diabe', 'hearte', 'l2hearte',
+               'lunge', 'l2lunge', 'hibpe', 'l2hibpe', 'stroke', 'l2stroke',
+               'asthmae', 'l2asthmae')
+
+
+test <- repl %>% filter(year == 2012, wealth_quint %in% c(1, 4)) %>%
+                  select(all_of(id.var), all_of(demog.vars), all_of(change.vars))
+
+# separate test df by quintile so we can remove data for quint1
+test.1 <- test %>% filter(wealth_quint == 1)
+test.4 <- test %>% filter(wealth_quint == 4)
+test.1[change.vars] <- NA
+test <- rbind(test.1, test.4)
+
+# Run mi & get a complete version of the imputed dataset
+imp <- mice(data=test, m=5, maxit=10, printFlag = FALSE)
+imputed <- complete(imp)
+
+## OK!
+## The test2 dataset now contains fully imputed data for quintile 1 based on
+## values from quintile 3 so far. Can easily turn this into a function and
+## use different quintiles (or just do them without the function)
+
+rm(imp, test, test.1, test.4)
+
+```
+
+```{r}
+### ACCOUNTING
+## The imputation doesn't work perfectly, and a lot of the lagged variables are not imputed in that step as they are correlated with their current
+
+# copy so we don't mess with original
+accounted <- imputed
+
+## CHRONIC CONDITIONS
+# Handle chronic conditions first as they are the easiest to impute
+absorbing_vars <- c('cancre', 'diabe', 'hearte',
+                     'lunge', 'hibpe', 'stroke',
+                     'asthmae')
+
+## If var is absorbing, then 0 in var.current must also be 0 in var.lagged
+for (var in absorbing_vars) {
+  accounted[[paste0('l2', var)]][accounted[[var]] == 0] <- 0
+  accounted[[paste0('l2', var)]][accounted[[var]] == 1] <- 1
+}
+
+
+## specific issue with stroke
+# Stroke didn't impute, but looking at data for the quantile we swapped with
+# not a single case of stroke, so going to set all to 0
+accounted$stroke <- 0
+accounted$l2stroke <- 0
+
+## ADLs/IADLs
+# if adlstat or iadlstat == 1, then lag variable should also be 1
+# i.e. if no disabilitys in current, then previous also no disabilities
+accounted$l2adlstat[accounted$adlstat == 1] <- 1
+accounted$l2iadlstat[accounted$iadlstat == 1] <- 1
+
+
+## RISK BEHAVIOURS
+# if smoken == 1 then most likely l2smoken == 1 also
+accounted$l2smoken[is.na(accounted$l2smoken)] <- accounted$smoken[is.na(accounted$l2smoken)]
+
+# if l2smokev == 1 then smokev must also == 1
+accounted$smokev[is.na(accounted$smokev)] <- accounted$l2smokev[is.na(accounted$smokev)]
+# also, if l2smoken == 1 then l2smokev must also equal 1
+accounted$l2smokev[accounted$l2smoken == 1] <- 1
+# and if l2smokev == 1 then smokev == 1
+accounted$smokev[accounted$l2smokev == 1] <- 1
+# same for smoken
+accounted$l2smoken[accounted$smoken == 1] <- 1
+# going to assume that someone who is a heavy smoker now was a heavy smoker in lag as well
+accounted$l2heavy_smoker[is.na(accounted$l2heavy_smoker)] <- accounted$heavy_smoker[is.na(accounted$l2heavy_smoker)]
+
+
+# if person is a problem drinker then they must also be drink == 1
+accounted$drink[accounted$l2problem_drinker == 1] <- 1
+# probably unlikely that someone would change drink status, so set lag == current
+accounted$l2drink[is.na(accounted$l2drink)] <- accounted$drink[is.na(accounted$l2drink)]
+# no variability in problem_drinker -> l2problem_drinker in median wealth group,
+# so assume same here
+accounted$l2problem_drinker[is.na(accounted$l2problem_drinker)] <- accounted$problem_drinker
+```
+
+
+```{r}
+## Next step is to replace the values from the original repl dataset and save 
+# this as an alternative for running through the model
+
+# copy this so we don't mess with the original repl
+repl.quint1 <- repl %>% filter(wealth_quint == 1) %>%
+                          select(-all_of(change.vars), -all_of(demog.vars))
+
+# get just the quint 1 people
+quint1.replaced <- accounted %>% filter(wealth_quint == 1)
+
+# merge the modified repl with the newly replaced quint1 people
+repl.replaced <- merge(repl.quint1, quint1.replaced, by='idauniq', all.x = TRUE)
+
+# Now filter all the quint1 people from original repl and row bind the new people
+repl2 <- repl %>% filter(wealth_quint != 1)
+
+repl.final <- rbind(repl.replaced, repl2)
+
+rm(repl.quint1, quint1.replaced, repl.replaced, repl2, accounted, imputed)
+```
+
+```{r}
+
+## IMPUTING DATA TO RUN THROUGH MODEL
+
+## Whatever we do in here have to do to the baseline repl as well just to make 
+# sure things are standardised
+
+repl.final2 <- repl.final
+repl2 <- repl
+
+## handle missing educl data as described above
+repl.final2$educl[is.na(repl.final2$educl)] <- 0
+repl2$educl[is.na(repl$educl)] <- 0
+
+#table(repl.final2$educl)
+#summary(repl.final2$educl)
+#print('---------')
+
+repl.final2$radadeduage[is.na(repl.final2$radadeduage)] <- 0
+repl2$radadeduage[is.na(repl$radadeduage)] <- 0
+
+repl.final2$ramomeduage[is.na(repl.final2$ramomeduage)] <- 0
+repl2$ramomeduage[is.na(repl$ramomeduage)] <- 0
+
+## USE THIS SPACE TO HOTDECK LOTS OF MISSING VARIABLES (start with lnly)
+hotdeck.vars <- c('lnly', 'workstat', 'smokev')
+
+repl.final2 <- hotdeck(repl.final2, variable = hotdeck.vars)
+repl2 <- hotdeck(repl2, variable = hotdeck.vars)
+
+rm(hotdeck.vars, var)
+```
+
+```{r}
+## FINALLY SAVE THE DATA
+write_dta(repl.final2, 'input_data/ELSA_repl_rdh_quint4.dta', version = 12)
+write_dta(repl2, 'input_data/ELSA_repl_standard.dta', version = 12)
+
+rm(repl.final, repl.final2, repl2, absorbing_vars, change.vars, demog.vars, id.var)
+```
+
 
 # Output Visualisation
 
-## Data
+## Baseline
+
+### Data
 ```{r}
 
 cohort <- read_dta("output/WEALTH/ELSA_cohort/ELSA_cohort_summary.dta")
@@ -179,16 +349,10 @@ cohort <- read_dta("output/WEALTH/ELSA_cohort/ELSA_cohort_summary.dta")
 ```
 
 
-## Survival Curve
+### Survival Curve
 ```{r}
 
 # Function to compare survival curves between quintiles
-
-## THIS IS NOT USEFUL!!!
-# Because we calculate survival using the m_endpop_* variable (which is a 
-# population level variable) it will always give the same value for every
-# subgroup.
-# Need to talk to Bryan about a way to analyse this within subgroup.
 survivalCurveSubgroup <- function(cohort) {
   
   # Age and survival for each quintile
@@ -237,7 +401,7 @@ rm(check, check2, check3)
 ```
 
 
-## Prevalences
+### Prevalences
 ```{r}
 
 allSubgroupPrevalence <- function(cohort, var) {
@@ -292,15 +456,7 @@ someSubgroupPrevalence <- function(cohort, var, subgroups) {
   }
   
   # Select just the things we want
-  #prev.all <- cohort %>% select(Age, p_anydisease_wq1, p_anydisease_wq2, p_anydisease_wq3, p_anydisease_wq4, p_anydisease_wq5)
   prev.all <- cohort %>% select(Age, all_of(varnames))
-  
-  
-  # # pivot the data to long format for ggplot
-  # survivals <- pivot_longer(data = prev.all,
-  #                           cols = p_anydisease_wq1:p_anydisease_wq5,
-  #                           names_to = "Quintile",
-  #                           values_to = "Disease_Prev")
   
   survivals <- pivot_longer(data = prev.all,
                             cols = varnames[1]:varnames[length(varnames)],
@@ -320,10 +476,294 @@ someSubgroupPrevalence(cohort, 'disabled', subgroups = c(1,4,5))
 
 ```
 
+## Replacement Scenarios
+
+```{r}
+cohort <- read_dta("output/WEALTH/ELSA_cohort/ELSA_cohort_summary.dta")
+replaced1 <- read_dta("output/WEALTH/ELSA_risk_quint3/ELSA_risk_quint3_summary.dta")
+replaced2 <- read_dta("output/WEALTH/ELSA_rdh_quint4/ELSA_rdh_quint4_summary.dta")
+```
 
 
+### Survival Curve
+```{r "quint3"}
+
+survivalCurveReplaced <- function(cohort, replaced) {
+  
+  # Age and survival for each quintile
+  cohort$Age <- (cohort$year - 2012) + 50
+  cohort$q1 <- cohort$m_endpop_wq1 / cohort$m_endpop_wq1[1]
+  cohort$q3 <- cohort$m_endpop_wq3 / cohort$m_endpop_wq3[1]
+  replaced$Age <- (replaced$year - 2012) + 50
+  replaced$q1 <- replaced$m_endpop_wq1 / replaced$m_endpop_wq1[1]
+  
+  # Cut dataframe down to just the age and survivals
+  #survivals <- cohort %>% select(Age, q1, q2, q3, q4, q5)
+  survivals <- data.frame(cohort$Age, cohort$q1, cohort$q3, replaced$q1)
+  
+  survivals <- survivals %>%
+                  dplyr::rename('Age' = cohort.Age, 
+                                'CohortQ1' = cohort.q1, 
+                                'CohortQ3' = cohort.q3, 
+                                'ReplacedQ1' = replaced.q1) %>%
+                  pivot_longer(cols = CohortQ1:ReplacedQ1,
+                               names_to = 'Source',
+                               values_to = 'Survival')
+  
+  p <- ggplot(data = survivals, mapping = aes(x = Age, y = Survival, color = Source)) +
+    geom_smooth(se = FALSE, linetype = 'solid', size=0.4)
+  
+  # return.object <- list(survivals, plot)
+  # 
+  # return(return.object)
+  return(p)
+}
+
+survivalCurveReplaced(cohort, replaced1)
 
 
+```
+```{r "quint4"}
+
+survivalCurveReplaced <- function(cohort, replaced) {
+  
+  # Age and survival for each quintile
+  cohort$Age <- (cohort$year - 2012) + 50
+  cohort$q1 <- cohort$m_endpop_wq1 / cohort$m_endpop_wq1[1]
+  cohort$q4 <- cohort$m_endpop_wq4 / cohort$m_endpop_wq4[1]
+  replaced$Age <- (replaced$year - 2012) + 50
+  replaced$q1 <- replaced$m_endpop_wq1 / replaced$m_endpop_wq1[1]
+  
+  # Cut dataframe down to just the age and survivals
+  #survivals <- cohort %>% select(Age, q1, q2, q3, q4, q5)
+  survivals <- data.frame(cohort$Age, cohort$q1, cohort$q4, replaced$q1)
+  
+  survivals <- survivals %>%
+                  dplyr::rename('Age' = cohort.Age, 
+                                'CohortQ1' = cohort.q1, 
+                                'CohortQ3' = cohort.q4, 
+                                'ReplacedQ1' = replaced.q1) %>%
+                  pivot_longer(cols = CohortQ1:ReplacedQ1,
+                               names_to = 'Source',
+                               values_to = 'Survival')
+  
+  p <- ggplot(data = survivals, mapping = aes(x = Age, y = Survival, color = Source)) +
+    geom_smooth(se = FALSE, linetype = 'solid', size=0.4)
+  
+  # return.object <- list(survivals, plot)
+  # 
+  # return(return.object)
+  return(p)
+}
+
+survivalCurveReplaced(cohort, replaced2)
+
+
+```
+
+
+### Prevalences
+```{r}
+
+subgroupPrevReplaced <- function(cohort, replaced, var, subgroups) {
+  
+  # Age
+  cohort$Age <- (cohort$year - 2012) + 50
+  replaced$Age <- (replaced$year - 2012) + 50
+  
+  # Build varnames
+  varnames <- c()
+  ticker <- 1
+  for (i in subgroups) {
+    varnames[ticker] <- paste0('p_', var, '_wq', i)
+    print(varnames[ticker])
+    ticker <- ticker + 1
+  }
+  
+  # Select vars we've just built
+  cohort.prev <- cohort %>% select(Age, all_of(varnames))
+  replaced.prev <- cohort %>% select(Age, all_of(varnames))
+  
+  prevs <- merge(cohort.prev, replaced.prev, by = 'Age', suffixes = c('.Cohort', '.Replaced'))
+  
+  print(colnames(prevs))
+
+  prevs <- pivot_longer(data = prevs,
+                        cols = paste0(varnames[1], '.Cohort'):paste0(varnames[length(varnames)], '.Replaced'),
+                        names_to = 'Source',
+                        values_to = 'Prevalence')
+  print(colnames(prevs))
+  
+  p <- ggplot(data = prevs, mapping = aes(x = Age, y = Prevalence, color = Source)) +
+      geom_smooth(se=FALSE, size=0.4)
+  
+  return(p)
+  
+}
+
+subgroupPrevReplaced(cohort, replaced1, var = 'anydisease', subgroups = c(1,3))
+# subgroupPrevReplaced(cohort, replaced1, var = 'disabled', subgroups = c(1,3))
+# subgroupPrevReplaced(cohort, replaced1, var = 'severeCondition', subgroups = c(1,3))
+# subgroupPrevReplaced(cohort, replaced1, var = 'mildCondition', subgroups = c(1,3))
+# 
+# subgroupPrevReplaced(cohort, replaced2, var = 'anydisease', subgroups = c(1,4))
+# subgroupPrevReplaced(cohort, replaced2, var = 'disabled', subgroups = c(1,4))
+# subgroupPrevReplaced(cohort, replaced2, var = 'severeCondition', subgroups = c(1,4))
+# subgroupPrevReplaced(cohort, replaced2, var = 'mildCondition', subgroups = c(1,4))
+
+#someSubgroupPrevalence(cohort, var = 'anydisease', subgroups = c(1,3))
+
+```
+
+
+##### Any Disease
+```{r}
+
+c <- cohort
+r2 <- replaced2
+
+c$Age <- (c$year - 2012) + 50
+r2$Age <- (r2$year - 2012) + 50
+
+c.prev <- c %>% select(Age, p_anydisease_wq1, p_anydisease_wq4) %>%
+                dplyr::rename('OrigPoor' = p_anydisease_wq1, 'OrigWealth' = p_anydisease_wq4)
+r2.prev <- r2 %>% select(Age, p_anydisease_wq1) %>%
+                dplyr::rename('ReplacedPoor' = p_anydisease_wq1)
+  
+combined <- merge(c.prev, r2.prev, by = 'Age')
+
+combined.pivot <- pivot_longer(data = combined,
+                               cols = OrigPoor:ReplacedPoor,
+                               names_to = 'Source',
+                               values_to = 'Prevalence')
+
+ggplot(data = combined.pivot, mapping = aes(x = Age, y = Prevalence, color = Source)) +
+  geom_smooth(se=FALSE, size=0.4) +
+  labs(title = 'Any Disease')
+
+```
+
+##### Disabled
+```{r}
+c <- cohort
+r2 <- replaced2
+
+c$Age <- (c$year - 2012) + 50
+r2$Age <- (r2$year - 2012) + 50
+
+c.prev <- c %>% select(Age, p_disabled_wq1, p_disabled_wq4) %>%
+                dplyr::rename('OrigPoor' = p_disabled_wq1, 'OrigWealth' = p_disabled_wq4)
+r2.prev <- r2 %>% select(Age, p_disabled_wq1) %>%
+                dplyr::rename('ReplacedPoor' = p_disabled_wq1)
+  
+combined <- merge(c.prev, r2.prev, by = 'Age')
+
+combined.pivot <- pivot_longer(data = combined,
+                               cols = OrigPoor:ReplacedPoor,
+                               names_to = 'Source',
+                               values_to = 'Prevalence')
+
+ggplot(data = combined.pivot, mapping = aes(x = Age, y = Prevalence, color = Source)) +
+  #geom_smooth(se=FALSE, size=0.4) +
+  geom_line() +
+  labs(title = 'Disabled')
+```
+
+##### Severe Condition
+```{r}
+c <- cohort
+r2 <- replaced2
+
+c$Age <- (c$year - 2012) + 50
+r2$Age <- (r2$year - 2012) + 50
+
+c.prev <- c %>% select(Age, p_severeCondition_wq1, p_severeCondition_wq4) %>%
+                dplyr::rename('OrigPoor' = p_severeCondition_wq1, 'OrigWealth' = p_severeCondition_wq4)
+r2.prev <- r2 %>% select(Age, p_severeCondition_wq1) %>%
+                dplyr::rename('ReplacedPoor' = p_severeCondition_wq1)
+  
+combined <- merge(c.prev, r2.prev, by = 'Age')
+
+combined.pivot <- pivot_longer(data = combined,
+                               cols = OrigPoor:ReplacedPoor,
+                               names_to = 'Source',
+                               values_to = 'Prevalence')
+
+ggplot(data = combined.pivot, mapping = aes(x = Age, y = Prevalence, color = Source)) +
+  geom_smooth(se=FALSE, size=0.4) +
+  labs(title = 'Severe Condition')
+```
+
+##### Mild Condition
+```{r}
+c <- cohort
+r2 <- replaced2
+
+c$Age <- (c$year - 2012) + 50
+r2$Age <- (r2$year - 2012) + 50
+
+c.prev <- c %>% select(Age, p_mildCondition_wq1, p_mildCondition_wq4) %>%
+                dplyr::rename('OrigPoor' = p_mildCondition_wq1, 'OrigWealth' = p_mildCondition_wq4)
+r2.prev <- r2 %>% select(Age, p_mildCondition_wq1) %>%
+                dplyr::rename('ReplacedPoor' = p_mildCondition_wq1)
+  
+combined <- merge(c.prev, r2.prev, by = 'Age')
+
+combined.pivot <- pivot_longer(data = combined,
+                               cols = OrigPoor:ReplacedPoor,
+                               names_to = 'Source',
+                               values_to = 'Prevalence')
+
+ggplot(data = combined.pivot, mapping = aes(x = Age, y = Prevalence, color = Source)) +
+  geom_smooth(se=FALSE, size=0.4) +
+  labs(title = 'Mild Condition')
+```
+
+##### cancre
+```{r}
+c <- cohort
+r2 <- replaced2
+
+c$Age <- (c$year - 2012) + 50
+r2$Age <- (r2$year - 2012) + 50
+
+c.prev <- c %>% select(Age, p_cancre_wq1, p_cancre_wq4) %>%
+                dplyr::rename('OrigPoor' = p_cancre_wq1, 'OrigWealth' = p_cancre_wq4)
+r2.prev <- r2 %>% select(Age, p_cancre_wq1) %>%
+                dplyr::rename('ReplacedPoor' = p_cancre_wq1)
+  
+combined <- merge(c.prev, r2.prev, by = 'Age')
+
+combined.pivot <- pivot_longer(data = combined,
+                               cols = OrigPoor:ReplacedPoor,
+                               names_to = 'Source',
+                               values_to = 'Prevalence')
+
+ggplot(data = combined.pivot, mapping = aes(x = Age, y = Prevalence, color = Source)) +
+  geom_smooth(se=FALSE, size=0.4)
+
+
+c <- cohort
+r2 <- replaced2
+
+c$Age <- (c$year - 2012) + 50
+r2$Age <- (r2$year - 2012) + 50
+
+c.prev <- c %>% select(Age, p_hearte_wq1, p_hearte_wq4) %>%
+                dplyr::rename('OrigPoor' = p_hearte_wq1, 'OrigWealth' = p_hearte_wq4)
+r2.prev <- r2 %>% select(Age, p_hearte_wq1) %>%
+                dplyr::rename('ReplacedPoor' = p_hearte_wq1)
+  
+combined <- merge(c.prev, r2.prev, by = 'Age')
+
+combined.pivot <- pivot_longer(data = combined,
+                               cols = OrigPoor:ReplacedPoor,
+                               names_to = 'Source',
+                               values_to = 'Prevalence')
+
+ggplot(data = combined.pivot, mapping = aes(x = Age, y = Prevalence, color = Source)) +
+  geom_smooth(se=FALSE, size=0.4)
+```
 
 
 
