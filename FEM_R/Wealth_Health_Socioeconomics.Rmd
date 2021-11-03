@@ -244,6 +244,19 @@ accounted$l2stroke <- 0
 # i.e. if no disabilitys in current, then previous also no disabilities
 accounted$l2adlstat[accounted$adlstat == 1] <- 1
 accounted$l2iadlstat[accounted$iadlstat == 1] <- 1
+# Now do all the dummys also
+# ADLs & l2ADLs
+accounted$adl1[accounted$adlstat == 2] <- 1
+accounted$adl1[accounted$adlstat != 2] <- 0
+accounted$adl2[accounted$adlstat == 3] <- 1
+accounted$adl2[accounted$adlstat != 3] <- 0
+accounted$adl3p[accounted$adlstat == 4] <- 1
+accounted$adl3p[accounted$adlstat != 4] <- 0
+# IADLs & l2IADLs
+accounted$iadl1[accounted$iadlstat == 2] <- 1
+accounted$iadl1[accounted$iadlstat != 2] <- 0
+accounted$iadl2p[accounted$iadlstat == 3] <- 1
+accounted$iadl2p[accounted$iadlstat != 3] <- 0
 
 
 ## RISK BEHAVIOURS
@@ -276,9 +289,13 @@ accounted$l2problem_drinker[is.na(accounted$l2problem_drinker)] <- accounted$pro
 ## Next step is to replace the values from the original repl dataset and save 
 # this as an alternative for running through the model
 
+# Have to remove these too as they were handled in accounting
+adl.vars <- c('adl1', 'adl2', 'adl3p', 'iadl1', 'iadl2p')
+
 # copy this so we don't mess with the original repl
 repl.quint1 <- repl %>% filter(wealth_quint == 1) %>%
-                          select(-all_of(change.vars), -all_of(demog.vars))
+                          select(-all_of(change.vars), -all_of(demog.vars),
+                                 -all_of(adl.vars))
 
 # get just the quint 1 people
 quint1.replaced <- accounted %>% filter(wealth_quint == 1)
@@ -642,42 +659,40 @@ subgroupPrevReplaced <- function(cohort, replaced, var, subgroups) {
   ticker <- 1
   for (i in subgroups) {
     varnames[ticker] <- paste0('p_', var, '_wq', i)
-    print(varnames[ticker])
     ticker <- ticker + 1
   }
   
   # Select vars we've just built
-  cohort.prev <- cohort %>% select(Age, all_of(varnames))
-  replaced.prev <- cohort %>% select(Age, all_of(varnames))
+  cohort.prev <- cohort %>% select(Age, all_of(varnames)) %>%
+                            dplyr::rename('OrigPoor' = varnames[1],
+                                          'OrigWealthy' = varnames[2])
+  replaced.prev <- replaced %>% select(Age, varnames[1]) %>%
+                              dplyr::rename('ReplacedPoor' = varnames[1])
   
-  prevs <- merge(cohort.prev, replaced.prev, by = 'Age', suffixes = c('.Cohort', '.Replaced'))
-  
-  print(colnames(prevs))
+  prevs <- merge(cohort.prev, replaced.prev, by = 'Age')
 
   prevs <- pivot_longer(data = prevs,
-                        cols = paste0(varnames[1], '.Cohort'):paste0(varnames[length(varnames)], '.Replaced'),
+                        cols = OrigPoor:ReplacedPoor,
                         names_to = 'Source',
                         values_to = 'Prevalence')
-  print(colnames(prevs))
   
   p <- ggplot(data = prevs, mapping = aes(x = Age, y = Prevalence, color = Source)) +
-      geom_smooth(se=FALSE, size=0.4)
+      geom_smooth(se=FALSE, size=0.4) +
+      labs(title = paste0('Var: ', var, '; Quintiles: [', subgroups[1], ', ', subgroups[2], ']'))
   
   return(p)
   
 }
 
 subgroupPrevReplaced(cohort, replaced1, var = 'anydisease', subgroups = c(1,3))
-# subgroupPrevReplaced(cohort, replaced1, var = 'disabled', subgroups = c(1,3))
-# subgroupPrevReplaced(cohort, replaced1, var = 'severeCondition', subgroups = c(1,3))
-# subgroupPrevReplaced(cohort, replaced1, var = 'mildCondition', subgroups = c(1,3))
-# 
-# subgroupPrevReplaced(cohort, replaced2, var = 'anydisease', subgroups = c(1,4))
-# subgroupPrevReplaced(cohort, replaced2, var = 'disabled', subgroups = c(1,4))
-# subgroupPrevReplaced(cohort, replaced2, var = 'severeCondition', subgroups = c(1,4))
-# subgroupPrevReplaced(cohort, replaced2, var = 'mildCondition', subgroups = c(1,4))
+subgroupPrevReplaced(cohort, replaced1, var = 'disabled', subgroups = c(1,3))
+subgroupPrevReplaced(cohort, replaced1, var = 'severeCondition', subgroups = c(1,3))
+subgroupPrevReplaced(cohort, replaced1, var = 'mildCondition', subgroups = c(1,3))
 
-#someSubgroupPrevalence(cohort, var = 'anydisease', subgroups = c(1,3))
+subgroupPrevReplaced(cohort, replaced2, var = 'anydisease', subgroups = c(1,4))
+subgroupPrevReplaced(cohort, replaced2, var = 'disabled', subgroups = c(1,4))
+subgroupPrevReplaced(cohort, replaced2, var = 'severeCondition', subgroups = c(1,4))
+subgroupPrevReplaced(cohort, replaced2, var = 'mildCondition', subgroups = c(1,4))
 
 ```
 
