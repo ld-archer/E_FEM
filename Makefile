@@ -8,6 +8,7 @@ ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
 MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
 OUTDATA = $(CURDIR)/output
 R = $(CURDIR)/FEM_R
+UTILITIES = $(CURDIR)/FEM_Stata/utilities
 
 include fem.makefile
 
@@ -15,6 +16,9 @@ STATA = $(CURDIR)/run.stata16.sh
 MPI = $(CURDIR)/run.mpi.sh
 PYTHON = python
 RSCRIPT = Rscript
+
+### Separate makefiles
+include expansion.makefile
 
 
 ### Model runs
@@ -41,7 +45,7 @@ core_scen: core_prep simulation_core_scen detailed_appends scen_doc
 
 roc: core_prep simulation_core_roc roc_validation
 
-wealth: core_prep simulation_wealth
+wealth: transitions_core est_core summary_out_core simulation_wealth
 
 
 ### Combined rules
@@ -49,6 +53,8 @@ wealth: core_prep simulation_wealth
 model_prep: ELSA stata_extensions.txt 
 
 start_data: populations imputation projections reweight
+
+start_data_wealth: pop_wealth imputation projections reweight
 
 transitions_est_base: transitions_base est_base summary_out_base
 
@@ -71,6 +77,8 @@ ELSA_EOL: $(DATADIR)/H_ELSA_EOL_a2.dta
 
 populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
+pop_wealth: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_wealth.dta $(DATADIR)/ELSA_transition.dta
+
 $(DATADIR)/H_ELSA_g2.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
@@ -91,6 +99,9 @@ $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELS
 
 $(DATADIR)/ELSA_repl_base.dta: $(DATADIR)/ELSA_stock_base.dta $(MAKEDATA)/generate_replenishing_pop.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_replenishing_pop.do
+
+$(DATADIR)/ELSA_repl_wealth.dta: $(DATADIR)/ELSA_stock_base.dta $(MAKEDATA)/generate_replenishing_pop.do $(UTILITIES)/multiply_persons.ado expansion.makefile
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) EXPAND=$(EXPANSION_FACTOR_ELSA) $(STATA) generate_replenishing_pop.do
 
 $(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_transition_pop.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do

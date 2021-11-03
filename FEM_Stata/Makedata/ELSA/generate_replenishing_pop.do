@@ -4,8 +4,7 @@ quietly include ../../../fem_env.do
 
 * This sets the scenario for use in naming files, trending variables, etc.
 local scen : env scen
-
-local expansion 1
+local expand : env EXPAND
 
 clear all
 
@@ -39,7 +38,7 @@ append using `notMale'
 replace wealth_quint = wealth_quint + 1
 
 * Expand the sample based on expansion factor
-*multiply_persons `expansion'
+multiply_persons `expand'
 
 tempfile base_cohort
 save `base_cohort'

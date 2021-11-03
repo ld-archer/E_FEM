@@ -15,3 +15,6 @@ global indata   			"`local_root'/base_data"
 global outdata 				"`local_root'/input_data"
 
 global output_dir 			"`local_root'/output"
+
+* Add to adopath for custom ado files
+adopath ++ "$local_path/utilities"
