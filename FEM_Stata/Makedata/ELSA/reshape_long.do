@@ -538,6 +538,43 @@ replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
 replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
 replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 
+*** Drinking intensity (Take 3)
+* This logic is based on meetings with Alan Brennan of ScHARR
+* as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
+* Grouping drinkers into 4 groups:
+*   Abstainers:         No alcohol
+*   Moderate:           
+*       Females:        1-14 units/week
+*       Males:          1-21 units/week
+*   Increasing-risk:    
+*       Females:        15-35 units/week
+*       Males:          22-50 units/week
+*   High-risk:          
+*       Females:        > 35 units/week
+*       Males:          > 50 units/week
+gen alcstat = .
+* Abstainer
+replace alcstat = 1 if alcbase == 0
+* Moderate drinker
+replace alcstat = 2 if alcbase >= 1 & alcbase <= 14 & male == 0
+replace alcstat = 2 if alcbase >= 1 & alcbase <= 21 & male == 1
+* Increasing-risk
+replace alcstat = 3 if alcbase >= 15 & alcbase <= 35 & male == 0
+replace alcstat = 3 if alcbase >= 22 & alcbase <= 50 & male == 1
+* High-risk
+replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
+replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
+
+** Dummys
+gen abstainer = 1 if alcstat == 1
+replace abstainer = 0 if alcstat != 1
+gen moderate = 1 if alcstat == 2
+replace moderate = 0 if alcstat != 2
+gen increasingRisk = 1 if alcstat == 3
+replace increasingRisk = 0 if alcstat != 3
+gen highRisk = 1 if alcstat == 4
+replace highRisk = 0 if alcstat != 4
+
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -720,6 +757,11 @@ foreach var in
     unemployed
     retired
     problem_drinker
+    alcstat
+    abstainer
+    moderate
+    increasingRisk
+    highRisk
     {;
         gen l2`var' = L.`var';
     };
