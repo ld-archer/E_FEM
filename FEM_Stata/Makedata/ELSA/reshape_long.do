@@ -8,6 +8,10 @@ local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
+* The following script adds units of alcbase and GOR to wide dataset
+* Run before loading in data as this updates harmonised dataset
+do wave_specific_data.do
+
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use $outdata/H_ELSA_f_2002-2016.dta, clear
 use $outdata/H_ELSA_g2.dta, clear
@@ -61,6 +65,17 @@ Net Value of Non-Housing Financial Wealth;
 
 Section F: Income and Consumption::
 Individual employment earnings; Public pension income;
+
+*/
+
+/*
+Variables from Wave Specific ELSA files:
+
+Risk Behaviours:
+- alcbase: Units of alcohol consumed in previous week
+
+Demographics:
+- GOR: Government Office Region (one of 8? possible regions in UK)
 
 */
 
