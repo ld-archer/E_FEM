@@ -148,6 +148,8 @@ r*lbrf_e
 r*mheight
 r*mweight
 c*cpindex
+r*alcbase
+r*GOR
 ;
 #d cr
 
@@ -239,6 +241,8 @@ foreach var in
     mheight
     mweight
     coupid
+    alcbase
+    GOR
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -276,7 +280,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     hearte stroke psyche arthre mbmi smokev smoken hhid
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf coupid
+    lbrf coupid alcbase GOR
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -335,7 +339,8 @@ label variable demene "Dementia Ever"
 label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
-*label variable nssec "National Statistics Socio-Economic Classification"
+label variable alcbase "Units of alcohol consumed in previous week"
+label variable GOR "Government Office Region"
 
 * Use harmonised education var
 gen educ = raeducl

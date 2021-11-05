@@ -33,13 +33,13 @@ Wave 9, drinks variables are called:
 
 * Is a loop the best way to do this? Over each data file
 
-forvalues wv = 4/9 {
+forvalues wv = 1/9 {
 
     * Handle the discrepancies in version number in filename (god this is stupid isn't it)
-    if `wv' == 4 {
+    if `wv' == 1 | `wv' == 4 {
         local version 3
     }
-    else if `wv' == 5 {
+    else if `wv' == 2 | `wv' == 3 | `wv' == 5 {
         local version 4
     }
     else if `wv' == 6 | `wv' == 8 {
@@ -50,22 +50,26 @@ forvalues wv = 4/9 {
     }
 
     * Load in wave specific file (wave 7 has no version number, more stupid)
-    if `wv' == 4 | `wv' == 5 | `wv' == 6 {
-        *use $outdata/wave_specific/wave_`wv'_elsa_data_v`version'.dta, replace
-        use ../../../input_data/wave_specific/wave_`wv'_elsa_data_v`version'.dta, replace
+    if `wv' == 1 | `wv' == 2 {
+        use $outdata/wave_specific/wave_`wv'_core_data_v`version'.dta, replace
+        *use ../../../input_data/wave_specific/wave_`wv'_elsa_data_v`version'.dta, replace
+    }
+    else if `wv' == 3 | `wv' == 4 | `wv' == 5 | `wv' == 6 {
+        use $outdata/wave_specific/wave_`wv'_elsa_data_v`version'.dta, replace
+        *use ../../../input_data/wave_specific/wave_`wv'_elsa_data_v`version'.dta, replace
     }
     else if `wv' == 7 {
-        *use $outdata/wave_specific/wave_`wv'_elsa_data.dta, replace
-        use ../../../input_data/wave_specific/wave_`wv'_elsa_data.dta, replace
+        use $outdata/wave_specific/wave_`wv'_elsa_data.dta, replace
+        *use ../../../input_data/wave_specific/wave_`wv'_elsa_data.dta, replace
     }
     else if `wv' == 8 | `wv' == 9 {
-        *use $outdata/wave_specific/wave_`wv'_elsa_data_eul_v`version'.dta, replace
-        use ../../../input_data/wave_specific/wave_`wv'_elsa_data_eul_v`version'.dta, replace
+        use $outdata/wave_specific/wave_`wv'_elsa_data_eul_v`version'.dta, replace
+        *use ../../../input_data/wave_specific/wave_`wv'_elsa_data_eul_v`version'.dta, replace
     }
     
     * Now keep only idauniq and the drinks variables (wave 9 names are different) and GOR
     * (stupidity knows no bounds here - gor/GOR come on)
-    if `wv' < 7 {
+    if `wv' > 3 & `wv' < 7 {
         keep idauniq scdrspi scdrwin scdrpin GOR
     }
     if `wv' == 7 | `wv' == 8 {
@@ -80,31 +84,42 @@ forvalues wv = 4/9 {
         rename scwine scdrwin
         rename scbeer scdrpin
     }
+    else if `wv' < 3 {
+        keep idauniq gor
+        rename gor GOR
+    }
+    else if `wv' == 3 {
+        keep idauniq GOR
+    }
 
-    * Now calculate units from each of beer, wine and spirits using NHS values from following link
-    * https://www.nhs.uk/live-well/alcohol-support/calculating-alcohol-units/
-    * (assuming a pint of beer is 5%)
-    gen unitspirit = scdrspi * 1 if scdrspi >= 0
-    gen unitwine = scdrwin * 2.1 if scdrwin >= 0
-    gen unitbeer = scdrpin * 2.8 if scdrpin >= 0
-    
-    * Replace any missing values with 0 so it doesn't mess up the total
-    replace unitspirit = 0 if missing(unitspirit)
-    replace unitwine = 0 if missing(unitwine)
-    replace unitbeer = 0 if missing(unitbeer)
+    * Do all the alcohol stuff for wave 4 onwards
+    if `wv' > 3 {
+        * Now calculate units from each of beer, wine and spirits using NHS values from following link
+        * https://www.nhs.uk/live-well/alcohol-support/calculating-alcohol-units/
+        * (assuming a pint of beer is 5%)
+        gen unitspirit = scdrspi * 1 if scdrspi >= 0
+        gen unitwine = scdrwin * 2.1 if scdrwin >= 0
+        gen unitbeer = scdrpin * 2.8 if scdrpin >= 0
+        * Replace any missing values with 0 so it doesn't mess up the total
+        replace unitspirit = 0 if missing(unitspirit)
+        replace unitwine = 0 if missing(unitwine)
+        replace unitbeer = 0 if missing(unitbeer)
 
-    * Now add them all together for total units in past week
-    gen alcbase = unitspirit + unitwine + unitbeer
-    
-    * Handle some weird floating point issues, some values coming out as xx.799999 for example when should just be .8
-    replace albase = round(alcbase, 0.1)
+        * Now add them all together for total units in past week
+        gen alcbase = unitspirit + unitwine + unitbeer
+        
+        * Handle some weird floating point issues, some values coming out as xx.799999 for example when should just be .8
+        replace alcbase = round(alcbase, 0.1)
 
-    * drop everything else now, don't need it
-    *drop scdr* unit*
+        * drop everything else now, don't need it
+        drop scdr* unit*
 
-    * final step is to merge this value by wave onto harmonised dataset & save
-    * do this with r`wv'var format for reshaping with rest of data
-    rename alcbase r`wv'alcbase
+        * Now rename alc var to be wave based
+        rename alcbase r`wv'alcbase
+    }
+
+    * also rename GOR to be wave based
+    rename GOR r`wv'GOR
     
     merge 1:1 idauniq using $outdata/H_ELSA_g2.dta, nogenerate update
     
