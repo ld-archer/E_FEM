@@ -525,7 +525,6 @@ label values smkstat smkstat
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
 gen heavy_smoker = (smokef >= 20) if !missing(smokef)
-drop smokef
 
 
 *** Drinking Intensity (Take 2)
@@ -565,6 +564,9 @@ replace alcstat = 3 if alcbase >= 22 & alcbase <= 50 & male == 1
 replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
 replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
 
+label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
+label values alcstat alcstat
+
 ** Dummys
 gen abstainer = 1 if alcstat == 1
 replace abstainer = 0 if alcstat != 1
@@ -574,6 +576,11 @@ gen increasingRisk = 1 if alcstat == 3
 replace increasingRisk = 0 if alcstat != 3
 gen highRisk = 1 if alcstat == 4
 replace highRisk = 0 if alcstat != 4
+
+label variable abstainer "Drank no alcohol in week before survey"
+label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
+label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
+label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
 
 
 * Generate an exercise status variable to hold exercise info in single var
