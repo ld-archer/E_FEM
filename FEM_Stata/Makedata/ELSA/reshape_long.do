@@ -769,6 +769,7 @@ foreach var in
     moderate
     increasingRisk
     highRisk
+    GOR
     {;
         gen l2`var' = L.`var';
     };
