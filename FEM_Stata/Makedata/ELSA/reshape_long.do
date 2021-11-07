@@ -567,6 +567,11 @@ replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
 label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
 label values alcstat alcstat
 
+*** IMPUTATION!!!
+* alcbase (and therefore alcstat) info missing for the first 3 waves due to questions not being asked
+* Therefore need to impute this information, try hotdecking first
+hotdeck alcstat using hotdeck_data/alcstat_imp, store seed(`seed') keep(_all) impute(1)
+
 ** Dummys
 gen abstainer = 1 if alcstat == 1 & !missing(alcstat)
 replace abstainer = 0 if alcstat != 1 & !missing(alcstat)
