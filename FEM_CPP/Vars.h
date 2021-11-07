@@ -635,6 +635,20 @@ namespace Vars
         heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
         l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
         pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
+        alcstat,                    ///< Alcohol consumption status [1,4]
+        l2alcstat,                  ///< Lag of Alcohol consumption status [1,4]
+        abstainer,                  ///< Abstains from alcohol consumption. (alcstat == 1)
+        l2abstainer,                ///< Lag of Abstains from alcohol consumption. (alcstat == 1)
+        moderate,                   ///< Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 2)
+        l2moderate,                 ///< Lag of Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 2)
+        increasingRisk,             ///< Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 3)
+        l2increasingRisk,           ///< Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 3)
+        highRisk,                   ///< High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)
+        l2highRisk,                 ///< Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)
+        pabstainer,                 /// Probability of abstainer
+        pmoderate,                  ///< Probability of moderate
+        pincreasingRisk,            ///< Probability of increasingRisk
+        phighRisk,                  ///< Probability of highRisk
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
