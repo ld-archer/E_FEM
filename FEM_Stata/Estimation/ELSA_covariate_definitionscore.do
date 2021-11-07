@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
 global bin_econ
 global ols logbmi atotb itot
-global order adlstat iadlstat srh exstat
+global order adlstat iadlstat srh exstat alcstat
 global unorder workstat mstat
 
 * Variable names
@@ -39,6 +39,7 @@ global order_names
     "IADL status"
     "Self-Reported Health Status"
     "Exercise status"
+    "Alcohol Consumption Status"
 ;
 global unorder_names
     "Work Status"
@@ -80,6 +81,8 @@ local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7 l2nssec8
 * Relationship Status vars
 local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
+* Alcohol consumption status
+local lvars_alcstat l2abstainer l2increasingRisk l2highRisk         /*Control: l2moderate - moderate alcohol consumption*/
 
 
 
@@ -117,15 +120,13 @@ global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke
 global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
 global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
 global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
-*global allvars_smkint       $dvars $lvars_age `lvars_workstat'
 
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise' 
 global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise'
-*global allvars_heavy_drinker $dvars $lvars_age `lvars_workstat'
-*global allvars_freq_drinker $dvars $lvars_age `lvars_workstat'
+global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
 
 
 *** Logbmi & other health
