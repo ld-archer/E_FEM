@@ -568,14 +568,14 @@ label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drink
 label values alcstat alcstat
 
 ** Dummys
-gen abstainer = 1 if alcstat == 1
-replace abstainer = 0 if alcstat != 1
-gen moderate = 1 if alcstat == 2
-replace moderate = 0 if alcstat != 2
-gen increasingRisk = 1 if alcstat == 3
-replace increasingRisk = 0 if alcstat != 3
-gen highRisk = 1 if alcstat == 4
-replace highRisk = 0 if alcstat != 4
+gen abstainer = 1 if alcstat == 1 & !missing(alcstat)
+replace abstainer = 0 if alcstat != 1 & !missing(alcstat)
+gen moderate = 1 if alcstat == 2 & !missing(alcstat)
+replace moderate = 0 if alcstat != 2 & !missing(alcstat)
+gen increasingRisk = 1 if alcstat == 3 & !missing(alcstat)
+replace increasingRisk = 0 if alcstat != 3 & !missing(alcstat)
+gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
+replace highRisk = 0 if alcstat != 4 & !missing(alcstat)
 
 label variable abstainer "Drank no alcohol in week before survey"
 label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"

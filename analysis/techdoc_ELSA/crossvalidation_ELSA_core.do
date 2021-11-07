@@ -113,6 +113,8 @@ keep
 	r*mheight
 	r*mweight
 	c*cpindex
+	r*alcbase
+	r*GOR
 ;
 #d cr
 
@@ -167,6 +169,8 @@ local shapelist
 	r@shopa
 	r@mealsa
 	r@housewka
+	r@alcbase
+	r@GOR
 ;
 #d cr
 
@@ -316,35 +320,7 @@ gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 drop smokef
 
 
-/*
 *** Drinking intensity variable
-* This is more complicated than smoking, needs to include drinkwn and drinkd (& drinkn)?
-* Going to create a drinkstat variable (and replace the current drinkd_stat because its terrible)
-* drinkstat will be defined by an intersection between the drinkd, drinkwn, and potentially drinkn vars
-* if ANY of the variables are at the extreme end (will find cut off values for weekly/daily drinking), then person.drinkstat == high
-* First find binge drinkers 
-gen binge = 1 if male & drinkn > 4 & !missing(drinkn)
-replace binge = 1 if !male & drinkn > 3 & !missing(drinkn)
-replace binge = 0 if male & drinkn <= 4 & !missing(drinkn)
-replace binge = 0 if drinkn <= 3 & !missing(drinkn)
-* Now heavy drinkers (>14 units ~=~ 7 drinks)
-gen heavy = 1 if drinkwn > 7 & !missing(drinkwn)
-replace heavy = 0 if drinkwn <= 7 & !missing(drinkwn)
-* Now generate heavy_drinker as either of binge or heavy
-gen heavy_drinker = 1 if binge == 1 | heavy == 1 & !missing(binge) | !missing(heavy)
-replace heavy_drinker = 0 if binge == 0 & missing(heavy)
-replace heavy_drinker = 0 if heavy == 0 & missing(binge)
-* Now find frequent drinkers (the decision of 6 or more days was arbitrary)
-gen freq_drinker = drinkd > 5 if !missing(drinkd)
-replace freq_drinker = 0 if drinkd <= 5 & !missing(drinkd)
-* Can't be heavy or frequent drinker in the last week if they didn't drink
-replace heavy_drinker = 0 if drink == 0
-replace freq_drinker = 0 if drink == 0
-* Now drop drink vars after generating indicators
-drop drinkn drinkwn drinkd
-label variable heavy_drinker "Heavy Drinker (>14 units/week)"
-label variable freq_drinker "Frequent Drinker (>5 days/week)"
-*/
 
 *** Drinking Intensity (Take 2)
 *gen problem_drinker = (drinkwn > 7) if !missing(drinkwn)
@@ -356,6 +332,51 @@ replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 *replace problem_drinker = 1 if (drinkd == 7)
 *replace problem_drinker = 0 if (drinkd < 7)
 label variable problem_drinker "Problem Drinker (binge/too freq)"
+
+*** Drinking intensity (Take 3)
+* This logic is based on meetings with Alan Brennan of ScHARR
+* as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
+* Grouping drinkers into 4 groups:
+*   Abstainers:         No alcohol
+*   Moderate:           
+*       Females:        1-14 units/week
+*       Males:          1-21 units/week
+*   Increasing-risk:    
+*       Females:        15-35 units/week
+*       Males:          22-50 units/week
+*   High-risk:          
+*       Females:        > 35 units/week
+*       Males:          > 50 units/week
+gen alcstat = .
+* Abstainer
+replace alcstat = 1 if alcbase == 0
+* Moderate drinker
+replace alcstat = 2 if alcbase >= 1 & alcbase <= 14 & male == 0
+replace alcstat = 2 if alcbase >= 1 & alcbase <= 21 & male == 1
+* Increasing-risk
+replace alcstat = 3 if alcbase >= 15 & alcbase <= 35 & male == 0
+replace alcstat = 3 if alcbase >= 22 & alcbase <= 50 & male == 1
+* High-risk
+replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
+replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
+
+label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
+label values alcstat alcstat
+
+** Dummys
+gen abstainer = 1 if alcstat == 1 & !missing(alcstat)
+replace abstainer = 0 if alcstat != 1 & !missing(alcstat)
+gen moderate = 1 if alcstat == 2 & !missing(alcstat)
+replace moderate = 0 if alcstat != 2 & !missing(alcstat)
+gen increasingRisk = 1 if alcstat == 3 & !missing(alcstat)
+replace increasingRisk = 0 if alcstat != 3 & !missing(alcstat)
+gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
+replace highRisk = 0 if alcstat != 4 & !missing(alcstat)
+
+label variable abstainer "Drank no alcohol in week before survey"
+label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
+label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
+label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
 
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
@@ -545,6 +566,10 @@ label var bmi "BMI"
 label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
+label var abstainer "Abstains from alcohol consumption"
+label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
+label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
+label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
 *label var smkint "Smoking Intensity"
 label var heavy_smoker "Heavy Smoker"
 *label var lnly "Loneliness Score"
@@ -587,7 +612,7 @@ restore
 * Removed in core model: psyche lnly 
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev bmi drink heavy_smoker problem_drinker exstat1 exstat2 exstat3
+local risk smoken smokev bmi drink abstainer moderate increasingRisk highRisk heavy_smoker problem_drinker exstat1 exstat2 exstat3
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
