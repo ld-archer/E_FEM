@@ -352,6 +352,7 @@ clean_models:
 	rm -f FEM_CPP_settings/ELSA/models/*.est
 	rm -f FEM_CPP_settings/ELSA_*/models/*.est
 	rm -f FEM_Stata/Estimates/ELSA*/*.ster
+	rm -f FEM_Stata/Estimates/ELSA*/*/*.ster
 	rm -f FEM_Stata/Estimates/ELSA/*/*.ster
 #rm -f FEM_Stata/Estimates/ELSA/CV2/*.ster
 #rm -f FEM_Stata/Estimates/ELSA_minimal/*.ster
