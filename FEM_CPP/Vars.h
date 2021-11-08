@@ -649,6 +649,8 @@ namespace Vars
         pmoderate,                  ///< Probability of moderate
         pincreasingRisk,            ///< Probability of increasingRisk
         phighRisk,                  ///< Probability of highRisk
+        alcbase,                    ///< Total alcohol consumption in past week (units)
+        l2alcbase,                  ///< Lag of Total alcohol consumption in past week (units)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

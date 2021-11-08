@@ -14,7 +14,7 @@ do wave_specific_data.do
 
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use $outdata/H_ELSA_f_2002-2016.dta, clear
-use $outdata/H_ELSA_g2.dta, clear
+use $outdata/H_ELSA_g2_wv_specific.dta, clear
 
 global firstwave 1
 global lastwave 9
@@ -778,6 +778,7 @@ foreach var in
     unemployed
     retired
     problem_drinker
+    alcbase
     alcstat
     abstainer
     moderate

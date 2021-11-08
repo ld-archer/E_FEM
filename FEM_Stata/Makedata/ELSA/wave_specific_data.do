@@ -31,7 +31,12 @@ Wave 9, drinks variables are called:
 */
 
 
-* Is a loop the best way to do this? Over each data file
+*** IMPORTANT
+* Reset the wv_specific H_ELSA file before this starts so we don't keep adding information
+use $outdata/H_ELSA_g2.dta, replace
+save $outdata/H_ELSA_g2_wv_specific.dta, replace
+
+clear
 
 forvalues wv = 1/9 {
 
@@ -52,7 +57,7 @@ forvalues wv = 1/9 {
     * Load in wave specific file (wave 7 has no version number, more stupid)
     if `wv' == 1 | `wv' == 2 {
         use $outdata/wave_specific/wave_`wv'_core_data_v`version'.dta, replace
-        *use ../../../input_data/wave_specific/wave_`wv'_elsa_data_v`version'.dta, replace
+        *use ../../../input_data/wave_specific/wave_`wv'_core_data_v`version'.dta, replace
     }
     else if `wv' == 3 | `wv' == 4 | `wv' == 5 | `wv' == 6 {
         use $outdata/wave_specific/wave_`wv'_elsa_data_v`version'.dta, replace
@@ -101,18 +106,24 @@ forvalues wv = 1/9 {
         gen unitwine = scdrwin * 2.1 if scdrwin >= 0
         gen unitbeer = scdrpin * 2.8 if scdrpin >= 0
         * Replace any missing values with 0 so it doesn't mess up the total
-        replace unitspirit = 0 if missing(unitspirit)
-        replace unitwine = 0 if missing(unitwine)
-        replace unitbeer = 0 if missing(unitbeer)
+        *replace unitspirit = 0 if missing(unitspirit)
+        *replace unitwine = 0 if missing(unitwine)
+        *replace unitbeer = 0 if missing(unitbeer)
 
         * Now add them all together for total units in past week
-        gen alcbase = unitspirit + unitwine + unitbeer
+        gen alcbase = .
+        replace alcbase = 0 if !missing(unitspirit)
+        replace alcbase = 0 if !missing(unitwine)
+        replace alcbase = 0 if !missing(unitbeer)
+        replace alcbase = alcbase + unitspirit if !missing(unitspirit)
+        replace alcbase = alcbase + unitwine if !missing(unitwine)
+        replace alcbase = alcbase + unitbeer if !missing(unitbeer)
         
         * Handle some weird floating point issues, some values coming out as xx.799999 for example when should just be .8
         replace alcbase = round(alcbase, 0.1)
 
         * drop everything else now, don't need it
-        drop scdr* unit*
+        *drop scdr* unit*
 
         * Now rename alc var to be wave based
         rename alcbase r`wv'alcbase
@@ -121,8 +132,17 @@ forvalues wv = 1/9 {
     * also rename GOR to be wave based
     rename GOR r`wv'GOR
     
-    merge 1:1 idauniq using $outdata/H_ELSA_g2.dta, nogenerate update
+    if `wv' == 1 {
+        merge 1:1 idauniq using $outdata/H_ELSA_g2.dta, nogenerate update
+        *merge 1:1 idauniq using ../../../input_data/H_ELSA_g2.dta, nogenerate update
+    }
+    else if `wv' > 1 {
+        merge 1:1 idauniq using $outdata/H_ELSA_g2_wv_specific.dta, nogenerate update
+        *merge 1:1 idauniq using ../../../input_data/H_ELSA_g2_wv_specific.dta, nogenerate update
+    }
     
-    save $outdata/H_ELSA_g2.dta, replace
+    
+    save $outdata/H_ELSA_g2_wv_specific.dta, replace
+    *save ../../../input_data/H_ELSA_g2_wv_specific.dta, replace
 }
 

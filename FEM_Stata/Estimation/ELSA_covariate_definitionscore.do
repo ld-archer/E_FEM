@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
 global bin_econ
-global ols logbmi atotb itot
+global ols logbmi atotb itot alcbase
 global order adlstat iadlstat srh exstat alcstat
 global unorder workstat mstat
 
@@ -33,6 +33,7 @@ global ols_names
     "Log(BMI)"
     "Total Family Wealth"
     "Total Couple Level Income"
+    "Total alcohol consumption in past week (units)"
 ;
 global order_names 
     "ADL status"
@@ -126,6 +127,7 @@ global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_w
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise' 
 global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise'
+global allvars_alcbase      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_smoke'
 global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
 
 

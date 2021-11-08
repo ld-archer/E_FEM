@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene problem_drinker heavy_smoker
 global bin_econ
-global ols logbmi atotb itot
+global ols logbmi atotb itot alcbase
 global order adlstat iadlstat exstat srh alcstat
 global unorder mstat workstat
 
@@ -37,6 +37,7 @@ global ols_names
     "Log(BMI)"
     "Total Family Wealth"
     "Total Couple Level Income"
+    "Total alcohol consumption in past week (units)"
 ;
 global order_names 
     "ADL status"
