@@ -570,7 +570,16 @@ label values alcstat alcstat
 *** IMPUTATION!!!
 * alcbase (and therefore alcstat) info missing for the first 3 waves due to questions not being asked
 * Therefore need to impute this information, try hotdecking first
+* Only impute waves 1-3!!!
+preserve
 hotdeck alcstat using hotdeck_data/alcstat_imp, store seed(`seed') keep(_all) impute(1)
+use hotdeck_data/alcstat_imp1.dta, replace
+drop if wave > 3
+save hotdeck_data/alcstat_imp1.dta, replace
+restore
+drop if wave < 4
+append using hotdeck_data/alcstat_imp1.dta, keep(_all)
+tab alcstat wave
 
 ** Dummys
 gen abstainer = 1 if alcstat == 1 & !missing(alcstat)
