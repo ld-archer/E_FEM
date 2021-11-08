@@ -244,7 +244,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e {
+foreach var in mbmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e alcbase {
 	ren r`var' `var'
 }
 
@@ -258,6 +258,7 @@ label var drink "R drinks alcohol"
 label var drinkd_e "# days/week drinking"
 label var drinkn_e "# drinks/day"
 label var drinkwn_e "# drinks/week"
+label var alcbase "Alcohol Consumption: Units/week"
 
 *** Relationship Status
 *foreach var in mstat {
@@ -634,6 +635,9 @@ foreach tp in binhlth risk binecon cntecon demog {
 				continue
 			}
 			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
+				continue
+			}
+			else if "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" & `wave' < 4 {
 				continue
 			}
 			
