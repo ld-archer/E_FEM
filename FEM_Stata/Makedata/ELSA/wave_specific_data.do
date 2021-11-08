@@ -123,6 +123,6 @@ forvalues wv = 1/9 {
     
     merge 1:1 idauniq using $outdata/H_ELSA_g2.dta, nogenerate update
     
-    save $outdata/H_ELSA_g2, replace
+    save $outdata/H_ELSA_g2.dta, replace
 }
 

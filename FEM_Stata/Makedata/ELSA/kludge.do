@@ -90,7 +90,7 @@ gen medicare_elig = 0
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot problem_drinker educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole abstainer moderate increasingRisk highRisk
+                        smoken hchole alcstat abstainer moderate increasingRisk highRisk
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
@@ -99,7 +99,7 @@ else if "`scen'" == "CV1" |  {
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker mstat lnly alzhe demene workstat problem_drinker abstainer moderate increasingRisk highRisk
+                        heavy_smoker mstat lnly alzhe demene workstat problem_drinker alcstat abstainer moderate increasingRisk highRisk
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
