@@ -637,7 +637,7 @@ foreach tp in binhlth risk binecon cntecon demog {
 			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
 				continue
 			}
-			else if "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" & `wave' < 4 {
+			else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
 				continue
 			}
 			
