@@ -48,10 +48,10 @@ local measures
 						t_itot		a_itot
 					p_drink		i_drink		n_drink
 					p_problem_drinker i_problem_drinker n_problem_drinker
-					p_abstainer			i_abstainer		n_abstainer
-					p_moderate			i_moderate		n_moderate
-					p_increasingRisk	i_increasingRisk	n_increasingRisk
-					p_highRisk			i_highRisk		n_highRisk
+					p_abstainer			n_abstainer
+					p_moderate			n_moderate
+					p_increasingRisk	n_increasingRisk
+					p_highRisk			n_highRisk
 					a_alcbase 	q05_alcbase q50_alcbase q95_alcbase
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab

@@ -352,13 +352,13 @@ married_educl_interaction = married * educl : Interaction between married and sp
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
 
 | FOR ALCOHOL CONSUMPTION DUMMY VARIABLES
-abstainer = alcbase == 0
+abstainer = alcbase == 0 :: boolean
 
 || Females
-moderate = not(male) & alcbase > 0 & alcbase <= 15
-increasingRisk = not(male) & alcbase > 15 & alcbase <= 35
-highRisk = not(male) & alcbase > 35
+moderate = not(male) & alcbase > 0 & alcbase <= 15 :: boolean
+increasingRisk = not(male) & alcbase > 15 & alcbase <= 35 :: boolean
+highRisk = not(male) & alcbase > 35 :: boolean
 || Males
-moderate = male & alcbase > 0 & alcbase <= 22
-increasingRisk = male & alcbase > 22 & alcbase <= 50
-highRisk = male & alcbase > 50
+moderate = male & alcbase > 0 & alcbase <= 22 :: boolean
+increasingRisk = male & alcbase > 22 & alcbase <= 50 :: boolean
+highRisk = male & alcbase > 50 :: boolean

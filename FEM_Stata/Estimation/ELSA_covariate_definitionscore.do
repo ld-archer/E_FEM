@@ -81,8 +81,6 @@ local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7 l2nssec8
 * Relationship Status vars
 local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
-* Alcohol consumption status
-local lvars_alcstat l2abstainer l2increasingRisk l2highRisk         /*Control: l2moderate - moderate alcohol consumption*/
 
 
 
@@ -127,7 +125,6 @@ global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_w
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise' 
 global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise'
 global allvars_alcbase      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_smoke'
-*global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
 
 
 *** Logbmi & other health

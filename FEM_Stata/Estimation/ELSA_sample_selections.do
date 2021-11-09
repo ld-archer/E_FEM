@@ -37,7 +37,7 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
                 smoke_start smoke_stop ///
                 logbmi hchole hipe heavy_smoker mstat lnly alzhe demene ///
-                workstat atotb itot problem_drinker alcstat alcbase
+                workstat atotb itot problem_drinker alcbase
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

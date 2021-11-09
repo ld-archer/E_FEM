@@ -310,12 +310,10 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::heavy_smoker, 0.0);
 					}	
 					else {
-						// Didn't stop, so maintain smkstat, smoken, smokev, smkint
+						// Didn't stop, so maintain smkstat, smoken, smokev
 						person->set(Vars::smkstat,person->get(Vars::l2smkstat));
 						person->set(Vars::smoken,person->get(Vars::l2smoken));
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
-						//person->set(Vars::smkint,person->get(Vars::l2smkint)); Will this line mean that people will always have the same intensity if they continue to smoke? I.e. not being transitioned between states anymore
-						// To above question: Yes I think so
 						// Clean up other vars - didn't start, too
 						person->set(Vars::smoke_start,0.0);
 					}
@@ -332,15 +330,12 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::smokev,1.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
-						// How can I deal with smkint here? Will this happen automatically?
-						// Smkint will be assigned a value from the transition model for anyone with smoken == 1
 					}	
 					else {
-						// Didn't start, so maintain previous status for smkstat, smoken, smokev, smkint
+						// Didn't start, so maintain previous status for smkstat, smoken, smokev
 						person->set(Vars::smkstat,person->get(Vars::l2smkstat));
 						person->set(Vars::smoken,person->get(Vars::l2smoken));
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
-						//person->set(Vars::smkint,person->get(Vars::l2smkint));
                         person->set(Vars::heavy_smoker, 0.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);

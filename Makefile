@@ -354,6 +354,7 @@ clean_logs:
 	rm -f FEM_R/*.nb.html
 	rm -f analysis/techdoc_ELSA/*.log
 	rm -f log_*.txt
+	rm -f FEM_CPP_settings/*.log
 
 clean_debug:
 	rm -f debug/*

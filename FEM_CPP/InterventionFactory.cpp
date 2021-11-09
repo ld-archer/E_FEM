@@ -10,6 +10,7 @@
 #include "SmokeStopIntervention.h"
 #include "ModExIncrease.h"
 #include "ReduceBMI.h"
+#include "AlcoholIntervention50p.h"
 
 InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvider* tp)
 {
