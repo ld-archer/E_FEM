@@ -567,7 +567,7 @@ replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
 label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
 label values alcstat alcstat
 
-*** IMPUTATION!!!
+/* *** IMPUTATION!!!
 * alcbase (and therefore alcstat) info missing for the first 3 waves due to questions not being asked
 * Therefore need to impute this information, try hotdecking first
 * Only impute waves 1-3!!!
@@ -594,7 +594,7 @@ replace highRisk = 0 if alcstat != 4 & !missing(alcstat)
 label variable abstainer "Drank no alcohol in week before survey"
 label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
 label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
-label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
+label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units" */
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -779,11 +779,6 @@ foreach var in
     retired
     problem_drinker
     alcbase
-    alcstat
-    abstainer
-    moderate
-    increasingRisk
-    highRisk
     GOR
     {;
         gen l2`var' = L.`var';

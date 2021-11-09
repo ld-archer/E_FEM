@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
 global bin_econ
 global ols logbmi atotb itot alcbase
-global order adlstat iadlstat srh exstat alcstat
+global order adlstat iadlstat srh exstat
 global unorder workstat mstat
 
 * Variable names
@@ -40,7 +40,6 @@ global order_names
     "IADL status"
     "Self-Reported Health Status"
     "Exercise status"
-    "Alcohol Consumption Status"
 ;
 global unorder_names
     "Work Status"
@@ -128,7 +127,7 @@ global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_w
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise' 
 global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise'
 global allvars_alcbase      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_smoke'
-global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
+*global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
 
 
 *** Logbmi & other health

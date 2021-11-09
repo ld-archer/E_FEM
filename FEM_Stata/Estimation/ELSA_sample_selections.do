@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat drink exstat mstat workstat atotb itot alcstat alcbase {
+foreach v in adlstat iadlstat drink exstat mstat workstat atotb itot {
     local select_`v' !died 
 }
 
@@ -27,6 +27,7 @@ local select_lnly !died & wave > 1
 local select_heavy_drinker !died & drink == 1
 local select_freq_drinker !died & drink == 1
 local select_problem_drinker !died & drink == 1
+local select_alcbase !died & wave > 3 /* Only estimate alcbase using waves 4+, because no data for waves 1-3 */
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
 if "`defmod'" == "CV2" {

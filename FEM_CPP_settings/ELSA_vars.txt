@@ -350,3 +350,15 @@ married_educl_interaction = married * educl : Interaction between married and sp
 
 | For Mortality Adjustment
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
+
+| FOR ALCOHOL CONSUMPTION DUMMY VARIABLES
+abstainer = alcbase == 0
+
+|| Females
+moderate = not(male) & alcbase > 0 & alcbase <= 15
+increasingRisk = not(male) & alcbase > 15 & alcbase <= 35
+highRisk = not(male) & alcbase > 35
+|| Males
+moderate = male & alcbase > 0 & alcbase <= 22
+increasingRisk = male & alcbase > 22 & alcbase <= 50
+highRisk = male & alcbase > 50

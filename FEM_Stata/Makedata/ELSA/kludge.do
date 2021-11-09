@@ -90,7 +90,7 @@ gen medicare_elig = 0
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot problem_drinker educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole alcstat abstainer moderate increasingRisk highRisk
+                        smoken hchole alcbase
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
@@ -99,7 +99,7 @@ else if "`scen'" == "CV1" |  {
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker mstat lnly alzhe demene workstat problem_drinker alcstat abstainer moderate increasingRisk highRisk
+                        heavy_smoker mstat lnly alzhe demene workstat problem_drinker alcbase
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
@@ -138,7 +138,7 @@ replace srh5 = 0 if srh3 == 1
 foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
                         srh3 srh4 srh5 atotb itot hipe mstat heavy_smoker alzhe demene employed unemployed ///
-                        retired problem_drinker abstainer moderate increasingRisk highRisk {
+                        retired problem_drinker alcbase {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
