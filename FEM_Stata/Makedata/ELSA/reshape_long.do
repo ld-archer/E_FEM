@@ -721,7 +721,6 @@ replace smokev = 1 if L.smokev == 1 & smokev == 0
 * L.***, L is lag operator; can use L2 for 2 waves prior also
 * can use this as xtset tells stata that data is panel data
 
-* REMOVED: adlcount, iadlcount, agey, bmi, smkint, smkint1, smkint2, smkint3
 #d ;
 foreach var in
     iwstat

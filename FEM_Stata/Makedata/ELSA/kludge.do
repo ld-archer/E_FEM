@@ -162,14 +162,6 @@ replace l2single = l2mstat == 2
 replace l2cohab = l2mstat == 3
 replace l2widowed = l2mstat == 4
 
-* Handle missing dummy l2smkint information after imputing lag above
-*replace l2smkint1 = l2smkint == 1
-*replace l2smkint2 = l2smkint == 2
-*replace l2smkint3 = l2smkint == 3
-* If still missing
-*replace l2smkint1 = 0 if missing(l2smkint1)
-*replace l2smkint2 = 0 if missing(l2smkint2)
-*replace l2smkint3 = 0 if missing(l2smkint3)
 
 * If still missing heavy_smoker data, replace with not heavy
 replace heavy_smoker = 0 if missing(heavy_smoker)

@@ -590,17 +590,6 @@ namespace Vars
 		l2mei_treated,              ///< Lag of whether treated with Moderate Exercise Increase intervention
 		ei_treated,					///< Whether treated with Exercise Intervention
 		l2ei_treated,				///< Lag of whether treated with Exercise Intervention
-		smkint,                     ///< Smoking intensity variable
-		smkint1,                    ///< Smoking intensity level 1
-		smkint2,                    ///< Smoking intensity level 2
-		smkint3,                    ///< Smoking intensity level 3
-		l2smkint,                   ///< Lag of Smoking intensity variable
-		l2smkint1,                  ///< Lag of Smoking intensity level 1
-		l2smkint2,                  ///< Lag of Smoking intensity level 2
-		l2smkint3,                  ///< Lag of Smoking intensity level 3
-		psmkint1,                   ///< Probability of smoking intensity level 1
-		psmkint2,                   ///< Probability of smoking intensity level 2
-		psmkint3,                   ///< Probability of smoking intensity level 3
 		lnly,                       ///< Loneliness Score, Low to High [1, 3]
 		lnly1,                      ///< Loneliness Score: Low
         lnly2,                      ///< Loneliness Score: Medium
@@ -612,9 +601,6 @@ namespace Vars
         plnly1,                     ///< Probability of lnly == 1
         plnly2,                     ///< Probability of lnly == 2
         plnly3,                     ///< Probability of lnly == 3
-        //unemp,                      ///< Unemployed [0, 1]
-        //l2unemp,                    ///< Lag of unemployed
-        //punemp,                     ///< Probability of unemployed
         alzhe,                      ///< Alzheimers ever
         l2alzhe,                    ///< Lag of Alzheimers ever
         palzhe,                     ///< Probability of Alzheimers ever

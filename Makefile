@@ -345,13 +345,15 @@ move_results:
 	rm -rf ../tmp_output/*
 	cp -r output/SCENARIO/* ../tmp_output/
 
-clean_all: clean_logs clean_models
+clean_all: clean_logs clean_models clean_handovers clean_settings
 
 clean_logs:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
 	rm -f FEM_R/*.nb.html
+	rm -f analysis/techdoc_ELSA/*.log
+	rm -f log_*.txt
 
 clean_debug:
 	rm -f debug/*
@@ -362,5 +364,11 @@ clean_models:
 	rm -f FEM_Stata/Estimates/ELSA*/*.ster
 	rm -f FEM_Stata/Estimates/ELSA*/*/*.ster
 	rm -f FEM_Stata/Estimates/ELSA/*/*.ster
-#rm -f FEM_Stata/Estimates/ELSA/CV2/*.ster
-#rm -f FEM_Stata/Estimates/ELSA_minimal/*.ster
+
+clean_handovers:
+	rm -f analysis/techdoc_ELSA/*.gph
+	rm -f analysis/techdoc_ELSA/*.dta
+	rm -f analysis/techdoc_ELSA/FEM/img/*.pdf
+
+clean_settings:
+	rm -f FEM_CPP_settings/summary_output_ELSA*.txt

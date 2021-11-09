@@ -260,32 +260,6 @@ label var drinkn_e "# drinks/day"
 label var drinkwn_e "# drinks/week"
 label var alcbase "Alcohol Consumption: Units/week"
 
-*** Relationship Status
-*foreach var in mstat {
-*	ren r`var' `var'
-*}
-
-* Generate partnership status vars, then drop mstat
-* mstat values: 1 - Married
-*               3 - Partnered
-*               4 - Separated
-*               5 - Divorced
-*               7 - Widowed
-*               8 - Never Married
-*replace mstat = 2 if inlist(mstat, 4,5,8)
-*replace mstat = 4 if mstat == 7
-*label variable mstat "Marriage Status"
-*label define mstat 1 "Married" 2 "Single" 3 "Cohabiting" 4 "Widowed"
-*label values mstat mstat
-
-*gen married = mstat == 1
-*gen single = mstat == 2
-*gen cohab = mstat == 3
-*gen widowed = mstat == 4
-*label variable married "Married"
-*label variable single "Single"
-*label variable cohab "Cohabiting"
-*label variable widowed "Widowed"
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -305,15 +279,6 @@ gen exstat2 = 1 if exstat == 2
 replace exstat2 = 0 if exstat != 2
 gen exstat3 = 1 if exstat == 3
 replace exstat3 = 0 if exstat != 3
-
-* Smoking intensity variable
-*recode smokef (0/0.99=0) (1/9.99=1) (10/19.99=2) (20/max=3), gen(smkint)
-*label define smkint 1 "Low" 2 "Medium" 3 "High"
-*label values smkint smkint
-*label variable smkint "Smoking intensity"
-*drop smokef
-* Now assign any missing that don't smoke to equal 0
-*replace smkint = 0 if smoken == 0
 
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
@@ -571,20 +536,11 @@ label var abstainer "Abstains from alcohol consumption"
 label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
 label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
 label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
-*label var smkint "Smoking Intensity"
 label var heavy_smoker "Heavy Smoker"
-*label var lnly "Loneliness Score"
-*label var heavy_drinker "Heavy Drinker"
-*label var freq_drinker "Frequent Drinker"
 label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
-*label var mstat "Marriage Status"
-*label var married "Married"
-*label var single "Single"
-*label var cohab "Cohabiting"
-*label var widowed "Widowed"
 
 label var workstat "Working Status"
 label var employed "Employed"

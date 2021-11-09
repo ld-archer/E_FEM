@@ -18,7 +18,6 @@ local select_died !l2died & wave > 1 & wave <= 6
 local select_smoke_start !died & l2smoken == 0  /*INCIDENCE*/
 local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
 local select_srh !died & wave != 3
-local select_smkint !died & smoken == 1
 local select_heavy_smoker !died & smoken == 1
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8 | wave==9) /* Only estimate bmi model using waves 2,4,6,8,9 as other waves are imputed */
 local select_hchole !died & l2hchole == 0 & wave > 1 /*INCIDENCE*/
