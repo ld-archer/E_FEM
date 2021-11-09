@@ -125,6 +125,9 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 	ReduceBMI* rbmi = new ReduceBMI(index++, tp, vp);
 	interventions[rbmi->name()] = rbmi;
 
+	AlcoholIntervention50p* ai50p = new AlcoholIntervention50p(index++, tp, vp);
+	interventions[ai50p->name()] = ai50p;
+
 
 }
 

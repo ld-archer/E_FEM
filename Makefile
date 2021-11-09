@@ -27,12 +27,10 @@ cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: clean_output complete debug_doc 
+debug: clean_output complete debug_doc
 
-core_prep: start_data transitions_core est_core summary_out_core
 core: core_prep simulation_core
 
-core_complete_prep: core_prep transitions_minimal est_minimal summary_out_minimal
 core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_core_CV2 Ttests_core
 
 core_debug: core_complete debug_doc_core
@@ -41,14 +39,20 @@ core_scen: core_prep simulation_core_scen detailed_appends scen_doc
 
 roc: core_prep simulation_core_roc roc_validation
 
+alcohol: core_prep simulation_alcohol
+
 
 ### Combined rules
 
-model_prep: ELSA stata_extensions.txt 
+## Preparation
 
+model_prep: ELSA stata_extensions.txt
 start_data: populations imputation projections reweight
 
-transitions_est_base: transitions_base est_base summary_out_base
+core_prep: start_data transitions_core est_core summary_out_core
+core_complete_prep: core_prep transitions_core_CV transitions_minimal est_minimal summary_out_minimal
+
+## Utility
 
 retest_CV: Ttests_core debug_doc_core
 
@@ -150,9 +154,10 @@ transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_tran
 
 transitions_core: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core $(STATA) ELSA_init_transition.do
+
+transitions_core_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV1 $(STATA) ELSA_init_transition.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV2 $(STATA) ELSA_init_transition.do
-	
 
 
 ### Estimates and Summary
@@ -215,6 +220,9 @@ simulation_core_scen:
 
 simulation_core_roc:
 	$(MPI) ELSA_roc_validation.settings.txt
+
+simulation_alcohol:
+	$(MPI) ELSA_alcohol_intervention.settings.txt
 
 
 ### Handovers and Validation
