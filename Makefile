@@ -47,7 +47,7 @@ alcohol: core_prep simulation_alcohol
 ## Preparation
 
 model_prep: ELSA stata_extensions.txt
-start_data: populations imputation projections reweight
+start_data: clean_logs populations imputation projections reweight
 
 core_prep: start_data transitions_core est_core summary_out_core
 core_complete_prep: core_prep transitions_core_CV transitions_minimal est_minimal summary_out_minimal
@@ -136,9 +136,13 @@ $(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projectio
 ### Transitions
 # Use the died.est model as the target for the transitions rules, as this model is always required and won't be removed by accident
 
-transitions_base: $(ESTIMATES)/ELSA/died.est
+transitions_base: $(ESTIMATES)/ELSA/died.ster
 
-transitions_CV: $(ESTIMATES)/ELSA/crossvalidation1/died.est $(ESTIMATES)/ELSA/crossvalidation2/died.est
+transitions_CV: $(ESTIMATES)/ELSA/crossvalidation1/died.ster $(ESTIMATES)/ELSA/crossvalidation2/died.ster
+
+transitions_core: $(ESTIMATES)/ELSA_core/died.ster
+
+transitions_core_CV: $(ESTIMATES)/ELSA_core/CV1/died.ster $(ESTIMATES)/ELSA_core/CV2/died.ster
 
 $(ESTIMATES)/ELSA/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
@@ -152,11 +156,13 @@ $(ESTIMATES)/ELSA/crossvalidation2/died.est: $(DATADIR)/ELSA_transition.dta $(ES
 transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=minimal $(STATA) ELSA_init_transition.do
 
-transitions_core: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
+$(ESTIMATES)/ELSA_core/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core $(STATA) ELSA_init_transition.do
 
-transitions_core_CV: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
+$(ESTIMATES)/ELSA_core/CV1/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV1 $(STATA) ELSA_init_transition.do
+
+$(ESTIMATES)/ELSA_core/CV2/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV2 $(STATA) ELSA_init_transition.do
 
 
