@@ -55,6 +55,7 @@ FEM_CPP_settings/ELSA_core/models/*.est
 FEM_Stata/Estimates/ELSA_core/*.csv
 FEM_Stata/Estimates/ELSA_core/*.txt
 FEM_Stata/Estimates/*/*.doc
+FEM_Stata/Estimates/ELSA_minimal/*.txt
 
 # Input data (only need select files the rest are generated)
 input_data/detailed_output/*.dta
