@@ -50,7 +50,7 @@ model_prep: ELSA stata_extensions.txt
 start_data: clean_logs populations imputation projections reweight
 
 core_prep: start_data transitions_core est_core summary_out_core
-core_complete_prep: core_prep transitions_core_CV transitions_minimal est_minimal summary_out_minimal
+core_complete_prep: core_prep transitions_core_CV est_core_CV summary_out_core_CV transitions_minimal est_minimal summary_out_minimal
 
 ## Utility
 
@@ -181,9 +181,10 @@ est_minimal:
 
 est_core:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
+	
+est_core_CV:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV1/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models $(STATA) save_est_cpp.do
-
 
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
@@ -197,6 +198,8 @@ summary_out_minimal:
 
 summary_out_core:
 	cd FEM_CPP_settings && measures_suffix=ELSA_core $(STATA) summary_output_gen.do
+
+summary_out_core_CV:
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 $(STATA) summary_output_gen.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 $(STATA) summary_output_gen.do
 
