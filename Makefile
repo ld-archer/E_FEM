@@ -351,7 +351,7 @@ move_results:
 	rm -rf ../tmp_output/*
 	cp -r output/SCENARIO/* ../tmp_output/
 
-clean_all: clean_logs clean_models clean_handovers clean_settings
+clean_all: clean_logs clean_models clean_handovers clean_settings clean_hotdecks
 
 clean_logs:
 	rm -f *.log
@@ -379,3 +379,6 @@ clean_handovers:
 
 clean_settings:
 	rm -f FEM_CPP_settings/summary_output_ELSA*.txt
+
+clean_hotdecks:
+	rm -f FEM_Stata/Makedata/ELSA/hotdeck_data/*.dta
