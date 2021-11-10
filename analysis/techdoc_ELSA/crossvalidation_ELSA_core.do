@@ -38,7 +38,7 @@ local maxwave 9
 *use `input'/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta, clear
-use `input'/H_ELSA_g2.dta, clear
+use `input'/H_ELSA_g2_wv_specific.dta, clear
 
 gen hhidpn = idauniq
 
