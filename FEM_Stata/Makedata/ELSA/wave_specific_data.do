@@ -75,26 +75,42 @@ forvalues wv = 1/9 {
     * Now keep only idauniq and the drinks variables (wave 9 names are different) and GOR
     * (stupidity knows no bounds here - gor/GOR come on)
     if `wv' > 3 & `wv' < 7 {
-        keep idauniq scdrspi scdrwin scdrpin GOR
+        keep idauniq scal7a scdrspi scdrwin scdrpin GOR
     }
     if `wv' == 7 | `wv' == 8 {
-        keep idauniq scdrspi scdrwin scdrpin gor
+        keep idauniq scal7a scdrspi scdrwin scdrpin gor
         * Rename for consistency
         rename gor GOR
     }
     else if `wv' == 9 {
-        keep idauniq scsprt scwine scbeer GOR
+        keep idauniq scalcy scsprt scwine scbeer GOR
         * Rename for consistency
         rename scsprt scdrspi
         rename scwine scdrwin
         rename scbeer scdrpin
+        rename scalcy scal7a
     }
-    else if `wv' < 3 {
-        keep idauniq gor
+    else if `wv' == 1 {
+        keep idauniq gor heala
+        rename gor GOR
+    }
+    else if `wv' == 2 {
+        keep idauniq gor scal7a
         rename gor GOR
     }
     else if `wv' == 3 {
-        keep idauniq GOR
+        keep idauniq GOR scal7a
+    }
+
+    * Can infer abstainers from waves 1-3 but not much else
+    if `wv' == 1 {
+        gen r1alcbase = .
+        replace r1alcbase = 0 if heala == 6
+    }
+
+    if `wv' == 2 | `wv' == 3 {
+        gen r`wv'alcbase = .
+        replace r`wv'alcbase = 0 if scal7a == 2
     }
 
     * Do all the alcohol stuff for wave 4 onwards
@@ -115,6 +131,7 @@ forvalues wv = 1/9 {
         replace alcbase = 0 if !missing(unitspirit)
         replace alcbase = 0 if !missing(unitwine)
         replace alcbase = 0 if !missing(unitbeer)
+        replace alcbase = 0 if scal7a == 2 /* scal7a == 2 means not drank in last 7 days */
         replace alcbase = alcbase + unitspirit if !missing(unitspirit)
         replace alcbase = alcbase + unitwine if !missing(unitwine)
         replace alcbase = alcbase + unitbeer if !missing(unitbeer)
@@ -123,7 +140,7 @@ forvalues wv = 1/9 {
         replace alcbase = round(alcbase, 0.1)
 
         * drop everything else now, don't need it
-        *drop scdr* unit*
+        *drop scdr* unit* scal7a
 
         * Now rename alc var to be wave based
         rename alcbase r`wv'alcbase
