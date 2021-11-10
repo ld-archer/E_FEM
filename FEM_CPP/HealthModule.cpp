@@ -357,6 +357,18 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			    }
 			}
 
+			// Need to make sure that alcbase cannot be below 0
+			// If predicted below 0 then just assume not drank alcohol
+			if (elsa_data) {
+			    // If predicted value below 0
+			    if(person->get(Vars::alcbase) < 0) {
+			        // set back to 0
+			        person->set(Vars::alcbase, 0.0);
+			        // also set drink to 0
+			        person->set(Vars::drink, 0.0);
+			    }
+			}
+
 			// Handle marriage status transitions
 			if (elsa_data) {
                 // Married = mstat == 1
