@@ -313,7 +313,7 @@ label variable problem_drinker "Problem Drinker (binge/too freq)"
 *   High-risk:          
 *       Females:        > 35 units/week
 *       Males:          > 50 units/week
-gen alcstat = .
+/* gen alcstat = .
 * Abstainer
 replace alcstat = 1 if alcbase == 0
 * Moderate drinker
@@ -337,7 +337,24 @@ replace moderate = 0 if alcstat != 2 & !missing(alcstat)
 gen increasingRisk = 1 if alcstat == 3 & !missing(alcstat)
 replace increasingRisk = 0 if alcstat != 3 & !missing(alcstat)
 gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
-replace highRisk = 0 if alcstat != 4 & !missing(alcstat)
+replace highRisk = 0 if alcstat != 4 & !missing(alcstat) */
+
+gen abstainer = 1 if alcbase == 0 & !missing(alcbase)
+
+gen moderate = 1 if alcbase >= 1 & alcbase <= 14 & male == 0 & !missing(alcbase)
+replace moderate = 1 if alcbase >= 1 & alcbase <= 21 & male == 1 & !missing(alcbase)
+replace moderate = 0 if alcbase < 1 & alcbase > 14 & male == 0 & !missing(alcbase)
+replace moderate = 0 if alcbase < 1 & alcbase > 21 & male == 1 & !missing(alcbase)
+
+gen increasingRisk = 1 if alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase)
+replace increasingRisk = 1 if alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase)
+replace increasingRisk = 0 if alcbase < 15 & alcbase > 35 & male == 0 & !missing(alcbase)
+replace increasingRisk = 0 if alcbase < 22 & alcbase > 50 & male == 1 & !missing(alcbase)
+
+gen highRisk = 1 if alcbase > 35 & male == 0 & !missing(alcbase) & !missing(alcbase)
+replace highRisk = 1 if alcbase > 50 & male == 1 & !missing(alcbase) & !missing(alcbase)
+replace highRisk = 0 if alcbase < 35 & male == 0 & !missing(alcbase) & !missing(alcbase)
+replace highRisk = 0 if alcbase < 50 & male == 1 & !missing(alcbase) & !missing(alcbase)
 
 label variable abstainer "Drank no alcohol in week before survey"
 label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
@@ -575,7 +592,7 @@ local cntecon itotx atotbx
 local demog age_yrs male white
 local unweighted died
 
-*save testing_crossvalidation.dta, replace
+save testing_crossvalidation.dta, replace
 
 foreach tp in binhlth risk binecon cntecon demog {
 	forvalues wave = `minwave'/`maxwave' {
@@ -593,9 +610,9 @@ foreach tp in binhlth risk binecon cntecon demog {
 			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
 				continue
 			}
-			else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
-				continue
-			}
+			*else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
+			*	continue
+			*}
 			
 			local select
 			if "`var'" == "itearnx" {
