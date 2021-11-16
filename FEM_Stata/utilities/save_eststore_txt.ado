@@ -17,7 +17,7 @@ program define save_eststore_txt
 		else if "`model_type'" == "regress" & inlist("`model_name'", "a1c_adj", "hdl_adj", "tc_adj", "logcysc_adj", "logcrp_adj")  {
 			qui estout `newvarname' `using', prehead("`model_type'" "`predicted_var'") collabels(,none) mlabels(,none) eqlabels(,none) prefoot("| Root Mean Square Error") stats(rmse, label("_rmse")) replace	
 		} 
-		else if "`model_type'" == "regress" & inlist("`model_name'", "smokef")  {
+		else if "`model_type'" == "regress" & inlist("`model_name'", "smokef", "alcbase")  {
 			qui estout `newvarname' `using', prehead("`model_type'" "`predicted_var'") collabels(,none) mlabels(,none) eqlabels(,none) prefoot("| Root Mean Square Error") stats(rmse, label("_rmse")) replace	
 		} 
 		else {
