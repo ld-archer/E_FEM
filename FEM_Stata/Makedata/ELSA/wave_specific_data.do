@@ -75,32 +75,33 @@ forvalues wv = 1/9 {
     * Now keep only idauniq and the drinks variables (wave 9 names are different) and GOR
     * (stupidity knows no bounds here - gor/GOR come on)
     if `wv' > 3 & `wv' < 7 {
-        keep idauniq scako scal7a scdrspi scdrwin scdrpin GOR
+        keep idauniq scako scal7a scal7b scdrspi scdrwin scdrpin GOR
     }
     if `wv' == 7 | `wv' == 8 {
-        keep idauniq scako scal7a scdrspi scdrwin scdrpin gor
+        keep idauniq scako scal7a scal7b scdrspi scdrwin scdrpin gor
         * Rename for consistency
         rename gor GOR
     }
     else if `wv' == 9 {
-        keep idauniq scalcm scalcy scsprt scwine scbeer GOR
+        keep idauniq scalcm scalcy scalcd scsprt scwine scbeer GOR
         * Rename for consistency
         rename scsprt scdrspi
         rename scwine scdrwin
         rename scbeer scdrpin
         rename scalcm scako
         rename scalcy scal7a
+        rename scalcd scal7b
     }
     else if `wv' == 1 {
         keep idauniq gor heala
         rename gor GOR
     }
     else if `wv' == 2 {
-        keep idauniq gor scako scal7a
+        keep idauniq gor scako scal7a scal7b
         rename gor GOR
     }
     else if `wv' == 3 {
-        keep idauniq GOR scako scal7a
+        keep idauniq GOR scako scal7a scal7b
     }
 
     * Can infer abstainers from waves 1-3 but not much else
@@ -113,7 +114,8 @@ forvalues wv = 1/9 {
         gen whether_abstainer = 1 if scako == 8 /* scako == 8 is not at all in last 12 months */
         replace whether_abstainer = 1 if scal7a == 2 /* scal7a == 2 is not drank in last 7 days */
         replace whether_abstainer = 0 if inlist(scako, 1, 2, 3, 4) /* These are ranging from drank every day to once or twice a week */
-        replace whether_abstainer = 0 if scal7a == 1 
+        replace whether_abstainer = 0 if scal7a == 1  /* scal7a == 1 is drank in last 7 days */
+        replace whether_abstainer = 0 if scal7b >= 1 /* scal7b is how many days drinking alcohol in past week, so 1+ is not abstainer */
         
         gen r`wv'alcbase = .
         replace r`wv'alcbase = 0 if whether_abstainer == 1
@@ -132,7 +134,8 @@ forvalues wv = 1/9 {
         gen whether_abstainer = 1 if scako == 8 /* scako == 8 is not at all in last 12 months */
         replace whether_abstainer = 1 if scal7a == 2 /* scal7a == 2 is not drank in last 7 days */
         replace whether_abstainer = 0 if inlist(scako, 1, 2, 3, 4) /* These are ranging from drank every day to once or twice a week */
-        replace whether_abstainer = 0 if scal7a == 1 
+        replace whether_abstainer = 0 if scal7a == 1 /* scal7a == 1 is drank in last 7 days */
+        replace whether_abstainer = 0 if scal7b >= 1 /* scal7b is how many days drinking alcohol in past week, so 1+ is not abstainer */
 
         * Now add them all together for total units in past week
         gen alcbase = .
