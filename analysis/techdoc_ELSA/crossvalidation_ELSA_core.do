@@ -340,21 +340,22 @@ gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
 replace highRisk = 0 if alcstat != 4 & !missing(alcstat) */
 
 gen abstainer = 1 if alcbase == 0 & !missing(alcbase)
+replace abstainer = 0 if alcbase > 0 & !missing(alcbase)
 
-gen moderate = 1 if alcbase >= 1 & alcbase <= 14 & male == 0 & !missing(alcbase)
-replace moderate = 1 if alcbase >= 1 & alcbase <= 21 & male == 1 & !missing(alcbase)
-replace moderate = 0 if alcbase < 1 & alcbase > 14 & male == 0 & !missing(alcbase)
-replace moderate = 0 if alcbase < 1 & alcbase > 21 & male == 1 & !missing(alcbase)
+gen moderate = 1 if male == 0 & alcbase > 0 & alcbase <= 14 & !missing(alcbase)
+replace moderate = 1 if male == 1 & alcbase > 0 & alcbase <= 21 & !missing(alcbase)
+replace moderate = 0 if male == 0 & alcbase < 1 | alcbase > 14 & !missing(alcbase)
+replace moderate = 0 if male == 1 & alcbase < 1 | alcbase > 21 & !missing(alcbase)
 
-gen increasingRisk = 1 if alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase)
-replace increasingRisk = 1 if alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase)
-replace increasingRisk = 0 if alcbase < 15 & alcbase > 35 & male == 0 & !missing(alcbase)
-replace increasingRisk = 0 if alcbase < 22 & alcbase > 50 & male == 1 & !missing(alcbase)
+gen increasingRisk = 1 if male == 0 & alcbase >= 15 & alcbase <= 35 & !missing(alcbase)
+replace increasingRisk = 1 if male == 1 & alcbase >= 22 & alcbase <= 50 & !missing(alcbase)
+replace increasingRisk = 0 if male == 0 & alcbase < 15 | alcbase > 35 & !missing(alcbase)
+replace increasingRisk = 0 if male == 1 & alcbase < 22 | alcbase > 50 & !missing(alcbase)
 
-gen highRisk = 1 if alcbase > 35 & male == 0 & !missing(alcbase) & !missing(alcbase)
-replace highRisk = 1 if alcbase > 50 & male == 1 & !missing(alcbase) & !missing(alcbase)
-replace highRisk = 0 if alcbase < 35 & male == 0 & !missing(alcbase) & !missing(alcbase)
-replace highRisk = 0 if alcbase < 50 & male == 1 & !missing(alcbase) & !missing(alcbase)
+gen highRisk = 1 if male == 0 & alcbase > 35 & !missing(alcbase)
+replace highRisk = 1 if male == 1 & alcbase > 50 & !missing(alcbase)
+replace highRisk = 0 if male == 0 & alcbase < 35 & !missing(alcbase)
+replace highRisk = 0 if male == 1 & alcbase < 50 & !missing(alcbase)
 
 label variable abstainer "Drank no alcohol in week before survey"
 label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
@@ -549,10 +550,10 @@ label var bmi "BMI"
 label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
-label var abstainer "Abstains from alcohol consumption"
-label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
-label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
-label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
+label var abstainer "1. Abstains from alcohol consumption"
+label var moderate "2. Moderate alcohol consumption"
+label var increasingRisk "3. Increasing-risk alcohol consumption"
+label var highRisk "4. High-risk alcohol consumption"
 label var heavy_smoker "Heavy Smoker"
 label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
@@ -583,10 +584,10 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-* Removed in core model: psyche lnly 
+* Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev bmi drink abstainer moderate increasingRisk highRisk heavy_smoker problem_drinker exstat1 exstat2 exstat3
+local risk drink abstainer moderate increasingRisk highRisk
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
