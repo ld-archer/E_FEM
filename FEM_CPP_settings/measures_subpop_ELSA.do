@@ -52,7 +52,8 @@ local measures
 					p_moderate			n_moderate
 					p_increasingRisk	n_increasingRisk
 					p_highRisk			n_highRisk
-					a_alcbase 	q05_alcbase q50_alcbase q95_alcbase
+					a_alcbase_m 	q05_alcbase_m q50_alcbase_m q95_alcbase_m
+					a_alcbase_f 	q05_alcbase_f q50_alcbase_f q95_alcbase_f
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3

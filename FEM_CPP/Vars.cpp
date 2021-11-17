@@ -704,7 +704,7 @@ VarsInfo::VarsInfo() {
     //info[Vars::pmoderate]           = VarInfo("pmoderate", "Probability of moderate", VarTypes::Float);
     //info[Vars::pincreasingRisk]     = VarInfo("pincreasingRisk", "Probability of increasingRisk", VarTypes::Float);
     //info[Vars::phighRisk]           = VarInfo("phighRisk", "Probability of highRisk", VarTypes::Float);
-    info[Vars::alcbase]             = VarInfo("alcbase", "Total alcohol consumption in past week (units)", VarTypes::Float);
+    info[Vars::alcbase_m]             = VarInfo("alcbase", "Total alcohol consumption in past week (units)", VarTypes::Float);
     info[Vars::l2alcbase]           = VarInfo("l2alcbase", "Lag of Total alcohol consumption in past week (units)", VarTypes::Float);
 
 

@@ -26,7 +26,8 @@ local select_lnly !died & wave > 1
 local select_heavy_drinker !died & drink == 1
 local select_freq_drinker !died & drink == 1
 local select_problem_drinker !died & drink == 1
-local select_alcbase !died & wave > 3 & insc == 1 & drink == 1  /* Only estimate alcbase using waves 4+, and those in the self-completion interview, and those that drink */
+local select_alcbase_m !died & wave > 3 & insc == 1 & drink == 1 & male == 1  /* Only estimate alcbase using waves 4+, and those in the self-completion interview, and those that drink */
+local select_alcbase_f !died & wave > 3 & insc == 1 & drink == 1 & male == 0
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
 if "`defmod'" == "CV2" {
@@ -37,7 +38,7 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
                 smoke_start smoke_stop ///
                 logbmi hchole hipe heavy_smoker mstat lnly alzhe demene ///
-                workstat atotb itot problem_drinker alcbase
+                workstat atotb itot problem_drinker alcbase_male alcbase_female
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

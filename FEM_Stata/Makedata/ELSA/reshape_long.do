@@ -600,6 +600,11 @@ drop if wave < 4
 append using hotdeck_data/alcbase_first_imp1.dta, keep(_all)
 tab alcbase wave
 
+* Split alcbase by gender for having separate models for each gender
+gen alcbase_m = alcbase if male == 1
+gen alcbase_f = alcbase if male == 0
+drop alcbase
+
 /*
 ** Dummys
 gen abstainer = 1 if alcstat == 1 & !missing(alcstat)
@@ -775,7 +780,8 @@ foreach var in
     unemployed
     retired
     problem_drinker
-    alcbase
+    alcbase_m
+    alcbase_f
     GOR
     {;
         gen l2`var' = L.`var';
