@@ -339,8 +339,11 @@ replace increasingRisk = 0 if alcstat != 3 & !missing(alcstat)
 gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
 replace highRisk = 0 if alcstat != 4 & !missing(alcstat) */
 
-gen abstainer = 1 if alcbase == 0 & !missing(alcbase)
-replace abstainer = 0 if alcbase > 0 & !missing(alcbase)
+gen abstainer = 1 if alcbase == 0 & drink == 0 & !missing(alcbase)
+replace abstainer = 0 if (alcbase > 0 | drink != 0) & !missing(alcbase)
+
+gen temp_abstainer = 1 if alcbase == 0 & drink == 1 & !missing(alcbase)
+replace temp_abstainer = 0 if (alcbase != 0 | drink != 1) & !missing(alcbase)
 
 gen moderate = 1 if male == 0 & alcbase > 0 & alcbase <= 14 & !missing(alcbase)
 replace moderate = 1 if male == 1 & alcbase > 0 & alcbase <= 21 & !missing(alcbase)
@@ -554,6 +557,7 @@ label var abstainer "1. Abstains from alcohol consumption"
 label var moderate "2. Moderate alcohol consumption"
 label var increasingRisk "3. Increasing-risk alcohol consumption"
 label var highRisk "4. High-risk alcohol consumption"
+label var temp_abstainer "5. Temporary abstainer from alcohol"
 label var heavy_smoker "Heavy Smoker"
 label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
@@ -587,7 +591,7 @@ restore
 * Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk drink abstainer moderate increasingRisk highRisk
+local risk drink abstainer moderate increasingRisk highRisk temp_abstainer
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
