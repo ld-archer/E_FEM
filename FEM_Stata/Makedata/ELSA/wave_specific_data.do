@@ -155,6 +155,8 @@ forvalues wv = 1/9 {
 
         rename scdr* r`wv'scdr*
         rename unit* r`wv'unit*
+        rename scako r`wv'scako
+        rename whether_abstainer r`wv'whether_abstainer
 
         * Now rename alc var to be wave based
         rename alcbase r`wv'alcbase
