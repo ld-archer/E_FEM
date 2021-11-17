@@ -88,6 +88,10 @@ drop r*lwtresp
 keep idauniq
 h*coupid
 r*iwstat
+inw*
+inw*sc
+inw*n
+inw3lh
 r*cwtresp
 r*iwindy
 r*iwindm
@@ -258,6 +262,17 @@ forvalues wv = $firstwave/$lastwave {
     rename s`wv'educl educl`wv'
 }
 
+* Separate again for renaming response indicator vars
+forvalues wv = $firstwave/$lastwave {
+    rename inw`wv'sc insc`wv'
+
+    * Nurse visit only happened on waves 2,4,6,8 (technically 9 too but no in this var)
+    if inlist(`wv', 2, 4, 6, 8) {
+        rename inw`wv'n inn`wv'
+    }
+    
+}
+
 * Calculate an mbmi value for wave 9 using wave 8 height and wave 9 weight then drop height and weight
 generate mbmi9 = mweight9 / mheight8^2
 drop mheight* mweight*
@@ -277,7 +292,7 @@ foreach var in `wav1missvars' {
 #d ;
 reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
-    hearte stroke psyche arthre mbmi smokev smoken hhid
+    hearte stroke psyche arthre mbmi smokev smoken hhid inw insc inn
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid alcbase GOR
@@ -291,6 +306,10 @@ rename mbmi bmi
 
 label variable iwindy "Interview Year"
 label variable iwindm "Interview Month"
+label variable inw "Response indicator"
+label variable insc "Response Indicator: Self-completion"
+label variable inn "Response Indicator: Nurse sample"
+label variable inw3lh "Response Indicator: W3 Life History"
 label variable agey "Age at Interview (yrs)"
 label variable walkra "Difficulty walking across room"
 label variable dressa "Difficulty dressing"
@@ -687,28 +706,6 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
-
-*** National Statistics Socio-Economic Classification
-* Generate dummys
-*gen nssec1 = (nssec == 1)
-*gen nssec2 = (nssec == 2)
-*gen nssec3 = (nssec == 3)
-*gen nssec4 = (nssec == 4)
-*gen nssec5 = (nssec == 5)
-*gen nssec6 = (nssec == 6)
-*gen nssec7 = (nssec == 7)
-*gen nssec8 = (nssec == 8)
-
-*** Generate alcohol in last week var for validation
-gen drink_7d = 1 if (drinkwn > 0) & !missing(drinkwn)
-replace drink_7d = 1 if (drinkn > 0) & !missing(drinkn)
-replace drink_7d = 1 if (drinkd > 0) & !missing(drinkd)
-
-replace drink_7d = 0 if (drink == 0) & !missing(drink)
-replace drink_7d = 0 if (drinkwn == 0) & (drinkn == 0) & (drinkd == 0) & !missing(drinkwn) & !missing(drinkn) & !missing(drinkd)
-
-* Now drop drinking vars we don't use
-drop drinkd drinkwn drinkn
 
 *Label vars generated in this script (not read directly from ELSA)
 label variable heavy_smoker "Heavy smoker (20+ cigs/day)"
