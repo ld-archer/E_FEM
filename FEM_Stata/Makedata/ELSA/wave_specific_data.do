@@ -75,33 +75,31 @@ forvalues wv = 1/9 {
     * Now keep only idauniq and the drinks variables (wave 9 names are different) and GOR
     * (stupidity knows no bounds here - gor/GOR come on)
     if `wv' > 3 & `wv' < 7 {
-        keep idauniq scako scal7a scal7b scdrspi scdrwin scdrpin GOR
+        keep idauniq scako scdrspi scdrwin scdrpin GOR
     }
     if `wv' == 7 | `wv' == 8 {
-        keep idauniq scako scal7a scal7b scdrspi scdrwin scdrpin gor
+        keep idauniq scako scdrspi scdrwin scdrpin gor
         * Rename for consistency
         rename gor GOR
     }
     else if `wv' == 9 {
-        keep idauniq scalcm scalcy scalcd scsprt scwine scbeer GOR
+        keep idauniq scalcm scsprt scwine scbeer GOR
         * Rename for consistency
         rename scsprt scdrspi
         rename scwine scdrwin
         rename scbeer scdrpin
         rename scalcm scako
-        rename scalcy scal7a
-        rename scalcd scal7b
     }
     else if `wv' == 1 {
         keep idauniq gor heala
         rename gor GOR
     }
     else if `wv' == 2 {
-        keep idauniq gor scako scal7a scal7b
+        keep idauniq gor scako
         rename gor GOR
     }
     else if `wv' == 3 {
-        keep idauniq GOR scako scal7a scal7b
+        keep idauniq GOR scako
     }
 
     * Can infer abstainers from waves 1-3 but not much else
@@ -111,14 +109,8 @@ forvalues wv = 1/9 {
     }
 
     if `wv' == 2 | `wv' == 3 {
-        gen whether_abstainer = 1 if scako == 8 /* scako == 8 is not at all in last 12 months */
-        replace whether_abstainer = 1 if scal7a == 2 /* scal7a == 2 is not drank in last 7 days */
-        replace whether_abstainer = 0 if inlist(scako, 1, 2, 3, 4) /* These are ranging from drank every day to once or twice a week */
-        replace whether_abstainer = 0 if scal7a == 1  /* scal7a == 1 is drank in last 7 days */
-        replace whether_abstainer = 0 if scal7b >= 1 /* scal7b is how many days drinking alcohol in past week, so 1+ is not abstainer */
-        
         gen r`wv'alcbase = .
-        replace r`wv'alcbase = 0 if whether_abstainer == 1
+        replace r`wv'alcbase = 0 if scako == 8
     }
 
     * Do all the alcohol stuff for wave 4 onwards
@@ -130,19 +122,12 @@ forvalues wv = 1/9 {
         gen unitwine = scdrwin * 2.1 if scdrwin >= 0
         gen unitbeer = scdrpin * 2.8 if scdrpin >= 0
 
-        * Use info from scako (how often drank in last 12 months) & scal7a (whether drank in last 7 days) together to paint whole picture
-        gen whether_abstainer = 1 if scako == 8 /* scako == 8 is not at all in last 12 months */
-        replace whether_abstainer = 1 if scal7a == 2 /* scal7a == 2 is not drank in last 7 days */
-        replace whether_abstainer = 0 if inlist(scako, 1, 2, 3, 4) /* These are ranging from drank every day to once or twice a week */
-        replace whether_abstainer = 0 if scal7a == 1 /* scal7a == 1 is drank in last 7 days */
-        replace whether_abstainer = 0 if scal7b >= 1 /* scal7b is how many days drinking alcohol in past week, so 1+ is not abstainer */
-
         * Now add them all together for total units in past week
         gen alcbase = .
         replace alcbase = 0 if !missing(unitspirit)
         replace alcbase = 0 if !missing(unitwine)
         replace alcbase = 0 if !missing(unitbeer)
-        replace alcbase = 0 if whether_abstainer == 1
+        replace alcbase = 0 if scako == 8 /* scako == 8 is not at all in last 12 months */
         replace alcbase = alcbase + unitspirit if !missing(unitspirit)
         replace alcbase = alcbase + unitwine if !missing(unitwine)
         replace alcbase = alcbase + unitbeer if !missing(unitbeer)
@@ -151,12 +136,11 @@ forvalues wv = 1/9 {
         replace alcbase = round(alcbase, 0.1)
 
         * drop everything else now, don't need it
-        *drop scdr* unit* scal7a scako whether_abstainer
+        *drop scdr* unit* scako
 
         rename scdr* r`wv'scdr*
         rename unit* r`wv'unit*
         rename scako r`wv'scako
-        rename whether_abstainer r`wv'whether_abstainer
 
         * Now rename alc var to be wave based
         rename alcbase r`wv'alcbase

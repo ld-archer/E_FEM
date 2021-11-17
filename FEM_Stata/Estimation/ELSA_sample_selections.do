@@ -26,7 +26,7 @@ local select_lnly !died & wave > 1
 local select_heavy_drinker !died & drink == 1
 local select_freq_drinker !died & drink == 1
 local select_problem_drinker !died & drink == 1
-local select_alcbase !died & wave > 3 & insc == 1  /* Only estimate alcbase using waves 4+, and those in the self-completion interview */
+local select_alcbase !died & wave > 3 & insc == 1 & drink == 1  /* Only estimate alcbase using waves 4+, and those in the self-completion interview, and those that drink */
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
 if "`defmod'" == "CV2" {

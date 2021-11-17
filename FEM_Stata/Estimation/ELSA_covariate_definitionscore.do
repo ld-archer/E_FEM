@@ -127,6 +127,8 @@ global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvar
 global allvars_alcbase      $dvars $lvars_age l2alcbase l2logbmi_l30 l2logbmi_30p
 
 
+
+
 *** Logbmi & other health
 global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
 
