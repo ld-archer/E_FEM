@@ -353,6 +353,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			            //person->set(Vars::heavy_drinker, 0.0);
 			            //person->set(Vars::freq_drinker, 0.0);
 			            person->set(Vars::problem_drinker, 0.0);
+			            person->set(Vars::alcbase, 0.0);
 			        }
 			    }
 			}
@@ -364,8 +365,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			    if(person->get(Vars::alcbase) < 0) {
 			        // set back to 0
 			        person->set(Vars::alcbase, 0.0);
-			        // also set drink to 0
-			        person->set(Vars::drink, 0.0);
+			        // also set drink to 0 (this isn't actually definite, not everyone with 0 consumption is abstainer (for now))
+			        //person->set(Vars::drink, 0.0);
 			    }
 			}
 

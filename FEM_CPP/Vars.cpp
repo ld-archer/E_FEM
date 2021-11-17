@@ -834,13 +834,6 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::heavy_drinker] = Vars::l2heavy_drinker;
 	lag_map[Vars::freq_drinker] = Vars::l2freq_drinker;
 	lag_map[Vars::problem_drinker] = Vars::l2problem_drinker;
-	//lag_map[Vars::drinkd] = Vars::l2drinkd;
-	//lag_map[Vars::drinkwn] = Vars::l2drinkwn;
-	//lag_map[Vars::drinkd1] = Vars::l2drinkd1;
-	//lag_map[Vars::drinkd2] = Vars::l2drinkd2;
-	//lag_map[Vars::drinkd3] = Vars::l2drinkd3;
-	//lag_map[Vars::drinkd4] = Vars::l2drinkd4;
-	//lag_map[Vars::drinkd_stat] = Vars::l2drinkd_stat;
 	lag_map[Vars::vgactx_e] = Vars::l2vgactx_e;
 	lag_map[Vars::mdactx_e] = Vars::l2mdactx_e;
 	lag_map[Vars::ltactx_e] = Vars::l2ltactx_e;
@@ -867,11 +860,6 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::unemployed] = Vars::l2unemployed;
     lag_map[Vars::retired] = Vars::l2retired;
     lag_map[Vars::heavy_smoker] = Vars::l2heavy_smoker;
-    //lag_map[Vars::alcstat] = Vars::l2alcstat;
-    //lag_map[Vars::abstainer] = Vars::l2abstainer;
-    //lag_map[Vars::moderate] = Vars::l2moderate;
-    //lag_map[Vars::increasingRisk] = Vars::l2increasingRisk;
-    //lag_map[Vars::highRisk] = Vars::l2highRisk;
     lag_map[Vars::alcbase] = Vars::l2alcbase;
 
 
