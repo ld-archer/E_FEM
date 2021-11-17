@@ -151,24 +151,14 @@ forvalues wv = 1/9 {
         replace alcbase = round(alcbase, 0.1)
 
         * drop everything else now, don't need it
-        drop scdr* unit* scal7a scako whether_abstainer
+        *drop scdr* unit* scal7a scako whether_abstainer
+
+        rename scdr* r`wv'scdr*
+        rename unit* r`wv'unit*
 
         * Now rename alc var to be wave based
         rename alcbase r`wv'alcbase
 
-        /* di "DETAILS:::"
-        di "Wave is: `wv'""
-
-        di "tab r`wv'alcbase scal7a if scal7a == 2"
-        tab r`wv'alcbase scal7a if scal7a == 2
-        di "tab r`wv'alcbase scal7a if r`wv'alcbase == 0"
-        tab r`wv'alcbase scal7a if r`wv'alcbase == 0
-        di "tab scal7a if r`wv'alcbase > 0 & !missing(r`wv'alcbase)"
-        tab scal7a if r`wv'alcbase > 0 & !missing(r`wv'alcbase)
-        di "summ r`wv'alcbase"
-        summ r`wv'alcbase
-        di "summ r`wv'alcbase if scal7a != 2"
-        summ r`wv'alcbase if scal7a != 2 */
     }
 
     * also rename GOR to be wave based
