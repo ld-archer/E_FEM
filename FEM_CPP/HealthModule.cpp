@@ -353,7 +353,12 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			            //person->set(Vars::heavy_drinker, 0.0);
 			            //person->set(Vars::freq_drinker, 0.0);
 			            person->set(Vars::problem_drinker, 0.0);
-			            person->set(Vars::alcbase, 0.0);
+			            if(person->test(Vars::male)) {
+                            person->set(Vars::alcbase_m, 0.0);
+			            }
+			            else if (!person->test(Vars::male)) {
+                            person->set(Vars::alcbase_f, 0.0);
+			            }
 			        }
 			    }
 			}
@@ -361,13 +366,17 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			// Need to make sure that alcbase cannot be below 0
 			// If predicted below 0 then just assume not drank alcohol
 			if (elsa_data) {
-			    // If predicted value below 0
-			    if(person->get(Vars::alcbase) < 0) {
+			    // If predicted value below 0 male
+			    if(person->get(Vars::alcbase_m) < 0) {
 			        // set back to 0
-			        person->set(Vars::alcbase, 0.0);
+			        person->set(Vars::alcbase_m, 0.0);
 			        // also set drink to 0 (this isn't actually definite, not everyone with 0 consumption is abstainer (for now))
 			        //person->set(Vars::drink, 0.0);
-			    }
+			    } // If predicted value below 0 female
+                else if(person->get(Vars::alcbase_f) < 0) {
+                    // set back to 0
+                    person->set(Vars::alcbase_f, 0.0);
+                }
 			}
 
 			// Handle marriage status transitions

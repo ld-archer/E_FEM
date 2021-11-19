@@ -562,11 +562,11 @@ replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 * Grouping drinkers into 4 groups:
 *   Abstainers:         No alcohol
 *   Moderate:           
-*       Females:        1-14 units/week
+*       Females:        1-15 units/week
 *       Males:          1-21 units/week
 *   Increasing-risk:    
 *       Females:        15-35 units/week
-*       Males:          22-50 units/week
+*       Males:          21-50 units/week
 *   High-risk:          
 *       Females:        > 35 units/week
 *       Males:          > 50 units/week
@@ -574,11 +574,11 @@ gen alcstat = .
 * Abstainer
 replace alcstat = 1 if alcbase == 0
 * Moderate drinker
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 14 & male == 0
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 21 & male == 1
+replace alcstat = 2 if alcbase > 0 & alcbase <= 15 & male == 0
+replace alcstat = 2 if alcbase > 0 & alcbase <= 21 & male == 1
 * Increasing-risk
-replace alcstat = 3 if alcbase >= 15 & alcbase <= 35 & male == 0
-replace alcstat = 3 if alcbase >= 22 & alcbase <= 50 & male == 1
+replace alcstat = 3 if alcbase > 15 & alcbase <= 35 & male == 0
+replace alcstat = 3 if alcbase > 21 & alcbase <= 50 & male == 1
 * High-risk
 replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
 replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)

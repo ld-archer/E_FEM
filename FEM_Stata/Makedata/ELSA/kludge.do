@@ -94,7 +94,7 @@ if "`scen'" == "base" {
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot problem_drinker educl
+                        psyche asthmae parkine itot problem_drinker educl alcbase_m alcbase_f
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
@@ -104,12 +104,12 @@ else if "`scen'" == "CV2" {
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker lnly alzhe demene workstat problem_drinker
+                        heavy_smoker lnly alzhe demene workstat problem_drinker alcbase_m alcbase_f
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly heavy_smoker workstat alzhe arthre asthmae demene ///
-                        parkine psyche hipe hchole problem_drinker
+                        parkine psyche hipe hchole problem_drinker alcbase_m alcbase_f
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///

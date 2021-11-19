@@ -704,8 +704,10 @@ VarsInfo::VarsInfo() {
     //info[Vars::pmoderate]           = VarInfo("pmoderate", "Probability of moderate", VarTypes::Float);
     //info[Vars::pincreasingRisk]     = VarInfo("pincreasingRisk", "Probability of increasingRisk", VarTypes::Float);
     //info[Vars::phighRisk]           = VarInfo("phighRisk", "Probability of highRisk", VarTypes::Float);
-    info[Vars::alcbase_m]             = VarInfo("alcbase", "Total alcohol consumption in past week (units)", VarTypes::Float);
-    info[Vars::l2alcbase]           = VarInfo("l2alcbase", "Lag of Total alcohol consumption in past week (units)", VarTypes::Float);
+    info[Vars::alcbase_m]           = VarInfo("alcbase_m", "Total alcohol consumption in past week: Male (units)", VarTypes::Float);
+    info[Vars::alcbase_f]           = VarInfo("alcbase_f", "Total alcohol consumption in past week: Female (units)", VarTypes::Float);
+    info[Vars::l2alcbase_m]         = VarInfo("l2alcbase_m", "Lag of Total alcohol consumption in past week: Male (units)", VarTypes::Float);
+    info[Vars::l2alcbase_f]         = VarInfo("l2alcbase_f", "Lag of Total alcohol consumption in past week: Female (units)", VarTypes::Float);
 
 
 	
@@ -860,7 +862,8 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::unemployed] = Vars::l2unemployed;
     lag_map[Vars::retired] = Vars::l2retired;
     lag_map[Vars::heavy_smoker] = Vars::l2heavy_smoker;
-    lag_map[Vars::alcbase] = Vars::l2alcbase;
+    lag_map[Vars::alcbase_m] = Vars::l2alcbase_m;
+    lag_map[Vars::alcbase_f] = Vars::l2alcbase_f;
 
 
 
