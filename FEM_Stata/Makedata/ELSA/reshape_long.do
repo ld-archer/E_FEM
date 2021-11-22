@@ -574,6 +574,10 @@ replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 *   High-risk:          
 *       Females:        > 35 units/week
 *       Males:          > 50 units/week
+
+* First make sure the abstainers are set correctly from drink
+replace alcbase = 0 if drink == 0 & !missing(drink)
+
 gen alcstat = .
 * Abstainer
 replace alcstat = 1 if alcbase == 0
