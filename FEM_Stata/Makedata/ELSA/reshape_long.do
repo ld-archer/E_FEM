@@ -24,6 +24,10 @@ set seed `seed'
 local num_imputations 3
 local num_knn 5
 
+
+*** Impute information for the infrequent drinkers 
+merge 1:1 idauniq using $outdata/alcbase_imputed.dta, update
+
 /* Variables from Harmonized ELSA:
 
 Section A: Demographics, Identifiers, and Weights::

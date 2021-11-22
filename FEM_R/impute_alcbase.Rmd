@@ -1,0 +1,116 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(mice)
+
+```
+
+
+## Multiple imputation
+
+We will do multiple imputation of 
+
+```{r}
+wv <- read_dta('input_data/H_ELSA_g2_wv_specific.dta')
+```
+
+
+Now set up lists of the variables we're going to keep and impute. This will have to be the wave specific variables 
+```{r}
+
+id.var <- 'idauniq'
+demog.vars <- c('ragender', 'raeducl')
+age.vars <- c('r4agey', 'r5agey', 'r6agey', 'r7agey', 'r8agey', 'r9agey')
+scako.vars <- c('r4scako', 'r5scako', 'r6scako', 'r7scako', 'r8scako', 'r9scako')
+alc.vars <- c('r4alcbase', 'r5alcbase', 'r6alcbase', 'r7alcbase', 'r8alcbase', 
+              'r9alcbase')
+
+# first extract just these vars from original data
+test <- wv %>% select(all_of(id.var), all_of(demog.vars), all_of(age.vars),
+                      all_of(scako.vars), all_of(alc.vars))
+
+# Calculate the annual and monthly consumption
+for (v in alc.vars) {
+  newVarName.a <- paste0(v, '_a')
+  test[[newVarName.a]] <- test[[v]] * 52
+  
+  newVarName.m <- paste0(v, '_m')
+  test[[newVarName.m]] <- test[[v]] * 4
+}
+
+#imp <- mice(data=test, m=5, maxit=10, printFlag = TRUE)
+
+```
+
+Right, data is prepared for mice, but we need to make it work in a very specific way.
+Information must be imputed within scako groups. So I think a multi-layered for loop is the only way to do this. I am envisaging:
+- Loop over alc.vars
+- Loop over `wv'scako values
+- Generate a df of 
+
+```{r}
+
+miss.list <- list()
+# generate a separate df for each wave
+imp.list <- list()
+for (x in 4:9) {
+  scak <- paste0('r', x, 'scako')
+  alcb <- paste0('r', x, 'alcbase')
+  
+  newDF <- test %>% select(all_of(id.var), all_of(demog.vars),
+                                  paste0('r', x, 'agey'),
+                                  all_of(scak), 
+                                  all_of(alcb))
+  
+  # Extract records where scako != 1:7 (i.e. missing or not drank in last 12 months)
+  scako.missings <- newDF[!newDF[[scak]] %in% 1:7,]
+  
+  # Add to a list so we can rejoin later
+  miss.list[[x]] <- scako.missings
+  
+  # Now select only the non-missing drinkers
+  impDF <- newDF[newDF[[scak]] %in% 1:7,]
+  
+  #impDF[[alcb]][impDF[[alcb]] == 0.0,] <- NA
+  impDF[[alcb]][impDF[[alcb]] == 0] <- NA
+  
+  imp <- mice(data = impDF, m=5, maxit=10, printFlag = FALSE)
+  imp.complete <- rbind(complete(imp), miss.list[[x]])
+  
+  # Make sure anyone who said they haven't drank in last 12 months has alcbase == 0
+  imp.complete[[alcb]][imp.complete[[scak]] == 8] <- 0
+  # and finally drop anything that isn't wave specific for the merge in the next chunk
+  imp.complete <- imp.complete %>% select(-ragender, -raeducl)
+  
+  # save to the list
+  imp.list[[x]] <- imp.complete
+}
+
+
+
+```
+
+```{r}
+
+# Last step is to merge all the dataframes together on the id var and save 
+# so it can be merged with the original data in stata
+# Also remove all other vars but the alcbase vars as we only want the imputed versions of them
+final.imputed <- imp.list %>% discard(is.null) %>%
+                reduce(inner_join, by = "idauniq")
+
+# drop age and scako too? Yes for first attempt
+final.imputed <- final.imputed %>% select(-contains('scako'), -contains('agey'))
+
+write_dta(final.imputed, path = 'input_data/alcbase_imputed.dta')
+```
+
