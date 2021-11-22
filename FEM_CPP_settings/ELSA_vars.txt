@@ -369,23 +369,24 @@ l2moderate_f = min(l2alcbase_f, 15) : min of lag of alcbase_f and 15: float
 l2increasingRisk_f = min(max(0.0, l2alcbase_f - 15), 35 - 15) : l2alcbase_f between 15 & 35 : float
 l2highRisk_f = max(l2alcbase_f - 35, 0.0) : max of l2alcbase_f and 35) : float
 
-| Attempt 2 at the consumtion dummy variables
-abstainer_m = alcbase_m == 0 :: boolean
-abstainer_f = alcbase_f == 0 :: boolean
+
+| Attempt 2 at the consumption dummy variables
+abstainer_m = male & alcbase_m == 0 :: boolean
+abstainer_f = not(male) & alcbase_f == 0 :: boolean
 abstainer = abstainer_m | abstainer_f :: boolean
 
-|temp_abstainer_m = (alcbase_m == 0 & drink == 1) :: boolean
-|temp_abstainer_f = (alcbase_f == 0 & drink == 1) :: boolean
+|temp_abstainer_m = male & (alcbase_m == 0 & drink == 1) :: boolean
+|temp_abstainer_f = not(male) & (alcbase_f == 0 & drink == 1) :: boolean
 |temp_abstainer = temp_abstainer_m | temp_abstainer_f :: boolean
 
-moderate_m = (alcbase_m > 0 & alcbase_m <= 21) :: boolean
-moderate_f = (alcbase_f > 0 & alcbase_f <= 15) :: boolean
+moderate_m = male & (alcbase_m > 0 & alcbase_m <= 21) :: boolean
+moderate_f = not(male) & (alcbase_f > 0 & alcbase_f <= 15) :: boolean
 moderate = moderate_m | moderate_f :: boolean
 
-increasingRisk_m = (alcbase_m > 21 & alcbase_m <= 50) :: boolean
-increasingRisk_f = (alcbase_f > 15 & alcbase_f <= 35) :: boolean
+increasingRisk_m = male & (alcbase_m > 21 & alcbase_m <= 50) :: boolean
+increasingRisk_f = not(male) & (alcbase_f > 15 & alcbase_f <= 35) :: boolean
 increasingRisk = increasingRisk_m | increasingRisk_f :: boolean
 
-highRisk_m = (alcbase_m > 50) :: boolean
-highRisk_f = (alcbase_f > 35) :: boolean
+highRisk_m = male & (alcbase_m > 50) :: boolean
+highRisk_f = not(male) & (alcbase_f > 35) :: boolean
 highRisk = highRisk_m | highRisk_f :: boolean
