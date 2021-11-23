@@ -112,5 +112,70 @@ final.imputed <- imp.list %>% discard(is.null) %>%
 final.imputed <- final.imputed %>% select(-contains('scako'), -contains('agey'))
 
 write_dta(final.imputed, path = 'input_data/alcbase_imputed.dta')
+
+rm(final.imputed, imp.list, imp.complete)
 ```
+
+
+## Annual based
+
+
+```{r}
+
+miss.list <- list()
+# generate a separate df for each wave
+imp.list <- list()
+for (x in 4:9) {
+  scak <- paste0('r', x, 'scako')
+  alcb <- paste0('r', x, 'alcbase_a')
+  
+  newDF <- test %>% select(all_of(id.var), all_of(demog.vars),
+                                  paste0('r', x, 'agey'),
+                                  all_of(scak), 
+                                  all_of(alcb))
+  
+  # Extract records where scako != 1:7 (i.e. missing or not drank in last 12 months)
+  scako.missings <- newDF[!newDF[[scak]] %in% 1:7,]
+  
+  # Add to a list so we can rejoin later
+  miss.list[[x]] <- scako.missings
+  
+  # Now select only the non-missing drinkers
+  impDF <- newDF[newDF[[scak]] %in% 1:7,]
+  
+  #impDF[[alcb]][impDF[[alcb]] == 0.0,] <- NA
+  impDF[[alcb]][impDF[[alcb]] == 0] <- NA
+  
+  imp <- mice(data = impDF, m=5, maxit=10, printFlag = FALSE)
+  imp.complete <- rbind(complete(imp), miss.list[[x]])
+  
+  # Make sure anyone who said they haven't drank in last 12 months has alcbase == 0
+  imp.complete[[alcb]][imp.complete[[scak]] == 8] <- 0
+  # and finally drop anything that isn't wave specific for the merge in the next chunk
+  imp.complete <- imp.complete %>% select(-ragender, -raeducl)
+  
+  
+  
+  # save to the list
+  imp.list[[x]] <- imp.complete
+}
+
+
+
+```
+
+
+
+```{r}
+
+final.imputed <- imp.list %>% discard(is.null) %>%
+                reduce(inner_join, by = "idauniq")
+
+# drop age and scako too? Yes for first attempt
+final.imputed <- final.imputed %>% select(-contains('scako'), -contains('agey'))
+
+write_dta(final.imputed, path = 'input_data/alcbase_imputed2.dta')
+
+```
+
 
