@@ -347,13 +347,13 @@ replace abstainer = 0 if alcbase > 0 & !missing(alcbase)
 
 gen moderate = 1 if male == 0 & alcbase > 0 & alcbase <= 14 & !missing(alcbase)
 replace moderate = 1 if male == 1 & alcbase > 0 & alcbase <= 21 & !missing(alcbase)
-replace moderate = 0 if male == 0 & alcbase < 1 | alcbase > 14 & !missing(alcbase)
-replace moderate = 0 if male == 1 & alcbase < 1 | alcbase > 21 & !missing(alcbase)
+replace moderate = 0 if male == 0 & (alcbase < 1 | alcbase > 14) & !missing(alcbase)
+replace moderate = 0 if male == 1 & (alcbase < 1 | alcbase > 21) & !missing(alcbase)
 
 gen increasingRisk = 1 if male == 0 & alcbase >= 15 & alcbase <= 35 & !missing(alcbase)
 replace increasingRisk = 1 if male == 1 & alcbase >= 22 & alcbase <= 50 & !missing(alcbase)
-replace increasingRisk = 0 if male == 0 & alcbase < 15 | alcbase > 35 & !missing(alcbase)
-replace increasingRisk = 0 if male == 1 & alcbase < 22 | alcbase > 50 & !missing(alcbase)
+replace increasingRisk = 0 if male == 0 & (alcbase < 15 | alcbase > 35) & !missing(alcbase)
+replace increasingRisk = 0 if male == 1 & (alcbase < 22 | alcbase > 50) & !missing(alcbase)
 
 gen highRisk = 1 if male == 0 & alcbase > 35 & !missing(alcbase)
 replace highRisk = 1 if male == 1 & alcbase > 50 & !missing(alcbase)
