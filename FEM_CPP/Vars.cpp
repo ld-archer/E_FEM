@@ -778,7 +778,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::iearnx] = Vars::l2iearnx;
 	lag_map[Vars::insulin] = Vars::l2insulin;
 	lag_map[Vars::iwstat] = Vars::l2iwstat;
-	lag_map[Vars::k6score] = Vars::l2k6score; 
+	lag_map[Vars::k6score] = Vars::l2k6score;
 	lag_map[Vars::k6severe] = Vars::l2k6severe;
 	lag_map[Vars::logbmi] = Vars::l2logbmi;
 	lag_map[Vars::loghatota] = Vars::l2loghatota;
