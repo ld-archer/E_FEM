@@ -30,6 +30,12 @@ Wave 9, drinks variables are called:
 `scbeer': Pints of beer the respondent had in the last 7 days
 */
 
+clear
+set maxvar 15000
+log using wave_specific_data.log, replace
+
+quietly include ../../../fem_env.do
+
 
 *** IMPORTANT
 * Reset the wv_specific H_ELSA file before this starts so we don't keep adding information
@@ -136,7 +142,7 @@ forvalues wv = 1/9 {
         replace alcbase = round(alcbase, 0.1)
 
         * drop everything else now, don't need it
-        *drop scdr* unit* scako
+        *drop scdr* unit* scako scal7a scal7b
 
         rename scdr* r`wv'scdr*
         rename unit* r`wv'unit*
@@ -164,3 +170,4 @@ forvalues wv = 1/9 {
     *save ../../../input_data/H_ELSA_g2_wv_specific.dta, replace
 }
 
+capture log close

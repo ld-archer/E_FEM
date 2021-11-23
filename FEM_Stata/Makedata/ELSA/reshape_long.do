@@ -10,7 +10,7 @@ local scr : env SCENARIO
 
 * The following script adds units of alcbase and GOR to wide dataset
 * Run before loading in data as this updates harmonised dataset
-do wave_specific_data.do
+*do wave_specific_data.do
 
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use $outdata/H_ELSA_f_2002-2016.dta, clear
@@ -527,7 +527,10 @@ replace logbmi = logbmi + rand if !missing(rand)
 
 * Generate dummy for obesity
 * This is already generated in generate_transition_pop.do. TODO: change gen_trans_pop.do to replace instead of generate
-gen obese = (logbmi > log(30.0)) if !missing(bmi)
+gen overwt = (logbmi >= log(25.0)) & (logbmi > log(30)) & !missing(logbmi)
+gen obese1 = (logbmi >= log(30.0)) & (logbmi < 35) if !missing(bmi)
+gen obese2 = (logbmi >= log(35.0)) & (logbmi < 40) if !missing(bmi)
+gen obese3 = (logbmi >= log(40.0)) if !missing(bmi)
 
 * Generate a categorical variable for BMI to get summary stats by group
 * cut() has to include both the lower and upper limits (which is why both 0 and 100 are included)
@@ -611,7 +614,7 @@ tab alcbase wave
 * Split alcbase by gender for having separate models for each gender
 gen alcbase_m = alcbase if male == 1
 gen alcbase_f = alcbase if male == 0
-drop alcbase
+*drop alcbase
 
 /*
 ** Dummys
@@ -760,7 +763,10 @@ foreach var in
     exstat1
     exstat2
     exstat3
-    obese
+    overwt
+    obese1
+    obese2
+    obese3
     mstat
     married
     single
