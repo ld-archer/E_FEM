@@ -28,9 +28,16 @@ l2bmi = exp(l2logbmi) : exp of lag of log BMI: float
 bmiGT30 = bmi > 30 : indicator bmi > 30 : boolean
 
 overwt = inrange(bmi, 25, 30) :: boolean
-obese_1 = inrange(bmi, 30, 35) :: boolean
-obese_2 = inrange(bmi, 35, 40) :: boolean
-obese_3 = bmi >= 40 :: boolean
+obese1 = inrange(bmi, 30, 35) :: boolean
+obese2 = inrange(bmi, 35, 40) :: boolean
+obese3 = bmi >= 40 :: boolean
+
+l2overwt = inrange(l2bmi, 25, 30) :: boolean
+l2obese1 = inrange(l2bmi, 30, 35) :: boolean
+l2obese2 = inrange(l2bmi, 35, 40) :: boolean
+l2obese3 = l2bmi >= 40 :: boolean
+
+
 
 obese =  logbmi >= 3.401197382 : indicator for any obesity : boolean
 l2obese = l2logbmi >= 3.401197382 : lagged indicator for any obesity : boolean

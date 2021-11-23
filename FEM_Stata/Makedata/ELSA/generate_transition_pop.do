@@ -45,7 +45,7 @@ label var male_l2age75p "Male and Max(0, two-year lag age - 73)"
 gen l2agesq = l2`age_var'*l2`age_var'
 
 * BMI dummies for obese (BMI > 30.0) or not
-replace l2obese = (l2logbmi > log(30.0)) if !missing(l2logbmi)
+*replace l2obese = (l2logbmi > log(30.0)) if !missing(l2logbmi)
 * Generate a 'knot' at BMI == 30 to make sure we don't lose the right tail in our projections
 *gen l2logbmi_l30 = min(log(30), l2logbmi) if l2logbmi < .
 *gen l2logbmi_30p = max(0, l2logbmi - log(30)) if l2logbmi < .
@@ -58,8 +58,8 @@ label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
 
 * Generate some knots in alcbase to maintain the right tail and the increasing and highRisk drinkers
 * Do this separately for each gender as the values are different
-mkspline l2moderate_m 22 l2increasingRisk_m 50 l2highRisk_m = l2alcbase_m
-mkspline l2moderate_f 15 l2increasingRisk_f 35 l2highRisk_f = l2alcbase_f
+mkspline l2abstainer_m 1 l2moderate_m 22 l2increasingRisk_m 50 l2highRisk_m = l2alcbase_m
+mkspline l2abstainer_f 1 l2moderate_f 15 l2increasingRisk_f 35 l2highRisk_f = l2alcbase_f
 
 label var l2moderate_m "Splined two-year lag of alcbase: moderate (male - 1-21 units)"
 label var l2increasingRisk_m "Splined two-year lag of alcbase: increasingRisk (male - 22-50 units)"
@@ -77,7 +77,7 @@ label variable l2age6574 "Lag: age spline between 65-74"
 label variable l2age75p "Lag: age spline more than 75"
 label variable l2smoken "Lag: current smoker"
 label variable l2smokev "Lag: ever smoked"
-label variable l2obese "Lag: BMI more than 30"
+*label variable l2obese "Lag: BMI more than 30"
 *label variable fsmoken50 "Smoked at 50" Variable never produced (should have been in reshape_long if at all)
 label variable l2diabe "Lag: diabetes"
 label variable l2cancre "Lag: cancer"

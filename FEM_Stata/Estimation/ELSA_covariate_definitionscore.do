@@ -123,10 +123,10 @@ global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_w
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
-global allvars_drink            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise' 
-global allvars_problem_drinker  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat' `lvars_exercise'
-global allvars_alcbase_m        $dvars $lvars_age l2moderate_m l2increasingRisk_m l2highRisk_m l2logbmi_l30 l2logbmi_30p
-global allvars_alcbase_f        $dvars $lvars_age l2moderate_f l2increasingRisk_f l2highRisk_f l2logbmi_l30 l2logbmi_30p
+global allvars_drink            $dvars $lvars_age `lvars_workstat' `lvars_exercise' l2drink l2obese1 l2obese2 l2obese3 l2overwt
+global allvars_problem_drinker  $dvars $lvars_age `lvars_workstat' `lvars_exercise'
+global allvars_alcbase_m        $dvars $lvars_age l2moderate_m l2increasingRisk_m l2highRisk_m l2obese1 l2obese2 l2obese3 l2overwt
+global allvars_alcbase_f        $dvars $lvars_age l2moderate_f l2increasingRisk_f l2highRisk_f l2obese1 l2obese2 l2obese3 l2overwt
 
 
 
