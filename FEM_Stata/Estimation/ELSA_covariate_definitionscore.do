@@ -92,7 +92,7 @@ local lvars_mstat l2single l2cohab l2widowed                        /*Control: l
 * 16/6/21 - now includes l2hibpe & `lvars_funclimit'
 *global allvars_died        $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2hibpe `lvars_smoke' l2demene `lvars_funclimit'
 * FROM covar_defincoreLEGACY
-global allvars_died         male $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke'
+global allvars_died         $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke'
 
 *** Chronic Diseases
 *CANCRE
@@ -111,8 +111,8 @@ global allvars_srh          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_s
 global allvars_asthmae      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
 
 * Alzhe & Demene (16/6/21 now includes l2stroke)
-global allvars_alzhe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2hibpe l2smoken
-global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke l2hibpe l2smoken
+global allvars_alzhe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev l2drink
+global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev l2drink
 
 
 *** Smoking 

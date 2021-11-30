@@ -282,6 +282,14 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age >= 100"
 			local samp "female age 100 plus"
 		}
+		else if "`b'" == "smoker" {
+			local sel "& smoken == 1"
+			local samp "smoker"
+		}
+		else if "`b'" == "nonsmoker" {
+			local sel "& smoken == 0"
+			local samp "non-smoker"
+		}
 
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {
