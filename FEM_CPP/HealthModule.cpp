@@ -301,7 +301,7 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						// Quit, so turn current off
 						person->set(Vars::smoken,0.0);
 						// Quit so smokef == 0
-						//person->set(Vars::smokef,0.0);
+						person->set(Vars::smokef,0.0);
 						// Maintain smokev status
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
 						// Clean up other vars - didn't start, too
@@ -339,6 +339,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                         person->set(Vars::heavy_smoker, 0.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
+						// Also intensity == 0
+						person->set(Vars::smokef, 0.0);
 					}
 				}
 			}

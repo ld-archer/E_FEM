@@ -68,6 +68,10 @@ label var l2moderate_f "Splined two-year lag of alcbase: moderate (female - 1-15
 label var l2increasingRisk_f "Splined two-year lag of alcbase: increasingRisk (female - 16-35 units)"
 label var l2highRisk_f "Splined two-year lag of alcbase: highRisk (female - 35+ units)"
 
+gen l2alcbase_c = l2alcbase_m if male
+replace l2alcbase_c = l2alcbase_f if !male
+label var l2alcbase_c "Lag of alcbase"
+
 * Label the variables to use for technical appendix
 label variable male "Male"
 label variable hsless "Less than secondary school"
@@ -77,6 +81,7 @@ label variable l2age6574 "Lag: age spline between 65-74"
 label variable l2age75p "Lag: age spline more than 75"
 label variable l2smoken "Lag: current smoker"
 label variable l2smokev "Lag: ever smoked"
+label variable l2smokef "Lag: number of cigarettes / day"
 *label variable l2obese "Lag: BMI more than 30"
 *label variable fsmoken50 "Smoked at 50" Variable never produced (should have been in reshape_long if at all)
 label variable l2diabe "Lag: diabetes"

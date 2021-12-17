@@ -26,7 +26,7 @@ local num_knn 5
 
 
 *** Impute information for the infrequent drinkers 
-merge 1:1 idauniq using $outdata/alcbase_imputed.dta, update
+*merge 1:1 idauniq using $outdata/alcbase_imputed.dta, update
 
 /* Variables from Harmonized ELSA:
 
@@ -611,10 +611,16 @@ drop if wave < 4
 append using hotdeck_data/alcbase_first_imp1.dta, keep(_all)
 tab alcbase wave
 
+* Generate a 7d drink variable for comparison between US and ELSA amongst other things
+gen drink_7d = 1 if alcbase > 0 & !missing(alcbase)
+replace drink_7d = 0 if alcbase == 0 & drink == 1 & !missing(alcbase) & !missing(drink)
+
 * Split alcbase by gender for having separate models for each gender
 gen alcbase_m = alcbase if male == 1
 gen alcbase_f = alcbase if male == 0
 *drop alcbase
+
+
 
 /*
 ** Dummys
@@ -750,6 +756,8 @@ foreach var in
     logbmi
     smokev
     smoken
+    smokef
+    heavy_smoker
     died
     adlstat
     anyadl
@@ -780,7 +788,6 @@ foreach var in
     srh3
     srh4
     srh5
-    heavy_smoker
     lnly
     lnly1
     lnly2
