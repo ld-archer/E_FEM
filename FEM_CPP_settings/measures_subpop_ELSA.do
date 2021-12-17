@@ -43,6 +43,7 @@ local measures
 						p_smokev  i_smokev  n_smokev
 						n_smoke_start
 						n_smoke_stop
+						a_smokef	q05_smokef	q50_smokef	q95_smokef
 						p_heavy_smoker i_heavy_smoker n_heavy_smoker
 						t_atotb 	a_atotb
 						t_itot		a_itot

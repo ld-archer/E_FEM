@@ -113,7 +113,7 @@ keep
 	r*mheight
 	r*mweight
 	c*cpindex
-	r*alcbase
+	*r*alcbase
 	r*GOR
 ;
 #d cr
@@ -283,7 +283,7 @@ replace exstat3 = 0 if exstat != 3
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
 gen heavy_smoker = (smokef >= 20) if !missing(smokef)
-drop smokef
+*drop smokef
 
 
 *** Drinking intensity variable
@@ -552,6 +552,7 @@ label var asthmae "Asthma ever"
 label var bmi "BMI"
 label var smokev "Smoke ever"
 label var smoken "Smoke now"
+label var smokef "No. cigarettes / day"
 label var drink "Drinks Alcohol"
 label var abstainer "1. Abstains from alcohol consumption"
 label var moderate "2. Moderate alcohol consumption"
@@ -590,7 +591,7 @@ restore
 * Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk drink abstainer moderate increasingRisk highRisk
+local risk drink abstainer moderate increasingRisk highRisk smoken smokev smokef
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
