@@ -367,6 +367,9 @@ age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
 |increasingRisk = (alcbase_m > 21 & alcbase_m <= 50) | (alcbase_f > 15 & alcbase_f <= 35) :: boolean
 |highRisk = (alcbase_m > 50) | (alcbase_f > 35) :: boolean
 
+| Original variable back
+alcbase = if(male, alcbase_m, alcbase_f)
+
 | Define the splines
 l2moderate_m = min(l2alcbase_m, 21) : min of lag of alcbase_m and 21: float
 l2increasingRisk_m = min(max(0.0, l2alcbase_m - 21), 50 - 21) : l2alcbase_m between 21 & 50 : float

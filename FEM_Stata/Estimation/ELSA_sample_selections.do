@@ -17,6 +17,7 @@ local select_died !l2died & wave > 1 & wave <= 6
 * Selection criteria for models with specific requirements
 local select_smoke_start !died & l2smoken == 0  /*INCIDENCE*/
 local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
+local select_smokef !died & l2smoken == 1
 local select_srh !died & wave != 3
 local select_heavy_smoker !died & smoken == 1
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8 | wave==9) /* Only estimate bmi model using waves 2,4,6,8,9 as other waves are imputed */

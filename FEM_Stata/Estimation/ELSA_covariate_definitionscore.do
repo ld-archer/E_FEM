@@ -3,7 +3,8 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
 global bin_econ
-global ols logbmi atotb itot alcbase_m alcbase_f
+global ols logbmi atotb itot
+global count alcbase_m alcbase_f smokef
 global order adlstat iadlstat srh exstat
 global unorder workstat mstat
 
@@ -33,8 +34,11 @@ global ols_names
     "Log(BMI)"
     "Total Family Wealth"
     "Total Couple Level Income"
+;
+global count_names
     "Male: Total alcohol consumption in past week (units)"
     "Female: Total alcohol consumption in past week (units)"
+    "Number of cigarettes consumed per day"
 ;
 global order_names 
     "ADL status"
@@ -67,9 +71,9 @@ global lvars_econ
 
 *** Custom groups
 * Smoking
-local lvars_smoke l2smokev l2smoken l2heavy_smoker
+local lvars_smoke l2smokev l2smoken l2smokef
 * Drinking
-local lvars_drink l2drink l2problem_drinker
+local lvars_drink l2drink l2alcbase_c
 * Exercise vars
 local lvars_exercise l2exstat1 l2exstat2                            /*Control: l2exstat3 - High activity level*/
 * Functional Limitations
@@ -96,16 +100,16 @@ global allvars_died         $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge 
 
 *** Chronic Diseases
 *CANCRE
-global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2heavy_smoker l2problem_drinker
+global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2smokef l2alcbase_c
 * DIABE
-global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2problem_drinker `lvars_exercise'
+global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2alcbase_c `lvars_exercise'
 * HEARTE
-global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2problem_drinker `lvars_exercise'
+global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2alcbase_c `lvars_exercise'
 
 * HIBPE (16/6/21 Now includes l2diabe)
-global allvars_hibpe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole l2problem_drinker `lvars_exercise'
+global allvars_hibpe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole l2alcbase_c `lvars_exercise'
 global allvars_lunge        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
-global allvars_stroke       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken l2heavy_smoker l2problem_drinker
+global allvars_stroke       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken l2smokef l2alcbase_c
 global allvars_hchole       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_exercise'
 global allvars_srh          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
 global allvars_asthmae      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
@@ -116,9 +120,10 @@ global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_e
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
-global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
-global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
+global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_smokef       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 
 
 *** Drinking
@@ -152,5 +157,5 @@ global allvars_workstat     $dvars $lvars_age `lvars_funclimit'
 global allvars_exstat       $dvars $lvars_age `lvars_funclimit' `lvars_exercise'
 
 *** Marriage Status
-global allvars_mstat        $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p l2problem_drinker l2heavy_smoker
+global allvars_mstat        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2alcbase_c l2smokef
  

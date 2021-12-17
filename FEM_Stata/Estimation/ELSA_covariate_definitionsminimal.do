@@ -3,7 +3,8 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene problem_drinker heavy_smoker
 global bin_econ
-global ols logbmi atotb itot alcbase_m alcbase_f
+global ols logbmi atotb itot
+global count alcbase_m alcbase_f
 global order adlstat iadlstat exstat srh
 global unorder mstat workstat
 
@@ -37,6 +38,8 @@ global ols_names
     "Log(BMI)"
     "Total Family Wealth"
     "Total Couple Level Income"
+;
+global count_names
     "Male: Total alcohol consumption in past week (units)"
     "Female: Total alcohol consumption in past week (units)"
 ;
@@ -61,6 +64,6 @@ global lvars_age l2age65l l2age6574 l2age75p
 
 *** Now specify the transition models ***
 
-foreach v of varlist $bin_hlth $bin_econ $ols $order $unorder {
+foreach v of varlist $bin_hlth $bin_econ $ols $count $order $unorder {
 	global allvars_`v' $dvars $lvars_age
 }
