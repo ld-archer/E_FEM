@@ -196,7 +196,7 @@ visCDComparison <- function(base, int, cd, path='/home/luke/Documents/E_FEM_clea
   selBase <- baseline %>%
               select(c('year', all_of(var))) %>%
               rename('Baseline' = var)
-  
+    
   selInt <- int %>%
               select(c('year', all_of(var))) %>%
               rename('Intervention' = var)
