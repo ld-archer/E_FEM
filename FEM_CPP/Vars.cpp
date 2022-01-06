@@ -692,22 +692,24 @@ VarsInfo::VarsInfo() {
     info[Vars::pworkstat3]          = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
     //info[Vars::alcstat]             = VarInfo("alcstat", "Alcohol consumption status [1,4]", VarTypes::Short);
     //info[Vars::l2alcstat]           = VarInfo("l2alcstat", "Lag of Alcohol consumption status [1,4]", VarTypes::Short);
-    //info[Vars::abstainer]           = VarInfo("abstainer", "Abstains from alcohol consumption. (alcstat == 1)", VarTypes::Boolean, Vars::alcstat, 1);
+    info[Vars::abstainer]           = VarInfo("abstainer", "Abstains from alcohol consumption", VarTypes::Boolean);
     //info[Vars::l2abstainer]         = VarInfo("l2abstainer", "Lag of Abstains from alcohol consumption. (l2alcstat == 1)", VarTypes::Boolean, Vars::l2alcstat, 1);
-    //info[Vars::moderate]            = VarInfo("moderate", "Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 2)", VarTypes::Boolean, Vars::alcstat, 2);
+    info[Vars::moderate]            = VarInfo("moderate", "Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w", VarTypes::Boolean);
     //info[Vars::l2moderate]          = VarInfo("l2moderate", "Lag of Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (l2alcstat == 2)", VarTypes::Boolean, Vars::l2alcstat, 2);
-    //info[Vars::increasingRisk]      = VarInfo("increasingRisk", "Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 3)", VarTypes::Boolean, Vars::alcstat, 3);
+    info[Vars::increasingRisk]      = VarInfo("increasingRisk", "Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w", VarTypes::Boolean);
     //info[Vars::l2increasingRisk]    = VarInfo("l2increasingRisk", "Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (l2alcstat == 3)", VarTypes::Boolean, Vars::l2alcstat, 3);
-    //info[Vars::highRisk]            = VarInfo("highRisk", "High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)", VarTypes::Boolean, Vars::alcstat, 4);
+    info[Vars::highRisk]            = VarInfo("highRisk", "High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w", VarTypes::Boolean);
     //info[Vars::l2highRisk]          = VarInfo("l2highRisk", "Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (l2alcstat == 4)", VarTypes::Boolean, Vars::l2alcstat, 4);
     //info[Vars::pabstainer]          = VarInfo("pabstainer", "Probability of abstainer", VarTypes::Float);
     //info[Vars::pmoderate]           = VarInfo("pmoderate", "Probability of moderate", VarTypes::Float);
     //info[Vars::pincreasingRisk]     = VarInfo("pincreasingRisk", "Probability of increasingRisk", VarTypes::Float);
     //info[Vars::phighRisk]           = VarInfo("phighRisk", "Probability of highRisk", VarTypes::Float);
-    info[Vars::alcbase_m]           = VarInfo("alcbase_m", "Total alcohol consumption in past week: Male (units)", VarTypes::Float);
-    info[Vars::alcbase_f]           = VarInfo("alcbase_f", "Total alcohol consumption in past week: Female (units)", VarTypes::Float);
-    info[Vars::l2alcbase_m]         = VarInfo("l2alcbase_m", "Lag of Total alcohol consumption in past week: Male (units)", VarTypes::Float);
-    info[Vars::l2alcbase_f]         = VarInfo("l2alcbase_f", "Lag of Total alcohol consumption in past week: Female (units)", VarTypes::Float);
+    info[Vars::beer]                = VarInfo("beer", "Number of pints of beers consumed in week before survey", VarTypes::Short);
+    info[Vars::l2beer]              = VarInfo("l2beer", "Lag of Number of pints of beers consumed in week before survey", VarTypes::Short);
+    info[Vars::wine]                = VarInfo("wine", "Number of glasses of wine consumed in week before survey", VarTypes::Short);
+    info[Vars::l2wine]              = VarInfo("l2wine", "Lag of Number of glasses of wine consumed in week before survey", VarTypes::Short);
+    info[Vars::spirits]             = VarInfo("spirits", "Number of measures of spirits consumed in week before survey", VarTypes::Short);
+    info[Vars::l2spirits]           = VarInfo("l2spirits", "Lag of Number of measures of spirits consumed in week before survey", VarTypes::Short);
 
 
 	
@@ -862,8 +864,9 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::unemployed] = Vars::l2unemployed;
     lag_map[Vars::retired] = Vars::l2retired;
     lag_map[Vars::heavy_smoker] = Vars::l2heavy_smoker;
-    lag_map[Vars::alcbase_m] = Vars::l2alcbase_m;
-    lag_map[Vars::alcbase_f] = Vars::l2alcbase_f;
+    lag_map[Vars::beer] = Vars::l2beer;
+    lag_map[Vars::wine] = Vars::l2wine;
+    lag_map[Vars::spirits] = Vars::l2spirits;
 
 
 

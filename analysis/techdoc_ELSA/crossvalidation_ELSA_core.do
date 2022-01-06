@@ -113,7 +113,9 @@ keep
 	r*mheight
 	r*mweight
 	c*cpindex
-	*r*alcbase
+	r*scdrpin
+	r*scdrwin
+	r*scdrspi
 	r*GOR
 ;
 #d cr
@@ -169,7 +171,9 @@ local shapelist
 	r@shopa
 	r@mealsa
 	r@housewka
-	r@alcbase
+	r@scdrpin
+	r@scdrwin
+	r@scdrspi
 	r@GOR
 ;
 #d cr
@@ -244,12 +248,16 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e alcbase {
+foreach var in mbmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e scdrpin scdrwin scdrspi {
 	ren r`var' `var'
 }
 
 * rename bmi after name change in ELSA release g.2
 rename mbmi bmi
+* rename drinks vars to human readable
+rename scdrpin beer
+rename scdrwin wine
+rename scdrspi spirits
 
 label var bmi "R Body mass index"
 label var smoken "R smokes now"
@@ -258,7 +266,10 @@ label var drink "R drinks alcohol"
 label var drinkd_e "# days/week drinking"
 label var drinkn_e "# drinks/day"
 label var drinkwn_e "# drinks/week"
-label var alcbase "Alcohol Consumption: Units/week"
+*label var alcbase "Alcohol Consumption: Units/week"
+label var beer "R number of pints of beer consumed in week before survey"
+label var wine "R number of glasses of wine consumed in week before survey"
+label var spirits "R number of measures of spirits consumed in week before survey"
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -338,6 +349,13 @@ gen increasingRisk = 1 if alcstat == 3 & !missing(alcstat)
 replace increasingRisk = 0 if alcstat != 3 & !missing(alcstat)
 gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
 replace highRisk = 0 if alcstat != 4 & !missing(alcstat) */
+
+** Calculate units from drinks
+gen unitBeer = beer * 2.8
+gen unitWine = wine * 2.1
+gen unitSpirit = spirits
+
+gen alcbase = unitBeer + unitWine + unitSpirit
 
 gen abstainer = 1 if alcbase == 0 & !missing(alcbase)
 replace abstainer = 0 if alcbase > 0 & !missing(alcbase)
@@ -554,6 +572,7 @@ label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var smokef "No. cigarettes / day"
 label var drink "Drinks Alcohol"
+label var alcbase "Number of units of alcohol consumed in week before survey"
 label var abstainer "1. Abstains from alcohol consumption"
 label var moderate "2. Moderate alcohol consumption"
 label var increasingRisk "3. Increasing-risk alcohol consumption"
@@ -591,7 +610,7 @@ restore
 * Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk drink abstainer moderate increasingRisk highRisk smoken smokev smokef
+local risk drink alcbase abstainer moderate increasingRisk highRisk smoken smokev smokef
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white

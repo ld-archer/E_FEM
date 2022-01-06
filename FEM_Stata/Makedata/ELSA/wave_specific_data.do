@@ -108,53 +108,12 @@ forvalues wv = 1/9 {
         keep idauniq GOR scako
     }
 
-    * Can infer abstainers from waves 1-3 but not much else
-    if `wv' == 1 {
-        gen r1alcbase = .
-        replace r1alcbase = 0 if heala == 6
-    }
-
-    if `wv' == 2 | `wv' == 3 {
-        gen r`wv'alcbase = .
-        replace r`wv'alcbase = 0 if scako == 8
-    }
-
-    * Do all the alcohol stuff for wave 4 onwards
-    if `wv' > 3 {
-        * Now calculate units from each of beer, wine and spirits using NHS values from following link
-        * https://www.nhs.uk/live-well/alcohol-support/calculating-alcohol-units/
-        * (assuming a pint of beer is 5%)
-        gen unitspirit = scdrspi * 1 if scdrspi >= 0
-        gen unitwine = scdrwin * 2.1 if scdrwin >= 0
-        gen unitbeer = scdrpin * 2.8 if scdrpin >= 0
-
-        * Now add them all together for total units in past week
-        gen alcbase = .
-        replace alcbase = 0 if !missing(unitspirit)
-        replace alcbase = 0 if !missing(unitwine)
-        replace alcbase = 0 if !missing(unitbeer)
-        replace alcbase = 0 if scako == 8 /* scako == 8 is not at all in last 12 months */
-        replace alcbase = alcbase + unitspirit if !missing(unitspirit)
-        replace alcbase = alcbase + unitwine if !missing(unitwine)
-        replace alcbase = alcbase + unitbeer if !missing(unitbeer)
-        
-        * Handle some weird floating point issues, some values coming out as xx.799999 for example when should just be .8
-        replace alcbase = round(alcbase, 0.1)
-
-        * drop everything else now, don't need it
-        *drop scdr* unit* scako scal7a scal7b
-
-        rename scdr* r`wv'scdr*
-        rename unit* r`wv'unit*
-        rename scako r`wv'scako
-
-        * Now rename alc var to be wave based
-        rename alcbase r`wv'alcbase
-
-    }
-
-    * also rename GOR to be wave based
+    * Rename vars to be wave specific
     rename GOR r`wv'GOR
+
+    if `wv' > 3 {
+        rename scdr* r`wv'scdr*
+    }
     
     if `wv' == 1 {
         merge 1:1 idauniq using $outdata/H_ELSA_g2.dta, nogenerate update replace

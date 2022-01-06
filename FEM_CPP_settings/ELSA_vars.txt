@@ -358,45 +358,28 @@ married_educl_interaction = married * educl : Interaction between married and sp
 | For Mortality Adjustment
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
 
-| FOR ALCOHOL CONSUMPTION DUMMY VARIABLES
-| Abstainers (2 types)
-|abstainer = (alcbase_m == 0 | alcbase_f == 0) & drink == 0 :: boolean
-|temp_abstainer = (alcbase_m == 0 | alcbase_f == 0) & drink == 1 :: boolean
-| Drinkers
-|moderate = (alcbase_m > 0 & alcbase_m <= 21) | (alcbase_f > 0 & alcbase_f <= 15) :: boolean
-|increasingRisk = (alcbase_m > 21 & alcbase_m <= 50) | (alcbase_f > 15 & alcbase_f <= 35) :: boolean
-|highRisk = (alcbase_m > 50) | (alcbase_f > 35) :: boolean
-
-| Original variable back
-alcbase = if(male, alcbase_m, alcbase_f)
-
-| Define the splines
-l2moderate_m = min(l2alcbase_m, 21) : min of lag of alcbase_m and 21: float
-l2increasingRisk_m = min(max(0.0, l2alcbase_m - 21), 50 - 21) : l2alcbase_m between 21 & 50 : float
-l2highRisk_m = max(l2alcbase_m - 50, 0.0) : max of l2alcbase_f and 50) : float
-
-l2moderate_f = min(l2alcbase_f, 15) : min of lag of alcbase_f and 15: float
-l2increasingRisk_f = min(max(0.0, l2alcbase_f - 15), 35 - 15) : l2alcbase_f between 15 & 35 : float
-l2highRisk_f = max(l2alcbase_f - 35, 0.0) : max of l2alcbase_f and 35) : float
+| FOR ALCOHOL CONSUMPTION
+| Now calculate units from each of beer, wine and spirits using NHS values from following link
+| https://www.nhs.uk/live-well/alcohol-support/calculating-alcohol-units/
+| (assuming a pint of beer is 5%)
+unitBeer = beer * 2.8
+l2unitBeer = l2beer * 2.8
+unitWine = wine * 2.1
+l2unitWine = l2wine * 2.1
+unitSpirit = spirits
+l2unitSpirit = l2spirits
 
 
-| Attempt 2 at the consumption dummy variables
-abstainer_m = male & alcbase_m == 0 :: boolean
-abstainer_f = not(male) & alcbase_f == 0 :: boolean
-abstainer = abstainer_m | abstainer_f :: boolean
+alcbase = unitBeer + unitWine + unitSpirit
+l2alcbase = l2unitBeer + l2unitWine + l2unitSpirit
 
-|temp_abstainer_m = male & (alcbase_m == 0 & drink == 1) :: boolean
-|temp_abstainer_f = not(male) & (alcbase_f == 0 & drink == 1) :: boolean
-|temp_abstainer = temp_abstainer_m | temp_abstainer_f :: boolean
+abstainer = (alcbase == 0) : boolean
 
-moderate_m = male & (alcbase_m > 0 & alcbase_m <= 21) :: boolean
-moderate_f = not(male) & (alcbase_f > 0 & alcbase_f <= 15) :: boolean
-moderate = moderate_m | moderate_f :: boolean
+moderate = (alcbase > 0) & (alcbase <= 14) & not(male) : boolean
+moderate = (alcbase > 0) & (alcbase <= 21) & male : boolean
 
-increasingRisk_m = male & (alcbase_m > 21 & alcbase_m <= 50) :: boolean
-increasingRisk_f = not(male) & (alcbase_f > 15 & alcbase_f <= 35) :: boolean
-increasingRisk = increasingRisk_m | increasingRisk_f :: boolean
+increasingRisk = (alcbase > 14) & (alcbase <= 35) & not(male) : boolean
+increasingRisk = (alcbase > 21) & (alcbase <= 50) & male : boolean
 
-highRisk_m = male & (alcbase_m > 50) :: boolean
-highRisk_f = not(male) & (alcbase_f > 35) :: boolean
-highRisk = highRisk_m | highRisk_f :: boolean
+highRisk = (alcbase > 35) & not(male) : boolean
+highRisk = (alcbase > 50) & male : boolean

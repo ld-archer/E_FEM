@@ -51,7 +51,7 @@ void AlcoholIntervention50p::intervene(PersonVector& persons, unsigned int year,
     for(itr = persons.begin(); itr != persons.end(); ++itr) {
         Person* person = *itr;
         if(person->test(Vars::active) && !person->test(Vars::l2died)) {
-            //Are they eligible?
+            /*//Are they eligible?
             if(elig(person)) {
                 // Yes, treat them
                 // Moderate
@@ -81,13 +81,13 @@ void AlcoholIntervention50p::intervene(PersonVector& persons, unsigned int year,
                 if(!person->test(Vars::male) && person->get(Vars::alcbase_f) > 35) {
                     person->set(Vars::alcbase_f, person->get(Vars::alcbase_f) - 4.2);
                 }
-            }
+            }*/
         }
     }
 }
 
-bool AlcoholIntervention50p::elig(Person* p) const {
+/*bool AlcoholIntervention50p::elig(Person* p) const {
     // Eligible for treatment if respondent consumed alcohol in week before last survey (i.e. alcbase > 0)
-    return (p->get(Vars::alcbase_m) > 0.0) | (p->get(Vars::alcbase_f) > 0.0);
-}
+    //return (p->get(Vars::alcbase_m) > 0.0) | (p->get(Vars::alcbase_f) > 0.0);
+}*/
 

@@ -82,7 +82,7 @@ $(DATADIR)/H_ELSA_LH_a.dta: $(MAKEDATA)/H_ELSA_LH_long.do
 $(DATADIR)/H_ELSA_EOL_a2.dta: $(MAKEDATA)/h_elsa_eol_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) h_elsa_eol_long.do
 
-$(DATADIR)/H_ELSA_g2_wv_specific.dta: $(MAKEDATA)/wave_specific_data2.do $(DATADIR)/H_ELSA_g2.dta
+$(DATADIR)/H_ELSA_g2_wv_specific.dta: $(MAKEDATA)/wave_specific_data.do $(DATADIR)/H_ELSA_g2.dta
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) wave_specific_data.do
 	
 $(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do 

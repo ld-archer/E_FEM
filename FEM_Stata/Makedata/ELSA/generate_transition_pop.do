@@ -56,7 +56,7 @@ mkspline l2logbmi_l30 `log_30' l2logbmi_30p = l2logbmi
 label var l2logbmi_l30 "Splined two-year lag of BMI <= log(30)"
 label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
 
-* Generate some knots in alcbase to maintain the right tail and the increasing and highRisk drinkers
+/* * Generate some knots in alcbase to maintain the right tail and the increasing and highRisk drinkers
 * Do this separately for each gender as the values are different
 mkspline l2abstainer_m 1 l2moderate_m 22 l2increasingRisk_m 50 l2highRisk_m = l2alcbase_m
 mkspline l2abstainer_f 1 l2moderate_f 15 l2increasingRisk_f 35 l2highRisk_f = l2alcbase_f
@@ -70,7 +70,7 @@ label var l2highRisk_f "Splined two-year lag of alcbase: highRisk (female - 35+ 
 
 gen l2alcbase_c = l2alcbase_m if male
 replace l2alcbase_c = l2alcbase_f if !male
-label var l2alcbase_c "Lag of alcbase"
+label var l2alcbase_c "Lag of alcbase" */
 
 * Label the variables to use for technical appendix
 label variable male "Male"

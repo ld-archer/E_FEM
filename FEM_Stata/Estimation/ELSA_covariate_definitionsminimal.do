@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene problem_drinker heavy_smoker
 global bin_econ
 global ols logbmi atotb itot
-global count alcbase_m alcbase_f
+global count beer wine spirits smokef
 global order adlstat iadlstat exstat srh
 global unorder mstat workstat
 
@@ -40,8 +40,10 @@ global ols_names
     "Total Couple Level Income"
 ;
 global count_names
-    "Male: Total alcohol consumption in past week (units)"
-    "Female: Total alcohol consumption in past week (units)"
+    "Number of pints of beer consumed in week before survey"
+    "Number of glasses of wine consumed in week before survey"
+    "Number of measures of spirits consumed in week before survey"
+    "Number of cigarettes consumed per day"
 ;
 global order_names 
     "ADL status"

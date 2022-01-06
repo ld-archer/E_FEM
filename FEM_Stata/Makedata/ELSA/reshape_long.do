@@ -8,9 +8,6 @@ local in_file : env INPUT
 local out_file : env OUTPUT
 local scr : env SCENARIO
 
-* The following script adds units of alcbase and GOR to wide dataset
-* Run before loading in data as this updates harmonised dataset
-*do wave_specific_data.do
 
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use $outdata/H_ELSA_f_2002-2016.dta, clear
@@ -76,7 +73,9 @@ Individual employment earnings; Public pension income;
 Variables from Wave Specific ELSA files:
 
 Risk Behaviours:
-- alcbase: Units of alcohol consumed in previous week
+- scdrpin: Number of pints of beer consumed in week before survey
+- scdrwin: Number of glasses of wine consumed in week before survey
+- scdrspi: Number of measures of spirits consumed in week before survey
 
 Demographics:
 - GOR: Government Office Region (one of 8? possible regions in UK)
@@ -156,7 +155,9 @@ r*lbrf_e
 r*mheight
 r*mweight
 c*cpindex
-r*alcbase
+r*scdrpin
+r*scdrwin
+r*scdrspi
 r*GOR
 ;
 #d cr
@@ -249,7 +250,9 @@ foreach var in
     mheight
     mweight
     coupid
-    alcbase
+    scdrpin
+    scdrwin
+    scdrspi
     GOR
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
@@ -299,13 +302,18 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     hearte stroke psyche arthre mbmi smokev smoken hhid inw insc inn
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf coupid alcbase GOR
+    lbrf coupid scdrpin scdrwin scdrspi GOR
 , i(idauniq) j(wave)
 ;
 #d cr
 
 * Changed bmi to mbmi in Harmonized ELSA G.2 release, rename back
 rename mbmi bmi
+
+* Rename individual drinks vars
+rename scdrpin beer
+rename scdrwin wine
+rename scdrspi spirits
 
 
 label variable iwindy "Interview Year"
@@ -362,7 +370,10 @@ label variable demene "Dementia Ever"
 label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
-label variable alcbase "Units of alcohol consumed in previous week"
+*label variable alcbase "Units of alcohol consumed in previous week"
+label variable beer "Number of pints of beer consumed in week before survey"
+label variable wine "Number of glasses of wine consumed in week before survey"
+label variable spirits "Number of measures of spirits consumed in week before survey"
 label variable GOR "Government Office Region"
 
 * Use harmonised education var
@@ -563,7 +574,7 @@ replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
 replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
 replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 
-*** Drinking intensity (Take 3)
+/* *** Drinking intensity (Take 3)
 * This logic is based on meetings with Alan Brennan of ScHARR
 * as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
 * Grouping drinkers into 4 groups:
@@ -595,9 +606,9 @@ replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
 replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
 
 label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label values alcstat alcstat
+label values alcstat alcstat */
 
-*** IMPUTATION!!!
+/* *** IMPUTATION!!!
 * alcbase (and therefore alcstat) info missing for the first 3 waves due to questions not being asked
 * Therefore need to impute this information, try hotdecking first
 * Only impute waves 1-3!!!
@@ -618,7 +629,15 @@ replace drink_7d = 0 if alcbase == 0 & drink == 1 & !missing(alcbase) & !missing
 * Split alcbase by gender for having separate models for each gender
 gen alcbase_m = alcbase if male == 1
 gen alcbase_f = alcbase if male == 0
-*drop alcbase
+*drop alcbase */
+
+** Alcoholic Drinks
+replace beer = 0 if drink == 0 & missing(beer)
+replace wine = 0 if drink == 0 & missing(wine)
+replace spirits = 0 if drink == 0 & missing(spirits)
+replace beer = 0 if beer < 0
+replace wine = 0 if wine < 0
+replace spirits = 0 if spirits < 0
 
 
 
@@ -801,8 +820,9 @@ foreach var in
     unemployed
     retired
     problem_drinker
-    alcbase_m
-    alcbase_f
+    beer
+    wine
+    spirits
     GOR
     {;
         gen l2`var' = L.`var';

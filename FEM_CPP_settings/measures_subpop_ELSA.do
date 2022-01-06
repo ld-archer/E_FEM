@@ -53,8 +53,9 @@ local measures
 					p_moderate			n_moderate
 					p_increasingRisk	n_increasingRisk
 					p_highRisk			n_highRisk
-					a_alcbase_m 	q05_alcbase_m q50_alcbase_m q95_alcbase_m
-					a_alcbase_f 	q05_alcbase_f q50_alcbase_f q95_alcbase_f
+					a_beer 		q05_beer	q50_beer	q95_beer
+					a_wine		q05_wine	q50_wine	q95_wine
+					a_spirits	q05_spirits q50_spirits q95_spirits
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3
