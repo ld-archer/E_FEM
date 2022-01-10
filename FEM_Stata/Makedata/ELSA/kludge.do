@@ -104,7 +104,7 @@ else if "`scen'" == "CV2" {
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker lnly alzhe demene workstat problem_drinker beer wine spirits
+                        heavy_smoker lnly alzhe demene workstat problem_drinker beer wine spirits smokef
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///

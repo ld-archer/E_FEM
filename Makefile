@@ -236,7 +236,7 @@ simulation_core_roc:
 	$(MPI) ELSA_roc_validation.settings.txt
 
 simulation_alcohol:
-	$(MPI) ELSA_alcohol_intervention.settings.txt
+	$(MPI) ELSA_Alcohol_Intervention.settings.txt
 
 
 ### Handovers and Validation

@@ -251,23 +251,23 @@ forvalues x = 1/`measures_l' {
 			local samp "age 90 to 94"
 		}
 		else if "`b'" == "m_9094" {
-			local sel "& male == 1 & age >= 90 & age < 94"
+			local sel "& male == 1 & age >= 90 & age < 95"
 			local samp "male age 90 to 94"
 		}
 		else if "`b'" == "f_9094" {
-			local sel "& male == 0 & age >= 90 & age < 94"
+			local sel "& male == 0 & age >= 90 & age < 95"
 			local samp "female age 90 to 94"
 		}
 		else if "`b'" == "9599" {
-			local sel "& age >= 95 & age < 99"
+			local sel "& age >= 95 & age < 100"
 			local samp "age 95 to 99"
 		}
 		else if "`b'" == "m_9599" {
-			local sel "& male == 1 & age >= 95 & age < 99"
+			local sel "& male == 1 & age >= 95 & age < 100"
 			local samp "male age 95 to 99"
 		}
 		else if "`b'" == "f_9599" {
-			local sel "& male == 0 & age >= 95 & age < 99"
+			local sel "& male == 0 & age >= 95 & age < 100"
 			local samp "female age 95 to 99"
 		}
 		else if "`b'" == "100p" {
@@ -289,6 +289,30 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "nonsmoker" {
 			local sel "& smoken == 0"
 			local samp "non-smoker"
+		}
+		else if "`b'" == "m_5564" {
+			local sel "& male == 1 & age >= 55 & age < 65"
+			local samp "male age 55 to 65"
+		}
+		else if "`b'" == "f_5564" {
+			local sel "& male == 0 & age >= 55 & age < 65"
+			local samp "female age 55 to 65"
+		}
+		else if "`b'" == "m_6574" {
+			local sel "& male == 1 & age >= 65 & age < 75"
+			local samp "male age 65 to 75"
+		}
+		else if "`b'" == "f_6574" {
+			local sel "& male == 0 & age >= 65 & age < 75"
+			local samp "female age 65 to 75"
+		}
+		else if "`b'" == "m_75p" {
+			local sel "& male == 1 & age >= 75"
+			local samp "male age 75 plus"
+		}
+		else if "`b'" == "f_75p" {
+			local sel "& male == 0 & age >= 75"
+			local samp "female age 75 plus"
 		}
 
 		* Prevalence measures

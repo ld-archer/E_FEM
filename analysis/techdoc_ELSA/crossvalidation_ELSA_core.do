@@ -262,6 +262,7 @@ rename scdrspi spirits
 label var bmi "R Body mass index"
 label var smoken "R smokes now"
 label var smokev "R smoke ever"
+label var smokef "R number cigarettes / day"
 label var drink "R drinks alcohol"
 label var drinkd_e "# days/week drinking"
 label var drinkn_e "# drinks/day"
@@ -356,6 +357,7 @@ gen unitWine = wine * 2.1
 gen unitSpirit = spirits
 
 gen alcbase = unitBeer + unitWine + unitSpirit
+replace alcbase = 0 if drink == 0
 
 gen abstainer = 1 if alcbase == 0 & !missing(alcbase)
 replace abstainer = 0 if alcbase > 0 & !missing(alcbase)
@@ -382,6 +384,10 @@ label variable abstainer "Drank no alcohol in week before survey"
 label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
 label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
 label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
+
+
+*** Smokef: replace smokef values for non-smokers with missing so we only test smokers intensity
+replace smokef = . if smoken == 0 & !missing(smoken)
 
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
@@ -577,6 +583,9 @@ label var abstainer "1. Abstains from alcohol consumption"
 label var moderate "2. Moderate alcohol consumption"
 label var increasingRisk "3. Increasing-risk alcohol consumption"
 label var highRisk "4. High-risk alcohol consumption"
+label var beer "Number of pints of beer consumed in week before survey"
+label var wine "Number of glasses of wine consumed in week before survey"
+label var spirits "Number of measures of spirits consumed in week before survey"
 label var heavy_smoker "Heavy Smoker"
 label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
@@ -595,6 +604,11 @@ label var age_yrs "Age at interview"
 label var male "Male"
 label var white "White"
 
+* Make sure true abstainers (drink == 0) also have a value for alcbase
+replace alcbase = 0 if drink == 0
+* Replace smokef to missing for people who don't smoke
+replace smokef = . if smoken == 0 & !missing(smoken)
+
 * Get variable labels for later merging
 preserve
 tempfile varlabs
@@ -610,7 +624,7 @@ restore
 * Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk drink alcbase abstainer moderate increasingRisk highRisk smoken smokev smokef
+local risk drink alcbase beer wine spirits abstainer moderate increasingRisk highRisk smoken smokev smokef
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -634,9 +648,10 @@ foreach tp in binhlth risk binecon cntecon demog {
 			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
 				continue
 			}
-			*else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
-			*	continue
-			*}
+			else if inlist("`var'", "abstainer", "moderate", "increasingRisk", "highRisk", "alcbase", "beer", "wine", "spirits") & `wave' < 4 {
+				continue
+			}
+			*else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" | "`var'" == "alcbase") & `wave' < 3
 			
 			local select
 			if "`var'" == "itearnx" {

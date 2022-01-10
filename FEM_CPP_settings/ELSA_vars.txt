@@ -373,13 +373,13 @@ l2unitSpirit = l2spirits
 alcbase = unitBeer + unitWine + unitSpirit
 l2alcbase = l2unitBeer + l2unitWine + l2unitSpirit
 
-abstainer = (alcbase == 0) : boolean
+abstainer = (drink == 0) : boolean
 
-moderate = (alcbase > 0) & (alcbase <= 14) & not(male) : boolean
-moderate = (alcbase > 0) & (alcbase <= 21) & male : boolean
+moderate = (drink == 1) & (alcbase <= 14) & not(male) : boolean
+moderate = (drink == 1) & (alcbase <= 21) & male : boolean
 
-increasingRisk = (alcbase > 14) & (alcbase <= 35) & not(male) : boolean
-increasingRisk = (alcbase > 21) & (alcbase <= 50) & male : boolean
+increasingRisk = (drink == 1) & (alcbase > 14) & (alcbase <= 35) & not(male) : boolean
+increasingRisk = (drink == 1) & (alcbase > 21) & (alcbase <= 50) & male : boolean
 
-highRisk = (alcbase > 35) & not(male) : boolean
-highRisk = (alcbase > 50) & male : boolean
+highRisk = (drink == 1) & (alcbase > 35) & not(male) : boolean
+highRisk = (drink == 1) & (alcbase > 50) & male : boolean

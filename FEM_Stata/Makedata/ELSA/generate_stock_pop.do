@@ -16,6 +16,16 @@ use $outdata/ELSA_long.dta, clear
 drop iwindm iwindy rand
 
 
+*** Handle missing information for beer, wine, and spirits through interpolation
+* This is a quick and dirty fix just to get information for the sim to start with
+local drinklist beer wine spirits
+foreach drink in `drinklist' {
+    bys hhidpn: ipolate `drink' wave, gen(`drink'_ipolate) epolate
+    replace `drink' = `drink'_ipolate if missing(`drink') & wave < 4
+    drop `drink'_ipolate
+}
+
+
 *** Need to produce multiple stock populations for cross-validation
 preserve
 
