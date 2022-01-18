@@ -15,7 +15,6 @@ m_endpop -> count (millions)	(ex. m_endpop -> ending population in millions
 */
 
 
-* a_smkint	p_smkint3
 #d ;
 local measures 	
 			m_startpop
@@ -44,15 +43,16 @@ local measures
 						p_smokev  i_smokev  n_smokev
 						n_smoke_start
 						n_smoke_stop
+						a_smokef	q05_smokef	q50_smokef	q95_smokef
 						p_heavy_smoker i_heavy_smoker n_heavy_smoker
 						t_atotb 	a_atotb
 						t_itot		a_itot
 					p_drink		i_drink		n_drink
 					p_problem_drinker i_problem_drinker n_problem_drinker
-					p_abstainer			i_abstainer		n_abstainer
-					p_moderate			i_moderate		n_moderate
-					p_increasingRisk	i_increasingRisk	n_increasingRisk
-					p_highRisk			i_highRisk		n_highRisk
+					p_abstainer			n_abstainer
+					p_moderate			n_moderate
+					p_increasingRisk	n_increasingRisk
+					p_highRisk			n_highRisk
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3
@@ -85,9 +85,10 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
+local subpop all m f m_5564 f_5564 m_6574 f_6574 m_75p f_75p
 * CORE_DEBUG: 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
 * HANDOVERS: 55p_f_l 55p_m_l
 * ANALYSIS: educ1 educ2 educ3 exstat1 exstat2 exstat3 anyadl noadl
+* ALCOHOL: m_5564 f_5564 m_6574 f_6574 m_75p f_75p
 *
 * DEFUNKT: 6569 7074 7579 8084 8589 9094 9599 100p

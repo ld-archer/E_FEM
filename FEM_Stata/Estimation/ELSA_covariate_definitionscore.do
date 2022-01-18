@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
 global bin_econ
-global ols logbmi atotb itot
+global ols logbmi atotb itot smokef
 global order adlstat iadlstat srh exstat alcstat
 global unorder workstat mstat
 
@@ -33,6 +33,7 @@ global ols_names
     "Log(BMI)"
     "Total Family Wealth"
     "Total Couple Level Income"
+    "Smoking Intensity (# cigs/day)"
 ;
 global order_names 
     "ADL status"
@@ -117,9 +118,10 @@ global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2stroke
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
-global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
-global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_workstat'
+global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_smokef       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 
 
 *** Drinking

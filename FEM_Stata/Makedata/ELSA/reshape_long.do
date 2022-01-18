@@ -737,6 +737,7 @@ foreach var in
     logbmi
     smokev
     smoken
+    smokef
     died
     adlstat
     anyadl

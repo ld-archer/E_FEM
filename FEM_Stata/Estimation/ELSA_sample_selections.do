@@ -20,6 +20,7 @@ local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
 local select_srh !died & wave != 3
 local select_smkint !died & smoken == 1
 local select_heavy_smoker !died & smoken == 1
+local select_smokef !died & smoken == 1
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8 | wave==9) /* Only estimate bmi model using waves 2,4,6,8,9 as other waves are imputed */
 local select_hchole !died & l2hchole == 0 & wave > 1 /*INCIDENCE*/
 local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture question only asked if respondent is aged 60+ */
@@ -37,7 +38,7 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
                 smoke_start smoke_stop ///
                 logbmi hchole hipe heavy_smoker mstat lnly alzhe demene ///
-                workstat atotb itot problem_drinker alcstat
+                workstat atotb itot problem_drinker alcstat smokef
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'
