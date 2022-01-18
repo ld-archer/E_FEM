@@ -236,7 +236,7 @@ simulation_core_roc:
 	$(MPI) ELSA_roc_validation.settings.txt
 
 simulation_alcohol:
-	$(MPI) ELSA_alcohol_intervention.settings.txt
+	$(MPI) ELSA_Alcohol_Intervention.settings.txt
 
 
 ### Handovers and Validation
@@ -367,7 +367,7 @@ clean_logs:
 	rm -f FEM_Stata/Estimation/*.log
 	rm -f FEM_R/*.nb.html
 	rm -f analysis/techdoc_ELSA/*.log
-	rm -f log_*.txt
+#	rm -f log_*.txt
 	rm -f FEM_CPP_settings/*.log
 
 clean_debug:
