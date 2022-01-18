@@ -711,10 +711,10 @@ VarsInfo::VarsInfo() {
     info[Vars::l2increasingRisk]    = VarInfo("l2increasingRisk", "Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (l2alcstat == 3)", VarTypes::Boolean, Vars::l2alcstat, 3);
     info[Vars::highRisk]            = VarInfo("highRisk", "High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)", VarTypes::Boolean, Vars::alcstat, 4);
     info[Vars::l2highRisk]          = VarInfo("l2highRisk", "Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (l2alcstat == 4)", VarTypes::Boolean, Vars::l2alcstat, 4);
-    info[Vars::pabstainer]          = VarInfo("pabstainer", "Probability of abstainer", VarTypes::Float);
-    info[Vars::pmoderate]           = VarInfo("pmoderate", "Probability of moderate", VarTypes::Float);
-    info[Vars::pincreasingRisk]     = VarInfo("pincreasingRisk", "Probability of increasingRisk", VarTypes::Float);
-    info[Vars::phighRisk]           = VarInfo("phighRisk", "Probability of highRisk", VarTypes::Float);
+    info[Vars::pabstainer]          = VarInfo("pabstainer", "Probability of abstainer", VarTypes::Double);
+    info[Vars::pmoderate]           = VarInfo("pmoderate", "Probability of moderate", VarTypes::Double);
+    info[Vars::pincreasingRisk]     = VarInfo("pincreasingRisk", "Probability of increasingRisk", VarTypes::Double);
+    info[Vars::phighRisk]           = VarInfo("phighRisk", "Probability of highRisk", VarTypes::Double);
 
 
 	

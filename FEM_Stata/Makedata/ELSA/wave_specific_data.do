@@ -31,7 +31,19 @@ Wave 9, drinks variables are called:
 */
 
 
-* Is a loop the best way to do this? Over each data file
+clear
+set maxvar 15000
+log using wave_specific_data.log, replace
+
+quietly include ../../../fem_env.do
+
+
+*** IMPORTANT
+* Reset the wv_specific H_ELSA file before this starts so we don't keep adding information
+use $outdata/H_ELSA_g2.dta, replace
+save $outdata/H_ELSA_g2_wv_specific.dta, replace
+
+clear
 
 forvalues wv = 1/9 {
 
@@ -121,8 +133,18 @@ forvalues wv = 1/9 {
     * also rename GOR to be wave based
     rename GOR r`wv'GOR
     
-    merge 1:1 idauniq using $outdata/H_ELSA_g2.dta, nogenerate update
+    if `wv' == 1 {
+        merge 1:1 idauniq using $outdata/H_ELSA_g2.dta, nogenerate update replace
+        *merge 1:1 idauniq using ../../../input_data/H_ELSA_g2.dta, nogenerate update
+    }
+    else if `wv' > 1 {
+        merge 1:1 idauniq using $outdata/H_ELSA_g2_wv_specific.dta, nogenerate update replace
+        *merge 1:1 idauniq using ../../../input_data/H_ELSA_g2_wv_specific.dta, nogenerate update
+    }
     
-    save $outdata/H_ELSA_g2.dta, replace
+    
+    save $outdata/H_ELSA_g2_wv_specific.dta, replace
+    *save ../../../input_data/H_ELSA_g2_wv_specific.dta, replace
 }
 
+capture log close

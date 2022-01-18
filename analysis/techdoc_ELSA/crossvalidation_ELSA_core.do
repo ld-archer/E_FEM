@@ -38,7 +38,7 @@ local maxwave 9
 *use `input'/H_ELSA_f_2002-2016.dta, clear
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta, clear
-use `input'/H_ELSA_g2.dta, clear
+use `input'/H_ELSA_g2_wv_specific.dta, clear
 
 gen hhidpn = idauniq
 
@@ -613,7 +613,7 @@ restore
 * Removed in core model: psyche lnly 
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev bmi drink abstainer moderate increasingRisk highRisk heavy_smoker problem_drinker exstat1 exstat2 exstat3
+local risk smoken smokev bmi drink abstainer moderate increasingRisk highRisk heavy_smoker problem_drinker
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -634,10 +634,10 @@ foreach tp in binhlth risk binecon cntecon demog {
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
-			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
+			else if ("`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker") & `wave' == 1 {
 				continue
 			}
-			else if "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" & `wave' < 4 {
+			else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
 				continue
 			}
 			

@@ -10,11 +10,11 @@ local scr : env SCENARIO
 
 * The following script adds units of alcbase and GOR to wide dataset
 * Run before loading in data as this updates harmonised dataset
-do wave_specific_data.do
+*do wave_specific_data.do
 
 *use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use $outdata/H_ELSA_f_2002-2016.dta, clear
-use $outdata/H_ELSA_g2.dta, clear
+use $outdata/H_ELSA_g2_wv_specific.dta, clear
 
 global firstwave 1
 global lastwave 9
