@@ -358,8 +358,11 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			            //person->set(Vars::heavy_drinker, 0.0);
 			            //person->set(Vars::freq_drinker, 0.0);
 			            person->set(Vars::problem_drinker, 0.0);
+			            person->set(Vars::alcstat, 1);
+			            //person->set(Vars::alcbase, 0.0);
 			        }
 			    }
+			    // 
 			}
 
 			// Handle marriage status transitions

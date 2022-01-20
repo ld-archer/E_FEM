@@ -350,16 +350,16 @@ label variable problem_drinker "Problem Drinker (binge/too freq)"
 *       Males:          > 50 units/week
 gen alcstat = .
 * Abstainer
-replace alcstat = 1 if alcbase == 0
+replace alcstat = 1 if drink == 0 & !missing(drink)
 * Moderate drinker
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 14 & male == 0
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 21 & male == 1
+replace alcstat = 2 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 2 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
 * Increasing-risk
-replace alcstat = 3 if alcbase >= 15 & alcbase <= 35 & male == 0
-replace alcstat = 3 if alcbase >= 22 & alcbase <= 50 & male == 1
+replace alcstat = 3 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 3 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
 * High-risk
-replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
-replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
+replace alcstat = 4 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 4 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
 
 label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
 label values alcstat alcstat
@@ -613,7 +613,7 @@ restore
 * Removed in core model: psyche lnly 
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev bmi drink abstainer moderate increasingRisk highRisk heavy_smoker problem_drinker
+local risk smoken smokev bmi drink abstainer moderate increasingRisk highRisk
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white

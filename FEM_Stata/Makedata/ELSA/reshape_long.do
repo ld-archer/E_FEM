@@ -553,16 +553,16 @@ replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 *       Males:          > 50 units/week
 gen alcstat = .
 * Abstainer
-replace alcstat = 1 if alcbase == 0
+replace alcstat = 1 if drink == 0 & !missing(drink)
 * Moderate drinker
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 14 & male == 0
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 21 & male == 1
+replace alcstat = 2 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 2 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
 * Increasing-risk
-replace alcstat = 3 if alcbase >= 15 & alcbase <= 35 & male == 0
-replace alcstat = 3 if alcbase >= 22 & alcbase <= 50 & male == 1
+replace alcstat = 3 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 3 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
 * High-risk
-replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
-replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
+replace alcstat = 4 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 4 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
 
 label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
 label values alcstat alcstat
