@@ -1,7 +1,7 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene problem_drinker heavy_smoker
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene heavy_smoker
 global bin_econ
 global ols logbmi atotb itot smokef
 global order adlstat iadlstat exstat srh alcstat
@@ -28,7 +28,6 @@ global bin_hlth_names
     "Hip Fracture"
     "Alzheimers"
     "Dementia"
-    "Problem Drinker (binge/too frequent)"
     "Heavy Smoker (>10 cigs/day)"
 ;
 global bin_econ_names

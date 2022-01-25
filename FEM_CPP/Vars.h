@@ -645,10 +645,10 @@ namespace Vars
         l2increasingRisk,           ///< Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 3)
         highRisk,                   ///< High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)
         l2highRisk,                 ///< Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)
-        pabstainer,                 /// Probability of abstainer
-        pmoderate,                  ///< Probability of moderate
-        pincreasingRisk,            ///< Probability of increasingRisk
-        phighRisk,                  ///< Probability of highRisk
+        palcstat1,                 /// Probability of abstainer (alcstat == 1)
+        palcstat2,                  ///< Probability of moderate (alcstat == 2)
+        palcstat3,            ///< Probability of increasingRisk (alcstat == 3)
+        palcstat4,                  ///< Probability of highRisk (alcstat == 4)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

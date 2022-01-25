@@ -567,7 +567,8 @@ label var bmi "BMI"
 label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var drink "Drinks Alcohol"
-label var abstainer "Abstains from alcohol consumption"
+label var alcstat "Alcohol Status (1-4)"
+*label var abstainer "Abstains from alcohol consumption"
 label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
 label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
 label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
@@ -613,7 +614,7 @@ restore
 * Removed in core model: psyche lnly 
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev bmi drink abstainer moderate increasingRisk highRisk
+local risk smoken smokev bmi drink alcstat abstainer moderate increasingRisk highRisk
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -637,7 +638,7 @@ foreach tp in binhlth risk binecon cntecon demog {
 			else if ("`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker") & `wave' == 1 {
 				continue
 			}
-			else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
+			else if ("`var'" == "alcstat" | "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
 				continue
 			}
 			

@@ -348,21 +348,70 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 				}
 			}
 
-			// If we change drink to 0 then we need to make sure heavy_drinker and freq_drinker are also 0
+			// Handle drinker to non-drinker and vice versa
 			if (elsa_data) {
 			    // previously drinker
 			    if(person->test(Vars::l2drink)) {
 			        // now quit
 			        if(person->get(Vars::drink) == 0) {
-			            // set heavy and freq to 0
-			            //person->set(Vars::heavy_drinker, 0.0);
-			            //person->set(Vars::freq_drinker, 0.0);
-			            person->set(Vars::problem_drinker, 0.0);
+			            // set alcstat to 0 as alcstat only predicted for people who drink
 			            person->set(Vars::alcstat, 1);
+
+                        // Now also set all the dummys to zero (previously was abstainer but thats been removed)
+			            person->set(Vars::abstainer, 1);
+                        person->set(Vars::moderate, 0);
+                        person->set(Vars::increasingRisk, 0);
+                        person->set(Vars::highRisk, 0);
+                        // When alcbase is added back we'll do accounting here
 			            //person->set(Vars::alcbase, 0.0);
 			        }
 			    }
-			    // 
+			    // previously non-drinker
+			    if(person->get(Vars::l2drink) == 0) {
+			        // now drinks
+			        if(person->get(Vars::drink) == 1) {
+			            // set alcstat to moderate (2) just to give it a value before prediction
+			            person->set(Vars::alcstat, 2);
+			            // Also set dummy
+			            person->set(Vars::moderate, 1);
+                        person->set(Vars::abstainer, 0);
+			        }
+			    }
+			    if(person->test(Vars::l2drink)) {
+			        if(person->test(Vars::drink)) {
+			            person
+			        }
+			    }
+
+			    // Handle accounting for alcstat to dummys
+                // abstainer drinker
+                if(person->get(Vars::alcstat) == 1) {
+                    person->set(Vars::abstainer, 1);
+                    person->set(Vars::moderate, 0);
+                    person->set(Vars::increasingRisk, 0);
+                    person->set(Vars::highRisk, 0);
+                }
+			    // moderate drinker
+			    if(person->get(Vars::alcstat) == 2) {
+                    person->set(Vars::abstainer, 0);
+			        person->set(Vars::moderate, 1);
+			        person->set(Vars::increasingRisk, 0);
+                    person->set(Vars::highRisk, 0);
+			    }
+			    // increasing risk
+                if(person->get(Vars::alcstat) == 3) {
+                    person->set(Vars::abstainer, 0);
+                    person->set(Vars::moderate, 0);
+                    person->set(Vars::increasingRisk, 1);
+                    person->set(Vars::highRisk, 0);
+                }
+                // high risk
+                if(person->get(Vars::alcstat) == 4) {
+                    person->set(Vars::abstainer, 0);
+                    person->set(Vars::moderate, 0);
+                    person->set(Vars::increasingRisk, 0);
+                    person->set(Vars::highRisk, 1);
+                }
 			}
 
 			// Handle marriage status transitions
@@ -542,23 +591,23 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                 }
 			}
 
-			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correclty
-			//if (elsa_data) {
-			//	// If no ADLs last wave...
-			//	if (person->get(Vars::l2adlstat) == 1) {
-			//		// ... and ADLs in current wave (1 or more) ...
-			//		if (person->get(Vars::adlstat) > 1) {
-			//			// ... set anyadl to true
-			//			person->set(Vars::anyadl, 1.0);
-			//		}
-			//	}
-			//	// Now do the same for IADLs
-			//	if (person->get(Vars::l2iadlstat) == 1) {
-			//		if (person->get(Vars::iadlstat) > 1) {
-			//			person->set(Vars::anyiadl, 1.0);
-			//		}
-			//	}
-			//}
+//			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correctly
+//			if (elsa_data) {
+//				// If no ADLs last wave...
+//				if (person->get(Vars::l2adlstat) == 1) {
+//					// ... and ADLs in current wave (1 or more) ...
+//					if (person->get(Vars::adlstat) > 1) {
+//						// ... set anyadl to true
+//						person->set(Vars::anyadl, 1.0);
+//					}
+//				}
+//				// Now do the same for IADLs
+//				if (person->get(Vars::l2iadlstat) == 1) {
+//					if (person->get(Vars::iadlstat) > 1) {
+//						person->set(Vars::anyiadl, 1.0);
+//					}
+//				}
+//			}
 					
 			/*// Do partner/spouse mortality for PSID simulation
 			if(psid_data && person->get(Vars::l2mstat_new) != 1) {

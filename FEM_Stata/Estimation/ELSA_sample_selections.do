@@ -27,7 +27,7 @@ local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture quest
 local select_lnly !died & wave > 1
 *local select_heavy_drinker !died & drink == 1
 *local select_freq_drinker !died & drink == 1
-local select_problem_drinker !died & drink == 1
+*local select_problem_drinker !died & drink == 1
 local select_alcstat !died & drink == 1 & wave > 3 /* Alcohol information not properly recorded until wave 4 */
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4

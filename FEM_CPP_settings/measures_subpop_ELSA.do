@@ -35,7 +35,8 @@ local measures
 						a_bmi     q05_bmi   q50_bmi   q95_bmi
 						p_adl1	  p_adl2    p_adl3p
 						p_iadl1   p_iadl2p
-						a_adlstat a_iadlstat
+						a_adlstat 
+						a_iadlstat
 						a_anyadl  n_anyadl  p_anyadl
 						a_anyiadl n_anyiadl p_anyiadl
 						a_age     d_age
@@ -48,8 +49,7 @@ local measures
 						t_atotb 	a_atotb
 						t_itot		a_itot
 					p_drink		i_drink		n_drink
-					p_problem_drinker i_problem_drinker n_problem_drinker
-					p_abstainer			n_abstainer
+					a_alcstat
 					p_moderate			n_moderate
 					p_increasingRisk	n_increasingRisk
 					p_highRisk			n_highRisk

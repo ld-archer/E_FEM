@@ -579,7 +579,7 @@ save hotdeck_data/alcstat_imp1.dta, replace
 restore
 drop if wave < 4
 append using hotdeck_data/alcstat_imp1.dta, keep(_all)
-tab alcstat wave
+tab alcstat wave 
 
 ** Dummys
 gen abstainer = 1 if alcstat == 1 & !missing(alcstat)

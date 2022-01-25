@@ -334,8 +334,9 @@ $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summ
 	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core_$(TIMESTAMP)
 	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core_$(TIMESTAMP)
 	mkdir -p debug/core_$(TIMESTAMP)/logs/
-#	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core_$(TIMESTAMP)/logs/
-#	cp -r FEM_Stata/Estimation/*.log debug/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/core_$(TIMESTAMP)/logs/
+	cp -r $(ROOT)/log*.txt debug/core_$(TIMESTAMP)/logs/
 	mkdir -p debug/core_$(TIMESTAMP)/settings/
 	cp -r FEM_CPP_settings/ debug/core_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox

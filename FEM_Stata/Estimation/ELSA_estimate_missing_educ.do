@@ -44,8 +44,8 @@ local predict_vars male white l2age65l l2age6574 l2age75p married_educl_interact
 
 * Set multiple ster directories for baseline, cross validation 1&2, and minimal runs
 local ster1 "$local_path/Estimates/ELSA"
-local ster2 "$local_path/Estimates/ELSA/CV1"
-local ster3 "$local_path/Estimates/ELSA/CV2"
+local ster2 "$local_path/Estimates/ELSA_core/CV1"
+local ster3 "$local_path/Estimates/ELSA_core/CV2"
 local ster4 "$local_path/Estimates/ELSA_minimal"
 local ster5 "$local_path/Estimates/ELSA_core"
 
