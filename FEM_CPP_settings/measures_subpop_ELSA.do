@@ -50,6 +50,9 @@ local measures
 						t_itot		a_itot
 					p_drink		i_drink		n_drink
 					a_alcstat
+					a_alcstat4
+					a_alcbase
+					p_abstainer			n_abstainer
 					p_moderate			n_moderate
 					p_increasingRisk	n_increasingRisk
 					p_highRisk			n_highRisk
@@ -85,7 +88,7 @@ f - female
 65p - 65 plus
 */
 
-local subpop all m f 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
+local subpop all m f m_5564 f_5564 m_6574 f_6574 m_75p f_75p m_5564_drink f_5564_drink m_6574_drink f_6574_drink m_75p_drink f_75p_drink
 * CORE_DEBUG: 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
 * HANDOVERS: 55p_f_l 55p_m_l
 * ANALYSIS: educ1 educ2 educ3 exstat1 exstat2 exstat3 anyadl noadl

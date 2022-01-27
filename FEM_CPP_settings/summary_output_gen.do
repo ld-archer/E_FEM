@@ -122,34 +122,6 @@ forvalues x = 1/`measures_l' {
 			local sel "& college == 1"
 			local samp "College"
 		}
-		else if "`b'" == "drinkd1" {
-			local sel "& drinkd_stat == 1"
-			local samp "Drinkd1"
-		}
-		else if "`b'" == "drinkd2" {
-			local sel "& drinkd_stat == 2"
-			local samp "Drinkd2"
-		}
-		else if "`b'" == "drinkd3" {
-			local sel "& drinkd_stat == 3"
-			local samp "Drinkd3"
-		}
-		else if "`b'" == "drinkd4" {
-			local sel "& drinkd_stat == 4"
-			local samp "Drinkd4"
-		}
-		else if "`b'" == "exstat1" {
-			local sel "& exstat == 1"
-			local samp "exstat1"
-		}
-		else if "`b'" == "exstat2" {
-			local sel "& exstat == 2"
-			local samp "exstat2"
-		}
-		else if "`b'" == "exstat3" {
-			local sel "& exstat == 3"
-			local samp "exstat3"
-		}
 		else if "`b'" == "obese" {
 			local sel "& obese == 1"
 			local samp "obese"
@@ -281,6 +253,54 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "f_100p" {
 			local sel "& male == 0 & age >= 100"
 			local samp "female age 100 plus"
+		}
+		else if "`b'" == "m_5564" {
+			local sel "& male == 1 & age > 54 & age <= 64"
+			local samp "male aged 55 to 64"
+		}
+		else if "`b'" == "f_5564" {
+			local sel "& male == 0 & age > 54 & age <= 64"
+			local samp "female aged 55 to 64"
+		}
+		else if "`b'" == "m_6574" {
+			local sel "& male == 1 & age > 64 & age <= 74"
+			local samp "male aged 65 to 74"
+		}
+		else if "`b'" == "f_6574" {
+			local sel "& male == 0 & age > 64 & age <= 74"
+			local samp "female aged 65 to 74"
+		}
+		else if "`b'" == "m_75p" {
+			local sel "& male == 1 & age > 74"
+			local samp "male aged 75 plus"
+		}
+		else if "`b'" == "f_75p" {
+			local sel "& male == 0 & age > 74"
+			local samp "female aged 75 plus"
+		}
+		else if "`b'" == "m_5564_drink" {
+			local sel "& male == 1 & age > 54 & age <= 64 & drink == 1"
+			local samp "male drinker aged 55 to 64"
+		}
+		else if "`b'" == "f_5564_drink" {
+			local sel "& male == 0 & age > 54 & age <= 64 & drink == 1"
+			local samp "female drinker aged 55 to 64"
+		}
+		else if "`b'" == "m_6574_drink" {
+			local sel "& male == 1 & age > 64 & age <= 74 & drink == 1"
+			local samp "male drinker aged 65 to 74"
+		}
+		else if "`b'" == "f_6574_drink" {
+			local sel "& male == 0 & age > 64 & age <= 74 & drink == 1"
+			local samp "female drinker aged 65 to 74"
+		}
+		else if "`b'" == "m_75p_drink" {
+			local sel "& male == 1 & age > 74 & drink == 1"
+			local samp "male drinker aged 75 plus"
+		}
+		else if "`b'" == "f_75p_drink" {
+			local sel "& male == 0 & age > 74 & drink == 1"
+			local samp "female drinker aged 75 plus"
 		}
 
 		* Prevalence measures

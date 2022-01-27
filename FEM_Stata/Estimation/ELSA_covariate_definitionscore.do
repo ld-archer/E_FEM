@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene heavy_smoker
 global bin_econ
-global ols logbmi atotb itot smokef
+global ols logbmi atotb itot smokef alcbase_mod alcbase_inc alcbase_high
 global order adlstat iadlstat srh exstat alcstat
 global unorder workstat mstat
 
@@ -33,6 +33,9 @@ global ols_names
     "Total Family Wealth"
     "Total Couple Level Income"
     "Smoking Intensity (# cigs/day)"
+    "Alcohol consumption in units (moderate)"
+    "Alcohol consumption in units (increasingRisk)"
+    "Alcohol consumption in units (highRisk)"
 ;
 global order_names 
     "ADL status"
@@ -82,7 +85,8 @@ local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7
 * Relationship Status vars
 local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
 * Alcohol consumption status
-local lvars_alcstat l2abstainer l2increasingRisk l2highRisk         /*Control: l2moderate - moderate alcohol consumption*/
+local lvars_alcstat l2moderate l2increasingRisk l2highRisk         /*Control: l2moderate - moderate alcohol consumption*/
+local lvars_alcstat4 l2abstainer l2increasingRisk l2highRisk        /*Control: l2moderate - moderaate alcohol consumption*/
 
 
 
@@ -127,7 +131,10 @@ global allvars_smokef       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' 
 *global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
-global allvars_alcstat      $dvars $lvars_age
+global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2alcstat4
+global allvars_alcbase_mod  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_alcbase_inc  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_alcbase_high $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 
 
 *** Logbmi & other health

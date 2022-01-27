@@ -355,62 +355,99 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			        // now quit
 			        if(person->get(Vars::drink) == 0) {
 			            // set alcstat to 0 as alcstat only predicted for people who drink
-			            person->set(Vars::alcstat, 1);
+			            person->set(Vars::alcstat, 0);
+			            // set alcstat4 to 1 as this is for abstainers
+			            person->set(Vars::alcstat4, 1);
 
                         // Now also set all the dummys to zero (previously was abstainer but thats been removed)
-			            person->set(Vars::abstainer, 1);
+			            //person->set(Vars::abstainer, 1);
                         person->set(Vars::moderate, 0);
                         person->set(Vars::increasingRisk, 0);
                         person->set(Vars::highRisk, 0);
                         // When alcbase is added back we'll do accounting here
-			            //person->set(Vars::alcbase, 0.0);
+			            person->set(Vars::alcbase, 0.0);
+                        person->set(Vars::alcbase_mod, 0.0);
+                        person->set(Vars::alcbase_inc, 0.0);
+                        person->set(Vars::alcbase_high, 0.0);
 			        }
 			    }
 			    // previously non-drinker
 			    if(person->get(Vars::l2drink) == 0) {
 			        // now drinks
 			        if(person->get(Vars::drink) == 1) {
-			            // set alcstat to moderate (2) just to give it a value before prediction
-			            person->set(Vars::alcstat, 2);
+			            // set alcstat to moderate (1) just to give it a value before prediction
+			            //person->set(Vars::alcstat, 1);
+			            // set alcstat4 to moderate also (2) not sure if this is correct CHECK PLEASE
+			            //person->set(Vars::alcstat4, 2);
 			            // Also set dummy
-			            person->set(Vars::moderate, 1);
-                        person->set(Vars::abstainer, 0);
+			            //person->set(Vars::moderate, 1);
+                        //person->set(Vars::abstainer, 0);
+                        //person->set(Vars::increasingRisk, 0);
+                        //person->set(Vars::highRisk, 0);
 			        }
 			    }
+			    // previously drinker
 			    if(person->test(Vars::l2drink)) {
+			        // still drinks
 			        if(person->test(Vars::drink)) {
-			            person
+			            person->set(Vars::abstainer, 0);
 			        }
+			    }
+
+			    // Do accounting for drink == 0 with alcstat4
+			    if(person->get(Vars::drink) == 0) {
+			        person->set(Vars::alcstat4, 1);
+			        person->set(Vars::alcstat, 0);
+			        person->set(Vars::abstainer, 1);
+                    person->set(Vars::alcbase, 0.0);
+                    person->set(Vars::alcbase_mod, 0.0);
+                    person->set(Vars::alcbase_inc, 0.0);
+                    person->set(Vars::alcbase_high, 0.0);
 			    }
 
 			    // Handle accounting for alcstat to dummys
                 // abstainer drinker
-                if(person->get(Vars::alcstat) == 1) {
-                    person->set(Vars::abstainer, 1);
-                    person->set(Vars::moderate, 0);
-                    person->set(Vars::increasingRisk, 0);
-                    person->set(Vars::highRisk, 0);
-                }
+//                if(person->get(Vars::alcstat) == 1) {
+//                    person->set(Vars::abstainer, 1);
+//                    person->set(Vars::moderate, 0);
+//                    person->set(Vars::increasingRisk, 0);
+//                    person->set(Vars::highRisk, 0);
+//                }
 			    // moderate drinker
-			    if(person->get(Vars::alcstat) == 2) {
+			    if(person->get(Vars::alcstat) == 1) {
+			        person->set(Vars::alcstat4, 2);
                     person->set(Vars::abstainer, 0);
 			        person->set(Vars::moderate, 1);
 			        person->set(Vars::increasingRisk, 0);
                     person->set(Vars::highRisk, 0);
+                    // set alcbase to equal the correct var
+                    person->set(Vars::alcbase, person->get(Vars::alcbase_mod));
+                    person->set(Vars::alcbase_inc, 0);
+                    person->set(Vars::alcbase_high, 0);
 			    }
 			    // increasing risk
-                if(person->get(Vars::alcstat) == 3) {
+                if(person->get(Vars::alcstat) == 2) {
+                    person->set(Vars::alcstat4, 3);
                     person->set(Vars::abstainer, 0);
                     person->set(Vars::moderate, 0);
                     person->set(Vars::increasingRisk, 1);
                     person->set(Vars::highRisk, 0);
+                    // set alcbase to equal the correct var
+                    person->set(Vars::alcbase, person->get(Vars::alcbase_inc));
+                    person->set(Vars::alcbase_mod, 0);
+                    person->set(Vars::alcbase_high, 0);
                 }
                 // high risk
-                if(person->get(Vars::alcstat) == 4) {
+                if(person->get(Vars::alcstat) == 3) {
+                    person->set(Vars::alcstat4, 4);
                     person->set(Vars::abstainer, 0);
                     person->set(Vars::moderate, 0);
                     person->set(Vars::increasingRisk, 0);
                     person->set(Vars::highRisk, 1);
+                    // set alcbase to equal the correct var
+                    person->set(Vars::alcbase, person->get(Vars::alcbase_high));
+                    person->set(Vars::alcbase_inc, 0);
+                    person->set(Vars::alcbase_mod, 0);
                 }
 			}
 

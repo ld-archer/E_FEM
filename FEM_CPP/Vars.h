@@ -639,16 +639,26 @@ namespace Vars
         l2alcstat,                  ///< Lag of Alcohol consumption status [1,4]
         abstainer,                  ///< Abstains from alcohol consumption. (alcstat == 1)
         l2abstainer,                ///< Lag of Abstains from alcohol consumption. (alcstat == 1)
-        moderate,                   ///< Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 2)
-        l2moderate,                 ///< Lag of Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 2)
-        increasingRisk,             ///< Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 3)
-        l2increasingRisk,           ///< Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 3)
-        highRisk,                   ///< High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)
-        l2highRisk,                 ///< Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 4)
+        moderate,                   ///< Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 1)
+        l2moderate,                 ///< Lag of Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 1)
+        increasingRisk,             ///< Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 2)
+        l2increasingRisk,           ///< Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 2)
+        highRisk,                   ///< High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 3)
+        l2highRisk,                 ///< Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 3)
         palcstat1,                 /// Probability of abstainer (alcstat == 1)
         palcstat2,                  ///< Probability of moderate (alcstat == 2)
         palcstat3,            ///< Probability of increasingRisk (alcstat == 3)
-        palcstat4,                  ///< Probability of highRisk (alcstat == 4)
+        //palcstat4,                  ///< Probability of highRisk (alcstat == 4)
+        alcstat4,                   ///< 4 level alcstat variable
+        l2alcstat4,                 ///< Lag of 4 level alcstat variable
+        alcbase,                    ///< Alcohol consumption in units
+        l2alcbase,                  ///< Lag of Alcohol consumption in units
+        alcbase_mod,                ///< Alcohol consumption in units (moderate)
+        l2alcbase_mod,              ///< Lag of Alcohol consumption in units (moderate)
+        alcbase_inc,                ///< Alcohol consumption in units (increasingRisk)
+        l2alcbase_inc,                ///< Lag of Alcohol consumption in units (increasingRisk)
+        alcbase_high,               ///< Alcohol consumption in units (highRisk)
+        l2alcbase_high,               ///< Lag of Alcohol consumption in units (highRisk)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
