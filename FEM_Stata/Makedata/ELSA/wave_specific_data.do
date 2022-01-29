@@ -34,6 +34,13 @@ clear
 set maxvar 15000
 log using wave_specific_data.log, replace
 
+<<<<<<< HEAD
+=======
+clear
+set maxvar 15000
+log using wave_specific_data.log, replace
+
+>>>>>>> multi_level_alcohol
 quietly include ../../../fem_env.do
 
 

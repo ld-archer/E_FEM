@@ -1,11 +1,10 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene problem_drinker heavy_smoker
+global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene heavy_smoker
 global bin_econ
-global ols logbmi atotb itot
-global count beer wine spirits smokef
-global order adlstat iadlstat srh exstat
+global ols logbmi atotb itot smokef alcbase_mod alcbase_inc alcbase_high
+global order adlstat iadlstat srh exstat alcstat
 global unorder workstat mstat
 
 * Variable names
@@ -25,7 +24,6 @@ global bin_hlth_names
     "High Cholesterol"
     "Alzheimers"
     "Dementia"
-    "Problem Drinker (binge/too frequent)"
     "Heavy Smoker (>10 cigs/day)"
 ;
 global bin_econ_names
@@ -34,6 +32,10 @@ global ols_names
     "Log(BMI)"
     "Total Family Wealth"
     "Total Couple Level Income"
+    "Smoking Intensity (# cigs/day)"
+    "Alcohol consumption in units (moderate)"
+    "Alcohol consumption in units (increasingRisk)"
+    "Alcohol consumption in units (highRisk)"
 ;
 global count_names
     "Number of pints of beer consumed in week before survey"
@@ -87,6 +89,9 @@ local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7 l2nssec8
 * Relationship Status vars
 local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
+* Alcohol consumption status
+local lvars_alcstat l2moderate l2increasingRisk l2highRisk         /*Control: l2moderate - moderate alcohol consumption*/
+local lvars_alcstat4 l2abstainer l2increasingRisk l2highRisk        /*Control: l2moderate - moderaate alcohol consumption*/
 
 
 
@@ -101,7 +106,7 @@ global allvars_died         $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge 
 
 *** Chronic Diseases
 *CANCRE
-global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2smokef
+global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev l2heavy_smoker
 * DIABE
 global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole `lvars_exercise'
 * HEARTE
@@ -110,7 +115,7 @@ global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_s
 * HIBPE (16/6/21 Now includes l2diabe)
 global allvars_hibpe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole `lvars_exercise'
 global allvars_lunge        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
-global allvars_stroke       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken l2smokef
+global allvars_stroke       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken l2heavy_smoker
 global allvars_hchole       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_exercise'
 global allvars_srh          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
 global allvars_asthmae      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
@@ -121,21 +126,20 @@ global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_e
 
 
 *** Smoking 
-global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
-global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
-global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 global allvars_smokef       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
-global allvars_drink            $dvars $lvars_age `lvars_workstat' `lvars_exercise' l2drink l2obese1 l2obese2 l2obese3 l2overwt
-global allvars_problem_drinker  $dvars $lvars_age `lvars_workstat' `lvars_exercise'
-global allvars_beer             $dvars $lvars_age l2obese1 l2obese2 l2obese3 l2overwt l2smoken l2smokev l2smokef l2beer
-global allvars_wine             $dvars $lvars_age l2obese1 l2obese2 l2obese3 l2overwt l2smoken l2smokev l2smokef l2wine
-global allvars_spirits          $dvars $lvars_age l2obese1 l2obese2 l2obese3 l2overwt l2smoken l2smokev l2smokef l2spirits
-
-
+global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' 
+*global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
+global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2alcstat4 l2smoken
+global allvars_alcbase_mod  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
+global allvars_alcbase_inc  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
+global allvars_alcbase_high $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
 
 
 *** Logbmi & other health
@@ -143,8 +147,8 @@ global allvars_logbmi           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lva
 
 
 *** Economic vars (atotb & itot)
-global allvars_atotb            $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
-global allvars_itot             $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
+global allvars_atotb     $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink `lvars_mstat'
+global allvars_itot      $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink `lvars_mstat'
 
 
 *** Disabilities
@@ -159,5 +163,5 @@ global allvars_workstat         $dvars $lvars_age `lvars_funclimit'
 global allvars_exstat           $dvars $lvars_age `lvars_funclimit' `lvars_exercise'
 
 *** Marriage Status
-global allvars_mstat            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokef
+global allvars_mstat        $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p  l2heavy_smoker
  

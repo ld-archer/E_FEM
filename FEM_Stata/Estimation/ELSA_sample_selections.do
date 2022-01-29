@@ -20,18 +20,18 @@ local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
 local select_smokef !died & l2smoken == 1
 local select_srh !died & wave != 3
 local select_heavy_smoker !died & smoken == 1
+local select_smokef !died & smoken == 1
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8 | wave==9) /* Only estimate bmi model using waves 2,4,6,8,9 as other waves are imputed */
 local select_hchole !died & l2hchole == 0 & wave > 1 /*INCIDENCE*/
 local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture question only asked if respondent is aged 60+ */
 local select_lnly !died & wave > 1
-local select_heavy_drinker !died & drink == 1
-local select_freq_drinker !died & drink == 1
-local select_problem_drinker !died & drink == 1
-*local select_alcbase_m !died & wave > 3 & insc == 1 & drink == 1 & male == 1  /* Only estimate alcbase using waves 4+, and those in the self-completion interview, and those that drink */
-*local select_alcbase_f !died & wave > 3 & insc == 1 & drink == 1 & male == 0
-local select_beer !died & wave > 3 & insc == 1 & drink == 1
-local select_wine !died & wave > 3 & insc == 1 & drink == 1
-local select_spirits !died & wave > 3 & insc == 1 & drink == 1
+*local select_heavy_drinker !died & drink == 1
+*local select_freq_drinker !died & drink == 1
+*local select_problem_drinker !died & drink == 1
+local select_alcstat !died & drink == 1 & wave > 3 /* Alcohol information not properly recorded until wave 4 */
+local select_alcbase_mod !died & drink == 1 & wave > 3 & alcstat == 1
+local select_alcbase_inc !died & drink == 1 & wave > 3 & alcstat == 2
+local select_alcbase_high !died & drink == 1 & wave > 3 & alcstat == 3
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
 if "`defmod'" == "CV2" {
@@ -42,7 +42,8 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
                 smoke_start smoke_stop ///
                 logbmi hchole hipe heavy_smoker mstat lnly alzhe demene ///
-                workstat atotb itot problem_drinker beer wine spirits
+                workstat atotb itot problem_drinker alcstat smokef ///
+                alcbase_mod alcbase_inc alcbase_high
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

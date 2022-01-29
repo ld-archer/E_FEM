@@ -325,69 +325,52 @@ label variable problem_drinker "Problem Drinker (binge/too freq)"
 *   High-risk:          
 *       Females:        > 35 units/week
 *       Males:          > 50 units/week
-/* gen alcstat = .
+* Abstainers are handled differently from these three groups; that information is derived directly from the `drink' variable
+gen alcstat = .
 * Abstainer
-replace alcstat = 1 if alcbase == 0
+replace alcstat = . if drink == 0 & !missing(drink)
 * Moderate drinker
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 14 & male == 0
-replace alcstat = 2 if alcbase >= 1 & alcbase <= 21 & male == 1
+replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
 * Increasing-risk
-replace alcstat = 3 if alcbase >= 15 & alcbase <= 35 & male == 0
-replace alcstat = 3 if alcbase >= 22 & alcbase <= 50 & male == 1
+replace alcstat = 2 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 2 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
 * High-risk
-replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
-replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
+replace alcstat = 3 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
 
-label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
+*label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
+label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
 label values alcstat alcstat
 
+** Now generate a 4 level alcstat variable to include abstainer alongside consumption groups
+* This var will be used for validation and in predictive models
+gen alcstat4 = .
+replace alcstat4 = 1 if drink == 0 & !missing(drink)
+replace alcstat4 = 2 if alcstat == 1 & !missing(alcstat)
+replace alcstat4 = 3 if alcstat == 2 & !missing(alcstat)
+replace alcstat4 = 4 if alcstat == 3 & !missing(alcstat)
+label define alcstat4 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
+label values alcstat4 alcstat4
+
 ** Dummys
-gen abstainer = 1 if alcstat == 1 & !missing(alcstat)
-replace abstainer = 0 if alcstat != 1 & !missing(alcstat)
-gen moderate = 1 if alcstat == 2 & !missing(alcstat)
-replace moderate = 0 if alcstat != 2 & !missing(alcstat)
-gen increasingRisk = 1 if alcstat == 3 & !missing(alcstat)
-replace increasingRisk = 0 if alcstat != 3 & !missing(alcstat)
-gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
-replace highRisk = 0 if alcstat != 4 & !missing(alcstat) */
-
-** Calculate units from drinks
-gen unitBeer = beer * 2.8
-gen unitWine = wine * 2.1
-gen unitSpirit = spirits
-
-gen alcbase = unitBeer + unitWine + unitSpirit
-replace alcbase = 0 if drink == 0
-
-gen abstainer = 1 if alcbase == 0 & !missing(alcbase)
-replace abstainer = 0 if alcbase > 0 & !missing(alcbase)
-
-*gen temp_abstainer = 1 if alcbase == 0 & drink == 1 & !missing(alcbase)
-*replace temp_abstainer = 0 if (alcbase != 0 | drink != 1) & !missing(alcbase)
-
-gen moderate = 1 if male == 0 & alcbase > 0 & alcbase <= 14 & !missing(alcbase)
-replace moderate = 1 if male == 1 & alcbase > 0 & alcbase <= 21 & !missing(alcbase)
-replace moderate = 0 if male == 0 & (alcbase < 1 | alcbase > 14) & !missing(alcbase)
-replace moderate = 0 if male == 1 & (alcbase < 1 | alcbase > 21) & !missing(alcbase)
-
-gen increasingRisk = 1 if male == 0 & alcbase >= 15 & alcbase <= 35 & !missing(alcbase)
-replace increasingRisk = 1 if male == 1 & alcbase >= 22 & alcbase <= 50 & !missing(alcbase)
-replace increasingRisk = 0 if male == 0 & (alcbase < 15 | alcbase > 35) & !missing(alcbase)
-replace increasingRisk = 0 if male == 1 & (alcbase < 22 | alcbase > 50) & !missing(alcbase)
-
-gen highRisk = 1 if male == 0 & alcbase > 35 & !missing(alcbase)
-replace highRisk = 1 if male == 1 & alcbase > 50 & !missing(alcbase)
-replace highRisk = 0 if male == 0 & alcbase < 35 & !missing(alcbase)
-replace highRisk = 0 if male == 1 & alcbase < 50 & !missing(alcbase)
+gen abstainer = 1 if alcstat4 == 1 & !missing(alcstat4)
+replace abstainer = 0 if alcstat4 != 1 & !missing(alcstat4)
+gen moderate = 1 if alcstat4 == 2 & !missing(alcstat4)
+replace moderate = 0 if alcstat4 != 2 & !missing(alcstat4)
+gen increasingRisk = 1 if alcstat4 == 3 & !missing(alcstat4)
+replace increasingRisk = 0 if alcstat4 != 3 & !missing(alcstat4)
+gen highRisk = 1 if alcstat4 == 4 & !missing(alcstat4)
+replace highRisk = 0 if alcstat4 != 4 & !missing(alcstat4)
 
 label variable abstainer "Drank no alcohol in week before survey"
 label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
 label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
 label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
 
-
-*** Smokef: replace smokef values for non-smokers with missing so we only test smokers intensity
-replace smokef = . if smoken == 0 & !missing(smoken)
+replace moderate = 0 if drink == 0 & !missing(drink)
+replace increasingRisk = 0 if drink == 0 & !missing(drink)
+replace highRisk = 0 if drink == 0 & !missing(drink)
 
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
@@ -578,14 +561,14 @@ label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var smokef "No. cigarettes / day"
 label var drink "Drinks Alcohol"
-label var alcbase "Number of units of alcohol consumed in week before survey"
-label var abstainer "1. Abstains from alcohol consumption"
-label var moderate "2. Moderate alcohol consumption"
-label var increasingRisk "3. Increasing-risk alcohol consumption"
-label var highRisk "4. High-risk alcohol consumption"
-label var beer "Number of pints of beer consumed in week before survey"
-label var wine "Number of glasses of wine consumed in week before survey"
-label var spirits "Number of measures of spirits consumed in week before survey"
+label var alcbase "Alcohol consumption in units"
+label var alcstat "Alcohol Status (1-3)"
+label var alcstat4 "4 level Alcohol Status variable (1-4)"
+label var abstainer "Abstains from alcohol consumption"
+label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
+label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
+label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
+*label var smkint "Smoking Intensity"
 label var heavy_smoker "Heavy Smoker"
 label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
@@ -624,7 +607,7 @@ restore
 * Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk drink alcbase beer wine spirits abstainer moderate increasingRisk highRisk smoken smokev smokef
+local risk smoken smokev bmi drink alcbase alcstat alcstat4 moderate increasingRisk highRisk
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -645,10 +628,10 @@ foreach tp in binhlth risk binecon cntecon demog {
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
-			else if "`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker" & `wave' == 1 {
+			else if ("`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker") & `wave' == 1 {
 				continue
 			}
-			else if inlist("`var'", "abstainer", "moderate", "increasingRisk", "highRisk", "alcbase", "beer", "wine", "spirits") & `wave' < 4 {
+			else if ("`var'" == "alcstat" | "`var'" == "alcbase" | "`var'" == "alcstat4" | "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
 				continue
 			}
 			*else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" | "`var'" == "alcbase") & `wave' < 3

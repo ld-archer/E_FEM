@@ -520,6 +520,7 @@ label variable lnly3 "Loneliness level: high"
 * Drop original
 drop lnlys
 
+****** BMI ******
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
 replace bmi = bmi_ipolate if missing(bmi)
@@ -574,11 +575,19 @@ replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
 replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
 replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 
-/* *** Drinking intensity (Take 3)
+*** Drinking intensity (Take 3)
+* First thing to do is impute alcbase for waves 1-3 (no data for this period. Won't be used in predictive models)
+preserve
+hotdeck alcbase using hotdeck_data/alcbase_imp, store seed(`seed') keep(_all) impute(1)
+use hotdeck_data/alcbase_imp1.dta, replace
+drop if wave > 3
+save hotdeck_data/alcbase_imp1.dta, replace
+restore
+drop if wave < 4
+append using hotdeck_data/alcbase_imp1.dta, keep(_all)
 * This logic is based on meetings with Alan Brennan of ScHARR
 * as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
-* Grouping drinkers into 4 groups:
-*   Abstainers:         No alcohol
+* Grouping drinkers into 3 groups:
 *   Moderate:           
 *       Females:        1-15 units/week
 *       Males:          1-21 units/week
@@ -588,74 +597,70 @@ replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 *   High-risk:          
 *       Females:        > 35 units/week
 *       Males:          > 50 units/week
-
-* First make sure the abstainers are set correctly from drink
-replace alcbase = 0 if drink == 0 & !missing(drink)
-
+* Abstainers are handled differently from these three groups; that information is derived directly from the `drink' variable
 gen alcstat = .
 * Abstainer
-replace alcstat = 1 if alcbase == 0
+*replace alcstat = 1 if drink == 0 & !missing(drink)
 * Moderate drinker
-replace alcstat = 2 if alcbase > 0 & alcbase <= 15 & male == 0
-replace alcstat = 2 if alcbase > 0 & alcbase <= 21 & male == 1
+replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
 * Increasing-risk
-replace alcstat = 3 if alcbase > 15 & alcbase <= 35 & male == 0
-replace alcstat = 3 if alcbase > 21 & alcbase <= 50 & male == 1
+replace alcstat = 2 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 2 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
 * High-risk
-replace alcstat = 4 if alcbase > 35 & male == 0 & !missing(alcbase)
-replace alcstat = 4 if alcbase > 50 & male == 1 & !missing(alcbase)
+replace alcstat = 3 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
+replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
 
-label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label values alcstat alcstat */
+*label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
+label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
+label values alcstat alcstat
 
-/* *** IMPUTATION!!!
+*** IMPUTATION!!!
 * alcbase (and therefore alcstat) info missing for the first 3 waves due to questions not being asked
 * Therefore need to impute this information, try hotdecking first
 * Only impute waves 1-3!!!
-preserve
-hotdeck alcbase using hotdeck_data/alcbase_first_imp, store seed(`seed') keep(_all) impute(1)
-use hotdeck_data/alcbase_first_imp1.dta, replace
+/* preserve
+hotdeck alcstat using hotdeck_data/alcstat_imp, store seed(`seed') keep(_all) impute(1)
+use hotdeck_data/alcstat_imp1.dta, replace
 drop if wave > 3
 save hotdeck_data/alcbase_first_imp1.dta, replace
 restore
 drop if wave < 4
-append using hotdeck_data/alcbase_first_imp1.dta, keep(_all)
-tab alcbase wave
+append using hotdeck_data/alcstat_imp1.dta, keep(_all)
+tab alcstat wave */
 
-* Generate a 7d drink variable for comparison between US and ELSA amongst other things
-gen drink_7d = 1 if alcbase > 0 & !missing(alcbase)
-replace drink_7d = 0 if alcbase == 0 & drink == 1 & !missing(alcbase) & !missing(drink)
+** Finally set up the alcbase vars for each consumption group
+gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_mod = 0 if alcstat !=1 & !missing(alcbase) & !missing(alcstat)
+gen alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_inc = 0 if alcstat !=2 & !missing(alcbase) & !missing(alcstat)
+gen alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)
 
-* Split alcbase by gender for having separate models for each gender
-gen alcbase_m = alcbase if male == 1
-gen alcbase_f = alcbase if male == 0
-*drop alcbase */
+** Now generate a 4 level alcstat variable to include abstainer alongside consumption groups
+* This var will be used for validation and in predictive models
+gen alcstat4 = .
+replace alcstat4 = 1 if drink == 0 & !missing(drink)
+replace alcstat4 = 2 if alcstat == 1 & !missing(alcstat)
+replace alcstat4 = 3 if alcstat == 2 & !missing(alcstat)
+replace alcstat4 = 4 if alcstat == 3 & !missing(alcstat)
+label define alcstat4 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
+label values alcstat4 alcstat4
 
-** Alcoholic Drinks
-replace beer = 0 if drink == 0 & missing(beer)
-replace wine = 0 if drink == 0 & missing(wine)
-replace spirits = 0 if drink == 0 & missing(spirits)
-replace beer = 0 if beer < 0
-replace wine = 0 if wine < 0
-replace spirits = 0 if spirits < 0
-
-
-
-/*
 ** Dummys
-gen abstainer = 1 if alcstat == 1 & !missing(alcstat)
-replace abstainer = 0 if alcstat != 1 & !missing(alcstat)
-gen moderate = 1 if alcstat == 2 & !missing(alcstat)
-replace moderate = 0 if alcstat != 2 & !missing(alcstat)
-gen increasingRisk = 1 if alcstat == 3 & !missing(alcstat)
-replace increasingRisk = 0 if alcstat != 3 & !missing(alcstat)
-gen highRisk = 1 if alcstat == 4 & !missing(alcstat)
-replace highRisk = 0 if alcstat != 4 & !missing(alcstat)
+gen abstainer = 1 if alcstat4 == 1 & !missing(alcstat4)
+replace abstainer = 0 if alcstat4 != 1 & !missing(alcstat4)
+gen moderate = 1 if alcstat4 == 2 & !missing(alcstat4)
+replace moderate = 0 if alcstat4 != 2 & !missing(alcstat4)
+gen increasingRisk = 1 if alcstat4 == 3 & !missing(alcstat4)
+replace increasingRisk = 0 if alcstat4 != 3 & !missing(alcstat4)
+gen highRisk = 1 if alcstat4 == 4 & !missing(alcstat4)
+replace highRisk = 0 if alcstat4 != 4 & !missing(alcstat4)
 
 label variable abstainer "Drank no alcohol in week before survey"
 label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
 label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
-label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units" */
+label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -776,7 +781,6 @@ foreach var in
     smokev
     smoken
     smokef
-    heavy_smoker
     died
     adlstat
     anyadl
@@ -820,9 +824,16 @@ foreach var in
     unemployed
     retired
     problem_drinker
-    beer
-    wine
-    spirits
+    alcbase
+    alcbase_mod
+    alcbase_inc
+    alcbase_high
+    alcstat
+    alcstat4
+    abstainer
+    moderate
+    increasingRisk
+    highRisk
     GOR
     {;
         gen l2`var' = L.`var';

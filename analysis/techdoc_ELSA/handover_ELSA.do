@@ -41,13 +41,13 @@ keep if age >= 55
 
 * Outcomes, most of whats in measures_subpop_ELSA.do
 local outcome cancre diabe hearte hibpe lunge stroke demene alzhe
-local outcome2 employed
-local outcome3 bmi
+local outcome2 employed abstainer moderate increasingRisk highRisk
+local outcome3 bmi alcbase
 local outcome4 anyadl adl3p anyiadl iadl2p
 
 local seoutcome secancre=cancre sediabe=diabe sehearte=hearte sehibpe=hibpe selunge=lunge sestroke=stroke sedemene=demene sealzhe=alzhe
-local seoutcome2 seemployed=employed
-local seoutcome3 sebmi=bmi
+local seoutcome2 seemployed=employed seabstainer=abstainer semoderate=moderate seincreasingRisk=increasingRisk sehighRisk=highRisk
+local seoutcome3 sebmi=bmi sealcbase=alcbase
 local seoutcome4 seanyadl=anyadl seadl3p=adl3p seanyiadl=anyiadl seiadl2p=iadl2p
 
 collapse (mean) `outcome' `outcome2' `outcome3' `outcome4' (semean) `seoutcome' `seoutcome2' `seoutcome3' `seoutcome4' [aw=cwtresp], by(year male)
@@ -136,10 +136,44 @@ forvalues sex = 0/1 {
 		else if "`var'" == "iadl2p" {
 			local title "2 or more IADL difficulties"
 		}
+		else if "`var'" == "abstainer" {
+			local title "Abstains from alcohol consumption"
+			replace p_`var'_all_ELSA55p = . if year < 2008
+		}
+		else if "`var'" == "moderate" {
+			local title "Moderate alcohol consumption"
+			replace p_`var'_all_ELSA55p = . if year < 2008
+		}
+		else if "`var'" == "increasingRisk" {
+			local title "Increasing Risk alcohol consumption"
+			replace p_`var'_all_ELSA55p = . if year < 2008
+		}
+		else if "`var'" == "highRisk" {
+			local title "High Risk alcohol consumption"
+			replace p_`var'_all_ELSA55p = . if year < 2008
+		}
 
 		
 		twoway scatter p_`var'_all_ELSA55p year if male == `sex', mstyle(p1) msize(small) || ///
 			line p_`var'_55p_`s'_l year, lpattern(shortdash) ///
+			, title("`title'") legend(off) xtitle("") ylabel(,format(%9.2f) angle(horizontal)) ///
+			scheme(s1mono) ///
+			saving(`var'_`suf', replace)
+		* Individual graphs if we want them
+		graph export FEM/img/`var'_`suf'.pdf, replace
+	}
+
+	foreach var in `outcome3' {
+		if "`var'" == "bmi" {
+			local title "Body Mass Index (BMI)"
+		}
+		else if "`var'" == "alcbase" {
+			local title "Alcohol Consumption (Units)"
+			replace a_`var'_all_ELSA55p = . if year < 2008
+		}
+
+		twoway scatter a_`var'_all_ELSA55p year if male == `sex', mstyle(p1) msize(small) || ///
+			line a_`var'_55p_`s'_l year, lpattern(shortdash) ///
 			, title("`title'") legend(off) xtitle("") ylabel(,format(%9.2f) angle(horizontal)) ///
 			scheme(s1mono) ///
 			saving(`var'_`suf', replace)
