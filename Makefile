@@ -33,13 +33,25 @@ core: core_prep simulation_core
 
 core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_core_CV2 Ttests_core
 
+core_debug: SUBPOP = debug
 core_debug: core_complete debug_doc_core
 
 core_scen: core_prep simulation_core_scen detailed_appends scen_doc
 
+roc: SUBPOP = roc
 roc: core_prep simulation_core_roc roc_validation
 
-alcohol: core_prep simulation_alcohol
+alcohol: SUBPOP = alcohol
+alcohol: core_prep simulation_alcohol alcohol_doc
+
+handovers: SUBPOP = handovers
+handovers: core_complete handover_plots
+
+alcohol_plus: core_debug alcohol
+
+everything: core_debug alcohol handovers roc
+
+validation: core_debug handovers roc
 
 
 ### Combined rules
@@ -192,21 +204,21 @@ est_core_CV:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models $(STATA) save_est_cpp.do
 
 summary_out_base:
-	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 summary_out_CV:
-	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 summary_out_minimal:
-	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_minimal subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 summary_out_core:
-	cd FEM_CPP_settings && measures_suffix=ELSA_core $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_core subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 summary_out_core_CV:
-	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 
 ### FEM Simulation
@@ -241,9 +253,9 @@ simulation_alcohol:
 
 ### Handovers and Validation
 
-validation: handovers roc_validation
+validation: handover_plots roc_validation
 
-handovers:
+handover_plots:
 	cd analysis/techdoc_ELSA && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) handover_ELSA.do
 
 Ttests_CV: 
@@ -326,21 +338,22 @@ $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summ
 	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis_core.Rmd')"
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
+	mkdir -p $(ROOT)/debug/core
 	# Create dir with current time
-	mkdir -p debug/core_$(TIMESTAMP)
+	mkdir -p debug/core/core_$(TIMESTAMP)/
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
-	mv FEM_R/model_analysis_core.nb.html debug/core_$(TIMESTAMP)
-	cp -r output/COMPLETE/ debug/core_$(TIMESTAMP)
-	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core_$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core_$(TIMESTAMP)
-	mkdir -p debug/core_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Estimation/*.log debug/core_$(TIMESTAMP)/logs/
-	cp -r $(ROOT)/log*.txt debug/core_$(TIMESTAMP)/logs/
-	mkdir -p debug/core_$(TIMESTAMP)/settings/
-	cp -r FEM_CPP_settings/ debug/core_$(TIMESTAMP)/settings/
+	mv FEM_R/model_analysis_core.nb.html debug/core/core_$(TIMESTAMP)
+	cp -r output/COMPLETE/ debug/core/core_$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core/core_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core/core_$(TIMESTAMP)
+	mkdir -p debug/core/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/core/core_$(TIMESTAMP)/logs/
+	cp -r $(ROOT)/log*.txt debug/core/core_$(TIMESTAMP)/logs/
+	mkdir -p debug/core/core_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/core/core_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
-	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core_$(TIMESTAMP)/model_analysis_core.nb.html
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core/core_$(TIMESTAMP)/model_analysis_core.nb.html
 
 
 scen_doc: $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html $(DATADIR)/detailed_output/tot/tot_test_smoken_int[2].do
@@ -352,6 +365,30 @@ $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html: output/SCENARIO/ELSA_core_base/ELSA_core_b
 	cd FEM_R/ && datain=output/SCENARIO/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('IJM_PAPER1_ALL_ANALYSES.Rmd')"
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/FEM_R/IJM_PAPER1_ALL_ANALYSES.nb.html
 
+
+alcohol_doc: home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/Validation_FEM_vs_HSE.nb.html
+
+home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/Validation_FEM_vs_HSE.nb.html: output/ALCOHOL/ELSA_core_base/ELSA_core_base_summary.dta
+	# Run validation script
+	cd home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/ && datain=output/ && dataout=home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/ Rscript -e "require(rmarkdown); render('Validation_FEM_vs_HSE.Rmd')"
+	# Create debug dir if not already
+	mkdir -p $(ROOT)/debug
+	mkdir -p $(ROOT)/debug/alcohol
+	# Create dir with current time
+	mkdir -p debug/alcohol/core_$(TIMESTAMP)
+	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
+	mv home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/Validation_FEM_vs_HSE.nb.html debug/core/core_$(TIMESTAMP)
+	cp -r output/COMPLETE/ debug/alcohol/core_$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/alcohol/core_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/alcohol/core_$(TIMESTAMP)
+	mkdir -p debug/alcohol/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/alcohol/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/alcohol/core_$(TIMESTAMP)/logs/
+	cp -r $(ROOT)/log*.txt debug/alcohol/core_$(TIMESTAMP)/logs/
+	mkdir -p debug/alcohol/core_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/alcohol/core_$(TIMESTAMP)/settings/
+	# Finally, open html file in firefox
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/alcohol/core_$(TIMESTAMP)/Validation_FEM_vs_HSE.nb.html
 
 
 ### Housekeeping and cleaning

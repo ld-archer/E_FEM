@@ -14,6 +14,7 @@ quietly include ../fem_env.do
 
 * Name of your input and output files
 local scen : env measures_suffix
+local subpops : env subpops
 
 * Summary output file name
 local filename summary_output_`scen'.txt

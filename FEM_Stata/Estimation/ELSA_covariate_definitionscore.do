@@ -131,10 +131,10 @@ global allvars_smokef       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' 
 *global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
-global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2alcstat4
-global allvars_alcbase_mod  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
-global allvars_alcbase_inc  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
-global allvars_alcbase_high $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
+global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2alcstat4 l2smoken
+global allvars_alcbase_mod  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
+global allvars_alcbase_inc  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
+global allvars_alcbase_high $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
 
 
 *** Logbmi & other health
@@ -142,8 +142,8 @@ global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_e
 
 
 *** Economic vars (atotb & itot)
-global allvars_atotb     $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
-global allvars_itot      $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' `lvars_drink' `lvars_mstat'
+global allvars_atotb     $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink `lvars_mstat'
+global allvars_itot      $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink `lvars_mstat'
 
 
 *** Disabilities
