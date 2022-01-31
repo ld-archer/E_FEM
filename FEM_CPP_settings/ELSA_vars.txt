@@ -357,29 +357,3 @@ married_educl_interaction = married * educl : Interaction between married and sp
 
 | For Mortality Adjustment
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
-
-| FOR ALCOHOL CONSUMPTION
-| Now calculate units from each of beer, wine and spirits using NHS values from following link
-| https://www.nhs.uk/live-well/alcohol-support/calculating-alcohol-units/
-| (assuming a pint of beer is 5%)
-unitBeer = beer * 2.8
-l2unitBeer = l2beer * 2.8
-unitWine = wine * 2.1
-l2unitWine = l2wine * 2.1
-unitSpirit = spirits
-l2unitSpirit = l2spirits
-
-
-alcbase = unitBeer + unitWine + unitSpirit
-l2alcbase = l2unitBeer + l2unitWine + l2unitSpirit
-
-abstainer = (drink == 0) : boolean
-
-moderate = (drink == 1) & (alcbase <= 14) & not(male) : boolean
-moderate = (drink == 1) & (alcbase <= 21) & male : boolean
-
-increasingRisk = (drink == 1) & (alcbase > 14) & (alcbase <= 35) & not(male) : boolean
-increasingRisk = (drink == 1) & (alcbase > 21) & (alcbase <= 50) & male : boolean
-
-highRisk = (drink == 1) & (alcbase > 35) & not(male) : boolean
-highRisk = (drink == 1) & (alcbase > 50) & male : boolean

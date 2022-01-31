@@ -88,36 +88,36 @@ gen medicare_elig = 0
 *** ELSA Specific Imputation ***
 
 if "`scen'" == "base" {
-    local hotdeck_vars logbmi white itot problem_drinker educl cancre hibpe diabe hearte stroke ///
+    local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
                         smoken hchole alcbase alcstat alcstat4 smokef abstainer moderate increasingRisk highRisk
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot problem_drinker educl alcstat alcstat4 ///
+                        psyche asthmae parkine itot educl alcstat alcstat4 ///
                         abstainer moderate increasingRisk highRisk
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker mstat lnly alzhe demene workstat problem_drinker alcstat ///
+                        mstat lnly alzhe demene workstat alcstat ///
                         abstainer moderate increasingRisk highRisk
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        heavy_smoker lnly alzhe demene workstat problem_drinker smokef alcstat alcstat4 ///
+                        lnly alzhe demene workstat smokef alcstat alcstat4 ///
                         abstainer moderate increasingRisk highRisk
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
-                        lunge smoken itot lnly heavy_smoker workstat alzhe arthre asthmae demene ///
-                        parkine psyche hipe hchole problem_drinker smokef alcstat alcstat4 ///
+                        lunge smoken itot lnly workstat alzhe arthre asthmae demene ///
+                        parkine psyche hipe hchole smokef alcstat alcstat4 ///
                         abstainer moderate increasingRisk highRisk
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot problem_drinker educl workstat alzhe demene ///
+                        psyche asthmae parkine itot educl workstat alzhe demene ///
                         hchole hipe
 }
 else {
@@ -141,8 +141,8 @@ replace srh5 = 0 if srh3 == 1
 * Impute some vars by simply copying lag to current and/or vice versa
 foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 atotb itot hipe mstat heavy_smoker alzhe demene employed unemployed ///
-                        retired problem_drinker alcbase alcstat alcstat4 abstainer moderate increasingRisk highRisk {
+                        srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed unemployed ///
+                        retired alcbase alcstat alcstat4 abstainer moderate increasingRisk highRisk {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
@@ -165,14 +165,6 @@ replace l2married = l2mstat == 1
 replace l2single = l2mstat == 2
 replace l2cohab = l2mstat == 3
 replace l2widowed = l2mstat == 4
-
-
-* If still missing heavy_smoker data, replace with not heavy
-replace heavy_smoker = 0 if missing(heavy_smoker)
-replace l2heavy_smoker = 0 if missing(l2heavy_smoker)
-* Same with problem_drinker
-replace problem_drinker = 0 if missing(problem_drinker)
-replace l2problem_drinker = 0 if missing(l2problem_drinker)
 
 * Handle missing values for white (only 2 missing in ageUK valid stock population)
 if "`scen'" == "valid" {

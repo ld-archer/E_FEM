@@ -77,9 +77,9 @@ namespace Vars
 		died,                     ///< Died [0, 1], stored as Boolean
 		doctim,                   ///< Times at a doctor Approx Range [0.0182607,80.70206], stored as Double
 		drink,						///< Whether drinks alcohol at all, stored asl Boolean
-		heavy_drinker,              ///< Heavy Drinker (>14 units/week), stored as Boolean
-		freq_drinker,               ///< Frequent Drinker (>5 days/week), stored as Boolean
-		problem_drinker,            ///< Problem Drinker (binge/frequent), stored as Boolean
+		//heavy_drinker,              ///< Heavy Drinker (>14 units/week), stored as Boolean
+		//freq_drinker,               ///< Frequent Drinker (>5 days/week), stored as Boolean
+		//problem_drinker,            ///< Problem Drinker (binge/frequent), stored as Boolean
 		//drinkd, 					///< How many days per week drinking alcohol, stored as Short
 		//drinkwn,					///< Number of drinks per week, stored as Double
 		//drinkd1,					///< Drinkd 1 [0, 1], stored as Boolean
@@ -239,9 +239,9 @@ namespace Vars
 		l2diclaim,                 ///< Lag of Claiming SSDI, [0, 1], stored as Boolean
 		l2died,                    ///< Lag of Died, [0, 1], stored as Boolean
 		l2drink,					///< Lag of whether drinks alcohol at all, stored as Boolean
-		l2heavy_drinker,            ///< Lag of Heavy Drinker
-		l2freq_drinker,             ///< Lag of Frequent Drinker
-		l2problem_drinker,          ///< Lag of Problem Drinker
+		//l2heavy_drinker,            ///< Lag of Heavy Drinker
+		//l2freq_drinker,             ///< Lag of Frequent Drinker
+		//l2problem_drinker,          ///< Lag of Problem Drinker
 		//l2drinkd,					///< Lag of how many days per week drinking alcohol, stored as Short
 		//l2drinkwn,					///< Lag of number of drinks per week, stored as Double
 		//l2drinkd1,					///< Lag of drinkd 1 [0, 1], stored as Boolean
@@ -427,9 +427,9 @@ namespace Vars
 		pdiabe,                   ///< Probability of diabetes, stored as Double
 		pdied,                    ///< Probability of death, stored as Double
 		pdrink,						///< Probability of whether drinks alcohol at all, stored as Double
-		pheavy_drinker,             ///< Probability of being a heavy drinker, stored as Double
-		pfreq_drinker,              ///< Probability of being a frequent drinker, stored as Double
-		pproblem_drinker,           ///< Probability of being a problem drinker, stored as Double
+		//pheavy_drinker,             ///< Probability of being a heavy drinker, stored as Double
+		//pfreq_drinker,              ///< Probability of being a frequent drinker, stored as Double
+		//pproblem_drinker,           ///< Probability of being a problem drinker, stored as Double
 		//pdrinkd_stat1,				///< Probability of drinkd_stat==1, stored as Float
 		//pdrinkd_stat2,				///< Probability of drinkd_stat==2, stored as Float
 		//pdrinkd_stat3,				///< Probability of drinkd_stat==3, stored as Float
@@ -618,15 +618,17 @@ namespace Vars
         pworkstat1,                  ///< Probability of Employed (workstat == 1)
         pworkstat2,                ///< Probability of Unemployed (workstat == 2)
         pworkstat3,                   ///< Probability of Retired (workstat == 3)
-        heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
-        l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
-        pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
-        beer,                       ///< Number of pints of beer consumed in week before survey
-        l2beer,                     ///< Lag of Number of pints of beer consumed in week before survey
-        wine,                       ///< Number of glasses of wine consumed in week before survey
-        l2wine,                     ///< Lag of Number of glasses of wine consumed in week before survey
-        spirits,                    ///< Number of measures of spirits consumed in week before survey
-        l2spirits,                  ///< Lag of Number of measures of spirits consumed in week before survey
+        //heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
+        //l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
+        //pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
+        //beer,                       ///< Number of pints of beer consumed in week before survey
+        //l2beer,                     ///< Lag of Number of pints of beer consumed in week before survey
+        //wine,                       ///< Number of glasses of wine consumed in week before survey
+        //l2wine,                     ///< Lag of Number of glasses of wine consumed in week before survey
+        //spirits,                    ///< Number of measures of spirits consumed in week before survey
+        //l2spirits,                  ///< Lag of Number of measures of spirits consumed in week before survey
+        alcstat,                    ///< Alcohol consumption status [1,3]
+        l2alcstat,                  ///< Lag of Alcohol consumption status [1,3]
         abstainer,                  ///< Abstains from alcohol consumption. (alcstat == 1)
         l2abstainer,                ///< Lag of Abstains from alcohol consumption. (alcstat == 1)
         moderate,                   ///< Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 1)

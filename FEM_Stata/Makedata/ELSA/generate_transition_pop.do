@@ -56,22 +56,6 @@ mkspline l2logbmi_l30 `log_30' l2logbmi_30p = l2logbmi
 label var l2logbmi_l30 "Splined two-year lag of BMI <= log(30)"
 label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
 
-/* * Generate some knots in alcbase to maintain the right tail and the increasing and highRisk drinkers
-* Do this separately for each gender as the values are different
-mkspline l2abstainer_m 1 l2moderate_m 22 l2increasingRisk_m 50 l2highRisk_m = l2alcbase_m
-mkspline l2abstainer_f 1 l2moderate_f 15 l2increasingRisk_f 35 l2highRisk_f = l2alcbase_f
-
-label var l2moderate_m "Splined two-year lag of alcbase: moderate (male - 1-21 units)"
-label var l2increasingRisk_m "Splined two-year lag of alcbase: increasingRisk (male - 22-50 units)"
-label var l2highRisk_m "Splined two-year lag of alcbase: highRisk (male - 50+ units)"
-label var l2moderate_f "Splined two-year lag of alcbase: moderate (female - 1-15 units)"
-label var l2increasingRisk_f "Splined two-year lag of alcbase: increasingRisk (female - 16-35 units)"
-label var l2highRisk_f "Splined two-year lag of alcbase: highRisk (female - 35+ units)"
-
-gen l2alcbase_c = l2alcbase_m if male
-replace l2alcbase_c = l2alcbase_f if !male
-label var l2alcbase_c "Lag of alcbase" */
-
 * Label the variables to use for technical appendix
 label variable male "Male"
 label variable hsless "Less than secondary school"
@@ -97,9 +81,7 @@ label variable l2iadl1 "Lag: 1 IADL"
 label variable l2iadl2p "Lag: 2 or more IADLs"
 label variable l2logbmi_l30 "Lag: BMI less than 30"
 label variable l2logbmi_30p "Lag: BMI over 30"
-label variable l2heavy_smoker "Lag: Heavy smoker (20+ cigs/day)"
 label variable l2hchole "Lag: High Cholesterol"
-label variable l2problem_drinker "Problem Drinker (12+ drinks in a week OR 7+ drinks in a day)"
 label variable l2exstat1 "Lag: Activity level - Low"
 label variable l2exstat2 "Lag: Activity level - Moderate"
 label variable l2exstat3 "Lag: Activity level - High"

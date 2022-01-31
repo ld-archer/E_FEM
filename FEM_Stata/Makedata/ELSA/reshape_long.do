@@ -73,9 +73,6 @@ Individual employment earnings; Public pension income;
 Variables from Wave Specific ELSA files:
 
 Risk Behaviours:
-- scdrpin: Number of pints of beer consumed in week before survey
-- scdrwin: Number of glasses of wine consumed in week before survey
-- scdrspi: Number of measures of spirits consumed in week before survey
 
 Demographics:
 - GOR: Government Office Region (one of 8? possible regions in UK)
@@ -137,9 +134,7 @@ r*vgactx_e
 r*mdactx_e
 r*ltactx_e
 r*drink
-r*drinkd_e
-r*drinkn_e
-r*drinkwn_e
+r*alcbase
 r*mstat
 r*hchole
 r*hipe
@@ -155,9 +150,6 @@ r*lbrf_e
 r*mheight
 r*mweight
 c*cpindex
-r*scdrpin
-r*scdrwin
-r*scdrspi
 r*GOR
 ;
 #d cr
@@ -172,21 +164,8 @@ forvalues wv = $firstwave/$lastwave {
     rename h`wv'itot r`wv'itot
 }
 
-* Rename drink vars to more readable (and pleasant) form - r*drinkd
 * Also rename exercise variables in the near future
 forvalues wv = $firstwave/$lastwave {
-	if `wv' > 1 {
-		/* drinkd_e not present in wave 1 */
-		rename r`wv'drinkd_e r`wv'drinkd
-    }
-    if inlist(`wv', 2, 3) {
-        /* drinkn_e only present in waves 2 & 3*/
-        rename r`wv'drinkn_e r`wv'drinkn
-    }
-    if `wv' > 3 {
-        /* drinkwn_e only present in waves 4+*/
-        rename r`wv'drinkwn_e r`wv'drinkwn
-    }
     /*Remove '_e' from labour force status var (don't know why they link inlcuding these)*/
     rename r`wv'lbrf_e r`wv'lbrf
 }
@@ -232,9 +211,7 @@ foreach var in
     mdactx_e
     ltactx_e
     drink
-    drinkd
-    drinkn
-    drinkwn
+    alcbase
     mstat
     hchole
     hipe
@@ -250,9 +227,6 @@ foreach var in
     mheight
     mweight
     coupid
-    scdrpin
-    scdrwin
-    scdrspi
     GOR
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
@@ -288,7 +262,7 @@ drop mheight* mweight*
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
 * Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
 * This will not affect transitions, as the transition population excludes wave 1
-local wav1missvars hchole lnlys drinkd
+local wav1missvars hchole lnlys
 foreach var in `wav1missvars' {
     gen `var'1 = .
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
@@ -301,19 +275,14 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre mbmi smokev smoken hhid inw insc inn
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
-    drink drinkd drinkn drinkwn educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf coupid scdrpin scdrwin scdrspi GOR
+    drink alcbase educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
+    lbrf coupid GOR
 , i(idauniq) j(wave)
 ;
 #d cr
 
 * Changed bmi to mbmi in Harmonized ELSA G.2 release, rename back
 rename mbmi bmi
-
-* Rename individual drinks vars
-rename scdrpin beer
-rename scdrwin wine
-rename scdrspi spirits
 
 
 label variable iwindy "Interview Year"
@@ -355,9 +324,6 @@ label variable vgactx_e "Number of times done vigorous exercise per week"
 label variable mdactx_e "Number of times done moderate exercise per week"
 label variable ltactx_e "Number of times done light exercise per week"
 label variable drink "Drinks at all"
-label variable drinkd "# Days/week has a drink"
-label variable drinkn "# Drinks/day on heaviest drinking day of last week"
-label variable drinkwn "# Drinks in last week"
 label variable educl "Spouse Harmonised Education Level"
 label variable ramomeduage "Age mother left education"
 label variable radadeduage "Age father left education"
@@ -370,10 +336,7 @@ label variable demene "Dementia Ever"
 label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
-*label variable alcbase "Units of alcohol consumed in previous week"
-label variable beer "Number of pints of beer consumed in week before survey"
-label variable wine "Number of glasses of wine consumed in week before survey"
-label variable spirits "Number of measures of spirits consumed in week before survey"
+label variable alcbase "Units of alcohol consumed in previous week"
 label variable GOR "Government Office Region"
 
 * Use harmonised education var
@@ -562,18 +525,8 @@ label values smkstat smkstat
 
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
-gen heavy_smoker = (smokef >= 20) if !missing(smokef)
+*gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 
-
-*** Drinking Intensity (Take 2)
-*gen problem_drinker = (drinkwn > 7) if !missing(drinkwn)
-*replace problem_drinker = (drinkd > 5) if missing(problem_drinker) | problem_drinker == 0
-* Problem drinker == more than 7 drinks/week OR more than 4 drinks/day OR more than 5 days drinking/week
-*gen problem_drinker = 1 if (drinkwn > 7) | (drinkn > 4)
-gen problem_drinker = 1 if (drinkwn > 12) & !missing(drinkwn)
-replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
-replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
-replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
 
 *** Drinking intensity (Take 3)
 * First thing to do is impute alcbase for waves 1-3 (no data for this period. Won't be used in predictive models)
@@ -614,20 +567,6 @@ replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase)
 *label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
 label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
 label values alcstat alcstat
-
-*** IMPUTATION!!!
-* alcbase (and therefore alcstat) info missing for the first 3 waves due to questions not being asked
-* Therefore need to impute this information, try hotdecking first
-* Only impute waves 1-3!!!
-/* preserve
-hotdeck alcstat using hotdeck_data/alcstat_imp, store seed(`seed') keep(_all) impute(1)
-use hotdeck_data/alcstat_imp1.dta, replace
-drop if wave > 3
-save hotdeck_data/alcbase_first_imp1.dta, replace
-restore
-drop if wave < 4
-append using hotdeck_data/alcstat_imp1.dta, keep(_all)
-tab alcstat wave */
 
 ** Finally set up the alcbase vars for each consumption group
 gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
@@ -754,7 +693,7 @@ gen retired = workstat == 3
 
 
 *Label vars generated in this script (not read directly from ELSA)
-label variable heavy_smoker "Heavy smoker (20+ cigs/day)"
+*label variable heavy_smoker "Heavy smoker (20+ cigs/day)"
 
 
 *** Generate lagged variables ***
@@ -823,7 +762,6 @@ foreach var in
     employed
     unemployed
     retired
-    problem_drinker
     alcbase
     alcbase_mod
     alcbase_inc

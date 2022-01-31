@@ -81,15 +81,13 @@ keep
 	r*mbmi
 	r*cwtresp
 	r*drink
+	r*alcbase
 	r*psyche
 	r*smokef
 	r*lnlys
 	r*alzhe
 	r*demene
 	r*lbrf_e
-	r*drinkd_e
-	r*drinkn_e
-	r*drinkwn_e
 	h*atotb
 	h*itot
 	h*coupid
@@ -113,9 +111,6 @@ keep
 	r*mheight
 	r*mweight
 	c*cpindex
-	r*scdrpin
-	r*scdrwin
-	r*scdrspi
 	r*GOR
 ;
 #d cr
@@ -142,15 +137,13 @@ local shapelist
 	r@mbmi
 	r@cwtresp
 	r@drink
+	r@alcbase
 	r@psyche
 	r@smokef
 	r@lnlys
 	r@alzhe
 	r@demene
 	r@lbrf_e
-	r@drinkd_e
-	r@drinkn_e
-	r@drinkwn_e
 	h@atotb
 	h@itot
 	h@coupid
@@ -171,9 +164,6 @@ local shapelist
 	r@shopa
 	r@mealsa
 	r@housewka
-	r@scdrpin
-	r@scdrwin
-	r@scdrspi
 	r@GOR
 ;
 #d cr
@@ -248,29 +238,18 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink smokef lnlys drinkd_e drinkn_e drinkwn_e ltactx_e mdactx_e vgactx_e scdrpin scdrwin scdrspi {
+foreach var in mbmi smokev smoken drink alcbase smokef lnlys ltactx_e mdactx_e vgactx_e {
 	ren r`var' `var'
 }
 
 * rename bmi after name change in ELSA release g.2
 rename mbmi bmi
-* rename drinks vars to human readable
-rename scdrpin beer
-rename scdrwin wine
-rename scdrspi spirits
 
 label var bmi "R Body mass index"
 label var smoken "R smokes now"
 label var smokev "R smoke ever"
 label var smokef "R number cigarettes / day"
 label var drink "R drinks alcohol"
-label var drinkd_e "# days/week drinking"
-label var drinkn_e "# drinks/day"
-label var drinkwn_e "# drinks/week"
-*label var alcbase "Alcohol Consumption: Units/week"
-label var beer "R number of pints of beer consumed in week before survey"
-label var wine "R number of glasses of wine consumed in week before survey"
-label var spirits "R number of measures of spirits consumed in week before survey"
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -294,23 +273,11 @@ replace exstat3 = 0 if exstat != 3
 
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
-gen heavy_smoker = (smokef >= 20) if !missing(smokef)
+*gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 *drop smokef
 
 
 *** Drinking intensity variable
-
-*** Drinking Intensity (Take 2)
-*gen problem_drinker = (drinkwn > 7) if !missing(drinkwn)
-*replace problem_drinker = (drinkd > 5) if missing(problem_drinker) | problem_drinker == 0
-gen problem_drinker = 1 if (drinkwn > 12) & !missing(drinkwn)
-replace problem_drinker = 1 if (drinkn > 7) & !missing(drinkn)
-replace problem_drinker = 0 if (drinkwn <= 12) & !missing(drinkwn)
-replace problem_drinker = 0 if (drinkn > 7) & !missing(drinkn)
-*replace problem_drinker = 1 if (drinkd == 7)
-*replace problem_drinker = 0 if (drinkd < 7)
-label variable problem_drinker "Problem Drinker (binge/too freq)"
-
 *** Drinking intensity (Take 3)
 * This logic is based on meetings with Alan Brennan of ScHARR
 * as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
@@ -568,9 +535,6 @@ label var abstainer "Abstains from alcohol consumption"
 label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
 label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
 label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
-*label var smkint "Smoking Intensity"
-label var heavy_smoker "Heavy Smoker"
-label var problem_drinker "Problem Drinker"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
@@ -604,10 +568,8 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-* Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
-
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev smokef bmi drink alcbase alcstat alcstat4 moderate increasingRisk highRisk
+local risk smoken smokev smokef bmi drink alcbase alcstat4 moderate increasingRisk highRisk
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -628,10 +590,10 @@ foreach tp in binhlth risk binecon cntecon demog {
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
-			else if ("`var'" == "drinkd" | "`var'" == "lnly" | "`var'" == "problem_drinker") & `wave' == 1 {
+			else if ("`var'" == "lnly") & `wave' == 1 {
 				continue
 			}
-			else if ("`var'" == "alcstat" | "`var'" == "alcbase" | "`var'" == "alcstat4" | "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
+			else if ("`var'" == "alcbase" | "`var'" == "alcstat4" | "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
 				continue
 			}
 			*else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" | "`var'" == "alcbase") & `wave' < 3

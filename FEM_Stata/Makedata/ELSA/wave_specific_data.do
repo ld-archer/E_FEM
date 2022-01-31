@@ -111,8 +111,30 @@ forvalues wv = 1/9 {
     * Rename vars to be wave specific
     rename GOR r`wv'GOR
 
+    * Do all the alcohol stuff for wave 4 onwards
     if `wv' > 3 {
-        rename scdr* r`wv'scdr*
+        * Now calculate units from each of beer, wine and spirits using NHS values from following link
+        * https://www.nhs.uk/live-well/alcohol-support/calculating-alcohol-units/
+        * (assuming a pint of beer is 5%)
+        gen unitspirit = scdrspi * 1 if scdrspi >= 0
+        gen unitwine = scdrwin * 2.1 if scdrwin >= 0
+        gen unitbeer = scdrpin * 2.8 if scdrpin >= 0
+        * Replace any missing values with 0 so it doesn't mess up the total
+        replace unitspirit = 0 if missing(unitspirit)
+        replace unitwine = 0 if missing(unitwine)
+        replace unitbeer = 0 if missing(unitbeer)
+
+        * Now add them all together for total units in past week
+        gen alcbase = unitspirit + unitwine + unitbeer
+        
+        * Handle some weird floating point issues, some values coming out as xx.799999 for example when should just be .8
+        replace alcbase = round(alcbase, 0.1)
+
+        * drop everything else now, don't need it
+        drop scdr* unit*
+
+        * Now rename alc var to be wave based
+        rename alcbase r`wv'alcbase
     }
     
     if `wv' == 1 {

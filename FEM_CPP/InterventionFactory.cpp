@@ -74,7 +74,6 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::drink,
 		Vars::smoke_start,
 		Vars::smoke_stop,
-		Vars::problem_drinker
 	};
 
 
