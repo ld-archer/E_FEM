@@ -366,21 +366,21 @@ $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html: output/SCENARIO/ELSA_core_base/ELSA_core_b
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/FEM_R/IJM_PAPER1_ALL_ANALYSES.nb.html
 
 
-alcohol_doc: home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/Validation_FEM_vs_HSE.nb.html
+alcohol_doc: $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html
 
-home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/Validation_FEM_vs_HSE.nb.html: output/ALCOHOL/ELSA_core_base/ELSA_core_base_summary.dta
+$(R)/Alcohol/Validation_FEM_vs_HSE.nb.html: $(OUTDATA)/ALCOHOL/ELSA_core_base/ELSA_core_base_summary.dta
 	# Run validation script
-	cd home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/ && datain=output/ && dataout=home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/ Rscript -e "require(rmarkdown); render('Validation_FEM_vs_HSE.Rmd')"
+	cd $(R)/Alcohol/ && datain=output/ && dataout=$(R)/Alcohol/ Rscript -e "require(rmarkdown); render('Validation_FEM_vs_HSE.Rmd')"
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
 	mkdir -p $(ROOT)/debug/alcohol
 	# Create dir with current time
 	mkdir -p debug/alcohol/core_$(TIMESTAMP)
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
-	mv home/luke/Documents/E_FEM_clean/Validation/Alcohol/HSE/Validation_FEM_vs_HSE.nb.html debug/core/core_$(TIMESTAMP)
+	mv $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html debug/core/core_$(TIMESTAMP)
 	cp -r output/COMPLETE/ debug/alcohol/core_$(TIMESTAMP)
 	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/alcohol/core_$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/alcohol/core_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ debug/alcohol/core_$(TIMESTAMP)
 	mkdir -p debug/alcohol/core_$(TIMESTAMP)/logs/
 	cp -r FEM_Stata/Makedata/ELSA/*.log debug/alcohol/core_$(TIMESTAMP)/logs/
 	cp -r FEM_Stata/Estimation/*.log debug/alcohol/core_$(TIMESTAMP)/logs/

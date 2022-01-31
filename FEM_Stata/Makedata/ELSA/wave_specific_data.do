@@ -34,10 +34,6 @@ clear
 set maxvar 15000
 log using wave_specific_data.log, replace
 
-clear
-set maxvar 15000
-log using wave_specific_data.log, replace
-
 quietly include ../../../fem_env.do
 
 

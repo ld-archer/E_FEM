@@ -17,7 +17,6 @@ local select_died !l2died & wave > 1 & wave <= 6
 * Selection criteria for models with specific requirements
 local select_smoke_start !died & l2smoken == 0  /*INCIDENCE*/
 local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
-local select_smokef !died & l2smoken == 1
 local select_srh !died & wave != 3
 local select_heavy_smoker !died & smoken == 1
 local select_smokef !died & smoken == 1

@@ -607,7 +607,7 @@ restore
 * Removed temporarily: smoken smokev bmi heavy_smoker problem_drinker exstat1 exstat2 exstat3
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
-local risk smoken smokev bmi drink alcbase alcstat alcstat4 moderate increasingRisk highRisk
+local risk smoken smokev smokef bmi drink alcbase alcstat alcstat4 moderate increasingRisk highRisk
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
