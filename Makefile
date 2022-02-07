@@ -59,7 +59,7 @@ validation: core_debug handovers roc
 ## Preparation
 
 model_prep: ELSA stata_extensions.txt
-start_data: clean_logs populations imputation projections reweight
+start_data: populations imputation projections reweight
 
 core_prep: start_data transitions_core est_core summary_out_core
 core_complete_prep: core_prep transitions_core_CV est_core_CV summary_out_core_CV transitions_minimal est_minimal summary_out_minimal
@@ -368,27 +368,27 @@ $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html: output/SCENARIO/ELSA_core_base/ELSA_core_b
 
 alcohol_doc: $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html
 
-$(R)/Alcohol/Validation_FEM_vs_HSE.nb.html: $(OUTDATA)/ALCOHOL/ELSA_core_base/ELSA_core_base_summary.dta
+$(R)/Alcohol/Validation_FEM_vs_HSE.nb.html: $(OUTDATA)/ALCOHOL/ELSA_full/ELSA_full_summary.dta
 	# Run validation script
 	cd $(R)/Alcohol/ && datain=output/ && dataout=$(R)/Alcohol/ Rscript -e "require(rmarkdown); render('Validation_FEM_vs_HSE.Rmd')"
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
 	mkdir -p $(ROOT)/debug/alcohol
 	# Create dir with current time
-	mkdir -p debug/alcohol/core_$(TIMESTAMP)
+	mkdir -p debug/alcohol/alcohol_$(TIMESTAMP)
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
-	mv $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html debug/core/core_$(TIMESTAMP)
-	cp -r output/COMPLETE/ debug/alcohol/core_$(TIMESTAMP)
-	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/alcohol/core_$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA_core/ debug/alcohol/core_$(TIMESTAMP)
-	mkdir -p debug/alcohol/core_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Makedata/ELSA/*.log debug/alcohol/core_$(TIMESTAMP)/logs/
-	cp -r FEM_Stata/Estimation/*.log debug/alcohol/core_$(TIMESTAMP)/logs/
-	cp -r $(ROOT)/log*.txt debug/alcohol/core_$(TIMESTAMP)/logs/
-	mkdir -p debug/alcohol/core_$(TIMESTAMP)/settings/
-	cp -r FEM_CPP_settings/ debug/alcohol/core_$(TIMESTAMP)/settings/
+	mv $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html debug/alcohol/alcohol_$(TIMESTAMP)
+	cp -r output/ALCOHOL/ debug/alcohol/alcohol_$(TIMESTAMP)
+#	cp -r $(ESTIMATES)/ELSA/ debug/alcohol/alcohol_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ debug/alcohol/alcohol_$(TIMESTAMP)
+	mkdir -p debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	cp -r $(ROOT)/log*.txt debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	mkdir -p debug/alcohol/alcohol_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/alcohol/alcohol_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
-	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/alcohol/core_$(TIMESTAMP)/Validation_FEM_vs_HSE.nb.html
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/alcohol/alcohol_$(TIMESTAMP)/Validation_FEM_vs_HSE.nb.html
 
 
 ### Housekeeping and cleaning

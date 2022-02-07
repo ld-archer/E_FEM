@@ -691,11 +691,6 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
-
-*Label vars generated in this script (not read directly from ELSA)
-*label variable heavy_smoker "Heavy smoker (20+ cigs/day)"
-
-
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave

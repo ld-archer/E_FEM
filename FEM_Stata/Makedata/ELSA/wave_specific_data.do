@@ -110,6 +110,9 @@ forvalues wv = 1/9 {
 
     * Rename vars to be wave specific
     rename GOR r`wv'GOR
+    if `wv' > 1 {
+        rename scako r`wv'scako
+    }
 
     * Do all the alcohol stuff for wave 4 onwards
     if `wv' > 3 {

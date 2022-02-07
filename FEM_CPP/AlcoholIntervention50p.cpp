@@ -51,43 +51,75 @@ void AlcoholIntervention50p::intervene(PersonVector& persons, unsigned int year,
     for(itr = persons.begin(); itr != persons.end(); ++itr) {
         Person* person = *itr;
         if(person->test(Vars::active) && !person->test(Vars::l2died)) {
-            /*//Are they eligible?
+            //Are they eligible?
             if(elig(person)) {
                 // Yes, treat them
                 // Moderate
                 // If male, and consumption between 1-22 units (moderate alcohol consumption)
-                if(person->test(Vars::male) && person->get(Vars::alcbase_m) > 0 && person->get(Vars::alcbase_m) <= 22) {
-                    person->set(Vars::alcbase_m, person->get(Vars::alcbase_m) - 0.1);
+                if(person->test(Vars::male) && person->get(Vars::alcbase) > 0 && person->get(Vars::alcbase) <= 22) {
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 0.1);
                 }
                 // If female, and consumption between 1-15 units (moderate alcohol consumption)
-                if(!person->test(Vars::male) && person->get(Vars::alcbase_f) > 0 && person->get(Vars::alcbase_f) <= 15) {
-                    person->set(Vars::alcbase_f, person->get(Vars::alcbase_f) - 0.1);
+                if(!person->test(Vars::male) && person->get(Vars::alcbase) > 0 && person->get(Vars::alcbase) <= 15) {
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 0.1);
                 }
                 // Increasing-risk
                 // If male, and consumption between 23-50 units (increasing-risk alcohol consumption)
-                if(person->test(Vars::male) && person->get(Vars::alcbase_m) > 22 && person->get(Vars::alcbase_m) <= 50) {
-                    person->set(Vars::alcbase_m, person->get(Vars::alcbase_m) - 0.9);
+                if(person->test(Vars::male) && person->get(Vars::alcbase) > 22 && person->get(Vars::alcbase) <= 50) {
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 0.9);
                 }
                 // If female, and consumption between 16-35 units (increasing-risk alcohol consumption)
-                if(!person->test(Vars::male) && person->get(Vars::alcbase_f) > 15 && person->get(Vars::alcbase_f) <= 35) {
-                    person->set(Vars::alcbase_f, person->get(Vars::alcbase_f) - 0.9);
+                if(!person->test(Vars::male) && person->get(Vars::alcbase) > 15 && person->get(Vars::alcbase) <= 35) {
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 0.9);
                 }
                 // High-risk
                 // If male, and consumption above 50 units (high-risk alcohol consumption)
-                if(person->test(Vars::male) && person->get(Vars::alcbase_m) > 50) {
-                    person->set(Vars::alcbase_m, person->get(Vars::alcbase_m) - 4.2);
+                if(person->test(Vars::male) && person->get(Vars::alcbase) > 50) {
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 4.2);
                 }
                 // If female, and consumption above 35 units (high-risk alcohol consumption)
-                if(!person->test(Vars::male) && person->get(Vars::alcbase_f) > 35) {
-                    person->set(Vars::alcbase_f, person->get(Vars::alcbase_f) - 4.2);
+                if(!person->test(Vars::male) && person->get(Vars::alcbase) > 35) {
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 4.2);
                 }
-            }*/
+
+                // ACCOUNTING
+                // update alcstat & alcstat4
+                // Moderate
+                if(person->test(Vars::male) && person->get(Vars::alcbase) > 0 && person->get(Vars::alcbase) <= 22) {
+                    person->set(Vars::alcstat, 1);
+                    person->set(Vars::alcstat4, 2);
+                }
+                if(!person->test(Vars::male) && person->get(Vars::alcbase) > 0 && person->get(Vars::alcbase) <= 15) {
+                    person->set(Vars::alcstat, 1);
+                    person->set(Vars::alcstat4, 2);
+                }
+                // Increasing-risk
+                if(person->test(Vars::male) && person->get(Vars::alcbase) > 22 && person->get(Vars::alcbase) <= 50) {
+                    person->set(Vars::alcstat, 2);
+                    person->set(Vars::alcstat4, 3);
+                }
+                // If female, and consumption between 16-35 units (increasing-risk alcohol consumption)
+                if(!person->test(Vars::male) && person->get(Vars::alcbase) > 15 && person->get(Vars::alcbase) <= 35) {
+                    person->set(Vars::alcstat, 2);
+                    person->set(Vars::alcstat4, 3);
+                }
+                // High-risk
+                if(person->test(Vars::male) && person->get(Vars::alcbase) > 50) {
+                    person->set(Vars::alcstat, 3);
+                    person->set(Vars::alcstat4, 4);
+                }
+                if(!person->test(Vars::male) && person->get(Vars::alcbase) > 35) {
+                    person->set(Vars::alcstat, 3);
+                    person->set(Vars::alcstat4, 4);
+                }
+            }
+
         }
     }
 }
 
-/*bool AlcoholIntervention50p::elig(Person* p) const {
+bool AlcoholIntervention50p::elig(Person* p) const {
     // Eligible for treatment if respondent consumed alcohol in week before last survey (i.e. alcbase > 0)
-    //return (p->get(Vars::alcbase_m) > 0.0) | (p->get(Vars::alcbase_f) > 0.0);
-}*/
+    return (p->get(Vars::alcbase) > 0.0);
+}
 
