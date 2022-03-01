@@ -77,9 +77,9 @@ namespace Vars
 		died,                     ///< Died [0, 1], stored as Boolean
 		doctim,                   ///< Times at a doctor Approx Range [0.0182607,80.70206], stored as Double
 		drink,						///< Whether drinks alcohol at all, stored asl Boolean
-		heavy_drinker,              ///< Heavy Drinker (>14 units/week), stored as Boolean
-		freq_drinker,               ///< Frequent Drinker (>5 days/week), stored as Boolean
-		problem_drinker,            ///< Problem Drinker (binge/frequent), stored as Boolean
+		//heavy_drinker,              ///< Heavy Drinker (>14 units/week), stored as Boolean
+		//freq_drinker,               ///< Frequent Drinker (>5 days/week), stored as Boolean
+		//problem_drinker,            ///< Problem Drinker (binge/frequent), stored as Boolean
 		//drinkd, 					///< How many days per week drinking alcohol, stored as Short
 		//drinkwn,					///< Number of drinks per week, stored as Double
 		//drinkd1,					///< Drinkd 1 [0, 1], stored as Boolean
@@ -239,9 +239,9 @@ namespace Vars
 		l2diclaim,                 ///< Lag of Claiming SSDI, [0, 1], stored as Boolean
 		l2died,                    ///< Lag of Died, [0, 1], stored as Boolean
 		l2drink,					///< Lag of whether drinks alcohol at all, stored as Boolean
-		l2heavy_drinker,            ///< Lag of Heavy Drinker
-		l2freq_drinker,             ///< Lag of Frequent Drinker
-		l2problem_drinker,          ///< Lag of Problem Drinker
+		//l2heavy_drinker,            ///< Lag of Heavy Drinker
+		//l2freq_drinker,             ///< Lag of Frequent Drinker
+		//l2problem_drinker,          ///< Lag of Problem Drinker
 		//l2drinkd,					///< Lag of how many days per week drinking alcohol, stored as Short
 		//l2drinkwn,					///< Lag of number of drinks per week, stored as Double
 		//l2drinkd1,					///< Lag of drinkd 1 [0, 1], stored as Boolean
@@ -318,7 +318,7 @@ namespace Vars
 		l2smkstat,                 ///< Lag of Smoking status, Approx Range [1, 3], stored as Short
 		l2smoken,                  ///< Lag of Current smoking, [0, 1], stored as Boolean
 		l2smokev,					///< Lag of ever smoked
-		//l2smokef,					///< Lag of number cigarettes/day
+		l2smokef,					///< Lag of number cigarettes/day
 		l2srh,                      ///< Lag of Self Reported Health
 		l2srh1,                     ///< Lag of Excellent Self Reported Health
         l2srh2,                     ///< Lag of Very Good Self Reported Health
@@ -427,9 +427,9 @@ namespace Vars
 		pdiabe,                   ///< Probability of diabetes, stored as Double
 		pdied,                    ///< Probability of death, stored as Double
 		pdrink,						///< Probability of whether drinks alcohol at all, stored as Double
-		pheavy_drinker,             ///< Probability of being a heavy drinker, stored as Double
-		pfreq_drinker,              ///< Probability of being a frequent drinker, stored as Double
-		pproblem_drinker,           ///< Probability of being a problem drinker, stored as Double
+		//pheavy_drinker,             ///< Probability of being a heavy drinker, stored as Double
+		//pfreq_drinker,              ///< Probability of being a frequent drinker, stored as Double
+		//pproblem_drinker,           ///< Probability of being a problem drinker, stored as Double
 		//pdrinkd_stat1,				///< Probability of drinkd_stat==1, stored as Float
 		//pdrinkd_stat2,				///< Probability of drinkd_stat==2, stored as Float
 		//pdrinkd_stat3,				///< Probability of drinkd_stat==3, stored as Float
@@ -513,7 +513,7 @@ namespace Vars
 		smkstat,                  ///< Smoking status Approx Range [1, 3], stored as Short
 		smoken,                   ///< Current smoking [0, 1], stored as Boolean
 		smokev,                   ///< Ever smoked [0, 1], stored as Boolean
-		//smokef,						///< Number cigarettes/day, stored as Double
+		smokef,						///< Number cigarettes/day, stored as Double
 		smoke_start,				///< Whether person transitions from not smoking to smoking
 		psmoke_start,				///< Probability of transition from not smoking to smoking
 		//l2smoke_start, 				///< Lag of transition from not smoking to smoking
@@ -590,17 +590,6 @@ namespace Vars
 		l2mei_treated,              ///< Lag of whether treated with Moderate Exercise Increase intervention
 		ei_treated,					///< Whether treated with Exercise Intervention
 		l2ei_treated,				///< Lag of whether treated with Exercise Intervention
-		smkint,                     ///< Smoking intensity variable
-		smkint1,                    ///< Smoking intensity level 1
-		smkint2,                    ///< Smoking intensity level 2
-		smkint3,                    ///< Smoking intensity level 3
-		l2smkint,                   ///< Lag of Smoking intensity variable
-		l2smkint1,                  ///< Lag of Smoking intensity level 1
-		l2smkint2,                  ///< Lag of Smoking intensity level 2
-		l2smkint3,                  ///< Lag of Smoking intensity level 3
-		psmkint1,                   ///< Probability of smoking intensity level 1
-		psmkint2,                   ///< Probability of smoking intensity level 2
-		psmkint3,                   ///< Probability of smoking intensity level 3
 		lnly,                       ///< Loneliness Score, Low to High [1, 3]
 		lnly1,                      ///< Loneliness Score: Low
         lnly2,                      ///< Loneliness Score: Medium
@@ -612,9 +601,6 @@ namespace Vars
         plnly1,                     ///< Probability of lnly == 1
         plnly2,                     ///< Probability of lnly == 2
         plnly3,                     ///< Probability of lnly == 3
-        //unemp,                      ///< Unemployed [0, 1]
-        //l2unemp,                    ///< Lag of unemployed
-        //punemp,                     ///< Probability of unemployed
         alzhe,                      ///< Alzheimers ever
         l2alzhe,                    ///< Lag of Alzheimers ever
         palzhe,                     ///< Probability of Alzheimers ever
@@ -632,9 +618,39 @@ namespace Vars
         pworkstat1,                  ///< Probability of Employed (workstat == 1)
         pworkstat2,                ///< Probability of Unemployed (workstat == 2)
         pworkstat3,                   ///< Probability of Retired (workstat == 3)
-        heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
-        l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
-        pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
+        //heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
+        //l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
+        //pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
+        //beer,                       ///< Number of pints of beer consumed in week before survey
+        //l2beer,                     ///< Lag of Number of pints of beer consumed in week before survey
+        //wine,                       ///< Number of glasses of wine consumed in week before survey
+        //l2wine,                     ///< Lag of Number of glasses of wine consumed in week before survey
+        //spirits,                    ///< Number of measures of spirits consumed in week before survey
+        //l2spirits,                  ///< Lag of Number of measures of spirits consumed in week before survey
+        alcstat,                    ///< Alcohol consumption status [1,3]
+        l2alcstat,                  ///< Lag of Alcohol consumption status [1,3]
+        abstainer,                  ///< Abstains from alcohol consumption. (alcstat == 1)
+        l2abstainer,                ///< Lag of Abstains from alcohol consumption. (alcstat == 1)
+        moderate,                   ///< Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 1)
+        l2moderate,                 ///< Lag of Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 1)
+        increasingRisk,             ///< Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 2)
+        l2increasingRisk,           ///< Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 2)
+        highRisk,                   ///< High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 3)
+        l2highRisk,                 ///< Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 3)
+        palcstat1,                 /// Probability of abstainer (alcstat == 1)
+        palcstat2,                  ///< Probability of moderate (alcstat == 2)
+        palcstat3,            ///< Probability of increasingRisk (alcstat == 3)
+        //palcstat4,                  ///< Probability of highRisk (alcstat == 4)
+        alcstat4,                   ///< 4 level alcstat variable
+        l2alcstat4,                 ///< Lag of 4 level alcstat variable
+        alcbase,                    ///< Alcohol consumption in units
+        l2alcbase,                  ///< Lag of Alcohol consumption in units
+        alcbase_mod,                ///< Alcohol consumption in units (moderate)
+        l2alcbase_mod,              ///< Lag of Alcohol consumption in units (moderate)
+        alcbase_inc,                ///< Alcohol consumption in units (increasingRisk)
+        l2alcbase_inc,                ///< Lag of Alcohol consumption in units (increasingRisk)
+        alcbase_high,               ///< Alcohol consumption in units (highRisk)
+        l2alcbase_high,               ///< Lag of Alcohol consumption in units (highRisk)
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

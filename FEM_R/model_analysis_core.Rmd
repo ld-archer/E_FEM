@@ -486,6 +486,7 @@ visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_c
           geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge2(width = 1, padding = 0.5)) +
           labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
   
+  p <- p + scale_fill_grey(start = .2, end = .7)
   # Save plot into in E-FEM_Paper/figures/
   #ggsave(filename = paste0(cd, '_', gender, '.png'),
   #      plot = p,

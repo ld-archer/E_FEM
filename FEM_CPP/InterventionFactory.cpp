@@ -10,6 +10,7 @@
 #include "SmokeStopIntervention.h"
 #include "ModExIncrease.h"
 #include "ReduceBMI.h"
+#include "AlcoholIntervention50p.h"
 
 InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvider* tp)
 {
@@ -73,7 +74,6 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::drink,
 		Vars::smoke_start,
 		Vars::smoke_stop,
-		Vars::problem_drinker
 	};
 
 
@@ -124,6 +124,9 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 
 	ReduceBMI* rbmi = new ReduceBMI(index++, tp, vp);
 	interventions[rbmi->name()] = rbmi;
+
+	AlcoholIntervention50p* ai50p = new AlcoholIntervention50p(index++, tp, vp);
+	interventions[ai50p->name()] = ai50p;
 
 
 }

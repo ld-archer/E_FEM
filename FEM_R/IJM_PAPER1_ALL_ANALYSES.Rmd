@@ -12,12 +12,9 @@ require(haven)
 require(ggplot2)
 require(Hmisc)
 require(reshape2)
-
 theme_set(theme_bw())
-
 workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
 knitr::opts_knit$set(root.dir = workingDir)
-
 rm(workingDir)
 ```
 
@@ -97,14 +94,13 @@ getIncidenceRate <- function(t, var) {
   t$incidence.counts <- (t[,var] == 1) & (t[,l2var] == 0)
   
   t <- t %>%
-          summarise(n = n(), newIn = sum(incidence.counts, na.rm=TRUE)) %>%
+          dplyr::summarise(n = n(), newIn = sum(incidence.counts, na.rm=TRUE)) %>%
           mutate(incidence.rate = (newIn / n) * 100)
   
   t$var <- var
   
   return(t)
 }
-
 getIncidenceRate(trans, 'cancre')
 getIncidenceRate(trans, 'diabe')
 getIncidenceRate(trans, 'hearte')
@@ -132,31 +128,25 @@ ROC plots are also generated via a Stata script. The entire workflow for generat
 #AgeUK
 male_au <- read.csv('../Validation/AgeUK-chronDisease-MALE_CI.csv')
 female_au <- read.csv('../Validation/AgeUK-chronDisease-FEMALE_CI.csv')
-
 # FEM 2014 detailed output
 #FEM_2014 <- read_dta('ELSA_Baseline/detailed_output/y2014_rep1.dta')
 ## extract males and females
 #mFEM_2014 <- FEM_2014 %>% filter(male == 1)
 #fFEM_2014 <- FEM_2014 %>% filter(male == 0)
-
 # FEM 2014 summary
 #FEM <- read_dta('ELSA_Baseline/ELSA_Baseline_summary.dta')
 FEM <- read_dta('output/COMPLETE/ELSA_AgeUK_core_valid/ELSA_AgeUK_core_valid_summary.dta')
-
 # Keep only year 2014 from FEM summary
 FEM <- filter(FEM, year == 2014)
-
 # Specify the age groups to extract from FEM
 ages <- c('6064', '6569', '7074', '7579', '8084', '8589', '9094', '9599', '100p')
 # Add m and f for male and female variables
 m_ages <- paste0('m_', ages)
 f_ages <- paste0('f_', ages)
-
 # Collect the age suffixes into a vector
 keep_vars <- c(m_ages, f_ages)
 # Now set up the chronic diseases in a list so we can create a bigger list with all of them produced
 diseases <- c('hibpe', 'stroke', 'diabe', 'demene', 'asthmae')
-
 # Don't like using loops but this one was just too simple to bother with figuring out the apply version
 final <- c()
 ticker <- 1
@@ -167,27 +157,22 @@ for(item in diseases) {
     ticker <- ticker + 1
   }
 }
-
 # Keep the right vars using varnames generated in loop
 FEM <- FEM %>%
           select(c('year', all_of(final)))
-
 # Rename some vars to remove 'p_' before merging
 FEM <- FEM %>%
           rename_at(vars(starts_with('p_')),
                     funs(str_replace(., 'p_', ''))) %>%
           select(!year)
-
 pivoted.FEM <- pivot_longer(data = FEM,
                             cols = hibpe_m_6064:asthmae_f_100p,
                             names_to = c('Condition', 'Gender', 'Age_Group'),
                             names_sep = '_')
-
 # Convert value from fraction to percentage
 pivoted.FEM$value <- pivoted.FEM$value * 100
 # Set gender codes to upper case
 pivoted.FEM$Gender <- toupper(pivoted.FEM$Gender)
-
 # # Rename cols to enable reshaping
 # male_au <- male_au %>%
 #                 dplyr::rename(m_6064 = X60.64, m_6569 = X65.69, m_7074 = X70.74,
@@ -200,7 +185,6 @@ pivoted.FEM$Gender <- toupper(pivoted.FEM$Gender)
 #                        f_7579 = X75.79, f_8084 = X80.84, f_8589 = X85.89,
 #                        f_9094 = X90.94, f_9599 = X95.99, f_100p = Over.100) %>%
 #                 select(!Total)
-
 male_au <- male_au %>%
                 dplyr::rename(M_6064_total = M_60.64_total, M_6064_lower = M_60.64_l, M_6064_upper = M_60.64_u, 
                               M_6569_total = M_65.69_total, M_6569_lower = M_65.69_l, M_6569_upper = M_65.69_u,
@@ -212,7 +196,6 @@ male_au <- male_au %>%
                               M_9599_total = M_95.99_total, M_9599_lower = M_95.99_l, M_9599_upper = M_95.99_u,
                               M_100p_total = M_Over.100_total, M_100p_lower = M_Over.100_l, M_100p_upper = M_Over.100_u) %>%
                 select(-M_Total_total, -M_Total_l, -M_Total_u)
-
 female_au <- female_au %>%
                 dplyr::rename(F_6064_total = F_60.64_total, F_6064_lower = F_60.64_l, F_6064_upper = F_60.64_u, 
                               F_6569_total = F_65.69_total, F_6569_lower = F_65.69_l, F_6569_upper = F_65.69_u,
@@ -224,18 +207,15 @@ female_au <- female_au %>%
                               F_9599_total = F_95.99_total, F_9599_lower = F_95.99_l, F_9599_upper = F_95.99_u,
                               F_100p_total = F_Over.100_total, F_100p_lower = F_Over.100_l, F_100p_upper = F_Over.100_u) %>%
                 select(-F_Total_total, -F_Total_l, -F_Total_u)
-
 # Now need to reshape these datasets to long format
 pivoted.male <- pivot_longer(data = male_au,
                              cols = M_6064_total:M_100p_upper,
                              names_to = c('Gender', 'Age_Group', 'Type'),
                              names_sep = '_')
-
 pivoted.female <- pivot_longer(data = female_au,
                              cols = F_6064_total:F_100p_upper,
                              names_to = c('Gender', 'Age_Group', 'Type'),
                              names_sep = '_')
-
 # Now bring the confidence intervals back into columns because ggplot needs that format
 # to plot them. Seems pretty daft to be honest but thats what we've got
 pivoted.male <- pivot_wider(pivoted.male,
@@ -244,10 +224,8 @@ pivoted.male <- pivot_wider(pivoted.male,
 pivoted.female <- pivot_wider(pivoted.female,
                             names_from = Type,
                             values_from = value)
-
 # Now row bind these frames together, combining male and female data
 ageUK <-rbind(pivoted.male, pivoted.female)
-
 # Now need to deal with the fact that ageUK data splits heart issues into 3 different conditions
 # extract all heart related conditions for combining
 #ageUK_heart <- filter(ageUK, Condition == c('Coronary Heart Disease', 'Heart Failure', 'Atrial Fibrillation'))
@@ -256,26 +234,20 @@ ageUK <-rbind(pivoted.male, pivoted.female)
 # Rename columns and add condition column back
 #colnames(ageUK_heart) <- c('Gender', 'Age_Group', 'value')
 #ageUK_heart$Condition <- 'Heart Problems'
-
 # Now drop the heart problems from original ageUK and replace with aggregate
 ageUK <- filter(ageUK, Condition != 'Coronary Heart Disease', Condition != 'Heart Failure', Condition != 'Atrial Fibrillation')
 #ageUK <- rbind(ageUK, ageUK_heart)
-
 # Rename a few just for completeness
 #ageUK$Condition <- gsub("Cancer, recent", "Cancer", ageUK$Condition)
 #ageUK$Condition <- gsub("COPD", "Lung Disease (COPD)", ageUK$Condition)
-
 # Finally, add column to specify that this is ageUK data
 ageUK$source <- "ageUK"
-
 # REMOVE CONDITIONS FROM ageUK THAT ARE NOT IN FEM (may change in future)
 #ageUK <- filter(ageUK, Condition != c('Asthma', 'Depression', 'Severe Mental Health Condition'))
 ageUK <- filter(ageUK, Condition != 'Depression', Condition != 'Severe Mental Health Conditions')
 ageUK <- filter(ageUK, Condition != 'Cancer, recent', Condition != 'COPD')
-
 # Make copy
 newFEM <- pivoted.FEM
-
 # Rename all the conditions to fit ageUK
 # NOTE: Lung disease is not a perfect match, as ageUK only contains info on COPD
 #       Therefore only validation from this will be that FEM is higher than ageUK
@@ -287,25 +259,21 @@ newFEM$Condition <- gsub("diabe", "Diabetes", newFEM$Condition)
 #newFEM$Condition <- gsub("cancre", "Cancer", newFEM$Condition)
 newFEM$Condition <- gsub("demene", "Dementia", newFEM$Condition)
 newFEM$Condition <- gsub("asthmae", "Asthma", newFEM$Condition)
-
 # Add column to specify this is FEM data
 newFEM$source <- "FEM"
 newFEM$total <- newFEM$value
 newFEM <- select(newFEM, -value)
-
 # Add column to specify this is FEM data
 newFEM$source <- "FEM"
 # Add column to specify these are all totals (no confidence intervals)
 newFEM$lower <- NA
 newFEM$upper <- NA
-
 # Now row bind the datasets
 combined <- rbind(newFEM, ageUK)
 # Specify factor levels for age group
 combined$Age_Group <- factor(combined$Age_Group, levels = c('6064', '6569', '7074', '7579', '8084', '8589', '9094', '9599', '100p'))
 # Sort
 combined <- arrange(combined, source, Condition, Gender, Age_Group)
-
 # Function to filter the combined dataset and visualise
 visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/ageUK') {
   
@@ -327,6 +295,8 @@ visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_c
           geom_errorbar(aes(ymin = lower, ymax = upper), position = position_dodge2(width = 1, padding = 0.5)) +
           labs(title = paste(cd, full_gender, sep = ' '), x = 'Age Group', y = 'Proportion')
   
+  p <- p + scale_fill_grey(start = .2, end = .8)
+  
   # Save plot into in E-FEM_Paper/figures/
   ggsave(filename = paste0(cd, '_', gender, '.png'),
         plot = p,
@@ -336,14 +306,12 @@ visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_c
   
   return(p)
 }
-
 ```
 
 ```{r echo=FALSE}
 # Collect all conditions (and both genders) into a list, and apply the function above to that list
 cd_list <- unique(combined$Condition)
 gender_list <- unique(combined$Gender)
-
 for(cd in cd_list) {
   for(gen in gender_list) {
     plot <- visAgeUKValid(combined, cd, gen)
@@ -356,11 +324,9 @@ for(cd in cd_list) {
 ## Smoking
 ```{r}
 FEM_base <- read_dta('output/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta')
-
 # Smoking prevalence stats
 smok.5059 <- 15.2
 smok.60p <- 10.2
-
 # FEM summary, filter for 2018 and 60p
 #FEM.smok <- FEM_sum
 FEM.smok <- FEM_base
@@ -369,27 +335,23 @@ FEM.smok <- FEM.smok %>%
                 select(contains('smoken')) %>%
                 select(contains('60p'), contains('5059')) %>%
                 select(contains('p_'))
-
 FEM.smok <- FEM.smok * 100
-
 smok.combined <- data.frame(FEM = FEM.smok[1,1], ASH = 10.2)
 smok.combined <- data.frame(source = c('FEM', 'FEM', 'ASH', 'ASH'), age = c('50 - 59', '60+', '50 - 59', '60+'), value = c(FEM.smok[1,2], FEM.smok[1,1], 15.2, 10.2))
-
 group.colours <- c(FEM = '#00bfc4', ASH = '#f8766d')
-
 smok.plot <-ggplot(data = smok.combined, aes(x = age, y = value)) +
                 geom_bar(aes(fill = source), stat = "identity", position = "dodge") +
                 scale_fill_manual(values=group.colours) +
                 labs(x = ' ', y = 'Prevalence (%)')
+
+smok.plot <- smok.plot + scale_fill_grey(start = .2, end = .8)
 
 ggsave(filename = 'smoking_prev_2018.png',
        plot = smok.plot,
        path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/smok_prev/',
        width = 7,
        height = 5)
-
 smok.plot
-
 ```
 
 # Results
@@ -430,7 +392,6 @@ smok.plot
 ```{r}
 b_rep <- read_dta('output/SCENARIO/ELSA_core_base/ELSA_core_base_by_rep.dta')
 h_rep <- read_dta('output/SCENARIO/ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_by_rep.dta')
-
 compareDeathAgeConfints <- function(b, i, int_name=FALSE, save=FALSE, path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
   
   aDet <- data.frame(b$year, b$rep, b$d_age_all, i$d_age_all)
@@ -455,10 +416,7 @@ compareDeathAgeConfints <- function(b, i, int_name=FALSE, save=FALSE, path='/hom
   
   p
 }
-
-
 compareDeathAgeConfints(b_rep, h_rep, int_name = 'No Heart Disease', save=TRUE)
-
 ```
 
 
@@ -520,7 +478,6 @@ compareDeathAgeConfints(b_rep, h_rep, int_name = 'No Heart Disease', save=TRUE)
 # ggsave(filename = 'hearte_dAge_exstat3.png',
 #          plot = p3,
 #          path = path)
-
 ```
 
 ### SplitbyEduc
@@ -578,50 +535,49 @@ compareDeathAgeConfints(b_rep, h_rep, int_name = 'No Heart Disease', save=TRUE)
 # ggsave(filename = 'hearte_dAge_educ3.png',
 #          plot = p3,
 #          path = path)
-
 ```
 
 
 ## Smoking Intervention
 ```{r echo=FALSE}
-# compareSurvivalCurve <- function(cohort, intervention, int_name, save=FALSE,
-#                                  path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
-#   
-#   # Calculate age and survival curves
-#   cohort$Age <- (cohort$year - 2012) + 50
-#   intervention$Age <- (intervention$year - 2012) + 50
-#   cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
-#   intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
-#   
-#   survivals <- data.frame(cohort$Age, cohort$Survival, intervention$Survival)
-#   
-#   # Had a small problem when trying to rename using the variable name given as function argument
-#   # Found solution here: https://stackoverflow.com/questions/49650394/how-to-rename-a-variable-using-a-dynamic-name-and-dplyr
-#   survivals <- survivals %>%
-#                  dplyr::rename('Age' = cohort.Age, 'Baseline' = cohort.Survival, !!quo_name(int_name) := intervention.Survival) %>%
-#                  melt(id.var = 'Age', value.name = 'Survival')
-#   
-#   p1 <-ggplot(data = survivals, aes(x=Age, y=Survival, color = variable)) +
-#         geom_line() +
-#         labs(x = 'Age', y = 'Survival')
-#   
-#   if(save) {
-#     ggsave(filename = paste0(int_name, '_survival_curve.png'),
-#          plot = p1,
-#          path = path)
-#   }
-#   
-#   return(p1)
-# }
+compareSurvivalCurve <- function(cohort, intervention, int_name, save=FALSE,
+                                 path='/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results/') {
+
+  # Calculate age and survival curves
+  cohort$Age <- (cohort$year - 2012) + 50
+  intervention$Age <- (intervention$year - 2012) + 50
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
+
+  survivals <- data.frame(cohort$Age, cohort$Survival, intervention$Survival)
+
+  # Had a small problem when trying to rename using the variable name given as function argument
+  # Found solution here: https://stackoverflow.com/questions/49650394/how-to-rename-a-variable-using-a-dynamic-name-and-dplyr
+  survivals <- survivals %>%
+                 dplyr::rename('Age' = cohort.Age, 'Baseline' = cohort.Survival, !!quo_name(int_name) := intervention.Survival) %>%
+                 melt(id.var = 'Age', value.name = 'Survival')
+
+  p1 <-ggplot(data = survivals, aes(x=Age, y=Survival, color = variable)) +
+        geom_line() +
+        labs(x = 'Age', y = 'Survival')
+
+  if(save) {
+    ggsave(filename = paste0(int_name, '_survival_curve.png'),
+         plot = p1,
+         path = path)
+  }
+
+  return(p1)
+}
 ```
 
 
 ### Survival Curve
 ```{r echo=FALSE}
-# c <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta')
-# s <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
-# 
-# compareSurvivalCurve(c, s, 'No Smoking', save=FALSE)
+c <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+s <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
+
+compareSurvivalCurve(c, s, 'No Smoking', save=FALSE)
 ```
 
 #### Confidence Intervals
@@ -659,10 +615,8 @@ compareSurvivalCurveConfints <- function(cohort, intervention, int_name, save=FA
   
   return(p)
 }
-
 c_rep <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_by_rep.dta')
 s_rep <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_by_rep.dta')
-
 compareSurvivalCurveConfints(c_rep, s_rep, 'No Smoking', save=TRUE)
 ```
 
@@ -671,13 +625,11 @@ compareSurvivalCurveConfints(c_rep, s_rep, 'No Smoking', save=TRUE)
 ```{r}
 c <- read_dta('output/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta')
 s <- read_dta('output/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
-
 # Calculate age and survival curves
 c$Age <- (c$year - 2012) + 50
 s$Age <- (s$year - 2012) + 50
 c$Survival <- c$m_endpop_all / c$m_endpop_all[1]
 s$Survival <- s$m_endpop_all / s$m_endpop_all[1]
-
 d.all <- data.frame(c$Age, c$p_lunge_all, s$p_lunge_all)
 d.all <- d.all %>%
                 dplyr::rename('Age' = c.Age, 'Baseline' = c.p_lunge_all, 'Intervention' = s.p_lunge_all)
@@ -689,9 +641,7 @@ p1 <- ggplot(data = d.all.pivot, aes(x = Age, y = Prevalence, color = Source)) +
       geom_smooth(lwd = 0.5, se=FALSE) +
       labs(x = 'Age', y = 'Prevalence')
 p1
-
 path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results'
-
 #ggsave(filename = 'smok_lunge_all.png',
 #         plot = p1,
 #         path = path)
@@ -700,13 +650,11 @@ path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/resul
 ```{r}
 c <- c_rep
 s <- s_rep
-
 # Calculate age and survival curves
 c$Age <- (c$year - 2012) + 50
 s$Age <- (s$year - 2012) + 50
 c$Survival <- c$m_endpop_all / c$m_endpop_all[1]
 s$Survival <- s$m_endpop_all / s$m_endpop_all[1]
-
 d.all <- data.frame(c$Age, c$rep, c$p_lunge_all, s$p_lunge_all)
 d.all <- d.all %>%
                 dplyr::rename('Age' = c.Age, 'Rep' = c.rep, 'Baseline' = c.p_lunge_all, 'Intervention' = s.p_lunge_all)
@@ -718,9 +666,7 @@ p1 <- ggplot(data = d.all.pivot, aes(x = Age, y = Prevalence, color = Source)) +
       geom_smooth(lwd = 0.5) +
       labs(x = 'Age', y = 'Prevalence')
 p1
-
 path <- '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/results'
-
 ggsave(filename = 'smok_lunge_all.png',
          plot = p1,
          path = path)
@@ -729,11 +675,9 @@ ggsave(filename = 'smok_lunge_all.png',
 ### Life Years & DFLYS
 ```{r}
 aData <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/input_data/detailed_output/tot/base_treated_merged_smoken_tot_test.dta')
-
 all2 <- aData %>%
           summarise(base.ly = mean(total_lifeyears_basecase), int.ly = mean(total_lifeyears),
                     base.dfly = mean(total_dflys_basecase), int.dfly = mean(total_dflys))
-
 all2
 ```
 
@@ -743,7 +687,6 @@ educ2 <- aData %>%
           group_by(educ) %>%
           summarise(base.ly = mean(total_lifeyears_basecase), int.ly = mean(total_lifeyears),
                     base.dfly = mean(total_dflys_basecase), int.dfly = mean(total_dflys))
-
 educ2
 ```
 
@@ -752,11 +695,8 @@ educ2
 ```{r}
 b <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/output/SCENARIO/ELSA_core_base/ELSA_core_base_summary.dta')
 h <- read_dta('/home/luke/Documents/E_FEM_clean/E_FEM/output/SCENARIO/ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
-
 new.df <- data.frame(b$year, b$d_age_all, h$d_age_all)
-
 new.df$diff <- new.df$h.d_age_all - new.df$b.d_age_all
-
 new.df
 ```
 

@@ -27,28 +27,44 @@ cross-validation: start_data transitions_CV est_CV summary_out_CV simulation_CV1
 
 minimal: start_data transitions_minimal est_minimal summary_out_minimal simulation_minimal Ttests_minimal
 
-debug: clean_output complete debug_doc 
+debug: clean_output complete debug_doc
 
-core_prep: start_data transitions_core est_core summary_out_core
 core: core_prep simulation_core
 
-core_complete_prep: core_prep transitions_minimal est_minimal summary_out_minimal
 core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_core_CV2 Ttests_core
 
+core_debug: SUBPOP = debug
 core_debug: core_complete debug_doc_core
 
 core_scen: core_prep simulation_core_scen detailed_appends scen_doc
 
+roc: SUBPOP = roc
 roc: core_prep simulation_core_roc roc_validation
+
+alcohol: SUBPOP = alcohol
+alcohol: core_prep simulation_alcohol alcohol_doc
+
+handovers: SUBPOP = handovers
+handovers: core_complete handover_plots
+
+alcohol_plus: core_debug alcohol
+
+everything: core_debug alcohol handovers roc
+
+validation: core_debug handovers roc
 
 
 ### Combined rules
 
-model_prep: ELSA stata_extensions.txt 
+## Preparation
 
+model_prep: ELSA stata_extensions.txt
 start_data: populations imputation projections reweight
 
-transitions_est_base: transitions_base est_base summary_out_base
+core_prep: start_data transitions_core est_core summary_out_core
+core_complete_prep: core_prep transitions_core_CV est_core_CV summary_out_core_CV transitions_minimal est_minimal summary_out_minimal
+
+## Utility
 
 retest_CV: Ttests_core debug_doc_core
 
@@ -61,13 +77,13 @@ stata_extensions.txt: stata_extensions.do
 
 ### Populations
 
-ELSA: $(DATADIR)/H_ELSA_g2.dta
+ELSA: $(DATADIR)/H_ELSA_g2.dta 
 
 ELSA_lifehistory: $(DATADIR)/H_ELSA_LH_a.dta
 
 ELSA_EOL: $(DATADIR)/H_ELSA_EOL_a2.dta
 
-populations: $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
+populations: $(DATADIR)/H_ELSA_g2_wv_specific.dta $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
 $(DATADIR)/H_ELSA_g2.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
@@ -77,11 +93,14 @@ $(DATADIR)/H_ELSA_LH_a.dta: $(MAKEDATA)/H_ELSA_LH_long.do
 
 $(DATADIR)/H_ELSA_EOL_a2.dta: $(MAKEDATA)/h_elsa_eol_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) h_elsa_eol_long.do
+
+$(DATADIR)/H_ELSA_g2_wv_specific.dta: $(MAKEDATA)/wave_specific_data.do $(DATADIR)/H_ELSA_g2.dta
+	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) wave_specific_data.do
 	
 $(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
 
-$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_g2.dta
+$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_g2.dta $(MAKEDATA)/wave_specific_data2.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
@@ -125,16 +144,22 @@ $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=valid $(STATA) reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=ROC $(STATA) reweight_ELSA_stock.do
 
-$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do $(MAKEDATA)/gen_bmi_repls.do
+$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do $(MAKEDATA)/gen_bmi_repls.do $(MAKEDATA)/gen_alcohol_repl.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
 
 
 ### Transitions
 # Use the died.est model as the target for the transitions rules, as this model is always required and won't be removed by accident
 
-transitions_base: $(ESTIMATES)/ELSA/died.est
+transitions_base: $(ESTIMATES)/ELSA/died.ster
 
-transitions_CV: $(ESTIMATES)/ELSA/crossvalidation1/died.est $(ESTIMATES)/ELSA/crossvalidation2/died.est
+transitions_CV: $(ESTIMATES)/ELSA/crossvalidation1/died.ster $(ESTIMATES)/ELSA/crossvalidation2/died.ster
+
+transitions_core: $(ESTIMATES)/ELSA_core/died.ster
+
+transitions_core_CV: $(ESTIMATES)/ELSA_core/CV1/died.ster $(ESTIMATES)/ELSA_core/CV2/died.ster
+
+transitions_minimal: $(ESTIMATES)/ELSA_minimal/died.ster
 
 $(ESTIMATES)/ELSA/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
@@ -145,14 +170,17 @@ $(ESTIMATES)/ELSA/crossvalidation1/died.est: $(DATADIR)/ELSA_transition.dta $(ES
 $(ESTIMATES)/ELSA/crossvalidation2/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV2 $(STATA) ELSA_init_transition.do
 
-transitions_minimal: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do $(ESTIMATION)/ELSA_sample_selections.do
+$(ESTIMATES)/ELSA_minimal/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=minimal $(STATA) ELSA_init_transition.do
 
-transitions_core: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
+$(ESTIMATES)/ELSA_core/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core $(STATA) ELSA_init_transition.do
+
+$(ESTIMATES)/ELSA_core/CV1/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV1 $(STATA) ELSA_init_transition.do
+
+$(ESTIMATES)/ELSA_core/CV2/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionscore.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=core_CV2 $(STATA) ELSA_init_transition.do
-	
 
 
 ### Estimates and Summary
@@ -170,24 +198,27 @@ est_minimal:
 
 est_core:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
+	
+est_core_CV:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV1/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models $(STATA) save_est_cpp.do
 
-
 summary_out_base:
-	cd FEM_CPP_settings && measures_suffix=ELSA $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 summary_out_CV:
-	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 summary_out_minimal:
-	cd FEM_CPP_settings && measures_suffix=ELSA_minimal $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_minimal subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 summary_out_core:
-	cd FEM_CPP_settings && measures_suffix=ELSA_core $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 $(STATA) summary_output_gen.do
-	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_core subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+
+summary_out_core_CV:
+	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 
 ### FEM Simulation
@@ -216,12 +247,15 @@ simulation_core_scen:
 simulation_core_roc:
 	$(MPI) ELSA_roc_validation.settings.txt
 
+simulation_alcohol:
+	$(MPI) ELSA_Alcohol_Intervention.settings.txt
+
 
 ### Handovers and Validation
 
-validation: handovers roc_validation
+validation: handover_plots roc_validation
 
-handovers:
+handover_plots:
 	cd analysis/techdoc_ELSA && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) handover_ELSA.do
 
 Ttests_CV: 
@@ -304,20 +338,22 @@ $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summ
 	cd FEM_R/ && datain=output/ && dataout=FEM_R/ Rscript -e "require(rmarkdown); render('model_analysis_core.Rmd')"
 	# Create debug dir if not already
 	mkdir -p $(ROOT)/debug
+	mkdir -p $(ROOT)/debug/core
 	# Create dir with current time
-	mkdir -p debug/core_$(TIMESTAMP)
+	mkdir -p debug/core/core_$(TIMESTAMP)/
 	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
-	mv FEM_R/model_analysis_core.nb.html debug/core_$(TIMESTAMP)
-	cp -r output/COMPLETE/ debug/core_$(TIMESTAMP)
-	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core_$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core_$(TIMESTAMP)
-	mkdir -p debug/core_$(TIMESTAMP)/logs/
-#	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core_$(TIMESTAMP)/logs/
-#	cp -r FEM_Stata/Estimation/*.log debug/core_$(TIMESTAMP)/logs/
-	mkdir -p debug/core_$(TIMESTAMP)/settings/
-	cp -r FEM_CPP_settings/ debug/core_$(TIMESTAMP)/settings/
+	mv FEM_R/model_analysis_core.nb.html debug/core/core_$(TIMESTAMP)
+	cp -r output/COMPLETE/ debug/core/core_$(TIMESTAMP)
+	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core/core_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core/core_$(TIMESTAMP)
+	mkdir -p debug/core/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core/core_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/core/core_$(TIMESTAMP)/logs/
+	cp -r $(ROOT)/log*.txt debug/core/core_$(TIMESTAMP)/logs/
+	mkdir -p debug/core/core_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/core/core_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
-	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core_$(TIMESTAMP)/model_analysis_core.nb.html
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core/core_$(TIMESTAMP)/model_analysis_core.nb.html
 
 
 scen_doc: $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html $(DATADIR)/detailed_output/tot/tot_test_smoken_int[2].do
@@ -330,6 +366,30 @@ $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html: output/SCENARIO/ELSA_core_base/ELSA_core_b
 	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/FEM_R/IJM_PAPER1_ALL_ANALYSES.nb.html
 
 
+alcohol_doc: $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html
+
+$(R)/Alcohol/Validation_FEM_vs_HSE.nb.html: $(OUTDATA)/ALCOHOL/ELSA_full/ELSA_full_summary.dta
+	# Run validation script
+	cd $(R)/Alcohol/ && datain=output/ && dataout=$(R)/Alcohol/ Rscript -e "require(rmarkdown); render('Validation_FEM_vs_HSE.Rmd')"
+	# Create debug dir if not already
+	mkdir -p $(ROOT)/debug
+	mkdir -p $(ROOT)/debug/alcohol
+	# Create dir with current time
+	mkdir -p debug/alcohol/alcohol_$(TIMESTAMP)
+	# Move the html analysis file as well as all outputs, .ster, .est, logs, 
+	mv $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html debug/alcohol/alcohol_$(TIMESTAMP)
+	cp -r output/ALCOHOL/ debug/alcohol/alcohol_$(TIMESTAMP)
+#	cp -r $(ESTIMATES)/ELSA/ debug/alcohol/alcohol_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ debug/alcohol/alcohol_$(TIMESTAMP)
+	mkdir -p debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Makedata/ELSA/*.log debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	cp -r FEM_Stata/Estimation/*.log debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	cp -r $(ROOT)/log*.txt debug/alcohol/alcohol_$(TIMESTAMP)/logs/
+	mkdir -p debug/alcohol/alcohol_$(TIMESTAMP)/settings/
+	cp -r FEM_CPP_settings/ debug/alcohol/alcohol_$(TIMESTAMP)/settings/
+	# Finally, open html file in firefox
+	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/alcohol/alcohol_$(TIMESTAMP)/Validation_FEM_vs_HSE.nb.html
+
 
 ### Housekeeping and cleaning
 
@@ -337,13 +397,16 @@ move_results:
 	rm -rf ../tmp_output/*
 	cp -r output/SCENARIO/* ../tmp_output/
 
-clean_all: clean_logs clean_models
+clean_all: clean_logs clean_models clean_handovers clean_settings clean_hotdecks
 
 clean_logs:
 	rm -f *.log
 	rm -f FEM_Stata/Makedata/ELSA/*.log
 	rm -f FEM_Stata/Estimation/*.log
 	rm -f FEM_R/*.nb.html
+	rm -f analysis/techdoc_ELSA/*.log
+#	rm -f log_*.txt
+	rm -f FEM_CPP_settings/*.log
 
 clean_debug:
 	rm -f debug/*
@@ -352,6 +415,16 @@ clean_models:
 	rm -f FEM_CPP_settings/ELSA/models/*.est
 	rm -f FEM_CPP_settings/ELSA_*/models/*.est
 	rm -f FEM_Stata/Estimates/ELSA*/*.ster
+	rm -f FEM_Stata/Estimates/ELSA*/*/*.ster
 	rm -f FEM_Stata/Estimates/ELSA/*/*.ster
-#rm -f FEM_Stata/Estimates/ELSA/CV2/*.ster
-#rm -f FEM_Stata/Estimates/ELSA_minimal/*.ster
+
+clean_handovers:
+	rm -f analysis/techdoc_ELSA/*.gph
+	rm -f analysis/techdoc_ELSA/*.dta
+	rm -f analysis/techdoc_ELSA/FEM/img/*.pdf
+
+clean_settings:
+	rm -f FEM_CPP_settings/summary_output_ELSA*.txt
+
+clean_hotdecks:
+	rm -f FEM_Stata/Makedata/ELSA/hotdeck_data/*.dta

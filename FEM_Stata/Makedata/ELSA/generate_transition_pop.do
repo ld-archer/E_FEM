@@ -45,7 +45,7 @@ label var male_l2age75p "Male and Max(0, two-year lag age - 73)"
 gen l2agesq = l2`age_var'*l2`age_var'
 
 * BMI dummies for obese (BMI > 30.0) or not
-replace l2obese = (l2logbmi > log(30.0)) if !missing(l2logbmi)
+*replace l2obese = (l2logbmi > log(30.0)) if !missing(l2logbmi)
 * Generate a 'knot' at BMI == 30 to make sure we don't lose the right tail in our projections
 *gen l2logbmi_l30 = min(log(30), l2logbmi) if l2logbmi < .
 *gen l2logbmi_30p = max(0, l2logbmi - log(30)) if l2logbmi < .
@@ -65,7 +65,8 @@ label variable l2age6574 "Lag: age spline between 65-74"
 label variable l2age75p "Lag: age spline more than 75"
 label variable l2smoken "Lag: current smoker"
 label variable l2smokev "Lag: ever smoked"
-label variable l2obese "Lag: BMI more than 30"
+label variable l2smokef "Lag: number of cigarettes / day"
+*label variable l2obese "Lag: BMI more than 30"
 *label variable fsmoken50 "Smoked at 50" Variable never produced (should have been in reshape_long if at all)
 label variable l2diabe "Lag: diabetes"
 label variable l2cancre "Lag: cancer"
@@ -80,9 +81,7 @@ label variable l2iadl1 "Lag: 1 IADL"
 label variable l2iadl2p "Lag: 2 or more IADLs"
 label variable l2logbmi_l30 "Lag: BMI less than 30"
 label variable l2logbmi_30p "Lag: BMI over 30"
-label variable l2heavy_smoker "Lag: Heavy smoker (20+ cigs/day)"
 label variable l2hchole "Lag: High Cholesterol"
-label variable l2problem_drinker "Problem Drinker (12+ drinks in a week OR 7+ drinks in a day)"
 label variable l2exstat1 "Lag: Activity level - Low"
 label variable l2exstat2 "Lag: Activity level - Moderate"
 label variable l2exstat3 "Lag: Activity level - High"

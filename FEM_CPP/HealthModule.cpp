@@ -301,21 +301,19 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						// Quit, so turn current off
 						person->set(Vars::smoken,0.0);
 						// Quit so smokef == 0
-						//person->set(Vars::smokef,0.0);
+						person->set(Vars::smokef,0.0);
 						// Maintain smokev status
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
 						// Clean up other vars - didn't start, too
 						person->set(Vars::smoke_start,0.0);
 						// Set intensity to non-smoker (heavy_smoker == 0)
-						person->set(Vars::heavy_smoker, 0.0);
+						//person->set(Vars::heavy_smoker, 0.0);
 					}	
 					else {
-						// Didn't stop, so maintain smkstat, smoken, smokev, smkint
+						// Didn't stop, so maintain smkstat, smoken, smokev
 						person->set(Vars::smkstat,person->get(Vars::l2smkstat));
 						person->set(Vars::smoken,person->get(Vars::l2smoken));
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
-						//person->set(Vars::smkint,person->get(Vars::l2smkint)); Will this line mean that people will always have the same intensity if they continue to smoke? I.e. not being transitioned between states anymore
-						// To above question: Yes I think so
 						// Clean up other vars - didn't start, too
 						person->set(Vars::smoke_start,0.0);
 					}
@@ -332,35 +330,139 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 						person->set(Vars::smokev,1.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
-						// How can I deal with smkint here? Will this happen automatically?
-						// Smkint will be assigned a value from the transition model for anyone with smoken == 1
 					}	
 					else {
-						// Didn't start, so maintain previous status for smkstat, smoken, smokev, smkint
+						// Didn't start, so maintain previous status for smkstat, smoken, smokev
 						person->set(Vars::smkstat,person->get(Vars::l2smkstat));
 						person->set(Vars::smoken,person->get(Vars::l2smoken));
 						person->set(Vars::smokev,person->get(Vars::l2smokev));
-						//person->set(Vars::smkint,person->get(Vars::l2smkint));
-                        person->set(Vars::heavy_smoker, 0.0);
+                        //person->set(Vars::heavy_smoker, 0.0);
 						// Clean up other vars - didn't stop, too
 						person->set(Vars::smoke_stop,0.0);
+						// Also intensity == 0
+						person->set(Vars::smokef, 0.0);
 					}
 				}
 			}
 
-			// If we change drink to 0 then we need to make sure heavy_drinker and freq_drinker are also 0
+			// Handle drinker to non-drinker and vice versa
 			if (elsa_data) {
 			    // previously drinker
 			    if(person->test(Vars::l2drink)) {
 			        // now quit
 			        if(person->get(Vars::drink) == 0) {
-			            // set heavy and freq to 0
-			            //person->set(Vars::heavy_drinker, 0.0);
-			            //person->set(Vars::freq_drinker, 0.0);
-			            person->set(Vars::problem_drinker, 0.0);
+			            // set alcstat to 0 as alcstat only predicted for people who drink
+			            person->set(Vars::alcstat, 0);
+			            // set alcstat4 to 1 as this is for abstainers
+			            person->set(Vars::alcstat4, 1);
+
+                        // Now also set all the dummys to zero (previously was abstainer but thats been removed)
+			            //person->set(Vars::abstainer, 1);
+                        person->set(Vars::moderate, 0);
+                        person->set(Vars::increasingRisk, 0);
+                        person->set(Vars::highRisk, 0);
+                        // When alcbase is added back we'll do accounting here
+			            person->set(Vars::alcbase, 0.0);
+                        person->set(Vars::alcbase_mod, 0.0);
+                        person->set(Vars::alcbase_inc, 0.0);
+                        person->set(Vars::alcbase_high, 0.0);
 			        }
 			    }
+			    // previously non-drinker
+			    if(person->get(Vars::l2drink) == 0) {
+			        // now drinks
+			        if(person->get(Vars::drink) == 1) {
+			            // set alcstat to moderate (1) just to give it a value before prediction
+			            //person->set(Vars::alcstat, 1);
+			            // set alcstat4 to moderate also (2) not sure if this is correct CHECK PLEASE
+			            //person->set(Vars::alcstat4, 2);
+			            // Also set dummy
+			            //person->set(Vars::moderate, 1);
+                        //person->set(Vars::abstainer, 0);
+                        //person->set(Vars::increasingRisk, 0);
+                        //person->set(Vars::highRisk, 0);
+			        }
+			    }
+			    // previously drinker
+			    if(person->test(Vars::l2drink)) {
+			        // still drinks
+			        if(person->test(Vars::drink)) {
+			            person->set(Vars::abstainer, 0);
+			        }
+			    }
+
+			    // Do accounting for drink == 0 with alcstat4
+			    if(person->get(Vars::drink) == 0) {
+			        person->set(Vars::alcstat4, 1);
+			        person->set(Vars::alcstat, 0);
+			        person->set(Vars::abstainer, 1);
+                    person->set(Vars::alcbase, 0.0);
+                    person->set(Vars::alcbase_mod, 0.0);
+                    person->set(Vars::alcbase_inc, 0.0);
+                    person->set(Vars::alcbase_high, 0.0);
+			    }
+
+			    // Handle accounting for alcstat to dummys
+                // abstainer drinker
+//                if(person->get(Vars::alcstat) == 1) {
+//                    person->set(Vars::abstainer, 1);
+//                    person->set(Vars::moderate, 0);
+//                    person->set(Vars::increasingRisk, 0);
+//                    person->set(Vars::highRisk, 0);
+//                }
+			    // moderate drinker
+			    if(person->get(Vars::alcstat) == 1) {
+			        person->set(Vars::alcstat4, 2);
+                    person->set(Vars::abstainer, 0);
+			        person->set(Vars::moderate, 1);
+			        person->set(Vars::increasingRisk, 0);
+                    person->set(Vars::highRisk, 0);
+                    // set alcbase to equal the correct var
+                    person->set(Vars::alcbase, person->get(Vars::alcbase_mod));
+                    person->set(Vars::alcbase_inc, 0);
+                    person->set(Vars::alcbase_high, 0);
+			    }
+			    // increasing risk
+                if(person->get(Vars::alcstat) == 2) {
+                    person->set(Vars::alcstat4, 3);
+                    person->set(Vars::abstainer, 0);
+                    person->set(Vars::moderate, 0);
+                    person->set(Vars::increasingRisk, 1);
+                    person->set(Vars::highRisk, 0);
+                    // set alcbase to equal the correct var
+                    person->set(Vars::alcbase, person->get(Vars::alcbase_inc));
+                    person->set(Vars::alcbase_mod, 0);
+                    person->set(Vars::alcbase_high, 0);
+                }
+                // high risk
+                if(person->get(Vars::alcstat) == 3) {
+                    person->set(Vars::alcstat4, 4);
+                    person->set(Vars::abstainer, 0);
+                    person->set(Vars::moderate, 0);
+                    person->set(Vars::increasingRisk, 0);
+                    person->set(Vars::highRisk, 1);
+                    // set alcbase to equal the correct var
+                    person->set(Vars::alcbase, person->get(Vars::alcbase_high));
+                    person->set(Vars::alcbase_inc, 0);
+                    person->set(Vars::alcbase_mod, 0);
+                }
 			}
+
+			/*// Need to make sure that alcbase cannot be below 0
+			// If predicted below 0 then just assume not drank alcohol
+			if (elsa_data) {
+			    // If predicted value below 0 male
+			    if(person->get(Vars::alcbase_m) < 0) {
+			        // set back to 0
+			        person->set(Vars::alcbase_m, 0.0);
+			        // also set drink to 0 (this isn't actually definite, not everyone with 0 consumption is abstainer (for now))
+			        //person->set(Vars::drink, 0.0);
+			    } // If predicted value below 0 female
+                else if(person->get(Vars::alcbase_f) < 0) {
+                    // set back to 0
+                    person->set(Vars::alcbase_f, 0.0);
+                }
+			}*/
 
 			// Handle marriage status transitions
 			if (elsa_data) {
@@ -539,23 +641,23 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                 }
 			}
 
-			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correclty
-			//if (elsa_data) {
-			//	// If no ADLs last wave...
-			//	if (person->get(Vars::l2adlstat) == 1) {
-			//		// ... and ADLs in current wave (1 or more) ...
-			//		if (person->get(Vars::adlstat) > 1) {
-			//			// ... set anyadl to true
-			//			person->set(Vars::anyadl, 1.0);
-			//		}
-			//	}
-			//	// Now do the same for IADLs
-			//	if (person->get(Vars::l2iadlstat) == 1) {
-			//		if (person->get(Vars::iadlstat) > 1) {
-			//			person->set(Vars::anyiadl, 1.0);
-			//		}
-			//	}
-			//}
+//			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correctly
+//			if (elsa_data) {
+//				// If no ADLs last wave...
+//				if (person->get(Vars::l2adlstat) == 1) {
+//					// ... and ADLs in current wave (1 or more) ...
+//					if (person->get(Vars::adlstat) > 1) {
+//						// ... set anyadl to true
+//						person->set(Vars::anyadl, 1.0);
+//					}
+//				}
+//				// Now do the same for IADLs
+//				if (person->get(Vars::l2iadlstat) == 1) {
+//					if (person->get(Vars::iadlstat) > 1) {
+//						person->set(Vars::anyiadl, 1.0);
+//					}
+//				}
+//			}
 					
 			/*// Do partner/spouse mortality for PSID simulation
 			if(psid_data && person->get(Vars::l2mstat_new) != 1) {

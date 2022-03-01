@@ -14,6 +14,7 @@ quietly include ../fem_env.do
 
 * Name of your input and output files
 local scen : env measures_suffix
+local subpops : env subpops
 
 * Summary output file name
 local filename summary_output_`scen'.txt
@@ -122,34 +123,6 @@ forvalues x = 1/`measures_l' {
 			local sel "& college == 1"
 			local samp "College"
 		}
-		else if "`b'" == "drinkd1" {
-			local sel "& drinkd_stat == 1"
-			local samp "Drinkd1"
-		}
-		else if "`b'" == "drinkd2" {
-			local sel "& drinkd_stat == 2"
-			local samp "Drinkd2"
-		}
-		else if "`b'" == "drinkd3" {
-			local sel "& drinkd_stat == 3"
-			local samp "Drinkd3"
-		}
-		else if "`b'" == "drinkd4" {
-			local sel "& drinkd_stat == 4"
-			local samp "Drinkd4"
-		}
-		else if "`b'" == "exstat1" {
-			local sel "& exstat == 1"
-			local samp "exstat1"
-		}
-		else if "`b'" == "exstat2" {
-			local sel "& exstat == 2"
-			local samp "exstat2"
-		}
-		else if "`b'" == "exstat3" {
-			local sel "& exstat == 3"
-			local samp "exstat3"
-		}
 		else if "`b'" == "obese" {
 			local sel "& obese == 1"
 			local samp "obese"
@@ -251,23 +224,23 @@ forvalues x = 1/`measures_l' {
 			local samp "age 90 to 94"
 		}
 		else if "`b'" == "m_9094" {
-			local sel "& male == 1 & age >= 90 & age < 94"
+			local sel "& male == 1 & age >= 90 & age < 95"
 			local samp "male age 90 to 94"
 		}
 		else if "`b'" == "f_9094" {
-			local sel "& male == 0 & age >= 90 & age < 94"
+			local sel "& male == 0 & age >= 90 & age < 95"
 			local samp "female age 90 to 94"
 		}
 		else if "`b'" == "9599" {
-			local sel "& age >= 95 & age < 99"
+			local sel "& age >= 95 & age < 100"
 			local samp "age 95 to 99"
 		}
 		else if "`b'" == "m_9599" {
-			local sel "& male == 1 & age >= 95 & age < 99"
+			local sel "& male == 1 & age >= 95 & age < 100"
 			local samp "male age 95 to 99"
 		}
 		else if "`b'" == "f_9599" {
-			local sel "& male == 0 & age >= 95 & age < 99"
+			local sel "& male == 0 & age >= 95 & age < 100"
 			local samp "female age 95 to 99"
 		}
 		else if "`b'" == "100p" {
@@ -281,6 +254,66 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "f_100p" {
 			local sel "& male == 0 & age >= 100"
 			local samp "female age 100 plus"
+		}
+		else if "`b'" == "m_5564" {
+			local sel "& male == 1 & age > 54 & age <= 64"
+			local samp "male aged 55 to 64"
+		}
+		else if "`b'" == "f_5564" {
+			local sel "& male == 0 & age > 54 & age <= 64"
+			local samp "female aged 55 to 64"
+		}
+		else if "`b'" == "m_6574" {
+			local sel "& male == 1 & age > 64 & age <= 74"
+			local samp "male aged 65 to 74"
+		}
+		else if "`b'" == "f_6574" {
+			local sel "& male == 0 & age > 64 & age <= 74"
+			local samp "female aged 65 to 74"
+		}
+		else if "`b'" == "m_75p" {
+			local sel "& male == 1 & age > 74"
+			local samp "male aged 75 plus"
+		}
+		else if "`b'" == "f_75p" {
+			local sel "& male == 0 & age > 74"
+			local samp "female aged 75 plus"
+		}
+		else if "`b'" == "m_5564_drink" {
+			local sel "& male == 1 & age > 54 & age <= 64 & drink == 1"
+			local samp "male drinker aged 55 to 64"
+		}
+		else if "`b'" == "f_5564_drink" {
+			local sel "& male == 0 & age > 54 & age <= 64 & drink == 1"
+			local samp "female drinker aged 55 to 64"
+		}
+		else if "`b'" == "m_6574_drink" {
+			local sel "& male == 1 & age > 64 & age <= 74 & drink == 1"
+			local samp "male drinker aged 65 to 74"
+		}
+		else if "`b'" == "f_6574_drink" {
+			local sel "& male == 0 & age > 64 & age <= 74 & drink == 1"
+			local samp "female drinker aged 65 to 74"
+		}
+		else if "`b'" == "m_75p_drink" {
+			local sel "& male == 1 & age > 74 & drink == 1"
+			local samp "male drinker aged 75 plus"
+		}
+		else if "`b'" == "f_75p_drink" {
+			local sel "& male == 0 & age > 74 & drink == 1"
+			local samp "female drinker aged 75 plus"
+		}
+		else if "`b'" == "moderate" {
+			local sel "& moderate == 1"
+			local samp "moderate drinker"
+		}
+		else if "`b'" == "increasingRisk" {
+			local sel "& increasingRisk == 1"
+			local samp "Increasing Risk drinker"
+		}
+		else if "`b'" == "highRisk" {
+			local sel "& highRisk == 1"
+			local samp "High Risk drinker"
 		}
 
 		* Prevalence measures
