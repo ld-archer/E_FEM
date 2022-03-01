@@ -80,6 +80,9 @@ if "`scen'" == "base" {
 
 	* Produce altered BMI populations for interventions
 	*do gen_bmi_repls.do
+
+	* Produce altered population for alcohol interventions
+	do gen_alcohol_repl.do
 }
 else if "`scen'" == "base_nosmoke" {
 	*saveold ../../../input_data/ELSA_stock_CV.dta, replace v(12)

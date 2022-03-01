@@ -303,6 +303,18 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age > 74 & drink == 1"
 			local samp "female drinker aged 75 plus"
 		}
+		else if "`b'" == "moderate" {
+			local sel "& moderate == 1"
+			local samp "moderate drinker"
+		}
+		else if "`b'" == "increasingRisk" {
+			local sel "& increasingRisk == 1"
+			local samp "Increasing Risk drinker"
+		}
+		else if "`b'" == "highRisk" {
+			local sel "& highRisk == 1"
+			local samp "High Risk drinker"
+		}
 
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {

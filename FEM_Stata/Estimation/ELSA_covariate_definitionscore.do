@@ -89,7 +89,7 @@ local lvars_mstat l2single l2cohab l2widowed                        /*Control: l
 * Alcohol consumption
 local lvars_alcohol l2drink l2moderate l2increasingRisk l2highRisk
 local lvars_alcstat l2moderate l2increasingRisk l2highRisk         /*Control: l2moderate - moderate alcohol consumption*/
-local lvars_alcstat4 l2abstainer l2increasingRisk l2highRisk        /*Control: l2moderate - moderaate alcohol consumption*/ 
+local lvars_alcstat4 l2alcbase l2abstainer l2increasingRisk l2highRisk        /*Control: l2moderate - moderaate alcohol consumption*/ 
 
 
 
@@ -100,7 +100,7 @@ local lvars_alcstat4 l2abstainer l2increasingRisk l2highRisk        /*Control: l
 * 16/6/21 - now includes l2hibpe & `lvars_funclimit'
 *global allvars_died        $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2hibpe `lvars_smoke' l2demene `lvars_funclimit'
 * FROM covar_defincoreLEGACY
-global allvars_died         $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke' `lvars_alcstat4'
+global allvars_died         $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke'
 
 *** Chronic Diseases
 *CANCRE
