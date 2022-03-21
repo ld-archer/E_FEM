@@ -8,7 +8,7 @@ foreach v in adlstat iadlstat drink exstat mstat workstat atotb itot {
 
 * Selection criteria for models that only rely on lag value and not being dead
 * These are all INCIDENCE models - estimate for people who have not previously got the var and also not dead
-foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine alzhe demene {
+foreach v in cancre diabe hearte hibpe lunge stroke arthre psyche asthmae parkine alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe {
     local select_`v' !l2`v' & !died 
 }
 
@@ -41,7 +41,8 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 smoke_start smoke_stop ///
                 logbmi hchole hipe heavy_smoker mstat lnly alzhe demene ///
                 workstat atotb itot problem_drinker alcstat smokef ///
-                alcbase_mod alcbase_inc alcbase_high
+                alcbase_mod alcbase_inc alcbase_high angine hrtatte ///
+                conhrtfe hrtmre hrtrhme catracte osteoe
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'

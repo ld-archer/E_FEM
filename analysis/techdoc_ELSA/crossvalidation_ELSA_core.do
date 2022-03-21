@@ -112,6 +112,13 @@ keep
 	r*mweight
 	c*cpindex
 	r*GOR
+	r*angine
+	r*hrtatte
+	r*conhrtfe
+	r*hrtmre
+	r*hrtrhme
+	r*catracte
+	r*osteoe
 ;
 #d cr
 
@@ -165,6 +172,13 @@ local shapelist
 	r@mealsa
 	r@housewka
 	r@GOR
+	r@angine
+	r@hrtatte
+	r@conhrtfe
+	r@hrtmre
+	r@hrtrhme
+	r@catracte
+	r@osteoe
 ;
 #d cr
 
@@ -218,7 +232,7 @@ label var iadl2p "Two or more IADL limitations"
 
 
 *** Health conditions
-foreach var in cancre diabe hearte hibpe lunge stroke psyche alzhe demene asthmae {
+foreach var in cancre diabe hearte hibpe lunge stroke psyche alzhe demene asthmae angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe {
 	ren r`var' `var'
 }
 label var cancre "R ever had cancer"
@@ -231,6 +245,13 @@ label var psyche "R ever had psychological problems"
 label var alzhe "R ever had Alzheimers"
 label var demene "R ever had dementia"
 label var asthmae "R ever had asthma"
+label var angine "R ever had Angina"
+label var hrtatte "R ever had Heart Attack"
+label var conhrtfe "R ever had Congenital Heart Failure"
+label var hrtmre "R ever had Heart Murmur"
+label var hrtrhme "R ever had Abnormal Heart Rhythm"
+label var catracte "R ever had Cataracts"
+label var osteoe "R ever had Osteoporosis"
 
 *** Mortality
 gen died = riwstat
@@ -522,6 +543,13 @@ label var stroke "Stroke ever"
 label var alzhe "Alzheimers ever"
 label var demene "Dementia ever"
 label var asthmae "Asthma ever"
+label var angine "Angina ever"
+label var hrtatte "Heart Attack ever"
+label var conhrtfe "Congenital Heart Failure ever"
+label var hrtmre "Heart Murmur ever"
+label var hrtrhme "Abnormal Heart Rhythm ever"
+label var catracte "Cataracts ever"
+label var osteoe "Osteoporosis ever"
 
 label var bmi "BMI"
 label var smokev "Smoke ever"
@@ -568,7 +596,7 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 local risk smoken smokev smokef bmi drink alcbase alcstat4 moderate increasingRisk highRisk
 local binecon employed unemployed retired
 local cntecon itotx atotbx

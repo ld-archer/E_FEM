@@ -151,6 +151,13 @@ r*mheight
 r*mweight
 c*cpindex
 r*GOR
+r*angine
+r*hrtatte
+r*conhrtfe
+r*hrtmre
+r*hrtrhme
+r*catracte
+r*osteoe
 ;
 #d cr
 
@@ -228,6 +235,13 @@ foreach var in
     mweight
     coupid
     GOR
+    angine
+    hrtatte
+    conhrtfe
+    hrtmre
+    hrtrhme
+    catracte
+    osteoe
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -276,7 +290,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     hearte stroke psyche arthre mbmi smokev smoken hhid inw insc inn
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink alcbase educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
-    lbrf coupid GOR
+    lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -338,6 +352,14 @@ label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
 label variable alcbase "Units of alcohol consumed in previous week"
 label variable GOR "Government Office Region"
+label variable angine "Angina ever"
+label variable hrtatte "Heart Attack ever"
+label variable conhrtfe "Congestive Heart Failure ever"
+label variable hrtmre "Heart Murmur ever"
+label variable hrtrhme "Abnormal Heart Rhythm"
+label variable catracte "Cataracts ever"
+label variable osteoe "Osteoporosis ever"
+
 
 * Use harmonised education var
 gen educ = raeducl
@@ -768,11 +790,20 @@ foreach var in
     increasingRisk
     highRisk
     GOR
+    angine
+    hrtatte
+    conhrtfe
+    hrtmre
+    hrtrhme
+    catracte
+    osteoe
     {;
         gen l2`var' = L.`var';
     };
 ;
 #d cr
+
+
 
 * Generate smoke_start and smoke_stop vars
 gen smoke_start = 1 if l2smoken == 0 & smoken == 1

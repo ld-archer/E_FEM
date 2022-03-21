@@ -651,6 +651,27 @@ namespace Vars
         l2alcbase_inc,                ///< Lag of Alcohol consumption in units (increasingRisk)
         alcbase_high,               ///< Alcohol consumption in units (highRisk)
         l2alcbase_high,               ///< Lag of Alcohol consumption in units (highRisk)
+        angine,                     ///< Angina ever
+        l2angine,                   ///< Lag of Angina ever
+        pangine,                    ///< Probability of Angina ever
+        hrtatte,                     ///< Heart Attack ever
+        l2hrtatte,                   ///< Lag of Heart Attack ever
+        phrtatte,                    ///< Probability of Heart Attack ever
+        conhrtfe,                     ///< Congenital Heart Failure ever
+        l2conhrtfe,                   ///< Lag of Congenital Heart Failure ever
+        pconhrtfe,                    ///< Probability of Congenital Heart Failure ever
+        hrtmre,                     ///< Heart Murmur ever
+        l2hrtmre,                   ///< Lag of Heart Murmur ever
+        phrtmre,                    ///< Probability of Heart Murmur ever
+        hrtrhme,                     ///< Abnormal Heart Rhythm ever
+        l2hrtrhme,                   ///< Lag of Abnormal Heart Rhythm ever
+        phrtrhme,                    ///< Probability of Abnormal Heart Rhythm ever
+        catracte,                     ///< Cataracts ever
+        l2catracte,                   ///< Lag of Cataracts ever
+        pcatracte,                    ///< Probability of Cataracts ever
+        osteoe,                     ///< Osteoporosis ever
+        l2osteoe,                   ///< Lag of Osteoporosis ever
+        posteoe,                    ///< Probability of Osteoporosis ever
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

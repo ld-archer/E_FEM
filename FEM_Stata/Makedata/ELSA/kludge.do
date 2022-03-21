@@ -90,35 +90,40 @@ gen medicare_elig = 0
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole alcbase alcstat alcstat4 smokef abstainer moderate increasingRisk highRisk
+                        smoken hchole alcbase alcstat alcstat4 smokef abstainer moderate increasingRisk highRisk ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl alcstat alcstat4 ///
-                        abstainer moderate increasingRisk highRisk
+                        abstainer moderate increasingRisk highRisk ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
                         mstat lnly alzhe demene workstat alcstat ///
-                        abstainer moderate increasingRisk highRisk
+                        abstainer moderate increasingRisk highRisk ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
                         lnly alzhe demene workstat smokef alcstat alcstat4 ///
-                        abstainer moderate increasingRisk highRisk
+                        abstainer moderate increasingRisk highRisk ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly workstat alzhe arthre asthmae demene ///
                         parkine psyche hipe hchole smokef alcstat alcstat4 ///
-                        abstainer moderate increasingRisk highRisk
+                        abstainer moderate increasingRisk highRisk ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl workstat alzhe demene ///
-                        hchole hipe
+                        hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -142,7 +147,8 @@ replace srh5 = 0 if srh3 == 1
 foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
                         srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed unemployed ///
-                        retired alcbase alcstat alcstat4 abstainer moderate increasingRisk highRisk {
+                        retired alcbase alcstat alcstat4 abstainer moderate increasingRisk highRisk ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
@@ -174,7 +180,24 @@ if "`scen'" == "valid" {
 * Handle missing alcbase values within categories
 replace alcbase_mod = 0 if missing(alcbase_mod) & moderate != 1
 replace alcbase_inc = 0 if missing(alcbase_inc) & increasingRisk != 1
-replace alcbase_high = 0 if missing(alcbase_high) & highRisk != 1
+replace alcbase_high = 0 if missing(alcbase_high) & highRisk != 17
+
+* New chronic disease vars
+replace angine = 0 if missing(angine)
+replace l2angine = 0 if missing(l2angine)
+replace catracte = 0 if missing(catracte)
+replace l2catracte = 0 if missing(l2catracte)
+replace conhrtfe = 0 if missing(conhrtfe)
+replace l2conhrtfe = 0 if missing(l2conhrtfe)
+replace hrtatte = 0 if missing(hrtatte)
+replace l2hrtatte = 0 if missing(l2hrtatte)
+replace hrtmre = 0 if missing(hrtmre)
+replace l2hrtmre = 0 if missing(l2hrtmre)
+replace hrtrhme = 0 if missing(hrtrhme)
+replace l2hrtrhme = 0 if missing(l2hrtrhme)
+replace osteoe = 0 if missing(osteoe)
+replace l2osteoe = 0 if missing(l2osteoe)
+
 
 * Still missing atotb, so impute with mean
 quietly summ atotb
