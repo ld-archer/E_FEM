@@ -31,6 +31,13 @@ local measures
 					p_parkine   i_parkine   n_parkine
 					p_alzhe		i_alzhe		n_alzhe
 					p_demene	i_demene	n_demene
+					p_angine	i_angine	n_angine
+					p_hrtatte	i_hrtatte	n_hrtatte
+					p_conhrtfe	i_conhrtfe	n_conhrtfe
+					p_hrtmre	i_hrtmre	n_hrtmre
+					p_hrtrhme	i_hrtrhme	n_hrtrhme
+					p_catracte	i_catracte	n_catracte
+					p_osteoe	i_osteoe	n_osteoe
 						i_died    n_died
 						a_bmi     q05_bmi   q50_bmi   q95_bmi
 						p_adl1	  p_adl2    p_adl3p

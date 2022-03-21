@@ -714,7 +714,27 @@ VarsInfo::VarsInfo() {
     info[Vars::l2alcbase_inc]       = VarInfo("l2alcbase_inc", "Lag of Alcohol consumption in units (increasingRisk)", VarTypes::Double);
     info[Vars::alcbase_high]        = VarInfo("alcbase_high", "Alcohol consumption in units (highRisk)", VarTypes::Double);
     info[Vars::l2alcbase_high]      = VarInfo("l2alcbase_high", "Lag of Alcohol consumption in units (highRisk)", VarTypes::Double);
-
+    info[Vars::angine]              = VarInfo("angine", "Angina ever", VarTypes::Boolean);
+    info[Vars::l2angine]            = VarInfo("l2angine", "Lag of Angina ever", VarTypes::Boolean);
+    info[Vars::pangine]             = VarInfo("pangine", "Probability of Angina ever", VarTypes::Boolean);
+    info[Vars::hrtatte]              = VarInfo("hrtatte", "Heart Attack ever", VarTypes::Boolean);
+    info[Vars::l2hrtatte]            = VarInfo("l2hrtatte", "Lag of Heart Attack ever", VarTypes::Boolean);
+    info[Vars::phrtatte]             = VarInfo("phrtatte", "Probability of Heart Attack ever", VarTypes::Boolean);
+    info[Vars::conhrtfe]              = VarInfo("conhrtfe", "Congenital Heart Failure ever", VarTypes::Boolean);
+    info[Vars::l2conhrtfe]            = VarInfo("l2conhrtfe", "Lag of Congenital Heart Failure ever", VarTypes::Boolean);
+    info[Vars::pconhrtfe]             = VarInfo("pconhrtfe", "Probability of Congenital Heart Failure ever", VarTypes::Boolean);
+    info[Vars::hrtmre]              = VarInfo("hrtmre", "Heart Murmur ever", VarTypes::Boolean);
+    info[Vars::l2hrtmre]            = VarInfo("l2hrtmre", "Lag of Heart Murmur ever", VarTypes::Boolean);
+    info[Vars::phrtmre]             = VarInfo("phrtmre", "Probability of Heart Murmur ever", VarTypes::Boolean);
+    info[Vars::hrtrhme]              = VarInfo("hrtrhme", "Abnormal Heart Rhythm ever", VarTypes::Boolean);
+    info[Vars::l2hrtrhme]            = VarInfo("l2hrtrhme", "Lag of Abnormal Heart Rhythm ever", VarTypes::Boolean);
+    info[Vars::phrtrhme]             = VarInfo("phrtrhme", "Probability of Abnormal Heart Rhythm ever", VarTypes::Boolean);
+    info[Vars::catracte]              = VarInfo("catracte", "Cataracts ever", VarTypes::Boolean);
+    info[Vars::l2catracte]            = VarInfo("l2catracte", "Lag of Cataracts ever", VarTypes::Boolean);
+    info[Vars::pcatracte]             = VarInfo("pcatracte", "Probability of Cataracts ever", VarTypes::Boolean);
+    info[Vars::osteoe]              = VarInfo("osteoe", "Osteoporosis ever", VarTypes::Boolean);
+    info[Vars::l2osteoe]            = VarInfo("l2osteoe", "Lag of Osteoporosis ever", VarTypes::Boolean);
+    info[Vars::posteoe]             = VarInfo("posteoe", "Probability of Osteoporosis ever", VarTypes::Boolean);
 
 	
 	// This is for vars that are transitioned each wave, not just assigned
@@ -878,7 +898,13 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::alcbase_mod] = Vars::l2alcbase_mod;
     lag_map[Vars::alcbase_inc] = Vars::l2alcbase_inc;
     lag_map[Vars::alcbase_high] = Vars::l2alcbase_high;
-
+    lag_map[Vars::angine] = Vars::l2angine;
+    lag_map[Vars::hrtatte] = Vars::l2hrtatte;
+    lag_map[Vars::conhrtfe] = Vars::l2conhrtfe;
+    lag_map[Vars::hrtmre] = Vars::l2hrtmre;
+    lag_map[Vars::hrtrhme] = Vars::l2hrtrhme;
+    lag_map[Vars::catracte] = Vars::l2catracte;
+    lag_map[Vars::osteoe] = Vars::l2osteoe;
 
 
 
@@ -920,6 +946,13 @@ VarsInfo::VarsInfo() {
 	//prob_map[Vars::freq_drinker] =  Vars::pfreq_drinker;
 	//prob_map[Vars::problem_drinker] = Vars::pproblem_drinker;
 	//prob_map[Vars::heavy_smoker] = Vars::pheavy_smoker;
+	prob_map[Vars::angine] =        Vars::pangine;
+    prob_map[Vars::hrtatte] =       Vars::phrtatte;
+    prob_map[Vars::conhrtfe] =      Vars::pconhrtfe;
+    prob_map[Vars::hrtmre] =        Vars::phrtmre;
+    prob_map[Vars::hrtrhme] =       Vars::phrtrhme;
+    prob_map[Vars::catracte] =      Vars::pcatracte;
+    prob_map[Vars::osteoe] =        Vars::posteoe;
 
 	// Ordered
 	//prob_map[Vars::smokev] =		Vars::psmkstat2;
