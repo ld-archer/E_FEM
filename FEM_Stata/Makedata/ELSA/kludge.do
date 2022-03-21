@@ -180,7 +180,7 @@ if "`scen'" == "valid" {
 * Handle missing alcbase values within categories
 replace alcbase_mod = 0 if missing(alcbase_mod) & moderate != 1
 replace alcbase_inc = 0 if missing(alcbase_inc) & increasingRisk != 1
-replace alcbase_high = 0 if missing(alcbase_high) & highRisk != 17
+replace alcbase_high = 0 if missing(alcbase_high) & highRisk != 1
 
 * New chronic disease vars
 replace angine = 0 if missing(angine)
