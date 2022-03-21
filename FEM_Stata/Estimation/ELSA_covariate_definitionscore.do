@@ -116,11 +116,14 @@ global allvars_cancre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev
 global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole `lvars_exercise' `lvars_alcstat4'
 * Heart Health
 global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_alcstat4'
-global allvars_angine       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_alcstat4'
-global allvars_hrtatte      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_alcstat4'
-global allvars_conhrtfe     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_alcstat4'
-global allvars_hrtmre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_alcstat4'
-global allvars_hrtrhme      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_alcstat4'
+global allvars_angine       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_hrtatte      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_conhrtfe     $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_hrtmre       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+global allvars_hrtrhme      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p 
+* Alzhe & Demene
+global allvars_alzhe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_alcstat4'
+global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_alcstat4'
 * Other
 global allvars_hibpe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole `lvars_exercise' `lvars_alcstat4'
 global allvars_lunge        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
@@ -130,10 +133,6 @@ global allvars_srh          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_s
 global allvars_asthmae      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
 global allvars_catracte     $dvars $lvars_age l2diabe l2hibpe `lvars_smoke' /* https://cks.nice.org.uk/topics/cataracts/background-information/causes-risk-factors/ */
 global allvars_osteoe       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_alcstat4' l2asthmae `lvars_exercise' /* arthritis https://www.nhs.uk/conditions/osteoporosis/causes/ */
-
-* Alzhe & Demene (16/6/21 now includes l2stroke)
-global allvars_alzhe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_alcstat4'
-global allvars_demene       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_alcstat4'
 
 
 *** Smoking 
@@ -164,8 +163,8 @@ global allvars_itot      $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `l
 
 *** Disabilities
 * 16/6/21 - Now includes l2alzhe
-global allvars_adlstat          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe
-global allvars_iadlstat         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe
+global allvars_adlstat          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte
+global allvars_iadlstat         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte
 
 *** Workstat
 global allvars_workstat         $dvars $lvars_age `lvars_funclimit'
