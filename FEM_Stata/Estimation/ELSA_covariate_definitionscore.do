@@ -138,22 +138,20 @@ global allvars_osteoe       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_s
 *** Smoking 
 global allvars_smoke_start  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 global allvars_smoke_stop   $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
-*global allvars_heavy_smoker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 global allvars_smokef       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' 
-*global allvars_problem_drinker $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
-global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2alcstat4 l2smoken
+global allvars_alcstat      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2alcstat l2alcbase l2smoken
 global allvars_alcbase_mod  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
 global allvars_alcbase_inc  $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
 global allvars_alcbase_high $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken
 
 
 *** Logbmi & other health
-global allvars_logbmi           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
+global allvars_logbmi       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
 
 
 *** Economic vars (atotb & itot)

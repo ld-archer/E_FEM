@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(reshape2)
+
+```
+
+
+```{r}
+ELSA <- read_dta('input_data/ELSA_long.dta')
+raw.ELSA <- read_dta('input_data/H_ELSA_g2_wv_specific.dta')
+```
+
+```{r}
+bmi <- ELSA %>% select(wave, male, bmi)
+
+bmi.m <- bmi %>% filter(male == 1)
+bmi.f <- bmi %>% filter(male == 0)
+
+bmi.m.2 <- bmi.m %>% filter(wave == 2) %>%
+                        select(bmi) %>%
+                        drop_na()
+bmi.f.2 <- bmi.f %>% filter(wave == 2) %>%
+                        select(bmi) %>%
+                        drop_na()
+```
+
+```{r}
+m.dens <- density(bmi.m.2$bmi)
+f.dens <- density(bmi.f.2$bmi)
+```
+
+```{r}
+plot(m.dens, col='blue', lwd=2)
+lines(f.dens, col='red', lwd=2)
+```
+
+
+
+
+
+
+

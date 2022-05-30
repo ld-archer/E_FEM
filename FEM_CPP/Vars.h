@@ -672,6 +672,7 @@ namespace Vars
         osteoe,                     ///< Osteoporosis ever
         l2osteoe,                   ///< Lag of Osteoporosis ever
         posteoe,                    ///< Probability of Osteoporosis ever
+        alc_ldown_treated,          ///< Recieved the alcohol lockdown consumption change intervention
 		NVars,                    ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

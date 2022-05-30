@@ -11,6 +11,7 @@
 #include "ModExIncrease.h"
 #include "ReduceBMI.h"
 #include "AlcoholIntervention50p.h"
+#include "AlcoholLockdown.h"
 
 InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvider* tp)
 {
@@ -127,6 +128,9 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 
 	AlcoholIntervention50p* ai50p = new AlcoholIntervention50p(index++, tp, vp);
 	interventions[ai50p->name()] = ai50p;
+
+	AlcoholLockdown* al = new AlcoholLockdown(index++, tp, vp);
+	interventions[al->name()] = al;
 
 
 }

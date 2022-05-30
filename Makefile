@@ -44,6 +44,9 @@ roc: core_prep simulation_core_roc roc_validation
 alcohol: SUBPOP = alcohol
 alcohol: core_prep simulation_alcohol alcohol_doc
 
+alcohol2: SUBPOP = alcohol
+alcohol2: core_prep simulation_alcohol2 alcohol_doc
+
 handovers: SUBPOP = handovers
 handovers: core_complete handover_plots
 
@@ -249,6 +252,9 @@ simulation_core_roc:
 
 simulation_alcohol:
 	$(MPI) ELSA_Alcohol_Intervention.settings.txt
+
+simulation_alcohol2:
+	$(MPI) ELSA_Alcohol_Intervention_2.settings.txt
 
 
 ### Handovers and Validation

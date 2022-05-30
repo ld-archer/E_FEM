@@ -101,7 +101,7 @@ else if "`subpops'" == "handover" {
 	local subpop all m f 55p_f_l 55p_m_l
 }
 else if "`subpops'" == "alcohol" {
-	local subpop all m f m_5564 f_5564 m_6574 f_6574 m_75p f_75p m_5564_drink f_5564_drink m_6574_drink f_6574_drink m_75p_drink f_75p_drink moderate increasingRisk highRisk
+	local subpop all m f m_5564 f_5564 m_6574 f_6574 m_75p f_75p m_5564_drink f_5564_drink m_6574_drink f_6574_drink m_75p_drink f_75p_drink moderate increasingRisk highRisk alc_ldown_treated
 }
 else if "`subpops'" == "roc" {
 	local subpop all m f

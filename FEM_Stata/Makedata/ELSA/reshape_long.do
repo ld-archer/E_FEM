@@ -713,6 +713,9 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
+*** Alcohol Lockdown Treatment var
+gen alc_ldown_treated = 0
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave

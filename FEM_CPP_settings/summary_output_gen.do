@@ -315,6 +315,10 @@ forvalues x = 1/`measures_l' {
 			local sel "& highRisk == 1"
 			local samp "High Risk drinker"
 		}
+		else if "`b'" == "alc_ldown_treated" {
+			local sel "& alc_ldown_treated == 1"
+			local samp "Alcohol lockdown treated"
+		}
 
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {

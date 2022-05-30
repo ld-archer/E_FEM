@@ -735,6 +735,7 @@ VarsInfo::VarsInfo() {
     info[Vars::osteoe]              = VarInfo("osteoe", "Osteoporosis ever", VarTypes::Boolean);
     info[Vars::l2osteoe]            = VarInfo("l2osteoe", "Lag of Osteoporosis ever", VarTypes::Boolean);
     info[Vars::posteoe]             = VarInfo("posteoe", "Probability of Osteoporosis ever", VarTypes::Boolean);
+    info[Vars::alc_ldown_treated]   = VarInfo("alc_ldown_treated", "Recieved the alcohol consumption change intervention", VarTypes::Boolean);
 
 	
 	// This is for vars that are transitioned each wave, not just assigned
