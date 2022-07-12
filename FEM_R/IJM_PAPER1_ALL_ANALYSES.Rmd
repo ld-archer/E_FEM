@@ -546,7 +546,7 @@ compareSurvivalCurve <- function(cohort, intervention, int_name, save=FALSE,
   # Calculate age and survival curves
   cohort$Age <- (cohort$year - 2012) + 50
   intervention$Age <- (intervention$year - 2012) + 50
-  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all+[1]
   intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
 
   survivals <- data.frame(cohort$Age, cohort$Survival, intervention$Survival)

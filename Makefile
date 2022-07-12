@@ -42,7 +42,7 @@ roc: SUBPOP = roc
 roc: core_prep simulation_core_roc roc_validation
 
 alcohol: SUBPOP = alcohol
-alcohol: core_prep simulation_alcohol alcohol_doc
+alcohol: core_prep cv_prep simulation_alcohol alcohol_doc
 
 alcohol2: SUBPOP = alcohol
 alcohol2: core_prep simulation_alcohol2 alcohol_doc
@@ -50,7 +50,7 @@ alcohol2: core_prep simulation_alcohol2 alcohol_doc
 handovers: SUBPOP = handovers
 handovers: core_complete handover_plots
 
-alcohol_plus: core_debug alcohol
+alcohol_all: alcohol alcohol2
 
 everything: core_debug alcohol handovers roc
 
@@ -65,7 +65,9 @@ model_prep: ELSA stata_extensions.txt
 start_data: populations imputation projections reweight
 
 core_prep: start_data transitions_core est_core summary_out_core
-core_complete_prep: core_prep transitions_core_CV est_core_CV summary_out_core_CV transitions_minimal est_minimal summary_out_minimal
+cv_prep: transitions_core_CV est_core_CV summary_out_core_CV
+minimal_prep: transitions_minimal est_minimal summary_out_minimal
+core_complete_prep: core_prep cv_prep minimal_prep
 
 ## Utility
 
@@ -306,6 +308,12 @@ detailed_append_core_cohort: $(OUTDATA)/SCENARIO/ELSA_core_cohort/ELSA_core_coho
 
 detailed_append_core_smok: $(OUTDATA)/SCENARIO/ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta
 	cd $(MAKEDATA) && datain=$(OUTDATA)/SCENARIO dataout=$(DATADIR)/detailed_output scen=core_remove_smoken $(STATA) detailed_output_append.do
+
+detailed_append_alcohol: $(OUTDATA)/ALCOHOL/ELSA_full/ELSA_full_summary.dta $(OUTDATA)/ALCOHOL/ELSA_alcInt_full/ELSA_alcInt_full_summary.dta
+	cd $(MAKEDATA) && datain=$(OUTDATA)/ALCOHOL dataout=$(DATADIR)/detailed_output scen=full $(STATA) detailed_output_append.do
+	cd $(MAKEDATA) && datain=$(OUTDATA)/ALCOHOL dataout=$(DATADIR)/detailed_output scen=alcInt_full $(STATA) detailed_output_append.do
+	cd $(MAKEDATA) && datain=$(OUTDATA)/ALCOHOL dataout=$(DATADIR)/detailed_output scen=cohort $(STATA) detailed_output_append.do
+	cd $(MAKEDATA) && datain=$(OUTDATA)/ALCOHOL dataout=$(DATADIR)/detailed_output scen=alcInt_cohort $(STATA) detailed_output_append.do
 
 
 ### Debugging

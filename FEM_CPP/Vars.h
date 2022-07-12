@@ -672,8 +672,22 @@ namespace Vars
         osteoe,                     ///< Osteoporosis ever
         l2osteoe,                   ///< Lag of Osteoporosis ever
         posteoe,                    ///< Probability of Osteoporosis ever
-        alc_ldown_treated,          ///< Recieved the alcohol lockdown consumption change intervention
-		NVars,                    ///< A counter for the number of valid variables
+        alc_ldown_treated,          ///< Received the alcohol lockdown consumption change intervention
+        mup_treated,                ///< Received the minimum unit pricing intervention treatment
+        abstainerTime,              ///< Number waves spent in abstainer alcohol consumption group
+        moderateTime,              ///< Number waves spent in moderate alcohol consumption group
+        increasingTime,            ///< Number waves spent in increasingRisk alcohol consumption group
+        highTime,                  ///< Number waves spent in highRisk alcohol consumption group
+        abstainerProp,             ///< Proportion of time spent in abstainer alcohol consumption group
+        moderateProp,              ///< Proportion of time spent in moderate alcohol consumption group
+        increasingProp,            ///< Proportion of time spent in increasingRisk alcohol consumption group
+        highProp,                  ///< Proportion of time spent in highRisk alcohol consumption group
+        abstainerMC,                ///< Most common alcohol consumption group: Abstainer
+        moderateMC,                ///< Most common alcohol consumption group: Moderate
+        increasingMC,                ///< Most common alcohol consumption group: IncreasingRisk
+        highMC,                ///< Most common alcohol consumption group: HighRisk
+        elsa_waves,             ///< Number of waves present in ELSA data
+		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
 

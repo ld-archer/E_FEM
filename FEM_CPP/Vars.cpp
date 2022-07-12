@@ -735,7 +735,21 @@ VarsInfo::VarsInfo() {
     info[Vars::osteoe]              = VarInfo("osteoe", "Osteoporosis ever", VarTypes::Boolean);
     info[Vars::l2osteoe]            = VarInfo("l2osteoe", "Lag of Osteoporosis ever", VarTypes::Boolean);
     info[Vars::posteoe]             = VarInfo("posteoe", "Probability of Osteoporosis ever", VarTypes::Boolean);
-    info[Vars::alc_ldown_treated]   = VarInfo("alc_ldown_treated", "Recieved the alcohol consumption change intervention", VarTypes::Boolean);
+    info[Vars::alc_ldown_treated]   = VarInfo("alc_ldown_treated", "Received the alcohol consumption change intervention", VarTypes::Boolean);
+    info[Vars::mup_treated]         = VarInfo("mup_treated", "Received the minimum unit price of alcohol intervention", VarTypes::Boolean);
+    info[Vars::abstainerTime]       = VarInfo("abstainerTime", "Number waves spent in abstainer alcohol consumption group", VarTypes::Short);
+    info[Vars::moderateTime]        = VarInfo("moderateTime", "Number waves spent in moderate alcohol consumption group", VarTypes::Short);
+    info[Vars::increasingTime]      = VarInfo("increasingTime", "Number waves spent in increasingRisk alcohol consumption group", VarTypes::Short);
+    info[Vars::highTime]            = VarInfo("highTime", "Number waves spent in highRisk alcohol consumption group", VarTypes::Short);
+    info[Vars::abstainerProp]       = VarInfo("abstainerProp", "Proportion of time spent in abstainer consumption group", VarTypes::Double);
+    info[Vars::moderateProp]        = VarInfo("moderateProp", "Proportion of time spent in moderate consumption group", VarTypes::Double);
+    info[Vars::increasingProp]      = VarInfo("increasingProp", "Proportion of time spent in increasingRisk consumption group", VarTypes::Double);
+    info[Vars::highProp]            = VarInfo("highProp", "Proportion of time spent in highRisk consumption group", VarTypes::Double);
+    info[Vars::abstainerMC]         = VarInfo("abstainerMC", "Most common alcohol consumption group: Abstainer", VarTypes::Boolean);
+    info[Vars::moderateMC]          = VarInfo("moderateMC", "Most common alcohol consumption group: Moderate", VarTypes::Boolean);
+    info[Vars::increasingMC]        = VarInfo("increasingMC", "Most common alcohol consumption group: IncreasingRisk", VarTypes::Boolean);
+    info[Vars::highMC]              = VarInfo("highMC", "Most common alcohol consumption group: HighRisk", VarTypes::Boolean);
+    info[Vars::elsa_waves]          = VarInfo("elsa_waves", "Number of waves present in ELSA data", VarTypes::Double);
 
 	
 	// This is for vars that are transitioned each wave, not just assigned

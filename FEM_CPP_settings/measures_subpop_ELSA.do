@@ -38,6 +38,7 @@ local measures
 					p_hrtrhme	i_hrtrhme	n_hrtrhme
 					p_catracte	i_catracte	n_catracte
 					p_osteoe	i_osteoe	n_osteoe
+					p_hchole	i_hchole	n_hchole
 						i_died    n_died
 						a_bmi     q05_bmi   q50_bmi   q95_bmi
 						p_adl1	  p_adl2    p_adl3p
@@ -58,10 +59,10 @@ local measures
 					a_alcstat
 					a_alcstat4
 					a_alcbase
-					p_abstainer			n_abstainer
-					p_moderate			n_moderate
-					p_increasingRisk	n_increasingRisk
-					p_highRisk			n_highRisk
+					p_abstainer			n_abstainer			p_abstainerMC	
+					p_moderate			n_moderate			p_moderateMC
+					p_increasingRisk	n_increasingRisk	p_increasingMC
+					p_highRisk			n_highRisk			p_highMC
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		p_lnly1		p_lnly2 	p_lnly3
@@ -101,7 +102,7 @@ else if "`subpops'" == "handover" {
 	local subpop all m f 55p_f_l 55p_m_l
 }
 else if "`subpops'" == "alcohol" {
-	local subpop all m f m_5564 f_5564 m_6574 f_6574 m_75p f_75p m_5564_drink f_5564_drink m_6574_drink f_6574_drink m_75p_drink f_75p_drink moderate increasingRisk highRisk alc_ldown_treated
+	local subpop all m f m_5564 f_5564 m_6574 f_6574 m_75p f_75p m_5564_drink f_5564_drink m_6574_drink f_6574_drink m_75p_drink f_75p_drink abstainer moderate increasingRisk highRisk mup_treated abstainerMC moderateMC increasingMC highMC
 }
 else if "`subpops'" == "roc" {
 	local subpop all m f

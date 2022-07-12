@@ -319,6 +319,26 @@ forvalues x = 1/`measures_l' {
 			local sel "& alc_ldown_treated == 1"
 			local samp "Alcohol lockdown treated"
 		}
+		else if "`b'" == "mup_treated" {
+			local sel "& mup_treated == 1"
+			local samp "MUP Treated"
+		}
+		else if "`b'" == "abstainerMC" {
+			local sel "& abstainerMC == 1"
+			local samp "Most Common: Abstainer"
+		}
+		else if "`b'" == "moderateMC" {
+			local sel "& moderateMC == 1"
+			local samp "Most Common: Moderate"
+		}
+		else if "`b'" == "increasingMC" {
+			local sel "& increasingMC == 1"
+			local samp "Most Common: IncreasingRisk"
+		}
+		else if "`b'" == "highMC" {
+			local sel "& highMC == 1"
+			local samp "Most Common: HighRisk"
+		}
 
 		* Prevalence measures
 		if substr("`a'",1,1) == "p" {

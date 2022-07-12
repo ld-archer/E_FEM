@@ -591,10 +591,26 @@ label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-ri
 label values alcstat alcstat
 
 ** Finally set up the alcbase vars for each consumption group
+*gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
+*replace alcbase_mod = 0 if alcstat !=1 & !missing(alcbase) & !missing(alcstat)
+*gen alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
+*replace alcbase_inc = 0 if alcstat !=2 & !missing(alcbase) & !missing(alcstat)
+*gen alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
+*replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)
+
 gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_mod = 0 if alcstat !=1 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_mod = 0 if drink == 0 & !missing(drink)
+replace alcbase_mod = 15 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 0
+replace alcbase_mod = 21 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 1
+*replace alcbase_mod = 21 if alcstat > 1 & !missing(alcbase) & !missing(alcstat)
+
 gen alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_inc = 0 if alcstat !=2 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_inc = 0 if alcstat == 1 & !missing(alcstat)
+replace alcbase_inc = 0 if drink == 0 & !missing(drink)
+replace alcbase_inc = 35 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 0
+replace alcbase_inc = 50 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 1
+*replace alcbase_inc = 50 if alcstat > 2 & !missing(alcbase) & !missing(alcstat)
+
 gen alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
 replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)
 
@@ -713,8 +729,38 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
-*** Alcohol Lockdown Treatment var
+*** Alcohol Lockdown Treatment var & MUP var
 gen alc_ldown_treated = 0
+gen mup_treated = 0
+
+*** Number of waves in ELSA (used in HealthModule.cpp to calculate groupProp and groupMC)
+bys hhidpn wave: gen elsa_waves = _N
+
+*** Length of time in alcohol consumption groups
+bys hhidpn wave: gen abstainerTime = sum(abstainer)
+bys hhidpn wave: gen moderateTime = sum(moderate)
+bys hhidpn wave: gen increasingTime = sum(increasingRisk)
+bys hhidpn wave: gen highTime = sum(highRisk)
+
+bys hhidpn: gen abstainerProp = abstainerTime / elsa_waves
+bys hhidpn: gen moderateProp = moderateTime / elsa_waves
+bys hhidpn: gen increasingProp = increasingTime / elsa_waves
+bys hhidpn: gen highProp = highTime / elsa_waves
+
+gen abstainerMC = (abstainerProp > moderateProp) & (abstainerProp > increasingProp) & (abstainerProp > highProp)
+gen moderateMC = (moderateProp > abstainerProp) & (moderateProp > increasingProp) & (moderateProp > highProp)
+gen increasingMC = (increasingProp > moderateProp) & (increasingProp > abstainerProp) & (increasingProp > highProp)
+gen highMC = (highProp > moderateProp) & (highProp > increasingTime) & (highProp > abstainerProp)
+
+
+** This is broken, needs another attempt
+/* ** Handle cases where two or more proportions are equal
+* Just set to the highest of the two com
+replace moderateMC = 1 if (abstainerProp == moderateProp)
+replace increasingMC = 1 if (increasingProp == moderateProp) | (increasingProp == abstainerProp)
+replace highMC = 1 if (highProp == abstainerProp) | (highProp == moderateProp) | (highProp == increasingProp)
+replace moderateMC = 0 if increasingMC | highMC
+replace increasingMC = 0 if highMC */
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)

@@ -357,3 +357,8 @@ married_educl_interaction = married * educl : Interaction between married and sp
 
 | For Mortality Adjustment
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
+
+
+||| Alcohol Consumption Groups
+| Categorising people by the consumption group they've spent the most time in
+

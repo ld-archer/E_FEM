@@ -178,9 +178,9 @@ if "`scen'" == "valid" {
 }
 
 * Handle missing alcbase values within categories
-replace alcbase_mod = 0 if missing(alcbase_mod) & moderate != 1
-replace alcbase_inc = 0 if missing(alcbase_inc) & increasingRisk != 1
-replace alcbase_high = 0 if missing(alcbase_high) & highRisk != 1
+*replace alcbase_mod = 0 if missing(alcbase_mod) & moderate != 1
+*replace alcbase_inc = 0 if missing(alcbase_inc) & increasingRisk != 1
+*replace alcbase_high = 0 if missing(alcbase_high) & highRisk != 1
 
 * New chronic disease vars
 replace angine = 0 if missing(angine)
@@ -261,3 +261,20 @@ replace l2smkstat = 2 if missing(l2smkstat)
 * ELSA version doesn't use 'work' anymore
 gen work = employed if !missing(employed)
 gen l2work = l2employed if !missing(l2employed)
+
+
+
+* Impute some missing alcbase stuff
+replace alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_mod = 0 if drink == 0 & !missing(drink)
+replace alcbase_mod = 15 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 0
+replace alcbase_mod = 21 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 1
+
+replace alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_inc = 0 if alcstat == 1 & !missing(alcstat)
+replace alcbase_inc = 0 if drink == 0 & !missing(drink)
+replace alcbase_inc = 35 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 0
+replace alcbase_inc = 50 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 1
+
+replace alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
+replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)

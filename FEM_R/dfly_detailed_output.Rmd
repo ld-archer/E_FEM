@@ -11,14 +11,14 @@ First we're going to have a go at replicating the file tot_test.do, saved in E_F
 
 ```{r "setup", include=FALSE}
 # Need to set up the environment
-workingDir <- "/home/luke/Documents/E_FEM_clean/tmp_output/"
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
 require(haven)
-require(reshape2)
+#require(reshape2)
 require(ggplot2)
-require(ggpubr)
+#require(ggpubr)
 #require(plyr)
 #require(data.table)
 
@@ -30,9 +30,14 @@ Setup is complete, so let's read in some of the data files.
 We are using detailed output, so need the appended data files that should be in the output folders. 
 
 ```{r}
-cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_append.dta')
+#cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_append.dta')
 #heart <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_append.dta')
-smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_append.dta')
+#smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_append.dta')
+
+path <- 'input_data/detailed_output/'
+
+cohort <- read_dta(paste0(path, 'ELSA_cohort_append.dta'))
+mup <- read_dta(paste0(path, 'ELSA_alcInt_cohort_append.dta'))
 ```
 
 Now start with the cohort file, and try to calculate a host of things like life years, dflys, and other things like that.
@@ -46,15 +51,15 @@ new.c <- cohort %>%
           group_by(hhidpn, mcrep) %>%
           arrange(year, .by_group = TRUE) %>%
           mutate(hearte_init = min(year[hearte == 1]), hearte_died = max(year[hearte == 1])) %>%
-          mutate(lunge_init = min(year[lunge == 1]), lunge_died = max(year[lunge == 1]))
+          mutate(diabe_init = min(year[diabe == 1]), diabe_died = max(year[diabe == 1]))
 
 
 
 # Replace all infinite values with 0 (infinites generated in mutate calls above)
-new$hearte_init[is.infinite(new$hearte_init)] <- 0
-new$hearte_died[is.infinite(new$hearte_died)] <- 0
-new$lunge_init[is.infinite(new$lunge_init)] <- 0
-new$lunge_died[is.infinite(new$lunge_died)] <- 0
+new.c$hearte_init[is.infinite(new.c$hearte_init)] <- 0
+new.c$hearte_died[is.infinite(new.c$hearte_died)] <- 0
+new.c$diabe_init[is.infinite(new.c$diabe_init)] <- 0
+new.c$diabe_died[is.infinite(new.c$diabe_died)] <- 0
 
 # now generate flag variable if 
 

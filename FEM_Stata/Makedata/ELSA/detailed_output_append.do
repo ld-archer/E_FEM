@@ -18,6 +18,11 @@ else if "`scen'" == "core_cohort" | "`scen'" == "core_remove_hearte_c" | "`scen'
 	local minyr 2012
 	local maxyr 2068
 }
+else if "`scen'" == "full" | "`scen'" == "alcInt_full" | "`scen'" == "cohort" | "`scen'" == "alcInt_cohort" {
+	local dir "ALCOHOL"
+	local minyr 2012
+	local maxyr 2068
+}
 
 #d ;
 local scenarios

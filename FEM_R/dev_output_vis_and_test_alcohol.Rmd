@@ -1,0 +1,557 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+# SETUP
+## Libraries
+```{r "setup", include=FALSE}
+require(tidyverse)
+require(haven)
+require(ggplot2)
+require(Hmisc)
+require(reshape2)
+
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+rm(workingDir)
+```
+
+
+## Load in data
+```{r}
+base_path <- 'output/ALCOHOL/ELSA_full/'
+lockdown_path <- 'output/ALCOHOL/ELSA_lockdown/'
+
+ldown <- read_dta(paste0(lockdown_path, 'ELSA_lockdown_summary.dta'))
+
+base <- read_dta(paste0(base_path, 'ELSA_full_summary.dta'))
+
+mup <- read_dta('output/ALCOHOL/ELSA_alcInt_full/ELSA_alcInt_full_summary.dta')
+#mup2 <- read_dta('output/ALCOHOL/ELSA_alcInt2_full/ELSA_alcInt2_full_summary.dta')
+```
+
+Now write a generic function to visualise a single continuous variable over time. Lets try with average unit consumption.
+
+# Vis single continous
+
+```{r}
+vis_continuous_output <- function(data, var, name, horizon = 50) {
+  
+  # calculate horizon
+  start.yr <- 2011
+  end.yr <- start.yr + horizon
+  
+  
+  # select column we want and rename for the visualisation
+  selected <- data %>% select(year, all_of(var)) %>%
+                        filter(year < end.yr) %>%
+                        rename(!!quo_name(name) := var)
+  # plot
+  ggplot(selected, aes_string(x = 'year', y = name)) +
+    geom_line()
+}
+
+vis_continuous_output(ldown, 'a_alcbase_all', 'alcohol_consumption')
+vis_continuous_output(ldown, 'a_alcbase_alc_ldown_treated', 'alcohol_consumption')
+```
+
+
+
+```{r}
+vis_continuous_output(base, 'a_alcbase_all', 'alcohol_consumption', horizon = 50)
+vis_continuous_output(ldown, 'a_alcbase_all', 'alcohol_consumption', horizon = 20)
+vis_continuous_output(mup, 'a_alcbase_all', 'alcohol_consumption', horizon = 50)
+```
+
+```{r}
+vis_continuous_output(ldown, 'a_alcbase_all', 'alcohol_consumption', horizon = 50)
+vis_continuous_output(ldown, 'a_alcbase_alc_ldown_treated', 'alcohol_consumption', horizon = 50)
+```
+
+
+
+Now lets do a visualisation of an ordinal variable, in this case alcstat or alcstat4.
+
+```{r}
+
+vis_ordinal_output <- function(data, key.var.list, suffix, horizon = 50) {
+  
+  # calculate horizon
+  start.yr <- 2011
+  end.yr <- start.yr + horizon
+  
+  # add prefix and suffix
+  key.var.list <- lapply(1:length(key.var.list), function(k) paste0('p_', key.var.list[[k]], suffix))
+  # unlist and get the vars for pivoting
+  first.var <- unlist(key.var.list[1])
+  last.var <- unlist(key.var.list[length(key.var.list)])
+  
+  # select vars and pivot
+  selected <- data %>% select(year, contains(all_of(unlist(key.var.list)))) %>%
+                        filter(year < end.yr) %>%
+                        pivot_longer(cols = first.var:last.var,
+                                     names_to = 'Variable',
+                                     values_to = 'Prevalence')
+  # visualise
+  ggplot(selected, aes(x = year, y = Prevalence, color = Variable)) +
+    geom_line() +
+    labs(title = 'Single Scenario Ordinal', x = 'Year')
+}
+
+```
+
+```{r}
+vis_ordinal_output(base, c('abstainer', 'moderate', 'increasingRisk', 'highRisk'), '_all', horizon = 50)
+#vis_ordinal_output(ldown, c('abstainer', 'moderate', 'increasingRisk', 'highRisk'), '_all', horizon = 50)
+vis_ordinal_output(mup, c('abstainer', 'moderate', 'increasingRisk', 'highRisk'), '_all')
+#vis_ordinal_output(mup2, c('abstainer', 'moderate', 'increasingRisk', 'highRisk'), '_all')
+```
+
+
+
+
+```{r}
+
+vis_ordinal_out_compare <- function(base, scen2, prefix, var, suffix, horizon = 50) {
+  
+  # calculate horizon
+  start.yr <- 2011
+  end.yr <- start.yr + horizon
+  
+  key.var <- paste0(prefix, var, suffix)
+  
+  base.select <- base %>% select(year, all_of(key.var)) %>%
+                            rename(Baseline = key.var) %>%
+                            filter(year < end.yr)
+  scen2.select <- scen2 %>% select(year, all_of(key.var)) %>%
+                            rename(Intervention = key.var) %>%
+                            filter(year < end.yr)
+  
+  merged <- merge(base.select, scen2.select, by = 'year')
+  
+  pivoted <- pivot_longer(data = merged,
+                          cols = Baseline:Intervention,
+                          names_to = 'Scenario',
+                          values_to = 'Proportion')
+  
+  ggplot(pivoted, aes(x = year, y = Proportion, color = Scenario)) +
+    geom_line() +
+    labs(title = var, x = 'Year')
+  
+}
+
+vis_ordinal_out_compare(base = base, scen2 = ldown, 'p_', 'abstainer', '_all', horizon = 20)
+vis_ordinal_out_compare(base = base, scen2 = ldown, 'p_', 'moderate', '_all', horizon = 20)
+vis_ordinal_out_compare(base = base, scen2 = ldown, 'p_', 'increasingRisk', '_all', horizon = 20)
+vis_ordinal_out_compare(base = base, scen2 = ldown, 'p_', 'highRisk', '_all', horizon = 20)
+
+```
+
+```{r}
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'abstainer', '_all', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'moderate', '_all', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'increasingRisk', '_all', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'highRisk', '_all', horizon = 50)
+```
+
+```{r}
+# vis_ordinal_out_compare(base = base, scen2 = mup2, 'p_', 'abstainer', '_all', horizon = 50)
+# vis_ordinal_out_compare(base = base, scen2 = mup2, 'p_', 'moderate', '_all', horizon = 50)
+# vis_ordinal_out_compare(base = base, scen2 = mup2, 'p_', 'increasingRisk', '_all', horizon = 50)
+# vis_ordinal_out_compare(base = base, scen2 = mup2, 'p_', 'highRisk', '_all', horizon = 50)
+```
+
+
+NOW LOOK AT SOME HEALTH OUTCOMES IN THE MUP CASE.
+
+```{r}
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'hearte', '_highRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'diabe', '_highRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'alzhe', '_highRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'demene', '_highRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'd_', 'age', '_highRisk', horizon = 50)
+```
+
+
+```{r}
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'hearte', '_increasingRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'diabe', '_increasingRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'alzhe', '_increasingRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'p_', 'demene', '_increasingRisk', horizon = 50)
+vis_ordinal_out_compare(base = base, scen2 = mup, 'd_', 'age', '_increasingRisk', horizon = 50)
+```
+
+
+# Internal Validation of alcbase and alcstat
+
+```{r}
+
+long <- read_dta('input_data/ELSA_long.dta')
+cv1 <- read_dta('output/ALCOHOL/ELSA_CV1/ELSA_CV1_summary.dta')
+
+```
+
+```{r}
+
+
+# 
+# 
+# var <- 'abstainer'
+# #var <- enquo(var)
+# 
+# # , abstainer, moderate, increasingRisk, highRisk
+# 
+# long.alcstat.sum <- long %>% select(year, .data[[var]]) %>%
+#                       drop_na() %>%
+#                       group_by(year, .data[[var]]) %>%
+#                       summarise(n = n())
+# 
+# long.alcstat.sum2 <- long.alcstat.sum %>%
+#                       mutate(prop = n/sum(n) * 100) %>%
+#                       filter(.data[[var]] == 1) %>%
+#                       select(-.data[[var]], -n) %>%
+#                       rename(Raw = prop)
+# 
+# cv1.alcstat.sum <- cv1 %>% select(year, p_abstainer_all) %>%
+#                             rename(Simulated = p_abstainer_all) %>%
+#                             mutate(Simulated = Simulated * 100)
+# 
+# merged <- merge(long.alcstat.sum2, cv1.alcstat.sum, by = 'year')
+# 
+# pivoted <- pivot_longer(data = merged,
+#                         cols = Raw:Simulated,
+#                         names_to = 'Data',
+#                         values_to = 'Percentage')
+# 
+# ggplot(pivoted, aes(x = year, y = Percentage, color = Data)) +
+#   geom_line()
+
+
+compare_cv_binary <- function(long, cv1, var) {
+  
+  #var <- enquo(var)
+  
+  long.sum <- long %>% select(year, .data[[var]]) %>%
+                      drop_na() %>%
+                      group_by(year, .data[[var]]) %>%
+                      summarise(n = n()) %>%
+                      mutate(prop = n/sum(n) * 100) %>%
+                      filter(.data[[var]] == 1) %>%
+                      select(-.data[[var]], -n) %>%
+                      rename(Raw = prop)
+  
+  p.var <- paste0('p_', var, '_all')
+  
+  cv1.sum <- cv1 %>% select(year, p.var) %>%
+                              rename(Simulated = p.var) %>%
+                              mutate(Simulated = Simulated * 100)
+  merged <- merge(long.sum, cv1.sum, by = 'year')
+
+  pivoted <- pivot_longer(data = merged,
+                          cols = Raw:Simulated,
+                          names_to = 'Data',
+                          values_to = 'Percentage')
+  ggplot(pivoted, aes(x = year, y = Percentage, color = Data)) +
+    geom_line() +
+    labs(title = var, x = 'Year')
+  
+  #ggsave(filename = paste(var, '_crossval.png'),
+  #       path = 'Deliverables/Conferences/NordicDemographic/cv')
+  
+}
+
+compare_cv_binary(long, cv1, var = 'abstainer')
+compare_cv_binary(long, cv1, var = 'moderate')
+compare_cv_binary(long, cv1, var = 'increasingRisk')
+compare_cv_binary(long, cv1, var = 'highRisk')
+
+```
+
+
+
+```{r}
+long.alcbase.sum <- long %>% select(year, alcbase) %>%
+                      drop_na() %>%
+                      group_by(year) %>%
+                      summarise(avg_alcbase = mean(alcbase))
+
+cv1.alcbase.sum <- cv1 %>% select(year, a_alcbase_all)
+
+compare_cv_continuous <- function(long, cv1, var) {
+  
+  long.sum <- long %>% select(year, .data[[var]]) %>%
+                      drop_na() %>%
+                      group_by(year) %>%
+                      summarise(avg_alcbase = mean(alcbase)) %>%
+                      rename(Raw = avg_alcbase)
+  
+  a.var <- paste0('a_', var, '_all')
+  
+  cv1.sum <- cv1 %>% select(year, a.var) %>%
+                              rename(Simulated = a.var)
+  
+  merged <- merge(long.sum, cv1.sum, by = 'year')
+
+  pivoted <- pivot_longer(data = merged,
+                          cols = Raw:Simulated,
+                          names_to = 'Data',
+                          values_to = 'Consumption')
+  ggplot(pivoted, aes(x = year, y = Consumption, color = Data)) +
+    geom_line() +
+    labs(title = var, x = 'Year')
+  
+  ggsave(filename = paste(var, '_crossval.png'),
+         path = 'Deliverables/Conferences/NordicDemographic/cv')
+  
+}
+
+#compare_cv_continuous(long, cv1, 'alcbase')
+```
+
+
+
+## Remove files
+```{r}
+rm(cv1, cv1.alcbase.sum, ldown, long, long.alcbase.sum)
+```
+
+
+# LYs and DFLYs
+ 
+We are going to calculate Life Years and Disability Free Life Years for the full population outputs, then we can compare the baseline case to the Minimum Unit Price intervention. We need detailed output for this, and there is a script in stata that has done this for a cohort output that I think we can learn from. Some of the key points I know about this so far:
+
+- We need to create a dummy variable for each person to determine whether they are alive at each wave. Summing this variable per person will be the LIFEYEARS
+- Following this, we can create a dummy var for each person to determine whether they have a chronic disease and another for disability. Summing these and calculating Life Years minus x will give us disease and disability free Life Years
+
+First get hold of the appended detailed output data.
+```{r}
+# path <- 'input_data/detailed_output/'
+# 
+# base <- read_dta(paste0(path, 'ELSA_cohort_append.dta'))
+# mup <- read_dta(paste0(path, 'ELSA_alcInt_cohort_append.dta'))
+```
+
+
+```{r}
+
+## Think it through - Steps:
+# 1. Add a variable for lifeyears
+  # Var needs to == 1 if not died and 0 if died
+  # With this var we can calculate the total number of lifeyears for each person
+# 2. Calculate lifeyears per person per repetition
+  # Sum lifeyears per person
+  # Divide sum lifeyears by number of reps
+
+# generate lifeyear for people who have not died
+# base$lifeyear <- 1 - base$died
+# # generate the number of repetitions for each person
+# base$nreps <- max(base$mcrep) + 1
+# # now generate the lifeyear intermediate (lifeyears per person)
+# base2 <- base %>% group_by(hhidpn, year) %>%
+#                     mutate(nreps = n()) %>%
+#                     ungroup() %>%
+#                     group_by(hhidpn) %>%
+#                     mutate(n_LY = sum(lifeyear),
+#                            mean_LY = n_LY / nreps) %>%
+#                     mutate(n_DFLY = sum(not_disabled),
+#                            mean_DFLY = n_DFLY / nreps) %>%
+#                     mutate(two_yr_LY = mean_LY * 2,
+#                            two_yr_DFLY = mean_DFLY * 2)
+#   
+# 
+# mean <- base2 %>% summarise(LY = mean(mean_LY),
+#                             DFLY = mean(mean_DFLY))
+
+
+
+                              
+
+
+
+```
+
+
+```{r}
+source('../visualisation_utilities.r')
+```
+
+# MultipleContinousOut
+
+```{r}
+vis_multi_continuous_out_compare <- function(data1, data2, prefix, var, suffix.list, horizon = 50, save = FALSE) {
+  
+  # calculate horizon
+  start.yr <- 2012
+  end.yr <- start.yr + horizon
+  
+  # add prefix and suffix
+  key.var.list <- lapply(1:length(suffix.list), function(k) paste0(prefix, '_', var, '_', suffix.list[[k]]))
+  
+  data1.select <- data1 %>% select(year, all_of(unlist(key.var.list))) %>%
+                            rename(Baseline_Moderate = key.var.list[[1]],
+                                   Baseline_Increasing = key.var.list[[2]],
+                                   Baseline_High = key.var.list[[3]]) %>%
+                          filter(year < end.yr) %>%
+                          filter(year > start.yr + 2)
+  data2.select <- data2 %>% select(year, all_of(unlist(key.var.list))) %>%
+                          rename(Intervention_Moderate = key.var.list[[1]],
+                                 Intervention_Increasing = key.var.list[[2]],
+                                 Intervention_High = key.var.list[[3]]) %>%
+                          filter(year < end.yr) %>%
+                          filter(year > start.yr + 2)
+  
+  merged <- merge(data1.select, data2.select, by = 'year')
+  
+  pivoted <- pivot_longer(data = merged,
+                          cols = Baseline_Moderate:Intervention_High,
+                          names_sep = '_',
+                          names_to = c('Scenario', 'Subgroup'),
+                          values_to = 'Proportion')
+  
+  #ggplot(pivoted, aes(x = year, colour = Scenario)) +
+  #  geom_line(aes(y = Proportion))
+  
+  p <- ggplot(pivoted, aes(x = year, y = Proportion, group = interaction(Scenario, Subgroup), colour = Subgroup, linetype = Scenario %in% c("Baseline"))) +
+        geom_line() +
+        scale_linetype_manual(values = c("TRUE" = "solid", "FALSE" = "dashed")) +
+        guides(linetype = FALSE)
+  
+  if(save) {
+    ggsave(filename = 'alcbase_comparison_multisuffix.png',
+           path = 'Deliverables/Conferences/NordicDemographic/ordinal_comparisons')
+  }
+  
+  p
+}
+```
+
+
+
+```{r}
+data1 <- base
+data2 <- mup
+prefix <- 'a'
+var <- 'alcbase'
+suffix.list <- c('moderate', 'increasingRisk', 'highRisk')
+horizon <- 50
+
+
+vis_multi_continuous_out_compare(data1, data2, prefix, var, suffix.list, horizon = 30)
+```
+
+
+
+
+
+```{r}
+data1 <- base
+data2 <- mup
+prefix <- 'a'
+var <- 'alcbase'
+suffix.list <- c('moderate', 'increasingRisk', 'highRisk')
+horizon <- 50
+
+
+# calculate horizon
+start.yr <- 2012
+end.yr <- start.yr + horizon
+
+# add prefix and suffix
+key.var.list <- lapply(1:length(suffix.list), function(k) paste0(prefix, '_', var, '_', suffix.list[[k]]))
+
+data1.select <- data1 %>% select(year, all_of(unlist(key.var.list))) %>%
+                          rename(Baseline_Moderate = key.var.list[[1]],
+                                 Baseline_Increasing = key.var.list[[2]],
+                                 Baseline_High = key.var.list[[3]]) %>%
+                        filter(year < end.yr) %>%
+                        filter(year > start.yr + 2)
+data2.select <- data2 %>% select(year, all_of(unlist(key.var.list))) %>%
+                        rename(Intervention_Moderate = key.var.list[[1]],
+                               Intervention_Increasing = key.var.list[[2]],
+                               Intervention_High = key.var.list[[3]]) %>%
+                        filter(year < end.yr) %>%
+                        filter(year > start.yr + 2)
+
+merged <- merge(data1.select, data2.select, by = 'year')
+
+pivoted <- pivot_longer(data = merged,
+                        cols = Baseline_Moderate:Intervention_High,
+                        names_sep = '_',
+                        names_to = c('Scenario', 'Subgroup'),
+                        values_to = 'Proportion')
+
+#ggplot(pivoted, aes(x = year, colour = Scenario)) +
+#  geom_line(aes(y = Proportion))
+
+ggplot(pivoted, aes(x = year, y = Proportion, group = interaction(Scenario, Subgroup), colour = Subgroup, linetype = Scenario %in% c("Baseline"))) +
+  geom_line() +
+  scale_linetype_manual(name = 'Scenario', values = c("TRUE" = "solid", "FALSE" = "dashed"), guide = 'legend', labels = c('Baseline', 'Intervention')) +
+  guides(linetype = FALSE)
+
+ggplot(pivoted, aes(x = year, y = Proportion, group = interaction(Scenario, Subgroup), colour = Subgroup, linetype = Scenario %in% c("Baseline"))) +
+  geom_line() +
+  scale_linetype_manual(name = 'Scenario', values = c("TRUE" = "solid", "FALSE" = "dashed"), guide = 'legend', labels = c('Intervention', 'Baseline'))
+
+#ggplot(pivoted, aes(x = year, y = Proportion, group =))
+```
+
+
+# Reduction
+
+Now producing graphs to show reduction in disease prevalence over time because the prevalence graphs are a bit weird.
+
+
+```{r}
+
+base1 <- base
+mup1 <- mup
+
+base2 <- base1 %>% select(year, p_hearte_all, p_hearte_moderate, p_hearte_increasingRisk, p_hearte_highRisk) %>%
+                    rename(Baseline_All = p_hearte_all, 
+                           Baseline_Moderate = p_hearte_moderate, 
+                           Baseline_IncreasingRisk = p_hearte_increasingRisk,
+                           Baseline_HighRisk = p_hearte_highRisk)
+
+mup2 <- mup1 %>% select(year, p_hearte_all, p_hearte_moderate, p_hearte_increasingRisk, p_hearte_highRisk) %>%
+                    rename(Intervention_All = p_hearte_all, 
+                           Intervention_Moderate = p_hearte_moderate, 
+                           Intervention_IncreasingRisk = p_hearte_increasingRisk,
+                           Intervention_HighRisk = p_hearte_highRisk)
+
+merged <- merge(base2, mup2, by = 'year')
+
+differenced <- merged %>% mutate(Moderate = Baseline_Moderate - Intervention_Moderate,
+                                 IncreasingRisk = Baseline_IncreasingRisk - Intervention_IncreasingRisk,
+                                 HighRisk = Baseline_HighRisk - Intervention_HighRisk)
+
+transformed <- differenced %>% group_by(year) %>%
+                                summarise(mean_Mod = mean(Moderate),
+                                          min_Mod = min(Moderate),
+                                          max_Mod = max(Moderate),
+                                          mean_Inc = mean(IncreasingRisk),
+                                          min_Inc = min(IncreasingRisk),
+                                          max_Inc = max(IncreasingRisk),
+                                          mean_High = mean(HighRisk),
+                                          min_High = min(HighRisk),
+                                          max_High = max(HighRisk),)
+
+pivoted <- pivot_longer(data = transformed,
+                        cols = mean_Mod:max_High,
+                        names_sep = '_',
+                        names_to = c('Stat', 'Subgroup'),
+                        values_to = 'Prevalence')
+
+ggplot(pivoted, aes(x = year, y = Prevalence, group = interaction(Stat, Subgroup), colour = Subgroup)) +
+  geom_line()
+
+```
+
+
+
+
+```{r}
+
+```
+

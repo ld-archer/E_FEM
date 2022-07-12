@@ -56,6 +56,7 @@ mkspline l2logbmi_l30 `log_30' l2logbmi_30p = l2logbmi
 label var l2logbmi_l30 "Splined two-year lag of BMI <= log(30)"
 label var l2logbmi_30p "Splined two-year lag of BMI > log(30)"
 
+
 * Label the variables to use for technical appendix
 label variable male "Male"
 label variable hsless "Less than secondary school"

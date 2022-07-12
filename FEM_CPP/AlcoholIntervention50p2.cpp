@@ -1,4 +1,4 @@
-#include "AlcoholIntervention50p.h"
+#include "AlcoholIntervention50p2.h"
 #include "Logger.h"
 #include "fem_exception.h"
 #include <sstream>
@@ -10,19 +10,19 @@
 
 
 
-AlcoholIntervention50p::AlcoholIntervention50p(unsigned int intervention_id, ITimeSeriesProvider* tp, IVariableProvider* vp) :
+AlcoholIntervention50p2::AlcoholIntervention50p2(unsigned int intervention_id, ITimeSeriesProvider* tp, IVariableProvider* vp) :
         Intervention(intervention_id, tp, vp)
 {
     params_map["ai50p_start_yr"] = "2012";
 }
 
-AlcoholIntervention50p::~AlcoholIntervention50p(void)
+AlcoholIntervention50p2::~AlcoholIntervention50p2(void)
 {
 }
 
 
 
-void AlcoholIntervention50p::setScenario(Scenario* scen) {
+void AlcoholIntervention50p2::setScenario(Scenario* scen) {
     Intervention::setScenario(scen);
 
     std::string param_name = "ai50p_start_yr";
@@ -38,7 +38,7 @@ void AlcoholIntervention50p::setScenario(Scenario* scen) {
 
 
 
-void AlcoholIntervention50p::intervene(PersonVector& persons, unsigned int year, Random* random)
+void AlcoholIntervention50p2::intervene(PersonVector& persons, unsigned int year, Random* random)
 {
     std::ostringstream ss;
     ss << "Running Intervention: " << name() << std::endl;
@@ -82,23 +82,21 @@ void AlcoholIntervention50p::intervene(PersonVector& persons, unsigned int year,
                     person->set(Vars::alcbase, person->get(Vars::alcbase) - 4.2);
                 }*/
 
-                person->set(Vars::mup_treated, 1);
-
                 // Changing to a percentage reduction in consumption
                 // Moderate (1.5% reduction)
                 if(person->test(Vars::moderate)) {
-                    person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.985);
-                    //person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.5);
+                    //person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.985);
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 0.1);
                 }
                 // Increasing Risk (3.9% reduction)
                 if(person->test(Vars::increasingRisk)) {
-                    person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.961);
-                    //person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.5);
+                    //person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.961);
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 0.9);
                 }
                 // High Risk (5.6% reduction)
                 if(person->test(Vars::highRisk)) {
-                    person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.944);
-                    //person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.5);
+                    //person->set(Vars::alcbase, person->get(Vars::alcbase) * 0.944);
+                    person->set(Vars::alcbase, person->get(Vars::alcbase) - 4.2);
                 }
 
                 // ACCOUNTING
@@ -190,7 +188,7 @@ void AlcoholIntervention50p::intervene(PersonVector& persons, unsigned int year,
     }
 }
 
-bool AlcoholIntervention50p::elig(Person* p) const {
+bool AlcoholIntervention50p2::elig(Person* p) const {
     // Eligible for treatment if respondent consumed alcohol in week before last survey (i.e. alcbase > 0)
     return (p->get(Vars::alcbase) > 0.0);
 }

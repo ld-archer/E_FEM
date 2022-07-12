@@ -1,0 +1,87 @@
+---
+title: "LifeYears and Disease/Disability Free LifeYears"
+output: html_notebook
+---
+
+# SETUP
+## Libraries
+```{r "setup", include=FALSE}
+require(tidyverse)
+require(haven)
+require(ggplot2)
+
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+rm(workingDir)
+```
+
+# LYs and DFLYs
+ 
+We are going to calculate Life Years and Disability Free Life Years for the full population outputs, then we can compare the baseline case to the Minimum Unit Price intervention. We need detailed output for this, and there is a script in stata that has done this for a cohort output that I think we can learn from. Some of the key points I know about this so far:
+
+- We need to create a dummy variable for each person to determine whether they are alive at each wave. Summing this variable per person will be the LIFEYEARS
+- Following this, we can create a dummy var for each person to determine whether they have a chronic disease and another for disability. Summing these and calculating Life Years minus x will give us disease and disability free Life Years
+
+First get hold of the appended detailed output data.
+```{r}
+path <- 'input_data/detailed_output/'
+
+cohort <- read_dta(paste0(path, 'ELSA_cohort_append.dta'))
+mup <- read_dta(paste0(path, 'ELSA_alcInt_cohort_append.dta'))
+```
+
+
+```{r}
+
+## Think it through - Steps:
+# 1. Add a variable for lifeyears
+  # Var needs to == 1 if not died and 0 if died
+  # With this var we can calculate the total number of lifeyears for each person
+# 2. Calculate lifeyears per person per repetition
+  # Sum lifeyears per person
+  # Divide sum lifeyears by number of reps
+
+
+coh <- cohort
+
+#base2 <- base %>% group_by(hhidpn, mcrep) %>%
+#                  mutate(smoken_init = ())
+
+# generate lifeyear for people who have not died
+coh$lifeyear <- 1 - coh$died
+# generate the number of repetitions for each person
+coh$nreps <- max(coh$mcrep) + 1
+# now generate the lifeyear intermediate (lifeyears per person)
+coh <- coh %>% 
+  group_by(hhidpn, year) %>%
+  mutate(nreps = n()) %>%
+  ungroup() %>%
+  group_by(hhidpn) %>%
+  mutate(n_LY = sum(lifeyear),
+         mean_LY = n_LY / nreps,
+         n_DFLY = sum(nodisease),
+         mean_DFLY = n_DFLY / nreps,
+         two_yr_LY = mean_LY * 2,
+         two_yr_DFLY = mean_DFLY * 2,
+         weight_intermed = sum(weight),
+         weight2 = weight_intermed / nreps)
+
+
+mean <- coh %>% summarise(LY = mean(mean_LY),
+                          DFLY = mean(mean_DFLY))
+
+
+
+                              
+
+
+
+```
+
+
+
+```{r}
+
+```
+
+
