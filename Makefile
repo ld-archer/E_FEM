@@ -105,7 +105,7 @@ $(DATADIR)/H_ELSA_g2_wv_specific.dta: $(MAKEDATA)/wave_specific_data.do $(DATADI
 $(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
 
-$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_g2.dta $(MAKEDATA)/wave_specific_data2.do
+$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_g2.dta $(MAKEDATA)/wave_specific_data2.do $(MAKEDATA)/backcast_falcbase50.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
@@ -118,12 +118,20 @@ $(DATADIR)/ELSA_transition.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_tr
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) generate_transition_pop.do
 
 
-### Imputation (Imputing educ variable in GlobalPreInitializationModule, this rule produces the oprobit model for imputing)
+### Imputation
+
+# (Imputing educ variable in GlobalPreInitializationModule, this rule produces the oprobit model for imputing)
 
 imputation: $(ESTIMATES)/ELSA/educ.ster
 
 $(ESTIMATES)/ELSA/educ.ster: $(ESTIMATION)/ELSA_estimate_missing_educ.do $(DATADIR)/ELSA_long.dta
 	cd $(ESTIMATION) && datain=$(DATADIR) $(STATA) ELSA_estimate_missing_educ.do
+
+### Backcasting
+
+# Backcasting alcohol consumption levels at age 50
+
+
 
 
 ### Producing the reweighting data (pop. projection and education)

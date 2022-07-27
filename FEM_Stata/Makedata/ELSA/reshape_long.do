@@ -545,10 +545,6 @@ replace smkstat = 3 if smoken == 1
 label define smkstat 1 "Never smoked" 2 "Former smoker" 3 "Current smoker"
 label values smkstat smkstat
 
-* Second attempt at smoking intensity variable
-* Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
-*gen heavy_smoker = (smokef >= 20) if !missing(smokef)
-
 
 *** Drinking intensity (Take 3)
 * First thing to do is impute alcbase for waves 1-3 (no data for this period. Won't be used in predictive models)
@@ -577,14 +573,15 @@ gen alcstat = .
 * Abstainer
 *replace alcstat = 1 if drink == 0 & !missing(drink)
 * Moderate drinker
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
+replace alcstat = 1 if alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase)
+replace alcstat = 1 if alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase)
+replace alcstat = . if drink == 0 & alcbase == 0 & !missing(alcbase) & !missing(drink)
 * Increasing-risk
-replace alcstat = 2 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 2 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
+replace alcstat = 2 if alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase)
+replace alcstat = 2 if alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase)
 * High-risk
-replace alcstat = 3 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
+replace alcstat = 3 if alcbase > 35 & male == 0 & !missing(alcbase)
+replace alcstat = 3 if alcbase > 50 & male == 1 & !missing(alcbase)
 
 *label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
 label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
@@ -617,7 +614,7 @@ replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)
 ** Now generate a 4 level alcstat variable to include abstainer alongside consumption groups
 * This var will be used for validation and in predictive models
 gen alcstat4 = .
-replace alcstat4 = 1 if drink == 0 & !missing(drink)
+replace alcstat4 = 1 if drink == 0 & alcbase == 0 & !missing(drink) & !missing(alcbase)
 replace alcstat4 = 2 if alcstat == 1 & !missing(alcstat)
 replace alcstat4 = 3 if alcstat == 2 & !missing(alcstat)
 replace alcstat4 = 4 if alcstat == 3 & !missing(alcstat)
@@ -733,14 +730,59 @@ gen retired = workstat == 3
 gen alc_ldown_treated = 0
 gen mup_treated = 0
 
+*** Generate the var for alcbase at 50 for those who have data at 50
+*gen falcbase50 = alcbase if age == 50 | age == 51
+gen falcbase50 = .
+gen fdrink50 = .
+
+tempfile before_backcast
+save `before_backcast'
+
+* DO THE BACKCASTING
+do backcast_falcbase50.do
+
+merge 1:m idauniq using `before_backcast'
+tab _merge
+drop _merge 
+
+* Now generate falcstat50 vars after backcasting
+gen falcstat50 = .
+* Moderate drinker
+replace falcstat50 = 2 if falcbase50 >= 0 & falcbase50 <= 15 & male == 0 & !missing(falcbase50)
+replace falcstat50 = 2 if falcbase50 >= 0 & falcbase50 <= 22 & male == 1 & !missing(falcbase50)
+replace falcstat50 = . if fdrink50 == 0 & falcbase50 == 0 & !missing(falcbase50) & !missing(fdrink50)
+* Increasing-risk
+replace falcstat50 = 3 if falcbase50 > 15 & falcbase50 <= 35 & male == 0 & !missing(falcbase50)
+replace falcstat50 = 3 if falcbase50 > 22 & falcbase50 <= 50 & male == 1 & !missing(falcbase50)
+* High-risk
+replace falcstat50 = 4 if falcbase50 > 35 & male == 0 & !missing(falcbase50)
+replace falcstat50 = 4 if falcbase50 > 50 & male == 1 & !missing(falcbase50)
+* Abstainer
+replace falcstat50 = 1 if fdrink50 == 0 & falcbase50 == 0 & !missing(fdrink50) & !missing(fdrink50)
+
+label define falcstat50 1 "Abstainer at 50" 2 "Moderate drinker at 50" 3 "Increasing-risk drinker at 50" 4 "High-risk drinker at 50"
+label values falcstat50 falcstat50
+
+** Dummys
+gen fabstainer50 = 1 if falcstat50 == 1 & !missing(falcstat50)
+replace fabstainer50 = 0 if falcstat50 != 1 & !missing(falcstat50)
+gen fmoderate50 = 1 if falcstat50 == 2 & !missing(falcstat50)
+replace fmoderate50 = 0 if falcstat50 != 2 & !missing(falcstat50)
+gen fincreasing50 = 1 if falcstat50 == 3 & !missing(falcstat50)
+replace fincreasing50 = 0 if falcstat50 != 3 & !missing(falcstat50)
+gen fhigh50 = 1 if falcstat50 == 4 & !missing(falcstat50)
+replace fhigh50 = 0 if falcstat50 != 4 & !missing(falcstat50)
+
+*** This is being replaced, so just commenting it out for now because I might come back to it
+
 *** Number of waves in ELSA (used in HealthModule.cpp to calculate groupProp and groupMC)
-bys hhidpn wave: gen elsa_waves = _N
+bys hhidpn (wave): gen elsa_waves = _N
 
 *** Length of time in alcohol consumption groups
-bys hhidpn wave: gen abstainerTime = sum(abstainer)
-bys hhidpn wave: gen moderateTime = sum(moderate)
-bys hhidpn wave: gen increasingTime = sum(increasingRisk)
-bys hhidpn wave: gen highTime = sum(highRisk)
+bys hhidpn (wave): gen abstainerTime = sum(abstainer)
+bys hhidpn (wave): gen moderateTime = sum(moderate)
+bys hhidpn (wave): gen increasingTime = sum(increasingRisk)
+bys hhidpn (wave): gen highTime = sum(highRisk)
 
 bys hhidpn: gen abstainerProp = abstainerTime / elsa_waves
 bys hhidpn: gen moderateProp = moderateTime / elsa_waves
@@ -748,13 +790,16 @@ bys hhidpn: gen increasingProp = increasingTime / elsa_waves
 bys hhidpn: gen highProp = highTime / elsa_waves
 
 gen abstainerMC = (abstainerProp > moderateProp) & (abstainerProp > increasingProp) & (abstainerProp > highProp)
-gen moderateMC = (moderateProp > abstainerProp) & (moderateProp > increasingProp) & (moderateProp > highProp)
-gen increasingMC = (increasingProp > moderateProp) & (increasingProp > abstainerProp) & (increasingProp > highProp)
-gen highMC = (highProp > moderateProp) & (highProp > increasingTime) & (highProp > abstainerProp)
+gen moderateMC = (moderateProp > abstainerProp) & (moderateProp > increasingProp) & (moderateProp > highProp) | (abstainerProp == moderateProp) & (moderateProp > increasingProp) & (moderateProp > highProp)
+gen increasingMC = (increasingProp > moderateProp) & (increasingProp > abstainerProp) & (increasingProp > highProp) | (increasingProp == moderateProp) & (increasingProp > abstainerProp) & (increasingProp > highProp) | (increasingProp == abstainerProp) & (increasingProp > moderateProp) & (increasingProp > highProp)
+gen highMC = (highProp > moderateProp) & (highProp > increasingTime) & (highProp > abstainerProp) | (highProp == abstainerProp) & (highProp > moderateProp) & (highProp > increasingTime) | (highProp == moderateProp) & (highProp > increasingTime) & (highProp > abstainerProp) | (highProp == increasingProp) & (highProp > moderateProp) & (highProp > abstainerProp)
+
+* now what if theyre all equal and above 0?
+replace highMC = 1 if (highProp == abstainerProp) & (highProp == moderateProp) & (highProp == increasingProp) & abstainerProp != 0 & moderateProp != 0 & increasingProp != 0 & highProp != 0
 
 
-** This is broken, needs another attempt
-/* ** Handle cases where two or more proportions are equal
+/* ** This is broken, needs another attempt
+** Handle cases where two or more proportions are equal
 * Just set to the highest of the two com
 replace moderateMC = 1 if (abstainerProp == moderateProp)
 replace increasingMC = 1 if (increasingProp == moderateProp) | (increasingProp == abstainerProp)
