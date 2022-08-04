@@ -158,6 +158,10 @@ r*hrtmre
 r*hrtrhme
 r*catracte
 r*osteoe
+r*drinkd_e
+r*drinkn_e
+r*drinkwn_e
+r*scako
 ;
 #d cr
 
@@ -242,6 +246,10 @@ foreach var in
     hrtrhme
     catracte
     osteoe
+    drinkd_e
+    drinkn_e
+    drinkwn_e
+    scako
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -291,6 +299,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink alcbase educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+    drinkd_e drinkn_e drinkwn_e scako
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -549,9 +558,18 @@ label values smkstat smkstat
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
 *gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 
+** Fix issues with drink variable
+* Lots of cases where drink == 0 but one of the other indicators (like alcbase) shows some alcohol intake
+* Need to relabel these records as drink == 1
+replace drink = 1 if alcbase > 0 & !missing(alcbase)
+replace drink = 1 if drinkd_e > 0 & !missing(drinkd_e)
+replace drink = 1 if drinkn_e > 0 & !missing(drinkn_e)
+replace drink = 1 if drinkwn_e > 0 & !missing(drinkwn_e)
+
 
 *** Drinking intensity (Take 3)
 * First thing to do is impute alcbase for waves 1-3 (no data for this period. Won't be used in predictive models)
+/*
 preserve
 hotdeck alcbase using hotdeck_data/alcbase_imp, store seed(`seed') keep(_all) impute(1)
 use hotdeck_data/alcbase_imp1.dta, replace
@@ -559,7 +577,8 @@ drop if wave > 3
 save hotdeck_data/alcbase_imp1.dta, replace
 restore
 drop if wave < 4
-append using hotdeck_data/alcbase_imp1.dta, keep(_all)
+append using hotdeck_data/alcbase_imp1.dta, keep(_all) 
+*/
 * This logic is based on meetings with Alan Brennan of ScHARR
 * as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
 * Grouping drinkers into 3 groups:
@@ -590,13 +609,71 @@ replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase)
 label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
 label values alcstat alcstat
 
-** Finally set up the alcbase vars for each consumption group
-*gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
-*replace alcbase_mod = 0 if alcstat !=1 & !missing(alcbase) & !missing(alcstat)
-*gen alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
-*replace alcbase_inc = 0 if alcstat !=2 & !missing(alcbase) & !missing(alcstat)
-*gen alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
-*replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)
+
+preserve
+
+keep if wave == 1 & inw == 1 | insc == 1
+*drop if insc != 1
+
+*save $outdata/ELSA_alc_test1.dta, replace
+
+*** Separate abstainers into lifetime abstainers and quitters
+** first lifetime abstainers (or at least for length of survey) means sum of drink == 0
+* First calculate the number of waves where drink == 1
+by hhidpn: egen drink_sum = total(drink) if !missing(drink)
+* Set as lifetime_abstainer if drink_sum == 0 (never drank in survey)
+generate lifetime_abstainer = 1 if drink_sum == 0 & !missing(drink_sum)
+* set as not lifetime_abstainer if drink_sum > 0 (drank in survey)
+replace lifetime_abstainer = 0 if drink_sum > 0 & !missing(drink_sum)
+* Copy the value for lifetime_abstainer across all waves (previous code only sets value for waves where drink is not missing)
+*bys hhidpn (lifetime_abstainer): replace lifetime_abstainer = lifetime_abstainer[_n-1] if missing(lifetime_abstainer)
+* Can't be a lifetime_abstainer if we only have 1 wave of data 
+bys hhidpn: replace lifetime_abstainer = 0 if _N == 1
+* Can't be a lifetime_abstainer if we only have drink information for 1 wave
+bys hhidpn: egen drink_nonmiss = count(drink)
+bys hhidpn drink: replace lifetime_abstainer = 0 if drink_nonmiss == 1 & drink == 0 & !missing(drink_nonmiss)
+drop drink_nonmiss
+
+*save $outdata/ELSA_alcohol_testing.dta, replace
+
+** now quitters
+* first work out last wave where drink == 1
+* Calculate the last wave when a respondent drank alcohol
+by hhidpn (wave), sort: egen lasttime = max(cond(drink == 1, wave, .))
+* Set as quitter if the last time they drank was not the last wave (i.e. stopped drinking during survey)
+* UNLESS all values for the following waves are missing
+by hhidpn (wave), sort: gen quitter = lasttime < _N
+* Now set to not quitter in the rows where any of the following are over 0 (drink, alcbase, moderate, increasingRisk, highRisk)
+replace quitter = 0 if drink > 0 & !missing(drink)
+replace quitter = 0 if alcbase > 0 & !missing(alcbase)
+replace quitter = 0 if alcstat > 0 & !missing(alcstat)
+
+/*
+** Now occasional drinkers (0 > scako > 5)
+* occasional drinker would answer 5-7 for scako (once or twice a month -> once or twice a year)
+* anything below zero is missing, and scako == 8 is no consumption in past year
+gen occasional_drinker = scako >= 5 & !missing(scako)
+replace occasional_drinker = 0 if scako == 8 & !missing(scako)
+replace occasional_drinker = . if scako < 0 & !missing(scako)
+
+
+** Combined variable for testing
+gen alcstat6 = .
+replace alcstat6 = 1 if lifetime_abstainer ==1 & !missing(lifetime_abstainer)
+replace alcstat6 = 2 if quitter == 1 & !missing(quitter)
+replace alcstat6 = 3 if occasional_drinker == 1 & !missing(occasional_drinker)
+replace alcstat6 = 4 if alcstat == 1 & occasional_drinker == 0 & !missing(alcstat) & !missing(occasional_drinker)
+replace alcstat6 = 5 if alcstat == 2 & !missing(alcstat)
+replace alcstat6 = 6 if alcstat == 3 & !missing(alcstat)
+*/
+tempfile alcohol_calcs
+save `alcohol_calcs'
+
+restore
+
+merge m:m idauniq using `alcohol_calcs'
+drop _merge
+
 
 gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
 replace alcbase_mod = 0 if drink == 0 & !missing(drink)
@@ -733,6 +810,7 @@ gen retired = workstat == 3
 gen alc_ldown_treated = 0
 gen mup_treated = 0
 
+/* 
 *** Number of waves in ELSA (used in HealthModule.cpp to calculate groupProp and groupMC)
 bys hhidpn wave: gen elsa_waves = _N
 
@@ -750,7 +828,8 @@ bys hhidpn: gen highProp = highTime / elsa_waves
 gen abstainerMC = (abstainerProp > moderateProp) & (abstainerProp > increasingProp) & (abstainerProp > highProp)
 gen moderateMC = (moderateProp > abstainerProp) & (moderateProp > increasingProp) & (moderateProp > highProp)
 gen increasingMC = (increasingProp > moderateProp) & (increasingProp > abstainerProp) & (increasingProp > highProp)
-gen highMC = (highProp > moderateProp) & (highProp > increasingTime) & (highProp > abstainerProp)
+gen highMC = (highProp > moderateProp) & (highProp > increasingTime) & (highProp > abstainerProp) 
+*/
 
 
 ** This is broken, needs another attempt
