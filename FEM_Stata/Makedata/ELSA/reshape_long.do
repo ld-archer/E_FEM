@@ -636,27 +636,30 @@ drop drink_nonmiss
 
 *save $outdata/ELSA_alcohol_testing.dta, replace
 
-** now quitters
-* first work out last wave where drink == 1
-* Calculate the last wave when a respondent drank alcohol
-by hhidpn (wave), sort: egen lasttime = max(cond(drink == 1, wave, .))
-* Set as quitter if the last time they drank was not the last wave (i.e. stopped drinking during survey)
-* UNLESS all values for the following waves are missing
-by hhidpn (wave), sort: gen quitter = lasttime < _N
-* Now set to not quitter in the rows where any of the following are over 0 (drink, alcbase, moderate, increasingRisk, highRisk)
-replace quitter = 0 if drink > 0 & !missing(drink)
-replace quitter = 0 if alcbase > 0 & !missing(alcbase)
-replace quitter = 0 if alcstat > 0 & !missing(alcstat)
-
-/*
 ** Now occasional drinkers (0 > scako > 5)
+** Doing occasional drinkers before quitter because it helps to simplify the quitter logic
 * occasional drinker would answer 5-7 for scako (once or twice a month -> once or twice a year)
 * anything below zero is missing, and scako == 8 is no consumption in past year
 gen occasional_drinker = scako >= 5 & !missing(scako)
 replace occasional_drinker = 0 if scako == 8 & !missing(scako)
 replace occasional_drinker = . if scako < 0 & !missing(scako)
 
+** now quitters
+* first work out last wave where drink == 1
+* Calculate the last wave when a respondent drank alcohol
+by hhidpn (wave), sort: egen lasttime = max(cond(drink == 1, wave, .))
+by hhidpn (wave), sort: egen nomore = min(cond(drink == 0, wave, .))
+* Set as quitter if the last time they drank was not the last wave (i.e. stopped drinking during survey)
+* UNLESS all values for the following waves are missing
+by hhidpn (wave), sort: gen quitter = lasttime < _N & occasional_drinker != 1
+by hhidpn (wave), sort: gen quitter2 = nomore < _N & !missing(nomore) & nomore != 1 & occasional_drinker != 1
+*by hhidpn (wave), sort: 
+* Now set to not quitter in the rows where any of the following are over 0 (drink, alcbase, moderate, increasingRisk, highRisk)
+*replace quitter = 0 if drink > 0 & !missing(drink)
+*replace quitter = 0 if alcbase > 0 & !missing(alcbase)
+*replace quitter = 0 if alcstat > 0 & !missing(alcstat)
 
+/*
 ** Combined variable for testing
 gen alcstat6 = .
 replace alcstat6 = 1 if lifetime_abstainer ==1 & !missing(lifetime_abstainer)
