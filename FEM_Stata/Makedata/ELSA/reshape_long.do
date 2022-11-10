@@ -515,6 +515,8 @@ gen lnly3 = lnly == 3
 label variable lnly1 "Loneliness level: low"
 label variable lnly2 "Loneliness level: medium"
 label variable lnly3 "Loneliness level: high"
+* Drop 4 level summary score
+drop lnlys
 
 
 ****** BMI ******
