@@ -158,6 +158,10 @@ r*hrtmre
 r*hrtrhme
 r*catracte
 r*osteoe
+r*complac
+r*leftout
+r*isolate
+r*lnlys3
 ;
 #d cr
 
@@ -242,6 +246,10 @@ foreach var in
     hrtrhme
     catracte
     osteoe
+    complac
+    leftout
+    isolate
+    lnlys3
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -276,7 +284,7 @@ drop mheight* mweight*
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
 * Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
 * This will not affect transitions, as the transition population excludes wave 1
-local wav1missvars hchole lnlys
+local wav1missvars hchole lnlys complac leftout isolate lnlys3
 foreach var in `wav1missvars' {
     gen `var'1 = .
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
@@ -291,6 +299,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink alcbase educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+    complac leftout isolate lnlys3
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -359,6 +368,10 @@ label variable hrtmre "Heart Murmur ever"
 label variable hrtrhme "Abnormal Heart Rhythm"
 label variable catracte "Cataracts ever"
 label variable osteoe "Osteoporosis ever"
+label variable complac "How often feels lack of companionship"
+label variable leftout "How often feels left out"
+label variable isolate "How often feels isolated from others"
+label variable lnlys3 "Mean revised UCLA loneliness score, continuous"
 
 
 * Use harmonised education var
@@ -492,7 +505,7 @@ label variable srh5 "Self Reported Health Status: Poor"
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
 * Potentially in the future, we could just keep the high loneliness? Try full var first
-gen lnly = round(lnlys, 1)
+gen lnly = round(lnlys3, 1)
 label variable lnly "Loneliness Score, Low to High [1, 3]"
 * Now generate some dummys
 gen lnly1 = lnly == 1
@@ -502,8 +515,7 @@ gen lnly3 = lnly == 3
 label variable lnly1 "Loneliness level: low"
 label variable lnly2 "Loneliness level: medium"
 label variable lnly3 "Loneliness level: high"
-* Drop original
-drop lnlys
+
 
 ****** BMI ******
 * Handle missing bmi values
@@ -820,6 +832,9 @@ foreach var in
     lnly1
     lnly2
     lnly3
+    complac
+    leftout
+    isolate
     alzhe
     demene
     itot
