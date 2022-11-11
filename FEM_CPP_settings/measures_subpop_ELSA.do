@@ -65,7 +65,9 @@ local measures
 					p_highRisk			n_highRisk			p_highMC
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
-					a_lnly		p_lnly1		p_lnly2 	p_lnly3
+					a_lnly		
+					p_lnly1		p_lnly2 	p_lnly3
+					n_lnly1		n_lnly2		n_lnly3
 					a_workstat
 					p_employed  i_employed  n_employed
 					p_unemployed i_unemployed n_unemployed

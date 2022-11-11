@@ -43,6 +43,15 @@ HealthModule::HealthModule(IVariableProvider* vp, ITimeSeriesProvider *tsp, Node
 	EquationParser::parseString("weight", builder), type);
 	median_pdied = new GlobalVariable("median_pdied", 1.0,"median mortality probability");
 	vp->addVariable(median_pdied);
+
+	// Set up summary measure for wealth quintile
+	//std::string name = "quantile_wealth";
+	//std::string desc = "Quantile of wealth";
+	//std::string type = "quantile";
+	//quintile_wealth = new SummaryMeasure(vp->get("atotb"));
+	//EquationParser::parseString("atotb", builder), name, desc,
+	//EquationParser::parseString("weight", builder), type);
+    //median_pdied = new GlobalVariable("median_pdied", 1.0,"median mortality probability");
 }
 
 HealthModule::~HealthModule(void)
@@ -762,6 +771,12 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     }
                 }
 			}
+
+			// Calculate wealth quintiles and assign TODO: Come back to this
+			//if(elsa_data) {
+			    // need sum of wealth first
+			    //double total_wealth = sum(atotb)
+			//}
 
 //			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correctly
 //			if (elsa_data) {

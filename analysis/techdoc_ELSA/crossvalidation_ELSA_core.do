@@ -119,6 +119,7 @@ keep
 	r*hrtrhme
 	r*catracte
 	r*osteoe
+	r*lnlys3
 ;
 #d cr
 
@@ -179,6 +180,7 @@ local shapelist
 	r@hrtrhme
 	r@catracte
 	r@osteoe
+	r@lnlys3
 ;
 #d cr
 
@@ -259,7 +261,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink alcbase smokef lnlys ltactx_e mdactx_e vgactx_e {
+foreach var in mbmi smokev smoken drink alcbase smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e {
 	ren r`var' `var'
 }
 
@@ -271,6 +273,8 @@ label var smoken "R smokes now"
 label var smokev "R smoke ever"
 label var smokef "R number cigarettes / day"
 label var drink "R drinks alcohol"
+label var lnlys "R average of 4 level loneliness summary score"
+label var lnlys3 "R average of 3 level loneliness summary score"
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -364,12 +368,12 @@ replace highRisk = 0 if drink == 0 & !missing(drink)
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
 * Potentially in the future, we could just keep the high loneliness? Try full var first
-gen lnly = round(lnlys, 1)
+gen lnly = round(lnlys3, 1)
 label variable lnly "Loneliness level [1, 3]"
 * Now generate some dummys
-*gen lnly1 = lnly == 1
-*gen lnly2 = lnly == 2
-*gen lnly3 = lnly == 3
+gen lnly1 = lnly == 1
+gen lnly2 = lnly == 2
+gen lnly3 = lnly == 3
 * Labels
 *label variable lnly1 "Loneliness level: low"
 *label variable lnly2 "Loneliness level: medium"

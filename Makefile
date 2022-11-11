@@ -17,6 +17,13 @@ PYTHON = python
 RSCRIPT = Rscript
 
 
+### Help
+
+.phony: help
+
+help: 
+	@fgrep -h "###" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/###//'
+
 ### Model runs
 
 complete: model_prep base cross-validation minimal
@@ -442,3 +449,6 @@ clean_settings:
 
 clean_hotdecks:
 	rm -f FEM_Stata/Makedata/ELSA/hotdeck_data/*.dta
+
+clean_output:
+	rm -rf output/*/*

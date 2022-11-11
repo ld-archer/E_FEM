@@ -718,6 +718,9 @@ forvalues n = 2001/2019 {
     drop c`n'cpindex
 }
 
+* FINAL finally, calculate wealth quintiles for prediction of other things (incorporate sampling weight cwtresp)
+xtile wealth_quintile = atotb[aw=cwtresp], n(5)
+
 ** Now adjust couple level (benefit unit level) data into individual values
 * To do this, multiply those in a couple by sqrt(2)
 bysort coupid wave: gen atotb_adjusted = atotb / sqrt(2) if _N == 2
