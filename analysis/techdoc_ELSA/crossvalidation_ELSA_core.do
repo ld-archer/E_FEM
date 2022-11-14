@@ -81,7 +81,6 @@ keep
 	r*mbmi
 	r*cwtresp
 	r*drink
-	r*alcbase
 	r*psyche
 	r*smokef
 	r*lnlys
@@ -145,7 +144,6 @@ local shapelist
 	r@mbmi
 	r@cwtresp
 	r@drink
-	r@alcbase
 	r@psyche
 	r@smokef
 	r@lnlys
@@ -261,7 +259,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink alcbase smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e {
+foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e {
 	ren r`var' `var'
 }
 
@@ -301,69 +299,6 @@ replace exstat3 = 0 if exstat != 3
 *gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 *drop smokef
 
-
-*** Drinking intensity variable
-*** Drinking intensity (Take 3)
-* This logic is based on meetings with Alan Brennan of ScHARR
-* as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
-* Grouping drinkers into 4 groups:
-*   Abstainers:         No alcohol
-*   Moderate:           
-*       Females:        1-14 units/week
-*       Males:          1-21 units/week
-*   Increasing-risk:    
-*       Females:        15-35 units/week
-*       Males:          22-50 units/week
-*   High-risk:          
-*       Females:        > 35 units/week
-*       Males:          > 50 units/week
-* Abstainers are handled differently from these three groups; that information is derived directly from the `drink' variable
-gen alcstat = .
-* Abstainer
-replace alcstat = . if drink == 0 & !missing(drink)
-* Moderate drinker
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
-* Increasing-risk
-replace alcstat = 2 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 2 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
-* High-risk
-replace alcstat = 3 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
-
-*label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
-label values alcstat alcstat
-
-** Now generate a 4 level alcstat variable to include abstainer alongside consumption groups
-* This var will be used for validation and in predictive models
-gen alcstat4 = .
-replace alcstat4 = 1 if drink == 0 & !missing(drink)
-replace alcstat4 = 2 if alcstat == 1 & !missing(alcstat)
-replace alcstat4 = 3 if alcstat == 2 & !missing(alcstat)
-replace alcstat4 = 4 if alcstat == 3 & !missing(alcstat)
-label define alcstat4 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label values alcstat4 alcstat4
-
-** Dummys
-gen abstainer = 1 if alcstat4 == 1 & !missing(alcstat4)
-replace abstainer = 0 if alcstat4 != 1 & !missing(alcstat4)
-gen moderate = 1 if alcstat4 == 2 & !missing(alcstat4)
-replace moderate = 0 if alcstat4 != 2 & !missing(alcstat4)
-gen increasingRisk = 1 if alcstat4 == 3 & !missing(alcstat4)
-replace increasingRisk = 0 if alcstat4 != 3 & !missing(alcstat4)
-gen highRisk = 1 if alcstat4 == 4 & !missing(alcstat4)
-replace highRisk = 0 if alcstat4 != 4 & !missing(alcstat4)
-
-label variable abstainer "Drank no alcohol in week before survey"
-label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
-label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
-label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
-
-replace moderate = 0 if drink == 0 & !missing(drink)
-replace increasingRisk = 0 if drink == 0 & !missing(drink)
-replace highRisk = 0 if drink == 0 & !missing(drink)
-
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
@@ -375,17 +310,17 @@ gen lnly1 = lnly == 1
 gen lnly2 = lnly == 2
 gen lnly3 = lnly == 3
 * Labels
-*label variable lnly1 "Loneliness level: low"
-*label variable lnly2 "Loneliness level: medium"
-*label variable lnly3 "Loneliness level: high"
+label variable lnly1 "Loneliness level: low"
+label variable lnly2 "Loneliness level: medium"
+label variable lnly3 "Loneliness level: high"
 * Drop original
-drop lnlys
+*drop lnlys3
 
 * Sampling weight
 ren rcwtresp weight
 label var weight "R cross-sectional weight"
 
-codebook weight
+*codebook weight
 
 * Interview Status
 ren riwstat iwstat
@@ -560,16 +495,10 @@ label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var smokef "No. cigarettes / day"
 label var drink "Drinks Alcohol"
-label var alcbase "Alcohol consumption in units"
-label var alcstat "Alcohol Status (1-3)"
-label var alcstat4 "4 level Alcohol Status variable (1-4)"
-label var abstainer "Abstains from alcohol consumption"
-label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
-label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
-label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
+label var lnly "R-UCLA Loneliness Score, rounded categorical [1-3]"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -583,8 +512,6 @@ label var age_yrs "Age at interview"
 label var male "Male"
 label var white "White"
 
-* Make sure true abstainers (drink == 0) also have a value for alcbase
-replace alcbase = 0 if drink == 0
 * Replace smokef to missing for people who don't smoke
 replace smokef = . if smoken == 0 & !missing(smoken)
 
@@ -600,8 +527,8 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
-local risk smoken smokev smokef bmi drink alcbase alcstat4 moderate increasingRisk highRisk
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
+local risk smoken smokev smokef bmi drink lnly
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -625,10 +552,6 @@ foreach tp in binhlth risk binecon cntecon demog {
 			else if ("`var'" == "lnly") & `wave' == 1 {
 				continue
 			}
-			else if ("`var'" == "alcbase" | "`var'" == "alcstat4" | "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
-				continue
-			}
-			*else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" | "`var'" == "alcbase") & `wave' < 3
 			
 			local select
 			if "`var'" == "itearnx" {
