@@ -270,7 +270,7 @@ simulation_core:
 
 simulation_core_complete: $(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta 
 
-$(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt
+$(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt $(ROOT)/FEM
 	$(MPI) ELSA_core_complete.settings.txt
 
 simulation_core_scen:
@@ -435,6 +435,8 @@ $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html: $(OUTDATA)/ALCOHOL/ELSA_full/ELSA_fu
 
 
 ### Housekeeping and cleaning
+
+.phony: move_results clean_all clean_logs clean_debug clean_models clean_handovers clean_settings clean_hotdecks clean_output
 
 move_results: 
 	rm -rf ../tmp_output/*
