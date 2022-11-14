@@ -498,7 +498,10 @@ label var drink "Drinks Alcohol"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
-label var lnly "R-UCLA Loneliness Score, rounded categorical [1-3]"
+label var lnly "Loneliness Score [1,3]"
+label var lnly1 "Loneliness Score: Low"
+label var lnly2 "Loneliness Score: Medium"
+label var lnly3 "Loneliness Score: High"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -511,6 +514,7 @@ label var atotbx "Total Family Wealth (thou.)"
 label var age_yrs "Age at interview"
 label var male "Male"
 label var white "White"
+
 
 * Replace smokef to missing for people who don't smoke
 replace smokef = . if smoken == 0 & !missing(smoken)
@@ -528,7 +532,7 @@ save varlabs.dta, replace
 restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
-local risk smoken smokev smokef bmi drink lnly
+local risk smoken smokev smokef bmi drink lnly lnly1 lnly2 lnly3
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -549,7 +553,7 @@ foreach tp in binhlth risk binecon cntecon demog {
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
-			else if ("`var'" == "lnly") & `wave' == 1 {
+			else if ("`var'" == "lnly" | "`var'" == "lnly1" | "`var'" == "lnly2" | "`var'" == "lnly3") & `wave' == 1 {
 				continue
 			}
 			

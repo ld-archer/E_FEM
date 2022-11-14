@@ -531,6 +531,57 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                 }
 			}
 
+			// Handle lnly transitions
+			if(elsa_data) {
+			    // lnly1 to other states
+			    if(person->get(Vars::l2lnly) == 1) {
+			        // now 2
+			        if(person->get(Vars::lnly) == 2) {
+			            person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 1);
+                        person->set(Vars::lnly3, 0);
+			        }
+                    // now 3
+                    if(person->get(Vars::lnly) == 3) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 1);
+                    }
+			    }
+
+                // lnly2 to other states
+                if(person->get(Vars::l2lnly) == 2) {
+                    // now 1
+                    if(person->get(Vars::lnly) == 1) {
+                        person->set(Vars::lnly1, 1);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 0);
+                    }
+                    // now 3
+                    if(person->get(Vars::lnly) == 3) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 1);
+                    }
+                }
+
+                // lnly3 to other states
+                if(person->get(Vars::l2lnly) == 3) {
+                    // now 1
+                    if(person->get(Vars::lnly) == 1) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 1);
+                    }
+                    // now 2
+                    if(person->get(Vars::lnly) == 2) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 1);
+                        person->set(Vars::lnly3, 0);
+                    }
+                }
+			}
+
 			// Calculate wealth quintiles and assign TODO: Come back to this
 			//if(elsa_data) {
 			    // need sum of wealth first
