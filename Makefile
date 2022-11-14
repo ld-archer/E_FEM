@@ -156,7 +156,7 @@ $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=valid $(STATA) reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=ROC $(STATA) reweight_ELSA_stock.do
 
-$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do $(MAKEDATA)/gen_bmi_repls.do $(MAKEDATA)/gen_alcohol_repl.do
+$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do $(MAKEDATA)/gen_bmi_repls.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
 
 
@@ -205,16 +205,27 @@ est_CV:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV1/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV2/models $(STATA) save_est_cpp.do
 
-est_minimal:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
+## Estimates (now adjusted targets so they're not constantly re-running)
 
-est_core:
+est_minimal: $(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est
+
+est_core: $(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est
+
+est_core_CV: $(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est
+
+$(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
 	
-est_core_CV:
+$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est:
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV1/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models $(STATA) save_est_cpp.do
 
+$(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est:
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
+
+## Summary outputs
+
+# Old targets (base and stuff, none core)
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
@@ -222,15 +233,22 @@ summary_out_CV:
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
-summary_out_minimal:
-	cd FEM_CPP_settings && measures_suffix=ELSA_minimal subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+# New targets (core and derivatives)
+summary_out_core: $(ROOT)/FEM_CPP_settings/summary_output_ELSA_core.txt
 
-summary_out_core:
+summary_out_core_CV: $(ROOT)/FEM_CPP_settings/summary_output_ELSA_core_CV2.txt
+
+summary_out_minimal: $(ROOT)/FEM_CPP_settings/summary_output_ELSA_minimal.txt
+
+$(ROOT)/FEM_CPP_settings/summary_output_ELSA_core.txt:
 	cd FEM_CPP_settings && measures_suffix=ELSA_core subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
-summary_out_core_CV:
+$(ROOT)/FEM_CPP_settings/summary_output_ELSA_core_CV2.txt:
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+
+$(ROOT)/FEM_CPP_settings/summary_output_ELSA_minimal.txt:
+	cd FEM_CPP_settings && measures_suffix=ELSA_minimal subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 
 ### FEM Simulation
@@ -250,7 +268,9 @@ simulation_minimal:
 simulation_core:
 	$(MPI) ELSA_core.settings.txt
 
-simulation_core_complete:
+simulation_core_complete: $(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta 
+
+$(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt
 	$(MPI) ELSA_core_complete.settings.txt
 
 simulation_core_scen:
@@ -304,7 +324,9 @@ roc_validation: $(MAKEDATA)/roc_validation.do
 
 detailed_appends: detailed_append_core_cohort detailed_append_core_smok
 
-detailed_append_core_CV2: $(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_summary.dta
+detailed_append_core_CV2: $(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_summary.dta $(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_append.dta
+
+$(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_append.dta:
 	cd $(MAKEDATA) && datain=$(OUTDATA)/COMPLETE dataout=$(DATADIR)/detailed_output scen=CV2 $(STATA) detailed_output_append.do
 
 detailed_append_core_cohort: $(OUTDATA)/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta
