@@ -77,12 +77,6 @@ drop cwtresp v
 if "`scen'" == "base" {
 	*saveold ../../../input_data/ELSA_stock.dta, replace v(12)
 	saveold $outdata/ELSA_repl.dta, replace v(12)
-
-	* Produce altered BMI populations for interventions
-	*do gen_bmi_repls.do
-
-	* Produce altered population for alcohol interventions
-	do gen_alcohol_repl.do
 }
 else if "`scen'" == "base_nosmoke" {
 	*saveold ../../../input_data/ELSA_stock_CV.dta, replace v(12)
