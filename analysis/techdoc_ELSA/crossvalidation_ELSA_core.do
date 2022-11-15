@@ -119,6 +119,7 @@ keep
 	r*catracte
 	r*osteoe
 	r*lnlys3
+	r*scako
 ;
 #d cr
 
@@ -179,6 +180,7 @@ local shapelist
 	r@catracte
 	r@osteoe
 	r@lnlys3
+	r@scako
 ;
 #d cr
 
@@ -259,7 +261,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e {
+foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako {
 	ren r`var' `var'
 }
 
@@ -273,6 +275,7 @@ label var smokef "R number cigarettes / day"
 label var drink "R drinks alcohol"
 label var lnlys "R average of 4 level loneliness summary score"
 label var lnlys3 "R average of 3 level loneliness summary score"
+label var scako "Alcohol consumption frequency, [1-8]"
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -323,6 +326,8 @@ ren scako alcfreq
 * Now define labels for each of the levels
 label define alcfreq 1 "Almost every day" 2 "five or six days a week" 3 "three or four days a week" 4 "once or twice a week" 5 "once or twice a month" 6 "once every couple of months" 7 "once or twice a year" 8 "not at all in the last 12 months"
 label values alcfreq alcfreq
+* handle missings
+replace alcfreq = . if alcfreq < 0
 * Create dummys for prediction and label
 gen alcfreq1 = alcfreq == 1
 gen alcfreq2 = alcfreq == 2
@@ -588,6 +593,9 @@ foreach tp in binhlth risk binecon cntecon demog {
 				continue
 			}
 			else if ("`var'" == "lnly" | "`var'" == "lnly1" | "`var'" == "lnly2" | "`var'" == "lnly3") & `wave' == 1 {
+				continue
+			}
+			else if ("`var'" == "alcfreq" | "`var'" == "alcfreq1" | "`var'" == "alcfreq2" | "`var'" == "alcfreq3" | "`var'" == "alcfreq4" | "`var'" == "alcfreq5" | "`var'" == "alcfreq6" | "`var'" == "alcfreq7" | "`var'" == "alcfreq8") & `wave' == 1 {
 				continue
 			}
 			

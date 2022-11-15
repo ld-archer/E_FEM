@@ -367,3 +367,5 @@ alcfreq5 = (alcfreq == 5) :: boolean
 alcfreq6 = (alcfreq == 6) :: boolean
 alcfreq7 = (alcfreq == 7) :: boolean
 alcfreq8 = (alcfreq == 8) :: boolean
+
+alcfreq = if(drink == 0, 8) :: short
