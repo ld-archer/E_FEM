@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 global bin_econ
 global ols logbmi atotb itot smokef
-global order adlstat iadlstat srh exstat lnly
+global order adlstat iadlstat srh exstat lnly alcfreq
 global unorder workstat mstat
 
 * Variable names
@@ -52,6 +52,7 @@ global order_names
     "Self-Reported Health Status"
     "Exercise status"
     "Rounded categorical revised UCLA loneliness score [1-3]"
+    "Alcohol consumption frequency [1-8]"
 ;
 global unorder_names
     "Work Status"
@@ -93,6 +94,8 @@ local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7
 local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
 * Loneliness
 local lvars_lnly l2lnly2 l2lnly3                                    /* Control: l2lnly1 - Loneliness score: Low*/
+* Alcohol consumption frequency
+local lvars_alcfreq alcfreq1 alcfreq2 alcfreq3 alcfreq5 alcfreq6 alcfreq7 alcfreq8 /* Control: alcfreq4 - Alcohol consumption frequency: once or twice a week*/
 
 
 
@@ -142,6 +145,7 @@ global allvars_smokef       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
 global allvars_drink        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
+global allvars_alcfreq      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
 
 
 *** Logbmi & other health

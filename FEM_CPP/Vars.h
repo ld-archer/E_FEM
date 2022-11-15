@@ -632,6 +632,32 @@ namespace Vars
         osteoe,                     ///< Osteoporosis ever
         l2osteoe,                   ///< Lag of Osteoporosis ever
         posteoe,                    ///< Probability of Osteoporosis ever
+        alcfreq,                    ///< Frequency of Alcohol consumption [1-8]
+        alcfreq1,                    ///< Frequency of Alcohol consumption: Almost every day
+        alcfreq2,                    ///< Frequency of Alcohol consumption: five or six days a week
+        alcfreq3,                    ///< Frequency of Alcohol consumption: three or four days a week
+        alcfreq4,                    ///< Frequency of Alcohol consumption: once or twice a week
+        alcfreq5,                    ///< Frequency of Alcohol consumption: once or twice a month
+        alcfreq6,                    ///< Frequency of Alcohol consumption: once every couple of months
+        alcfreq7,                    ///< Frequency of Alcohol consumption: once or twice a year
+        alcfreq8,                    ///< Frequency of Alcohol consumption: not at all in the last 12 months
+        l2alcfreq,                    ///< Lag of Frequency of Alcohol consumption [1-8]
+        l2alcfreq1,                    ///< Lag of Frequency of Alcohol consumption: Almost every day
+        l2alcfreq2,                    ///< Lag of Frequency of Alcohol consumption: five or six days a week
+        l2alcfreq3,                    ///< Lag of Frequency of Alcohol consumption: three or four days a week
+        l2alcfreq4,                    ///< Lag of Frequency of Alcohol consumption: once or twice a week
+        l2alcfreq5,                    ///< Lag of Frequency of Alcohol consumption: once or twice a month
+        l2alcfreq6,                    ///< Lag of Frequency of Alcohol consumption: once every couple of months
+        l2alcfreq7,                    ///< Lag of Frequency of Alcohol consumption: once or twice a year
+        l2alcfreq8,                    ///< Lag of Frequency of Alcohol consumption: not at all in the last 12 months
+        palcfreq1,                    ///< Probability of Frequency of Alcohol consumption: Almost every day
+        palcfreq2,                    ///< Probability of Frequency of Alcohol consumption: five or six days a week
+        palcfreq3,                    ///< Probability of Frequency of Alcohol consumption: three or four days a week
+        palcfreq4,                    ///< Probability of Frequency of Alcohol consumption: once or twice a week
+        palcfreq5,                    ///< Probability of Frequency of Alcohol consumption: once or twice a month
+        palcfreq6,                    ///< Probability of Frequency of Alcohol consumption: once every couple of months
+        palcfreq7,                    ///< Probability of Frequency of Alcohol consumption: once or twice a year
+        palcfreq8,                    ///< Probability of Frequency of Alcohol consumption: not at all in the last 12 months
 		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

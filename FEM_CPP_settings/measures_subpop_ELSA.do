@@ -56,6 +56,9 @@ local measures
 						t_atotb 	a_atotb
 						t_itot		a_itot
 					p_drink		i_drink		n_drink
+					a_alcfreq
+					p_alcfreq1 p_alcfreq2 p_alcfreq3 p_alcfreq4
+					p_alcfreq5 p_alcfreq6 p_alcfreq7 p_alcfreq8 
 					a_exstat	p_exstat1 	p_exstat2	p_exstat3
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		

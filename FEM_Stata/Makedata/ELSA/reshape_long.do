@@ -158,6 +158,7 @@ r*complac
 r*leftout
 r*isolate
 r*lnlys3
+r*scako
 ;
 #d cr
 
@@ -245,6 +246,7 @@ foreach var in
     leftout
     isolate
     lnlys3
+    scako
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -294,7 +296,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
-    complac leftout isolate lnlys3
+    complac leftout isolate lnlys3 scako
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -366,6 +368,7 @@ label variable complac "How often feels lack of companionship"
 label variable leftout "How often feels left out"
 label variable isolate "How often feels isolated from others"
 label variable lnlys3 "Mean revised UCLA loneliness score, continuous"
+label variable scako "Frequency of Alcohol consumption in past 12 months"
 
 
 * Use harmonised education var
@@ -511,6 +514,34 @@ label variable lnly2 "Loneliness level: medium"
 label variable lnly3 "Loneliness level: high"
 * Drop 4 level summary score
 drop lnlys
+
+
+****** ALCOHOL ******
+** Moving from the previous consumptiong based alcohol vars in the FEM (alcbase/alcstat) to a frequency based version (scako)
+* First rename to something more useful (like alcfreq)
+ren scako alcfreq
+* Now define labels for each of the levels
+label define alcfreq 1 "Almost every day" 2 "five or six days a week" 3 "three or four days a week" 4 "once or twice a week" 5 "once or twice a month" 6 "once every couple of months" 7 "once or twice a year" 8 "not at all in the last 12 months"
+label values alcfreq alcfreq
+* handle missings
+replace alcfreq = . if alcfreq < 0
+* Create dummys for prediction and label
+gen alcfreq1 = alcfreq == 1
+gen alcfreq2 = alcfreq == 2
+gen alcfreq3 = alcfreq == 3
+gen alcfreq4 = alcfreq == 4
+gen alcfreq5 = alcfreq == 5
+gen alcfreq6 = alcfreq == 6
+gen alcfreq7 = alcfreq == 7
+gen alcfreq8 = alcfreq == 8
+label variable alcfreq1 "Alcohol consumption: Almost every day"
+label variable alcfreq2 "Alcohol consumption: five or six days a week"
+label variable alcfreq3 "Alcohol consumption: three or four days a week"
+label variable alcfreq4 "Alcohol consumption: once or twice a week"
+label variable alcfreq5 "Alcohol consumption: once or twice a month"
+label variable alcfreq6 "Alcohol consumption: once every couple of months"
+label variable alcfreq7 "Alcohol consumption: once or twice a year"
+label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
 
 
 ****** BMI ******
@@ -736,6 +767,15 @@ foreach var in
     hrtrhme
     catracte
     osteoe
+    alcfreq
+    alcfreq1
+    alcfreq2
+    alcfreq3
+    alcfreq4
+    alcfreq5
+    alcfreq6
+    alcfreq7
+    alcfreq8
     {;
         gen l2`var' = L.`var';
     };

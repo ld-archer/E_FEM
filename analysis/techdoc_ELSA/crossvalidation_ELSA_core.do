@@ -316,6 +316,31 @@ label variable lnly3 "Loneliness level: high"
 * Drop original
 *drop lnlys3
 
+****** ALCOHOL ******
+** Moving from the previous consumptiong based alcohol vars in the FEM (alcbase/alcstat) to a frequency based version (scako)
+* First rename to something more useful (like alcfreq)
+ren scako alcfreq
+* Now define labels for each of the levels
+label define alcfreq 1 "Almost every day" 2 "five or six days a week" 3 "three or four days a week" 4 "once or twice a week" 5 "once or twice a month" 6 "once every couple of months" 7 "once or twice a year" 8 "not at all in the last 12 months"
+label values alcfreq alcfreq
+* Create dummys for prediction and label
+gen alcfreq1 = alcfreq == 1
+gen alcfreq2 = alcfreq == 2
+gen alcfreq3 = alcfreq == 3
+gen alcfreq4 = alcfreq == 4
+gen alcfreq5 = alcfreq == 5
+gen alcfreq6 = alcfreq == 6
+gen alcfreq7 = alcfreq == 7
+gen alcfreq8 = alcfreq == 8
+label variable alcfreq1 "Alcohol consumption: Almost every day"
+label variable alcfreq2 "Alcohol consumption: five or six days a week"
+label variable alcfreq3 "Alcohol consumption: three or four days a week"
+label variable alcfreq4 "Alcohol consumption: once or twice a week"
+label variable alcfreq5 "Alcohol consumption: once or twice a month"
+label variable alcfreq6 "Alcohol consumption: once every couple of months"
+label variable alcfreq7 "Alcohol consumption: once or twice a year"
+label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
+
 * Sampling weight
 ren rcwtresp weight
 label var weight "R cross-sectional weight"
@@ -495,6 +520,15 @@ label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var smokef "No. cigarettes / day"
 label var drink "Drinks Alcohol"
+label var alcfreq "Frequency of Alcohol Consumption [1-8]"
+label variable alcfreq1 "Alcohol consumption: Almost every day"
+label variable alcfreq2 "Alcohol consumption: five or six days a week"
+label variable alcfreq3 "Alcohol consumption: three or four days a week"
+label variable alcfreq4 "Alcohol consumption: once or twice a week"
+label variable alcfreq5 "Alcohol consumption: once or twice a month"
+label variable alcfreq6 "Alcohol consumption: once every couple of months"
+label variable alcfreq7 "Alcohol consumption: once or twice a year"
+label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
@@ -532,7 +566,7 @@ save varlabs.dta, replace
 restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
-local risk smoken smokev smokef bmi drink lnly lnly1 lnly2 lnly3
+local risk smoken smokev smokef bmi drink lnly lnly1 lnly2 lnly3 alcfreq alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white

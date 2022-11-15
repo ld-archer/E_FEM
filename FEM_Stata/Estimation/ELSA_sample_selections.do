@@ -25,6 +25,7 @@ local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture quest
 local select_lnly !died & wave > 1
 local select_lnly !died & wave > 1 /* Loneliness questions only asked from wave 2 onwards */
 *local select_lnlys3 !died & wave > 1 /* Loneliness questions only asked from wave 2 onwards */
+local select_alcfreq !died & drink == 1 /* Only calculate alcfreq if drink == 1*/
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
 if "`defmod'" == "CV2" {
@@ -33,8 +34,8 @@ if "`defmod'" == "CV2" {
 * varlist holds all that we estimate transition models for
 local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
-                smoke_start smoke_stop ///
-                logbmi hchole hipe heavy_smoker mstat lnly alzhe demene ///
+                smoke_start smoke_stop alcfreq ///
+                logbmi hchole hipe mstat lnly alzhe demene ///
                 workstat atotb itot smokef ///
                 angine hrtatte ///
                 conhrtfe hrtmre hrtrhme catracte osteoe lnly

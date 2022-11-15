@@ -711,6 +711,33 @@ VarsInfo::VarsInfo() {
     info[Vars::osteoe]              = VarInfo("osteoe", "Osteoporosis ever", VarTypes::Boolean);
     info[Vars::l2osteoe]            = VarInfo("l2osteoe", "Lag of Osteoporosis ever", VarTypes::Boolean);
     info[Vars::posteoe]             = VarInfo("posteoe", "Probability of Osteoporosis ever", VarTypes::Boolean);
+    info[Vars::alcfreq]             = VarInfo("alcfreq", "Frequency of Alcohol consumption in last 12 months", VarTypes::Short);
+    info[Vars::alcfreq1]             = VarInfo("alcfreq1", "Frequency of Alcohol consumption: Almost every day", VarTypes::Short, Vars::alcfreq, 1);
+    info[Vars::alcfreq2]             = VarInfo("alcfreq2", "Frequency of Alcohol consumption: five or six days a week", VarTypes::Short, Vars::alcfreq, 2);
+    info[Vars::alcfreq3]             = VarInfo("alcfreq3", "Frequency of Alcohol consumption: three or four days a week", VarTypes::Short, Vars::alcfreq, 3);
+    info[Vars::alcfreq4]             = VarInfo("alcfreq4", "Frequency of Alcohol consumption: once or twice a week", VarTypes::Short, Vars::alcfreq, 4);
+    info[Vars::alcfreq5]             = VarInfo("alcfreq5", "Frequency of Alcohol consumption: once or twice a month", VarTypes::Short, Vars::alcfreq, 5);
+    info[Vars::alcfreq6]             = VarInfo("alcfreq6", "Frequency of Alcohol consumption: once every couple of months", VarTypes::Short, Vars::alcfreq, 6);
+    info[Vars::alcfreq7]             = VarInfo("alcfreq7", "Frequency of Alcohol consumption: once or twice a year", VarTypes::Short, Vars::alcfreq, 7);
+    info[Vars::alcfreq8]             = VarInfo("alcfreq8", "Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Short, Vars::alcfreq, 8);
+    info[Vars::l2alcfreq]            = VarInfo("l2alcfreq", "Lag of Frequency of Alcohol consumption in last 12 months", VarTypes::Short);
+    info[Vars::l2alcfreq1]           = VarInfo("l2alcfreq1", "Lag of Frequency of Alcohol consumption: Almost every day", VarTypes::Short, Vars::l2alcfreq, 1);
+    info[Vars::l2alcfreq2]           = VarInfo("l2alcfreq2", "Lag of Frequency of Alcohol consumption: five or six days a week", VarTypes::Short, Vars::l2alcfreq, 2);
+    info[Vars::l2alcfreq3]           = VarInfo("l2alcfreq3", "Lag of Frequency of Alcohol consumption: three or four days a week", VarTypes::Short, Vars::l2alcfreq, 3);
+    info[Vars::l2alcfreq4]           = VarInfo("l2alcfreq4", "Lag of Frequency of Alcohol consumption: once or twice a week", VarTypes::Short, Vars::l2alcfreq, 4);
+    info[Vars::l2alcfreq5]           = VarInfo("l2alcfreq5", "Lag of Frequency of Alcohol consumption: once or twice a month", VarTypes::Short, Vars::l2alcfreq, 5);
+    info[Vars::l2alcfreq6]           = VarInfo("l2alcfreq6", "Lag of Frequency of Alcohol consumption: once every couple of months", VarTypes::Short, Vars::l2alcfreq, 6);
+    info[Vars::l2alcfreq7]           = VarInfo("l2alcfreq7", "Lag of Frequency of Alcohol consumption: once or twice a year", VarTypes::Short, Vars::l2alcfreq, 7);
+    info[Vars::l2alcfreq8]           = VarInfo("l2alcfreq8", "Lag of Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Short, Vars::l2alcfreq, 8);
+    info[Vars::palcfreq1]            = VarInfo("palcfreq1", "Probability of Frequency of Alcohol consumption: Almost every day", VarTypes::Float);
+    info[Vars::palcfreq2]            = VarInfo("palcfreq2", "Probability of Frequency of Alcohol consumption: five or six days a week", VarTypes::Float);
+    info[Vars::palcfreq3]            = VarInfo("palcfreq3", "Probability of Frequency of Alcohol consumption: three or four days a week", VarTypes::Float);
+    info[Vars::palcfreq4]            = VarInfo("palcfreq4", "Probability of Frequency of Alcohol consumption: once or twice a week", VarTypes::Float);
+    info[Vars::palcfreq5]            = VarInfo("palcfreq5", "Probability of Frequency of Alcohol consumption: once or twice a month", VarTypes::Float);
+    info[Vars::palcfreq6]            = VarInfo("palcfreq6", "Probability of Frequency of Alcohol consumption: once every couple of months", VarTypes::Float);
+    info[Vars::palcfreq7]            = VarInfo("palcfreq7", "Probability of Frequency of Alcohol consumption: once or twice a year", VarTypes::Float);
+    info[Vars::palcfreq8]            = VarInfo("palcfreq8", "Probability of Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Float);
+
 
 	
 	// This is for vars that are transitioned each wave, not just assigned
@@ -871,6 +898,15 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::hrtrhme] = Vars::l2hrtrhme;
     lag_map[Vars::catracte] = Vars::l2catracte;
     lag_map[Vars::osteoe] = Vars::l2osteoe;
+    lag_map[Vars::alcfreq] = Vars::l2alcfreq;
+    lag_map[Vars::alcfreq1] = Vars::l2alcfreq1;
+    lag_map[Vars::alcfreq2] = Vars::l2alcfreq2;
+    lag_map[Vars::alcfreq3] = Vars::l2alcfreq3;
+    lag_map[Vars::alcfreq4] = Vars::l2alcfreq4;
+    lag_map[Vars::alcfreq5] = Vars::l2alcfreq5;
+    lag_map[Vars::alcfreq6] = Vars::l2alcfreq6;
+    lag_map[Vars::alcfreq7] = Vars::l2alcfreq7;
+    lag_map[Vars::alcfreq8] = Vars::l2alcfreq8;
 
 
 
@@ -938,6 +974,14 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::employed] =      Vars::pworkstat1;
     prob_map[Vars::unemployed] =    Vars::pworkstat2;
     prob_map[Vars::retired] =       Vars::pworkstat3;
+    prob_map[Vars::alcfreq1] =      Vars::palcfreq1;
+    prob_map[Vars::alcfreq2] =      Vars::palcfreq2;
+    prob_map[Vars::alcfreq3] =      Vars::palcfreq3;
+    prob_map[Vars::alcfreq4] =      Vars::palcfreq4;
+    prob_map[Vars::alcfreq5] =      Vars::palcfreq5;
+    prob_map[Vars::alcfreq6] =      Vars::palcfreq6;
+    prob_map[Vars::alcfreq7] =      Vars::palcfreq7;
+    prob_map[Vars::alcfreq8] =      Vars::palcfreq8;
 
 
 

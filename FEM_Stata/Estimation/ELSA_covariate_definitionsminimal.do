@@ -4,7 +4,7 @@
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 global bin_econ
 global ols logbmi atotb itot smokef
-global order adlstat iadlstat exstat srh lnly
+global order adlstat iadlstat exstat srh lnly alcfreq
 global unorder mstat workstat
 
 * Variable names
@@ -56,6 +56,7 @@ global order_names
     "Exercise status"
     "Self-Reported Health Status"
     "Rounded categorical revised UCLA loneliness score [1-3]"
+    "Alcohol consumption frequency [1-8]"
 ;
 global unorder_names
     "Marriage Status"

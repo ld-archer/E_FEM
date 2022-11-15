@@ -90,36 +90,36 @@ gen medicare_elig = 0
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole smokef ///
+                        smoken hchole smokef alcfreq ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot educl ///
+                        psyche asthmae parkine itot educl alcfreq ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
                         mstat lnly alzhe demene workstat smokef ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
                         lnly alzhe demene workstat smokef ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly workstat alzhe arthre asthmae demene ///
                         parkine psyche hipe hchole smokef ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl workstat alzhe demene ///
-                        hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
