@@ -77,16 +77,6 @@ namespace Vars
 		died,                     ///< Died [0, 1], stored as Boolean
 		doctim,                   ///< Times at a doctor Approx Range [0.0182607,80.70206], stored as Double
 		drink,						///< Whether drinks alcohol at all, stored asl Boolean
-		//heavy_drinker,              ///< Heavy Drinker (>14 units/week), stored as Boolean
-		//freq_drinker,               ///< Frequent Drinker (>5 days/week), stored as Boolean
-		//problem_drinker,            ///< Problem Drinker (binge/frequent), stored as Boolean
-		//drinkd, 					///< How many days per week drinking alcohol, stored as Short
-		//drinkwn,					///< Number of drinks per week, stored as Double
-		//drinkd1,					///< Drinkd 1 [0, 1], stored as Boolean
-		//drinkd2,					///< Drinkd 2 [0, 1], stored as Boolean
-		//drinkd3,					///< Drinkd 3 [0, 1], stored as Boolean
-		//drinkd4,					///< Drinkd 4 [0, 1], stored as Boolean
-		//drinkd_stat,				///< Drinkd Status (1=0 days, 2 = 1/2 days, 3 = 3/4, 4 = 5-7)
 		educ,                     ///< Education recoded Approx Range [1, 3], stored as Short
 		educlvl,									///< Six-level education variable, all educ vars should derive from this for FAM
 		educ_t1, 									///< Transition variable from educlvl1
@@ -621,36 +611,6 @@ namespace Vars
         //heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
         //l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)
         //pheavy_smoker,              ///< Probability of Heavy Smoker (10+ cigs/day)
-        //beer,                       ///< Number of pints of beer consumed in week before survey
-        //l2beer,                     ///< Lag of Number of pints of beer consumed in week before survey
-        //wine,                       ///< Number of glasses of wine consumed in week before survey
-        //l2wine,                     ///< Lag of Number of glasses of wine consumed in week before survey
-        //spirits,                    ///< Number of measures of spirits consumed in week before survey
-        //l2spirits,                  ///< Lag of Number of measures of spirits consumed in week before survey
-        alcstat,                    ///< Alcohol consumption status [1,3]
-        l2alcstat,                  ///< Lag of Alcohol consumption status [1,3]
-        abstainer,                  ///< Abstains from alcohol consumption. (alcstat == 1)
-        l2abstainer,                ///< Lag of Abstains from alcohol consumption. (alcstat == 1)
-        moderate,                   ///< Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 1)
-        l2moderate,                 ///< Lag of Moderate alcohol consumption (Women: 1-14 u/w; Men: 1-21 u/w. (alcstat == 1)
-        increasingRisk,             ///< Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 2)
-        l2increasingRisk,           ///< Lag of Increasing-risk alcohol consumption (Women: 15-35 u/w; Men: 22-50 u/w. (alcstat == 2)
-        highRisk,                   ///< High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 3)
-        l2highRisk,                 ///< Lag of High-risk alcohol consumption (Women: 35+ u/w; Men: 50+ u/w. (alcstat == 3)
-        palcstat1,                 /// Probability of abstainer (alcstat == 1)
-        palcstat2,                  ///< Probability of moderate (alcstat == 2)
-        palcstat3,            ///< Probability of increasingRisk (alcstat == 3)
-        //palcstat4,                  ///< Probability of highRisk (alcstat == 4)
-        alcstat4,                   ///< 4 level alcstat variable
-        l2alcstat4,                 ///< Lag of 4 level alcstat variable
-        alcbase,                    ///< Alcohol consumption in units
-        l2alcbase,                  ///< Lag of Alcohol consumption in units
-        alcbase_mod,                ///< Alcohol consumption in units (moderate)
-        l2alcbase_mod,              ///< Lag of Alcohol consumption in units (moderate)
-        alcbase_inc,                ///< Alcohol consumption in units (increasingRisk)
-        l2alcbase_inc,                ///< Lag of Alcohol consumption in units (increasingRisk)
-        alcbase_high,               ///< Alcohol consumption in units (highRisk)
-        l2alcbase_high,               ///< Lag of Alcohol consumption in units (highRisk)
         angine,                     ///< Angina ever
         l2angine,                   ///< Lag of Angina ever
         pangine,                    ///< Probability of Angina ever
@@ -672,21 +632,32 @@ namespace Vars
         osteoe,                     ///< Osteoporosis ever
         l2osteoe,                   ///< Lag of Osteoporosis ever
         posteoe,                    ///< Probability of Osteoporosis ever
-        alc_ldown_treated,          ///< Received the alcohol lockdown consumption change intervention
-        mup_treated,                ///< Received the minimum unit pricing intervention treatment
-        abstainerTime,              ///< Number waves spent in abstainer alcohol consumption group
-        moderateTime,              ///< Number waves spent in moderate alcohol consumption group
-        increasingTime,            ///< Number waves spent in increasingRisk alcohol consumption group
-        highTime,                  ///< Number waves spent in highRisk alcohol consumption group
-        abstainerProp,             ///< Proportion of time spent in abstainer alcohol consumption group
-        moderateProp,              ///< Proportion of time spent in moderate alcohol consumption group
-        increasingProp,            ///< Proportion of time spent in increasingRisk alcohol consumption group
-        highProp,                  ///< Proportion of time spent in highRisk alcohol consumption group
-        abstainerMC,                ///< Most common alcohol consumption group: Abstainer
-        moderateMC,                ///< Most common alcohol consumption group: Moderate
-        increasingMC,                ///< Most common alcohol consumption group: IncreasingRisk
-        highMC,                ///< Most common alcohol consumption group: HighRisk
-        elsa_waves,             ///< Number of waves present in ELSA data
+        alcfreq,                    ///< Frequency of Alcohol consumption [1-8]
+        alcfreq1,                    ///< Frequency of Alcohol consumption: Almost every day
+        alcfreq2,                    ///< Frequency of Alcohol consumption: five or six days a week
+        alcfreq3,                    ///< Frequency of Alcohol consumption: three or four days a week
+        alcfreq4,                    ///< Frequency of Alcohol consumption: once or twice a week
+        alcfreq5,                    ///< Frequency of Alcohol consumption: once or twice a month
+        alcfreq6,                    ///< Frequency of Alcohol consumption: once every couple of months
+        alcfreq7,                    ///< Frequency of Alcohol consumption: once or twice a year
+        alcfreq8,                    ///< Frequency of Alcohol consumption: not at all in the last 12 months
+        l2alcfreq,                    ///< Lag of Frequency of Alcohol consumption [1-8]
+        l2alcfreq1,                    ///< Lag of Frequency of Alcohol consumption: Almost every day
+        l2alcfreq2,                    ///< Lag of Frequency of Alcohol consumption: five or six days a week
+        l2alcfreq3,                    ///< Lag of Frequency of Alcohol consumption: three or four days a week
+        l2alcfreq4,                    ///< Lag of Frequency of Alcohol consumption: once or twice a week
+        l2alcfreq5,                    ///< Lag of Frequency of Alcohol consumption: once or twice a month
+        l2alcfreq6,                    ///< Lag of Frequency of Alcohol consumption: once every couple of months
+        l2alcfreq7,                    ///< Lag of Frequency of Alcohol consumption: once or twice a year
+        l2alcfreq8,                    ///< Lag of Frequency of Alcohol consumption: not at all in the last 12 months
+        palcfreq1,                    ///< Probability of Frequency of Alcohol consumption: Almost every day
+        palcfreq2,                    ///< Probability of Frequency of Alcohol consumption: five or six days a week
+        palcfreq3,                    ///< Probability of Frequency of Alcohol consumption: three or four days a week
+        palcfreq4,                    ///< Probability of Frequency of Alcohol consumption: once or twice a week
+        palcfreq5,                    ///< Probability of Frequency of Alcohol consumption: once or twice a month
+        palcfreq6,                    ///< Probability of Frequency of Alcohol consumption: once every couple of months
+        palcfreq7,                    ///< Probability of Frequency of Alcohol consumption: once or twice a year
+        palcfreq8,                    ///< Probability of Frequency of Alcohol consumption: not at all in the last 12 months
 		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

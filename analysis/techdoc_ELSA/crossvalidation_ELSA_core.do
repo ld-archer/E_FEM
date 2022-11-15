@@ -81,7 +81,6 @@ keep
 	r*mbmi
 	r*cwtresp
 	r*drink
-	r*alcbase
 	r*psyche
 	r*smokef
 	r*lnlys
@@ -119,6 +118,8 @@ keep
 	r*hrtrhme
 	r*catracte
 	r*osteoe
+	r*lnlys3
+	r*scako
 ;
 #d cr
 
@@ -144,7 +145,6 @@ local shapelist
 	r@mbmi
 	r@cwtresp
 	r@drink
-	r@alcbase
 	r@psyche
 	r@smokef
 	r@lnlys
@@ -179,6 +179,8 @@ local shapelist
 	r@hrtrhme
 	r@catracte
 	r@osteoe
+	r@lnlys3
+	r@scako
 ;
 #d cr
 
@@ -259,7 +261,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink alcbase smokef lnlys ltactx_e mdactx_e vgactx_e {
+foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako {
 	ren r`var' `var'
 }
 
@@ -271,6 +273,9 @@ label var smoken "R smokes now"
 label var smokev "R smoke ever"
 label var smokef "R number cigarettes / day"
 label var drink "R drinks alcohol"
+label var lnlys "R average of 4 level loneliness summary score"
+label var lnlys3 "R average of 3 level loneliness summary score"
+label var scako "Alcohol consumption frequency, [1-8]"
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -297,91 +302,55 @@ replace exstat3 = 0 if exstat != 3
 *gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 *drop smokef
 
-
-*** Drinking intensity variable
-*** Drinking intensity (Take 3)
-* This logic is based on meetings with Alan Brennan of ScHARR
-* as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
-* Grouping drinkers into 4 groups:
-*   Abstainers:         No alcohol
-*   Moderate:           
-*       Females:        1-14 units/week
-*       Males:          1-21 units/week
-*   Increasing-risk:    
-*       Females:        15-35 units/week
-*       Males:          22-50 units/week
-*   High-risk:          
-*       Females:        > 35 units/week
-*       Males:          > 50 units/week
-* Abstainers are handled differently from these three groups; that information is derived directly from the `drink' variable
-gen alcstat = .
-* Abstainer
-replace alcstat = . if drink == 0 & !missing(drink)
-* Moderate drinker
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
-* Increasing-risk
-replace alcstat = 2 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 2 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
-* High-risk
-replace alcstat = 3 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
-
-*label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
-label values alcstat alcstat
-
-** Now generate a 4 level alcstat variable to include abstainer alongside consumption groups
-* This var will be used for validation and in predictive models
-gen alcstat4 = .
-replace alcstat4 = 1 if drink == 0 & !missing(drink)
-replace alcstat4 = 2 if alcstat == 1 & !missing(alcstat)
-replace alcstat4 = 3 if alcstat == 2 & !missing(alcstat)
-replace alcstat4 = 4 if alcstat == 3 & !missing(alcstat)
-label define alcstat4 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label values alcstat4 alcstat4
-
-** Dummys
-gen abstainer = 1 if alcstat4 == 1 & !missing(alcstat4)
-replace abstainer = 0 if alcstat4 != 1 & !missing(alcstat4)
-gen moderate = 1 if alcstat4 == 2 & !missing(alcstat4)
-replace moderate = 0 if alcstat4 != 2 & !missing(alcstat4)
-gen increasingRisk = 1 if alcstat4 == 3 & !missing(alcstat4)
-replace increasingRisk = 0 if alcstat4 != 3 & !missing(alcstat4)
-gen highRisk = 1 if alcstat4 == 4 & !missing(alcstat4)
-replace highRisk = 0 if alcstat4 != 4 & !missing(alcstat4)
-
-label variable abstainer "Drank no alcohol in week before survey"
-label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
-label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
-label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
-
-replace moderate = 0 if drink == 0 & !missing(drink)
-replace increasingRisk = 0 if drink == 0 & !missing(drink)
-replace highRisk = 0 if drink == 0 & !missing(drink)
-
 *** Loneliness
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
 * Potentially in the future, we could just keep the high loneliness? Try full var first
-gen lnly = round(lnlys, 1)
+gen lnly = round(lnlys3, 1)
 label variable lnly "Loneliness level [1, 3]"
 * Now generate some dummys
-*gen lnly1 = lnly == 1
-*gen lnly2 = lnly == 2
-*gen lnly3 = lnly == 3
+gen lnly1 = lnly == 1
+gen lnly2 = lnly == 2
+gen lnly3 = lnly == 3
 * Labels
-*label variable lnly1 "Loneliness level: low"
-*label variable lnly2 "Loneliness level: medium"
-*label variable lnly3 "Loneliness level: high"
+label variable lnly1 "Loneliness level: low"
+label variable lnly2 "Loneliness level: medium"
+label variable lnly3 "Loneliness level: high"
 * Drop original
-drop lnlys
+*drop lnlys3
+
+****** ALCOHOL ******
+** Moving from the previous consumptiong based alcohol vars in the FEM (alcbase/alcstat) to a frequency based version (scako)
+* First rename to something more useful (like alcfreq)
+ren scako alcfreq
+* Now define labels for each of the levels
+label define alcfreq 1 "Almost every day" 2 "five or six days a week" 3 "three or four days a week" 4 "once or twice a week" 5 "once or twice a month" 6 "once every couple of months" 7 "once or twice a year" 8 "not at all in the last 12 months"
+label values alcfreq alcfreq
+* handle missings
+replace alcfreq = . if alcfreq < 0
+* Create dummys for prediction and label
+gen alcfreq1 = alcfreq == 1
+gen alcfreq2 = alcfreq == 2
+gen alcfreq3 = alcfreq == 3
+gen alcfreq4 = alcfreq == 4
+gen alcfreq5 = alcfreq == 5
+gen alcfreq6 = alcfreq == 6
+gen alcfreq7 = alcfreq == 7
+gen alcfreq8 = alcfreq == 8
+label variable alcfreq1 "Alcohol consumption: Almost every day"
+label variable alcfreq2 "Alcohol consumption: five or six days a week"
+label variable alcfreq3 "Alcohol consumption: three or four days a week"
+label variable alcfreq4 "Alcohol consumption: once or twice a week"
+label variable alcfreq5 "Alcohol consumption: once or twice a month"
+label variable alcfreq6 "Alcohol consumption: once every couple of months"
+label variable alcfreq7 "Alcohol consumption: once or twice a year"
+label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
 
 * Sampling weight
 ren rcwtresp weight
 label var weight "R cross-sectional weight"
 
-codebook weight
+*codebook weight
 
 * Interview Status
 ren riwstat iwstat
@@ -556,16 +525,22 @@ label var smokev "Smoke ever"
 label var smoken "Smoke now"
 label var smokef "No. cigarettes / day"
 label var drink "Drinks Alcohol"
-label var alcbase "Alcohol consumption in units"
-label var alcstat "Alcohol Status (1-3)"
-label var alcstat4 "4 level Alcohol Status variable (1-4)"
-label var abstainer "Abstains from alcohol consumption"
-label var moderate "Moderate alcohol consumption (Female: 1-14 u/w; Male: 1-21 u/w)"
-label var increasingRisk "Increasing-risk alcohol consumption (Female: 15-35 u/w; Male: 22-50 u/w)"
-label var highRisk "High-risk alcohol consumption (Female: 36+ u/w; Male: 51+ u/w)"
+label var alcfreq "Frequency of Alcohol Consumption [1-8]"
+label variable alcfreq1 "Alcohol consumption: Almost every day"
+label variable alcfreq2 "Alcohol consumption: five or six days a week"
+label variable alcfreq3 "Alcohol consumption: three or four days a week"
+label variable alcfreq4 "Alcohol consumption: once or twice a week"
+label variable alcfreq5 "Alcohol consumption: once or twice a month"
+label variable alcfreq6 "Alcohol consumption: once every couple of months"
+label variable alcfreq7 "Alcohol consumption: once or twice a year"
+label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
 label var exstat1 "Exstat - Low activity"
 label var exstat2 "Exstat - Moderate activity"
 label var exstat3 "Exstat - High activity"
+label var lnly "Loneliness Score [1,3]"
+label var lnly1 "Loneliness Score: Low"
+label var lnly2 "Loneliness Score: Medium"
+label var lnly3 "Loneliness Score: High"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -579,8 +554,7 @@ label var age_yrs "Age at interview"
 label var male "Male"
 label var white "White"
 
-* Make sure true abstainers (drink == 0) also have a value for alcbase
-replace alcbase = 0 if drink == 0
+
 * Replace smokef to missing for people who don't smoke
 replace smokef = . if smoken == 0 & !missing(smoken)
 
@@ -596,8 +570,8 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
-local risk smoken smokev smokef bmi drink alcbase alcstat4 moderate increasingRisk highRisk
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
+local risk smoken smokev smokef bmi drink lnly lnly1 lnly2 lnly3 alcfreq alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white
@@ -618,13 +592,12 @@ foreach tp in binhlth risk binecon cntecon demog {
 			if "`var'" == "bmi" & (`wave' == 1 | `wave' == 3 | `wave' == 5 | `wave' == 7) {
 				continue
 			}
-			else if ("`var'" == "lnly") & `wave' == 1 {
+			else if ("`var'" == "lnly" | "`var'" == "lnly1" | "`var'" == "lnly2" | "`var'" == "lnly3") & `wave' == 1 {
 				continue
 			}
-			else if ("`var'" == "alcbase" | "`var'" == "alcstat4" | "`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk") & `wave' < 4 {
+			else if ("`var'" == "alcfreq" | "`var'" == "alcfreq1" | "`var'" == "alcfreq2" | "`var'" == "alcfreq3" | "`var'" == "alcfreq4" | "`var'" == "alcfreq5" | "`var'" == "alcfreq6" | "`var'" == "alcfreq7" | "`var'" == "alcfreq8") & `wave' == 1 {
 				continue
 			}
-			*else if ("`var'" == "abstainer" | "`var'" == "moderate" | "`var'" == "increasingRisk" | "`var'" == "highRisk" | "`var'" == "alcbase") & `wave' < 3
 			
 			local select
 			if "`var'" == "itearnx" {

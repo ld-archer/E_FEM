@@ -1,13 +1,14 @@
 export ROOT=$(CURDIR)
-DATADIR = $(CURDIR)/input_data
-BASEDIR = $(CURDIR)/base_data
-ESTIMATES = $(CURDIR)/FEM_Stata/Estimates
-ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
+DATADIR = $(ROOT)/input_data
+BASEDIR = $(ROOT)/base_data
+ESTIMATES = $(ROOT)/FEM_Stata/Estimates
+ESTIMATION = $(ROOT)/FEM_Stata/Estimation
 RAW_ELSA = /home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se/
-ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
-MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
-OUTDATA = $(CURDIR)/output
-R = $(CURDIR)/FEM_R
+ANALYSIS = $(ROOT)/analysis/techdoc_ELSA
+MAKEDATA = $(ROOT)/FEM_Stata/Makedata/ELSA
+OUTDATA = $(ROOT)/output
+R = $(ROOT)/FEM_R
+FEM_CPP_settings = $(ROOT)/FEM_CPP_settings
 
 include fem.makefile
 
@@ -16,6 +17,13 @@ MPI = $(CURDIR)/run.mpi.sh
 PYTHON = python
 RSCRIPT = Rscript
 
+
+### Help
+
+.phony: help
+
+help: 
+	@fgrep -h "###" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/###//'
 
 ### Model runs
 
@@ -149,7 +157,7 @@ $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_stock_CV1.dta $(DATADIR)/ELSA_stock_CV
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=valid $(STATA) reweight_ELSA_stock.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=ROC $(STATA) reweight_ELSA_stock.do
 
-$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do $(MAKEDATA)/gen_bmi_repls.do $(MAKEDATA)/gen_alcohol_repl.do
+$(DATADIR)/ELSA_repl.dta: $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/pop_projections.dta $(DATADIR)/education_data.dta $(MAKEDATA)/reweight_ELSA_repl.do $(MAKEDATA)/gen_bmi_repls.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) scen=base $(STATA) reweight_ELSA_repl.do
 
 
@@ -191,23 +199,34 @@ $(ESTIMATES)/ELSA_core/CV2/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATIO
 ### Estimates and Summary
 
 est_base:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(FEM_CPP_settings)/ELSA/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(FEM_CPP_settings)/hrs/models $(STATA) save_est_cpp.do
 
 est_CV:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV1/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV2/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV1 dataout=$(FEM_CPP_settings)/ELSA_CV1/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV2 dataout=$(FEM_CPP_settings)/ELSA_CV2/models $(STATA) save_est_cpp.do
 
-est_minimal:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
+## Estimates (now adjusted targets so they're not constantly re-running)
 
-est_core:
+est_minimal: $(FEM_CPP_settings)/ELSA_minimal/models/died.est
+
+est_core: $(FEM_CPP_settings)/ELSA_core/models/died.est
+
+est_core_CV: $(FEM_CPP_settings)/ELSA_core_CV2/models/died.est
+
+$(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est: $(ESTIMATES)/ELSA_core/died.ster
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
 	
-est_core_CV:
+$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est: $(ESTIMATES)/ELSA_core/CV1/died.ster $(ESTIMATES)/ELSA_core/CV2/died.ster
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV1/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models $(STATA) save_est_cpp.do
 
+$(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est: $(ESTIMATES)/ELSA_minimal/died.ster
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
+
+## Summary outputs
+
+# Old targets (base and stuff, none core)
 summary_out_base:
 	cd FEM_CPP_settings && measures_suffix=ELSA subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
@@ -215,15 +234,22 @@ summary_out_CV:
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
-summary_out_minimal:
-	cd FEM_CPP_settings && measures_suffix=ELSA_minimal subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+# New targets (core and derivatives)
+summary_out_core: $(FEM_CPP_settings)/summary_output_ELSA_core.txt
 
-summary_out_core:
+summary_out_core_CV: $(FEM_CPP_settings)/summary_output_ELSA_core_CV2.txt
+
+summary_out_minimal: $(FEM_CPP_settings)/summary_output_ELSA_minimal.txt
+
+$(FEM_CPP_settings)/summary_output_ELSA_core.txt: $(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est $(FEM_CPP_settings)/summary_output_gen.do $(FEM_CPP_settings)/measures_subpop_ELSA.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
-summary_out_core_CV:
+$(FEM_CPP_settings)/summary_output_ELSA_core_CV2.txt: $(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est $(FEM_CPP_settings)/summary_output_gen.do $(FEM_CPP_settings)/measures_subpop_ELSA.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
+
+$(FEM_CPP_settings)/summary_output_ELSA_minimal.txt: $(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est $(FEM_CPP_settings)/summary_output_gen.do $(FEM_CPP_settings)/measures_subpop_ELSA.do
+	cd FEM_CPP_settings && measures_suffix=ELSA_minimal subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 
 ### FEM Simulation
@@ -243,7 +269,9 @@ simulation_minimal:
 simulation_core:
 	$(MPI) ELSA_core.settings.txt
 
-simulation_core_complete:
+simulation_core_complete: $(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta 
+
+$(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt $(ROOT)/FEM
 	$(MPI) ELSA_core_complete.settings.txt
 
 simulation_core_scen:
@@ -297,7 +325,9 @@ roc_validation: $(MAKEDATA)/roc_validation.do
 
 detailed_appends: detailed_append_core_cohort detailed_append_core_smok
 
-detailed_append_core_CV2: $(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_summary.dta
+detailed_append_core_CV2: $(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_summary.dta $(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_append.dta
+
+$(OUTDATA)/COMPLETE/ELSA_CV2/ELSA_CV2_append.dta:
 	cd $(MAKEDATA) && datain=$(OUTDATA)/COMPLETE dataout=$(DATADIR)/detailed_output scen=CV2 $(STATA) detailed_output_append.do
 
 detailed_append_core_cohort: $(OUTDATA)/SCENARIO/ELSA_core_cohort/ELSA_core_cohort_summary.dta
@@ -407,6 +437,8 @@ $(R)/Alcohol/Validation_FEM_vs_HSE.nb.html: $(OUTDATA)/ALCOHOL/ELSA_full/ELSA_fu
 
 ### Housekeeping and cleaning
 
+.phony: move_results clean_all clean_logs clean_debug clean_models clean_handovers clean_settings clean_hotdecks clean_output
+
 move_results: 
 	rm -rf ../tmp_output/*
 	cp -r output/SCENARIO/* ../tmp_output/
@@ -442,3 +474,6 @@ clean_settings:
 
 clean_hotdecks:
 	rm -f FEM_Stata/Makedata/ELSA/hotdeck_data/*.dta
+
+clean_output:
+	rm -rf output/*/*

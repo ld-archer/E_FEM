@@ -3,8 +3,8 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 global bin_econ
-global ols logbmi atotb itot smokef alcbase_mod alcbase_inc alcbase_high
-global order adlstat iadlstat exstat srh alcstat
+global ols logbmi atotb itot smokef
+global order adlstat iadlstat exstat srh lnly alcfreq
 global unorder mstat workstat
 
 * Variable names
@@ -43,9 +43,6 @@ global ols_names
     "Total Family Wealth"
     "Total Couple Level Income"
     "Smoking Intensity (# cigs/day)"
-    "Alcohol consumption in units (moderate)"
-    "Alcohol consumption in units (increasingRisk)"
-    "Alcohol consumption in units (highRisk)"
 ;
 global count_names
     "Number of pints of beer consumed in week before survey"
@@ -58,6 +55,8 @@ global order_names
     "IADL status"
     "Exercise status"
     "Self-Reported Health Status"
+    "Rounded categorical revised UCLA loneliness score [1-3]"
+    "Alcohol consumption frequency [1-8]"
 ;
 global unorder_names
     "Marriage Status"

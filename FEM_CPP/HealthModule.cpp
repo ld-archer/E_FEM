@@ -43,6 +43,15 @@ HealthModule::HealthModule(IVariableProvider* vp, ITimeSeriesProvider *tsp, Node
 	EquationParser::parseString("weight", builder), type);
 	median_pdied = new GlobalVariable("median_pdied", 1.0,"median mortality probability");
 	vp->addVariable(median_pdied);
+
+	// Set up summary measure for wealth quintile
+	//std::string name = "quantile_wealth";
+	//std::string desc = "Quantile of wealth";
+	//std::string type = "quantile";
+	//quintile_wealth = new SummaryMeasure(vp->get("atotb"));
+	//EquationParser::parseString("atotb", builder), name, desc,
+	//EquationParser::parseString("weight", builder), type);
+    //median_pdied = new GlobalVariable("median_pdied", 1.0,"median mortality probability");
 }
 
 HealthModule::~HealthModule(void)
@@ -345,247 +354,6 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 				}
 			}
 
-			// Handle drinker to non-drinker and vice versa
-			if (elsa_data) {
-			    // previously drinker
-			    if(person->test(Vars::l2drink)) {
-			        // now quit
-			        if(person->get(Vars::drink) == 0) {
-			            // set alcstat to 0 as alcstat only predicted for people who drink
-			            person->set(Vars::alcstat, 0);
-			            // set alcstat4 to 1 as this is for abstainers
-			            person->set(Vars::alcstat4, 1);
-
-                        // Now also set all the dummys to zero
-			            person->set(Vars::abstainer, 1);
-                        person->set(Vars::moderate, 0);
-                        person->set(Vars::increasingRisk, 0);
-                        person->set(Vars::highRisk, 0);
-                        // When alcbase is added back we'll do accounting here
-			            person->set(Vars::alcbase, 0.0);
-                        person->set(Vars::alcbase_mod, 0.0);
-                        person->set(Vars::alcbase_inc, 0.0);
-                        person->set(Vars::alcbase_high, 0.0);
-			        }
-			    }
-			    // previously non-drinker
-			    if(person->get(Vars::l2drink) == 0) {
-			        // now drinks
-			        if(person->get(Vars::drink) == 1) {
-			            // set alcstat to moderate (1) just to give it a value before prediction
-			            //person->set(Vars::alcstat, 1);
-			            // set alcstat4 to moderate also (2) not sure if this is correct CHECK PLEASE
-			            //person->set(Vars::alcstat4, 2);
-			            // Also set dummy
-			            //person->set(Vars::moderate, 1);
-                        person->set(Vars::abstainer, 0);
-                        //person->set(Vars::increasingRisk, 0);
-                        //person->set(Vars::highRisk, 0);
-			        }
-			    }
-			    // previously drinker
-			    if(person->test(Vars::l2drink)) {
-			        // still drinks
-			        if(person->test(Vars::drink)) {
-			            person->set(Vars::abstainer, 0);
-			        }
-			    }
-
-			    // Do accounting for drink == 0 with alcstat4
-			    if(person->get(Vars::drink) == 0) {
-			        person->set(Vars::alcstat4, 1);
-			        person->set(Vars::alcstat, 0);
-			        person->set(Vars::abstainer, 1);
-                    person->set(Vars::alcbase, 0.0);
-                    person->set(Vars::alcbase_mod, 0.0);
-                    person->set(Vars::alcbase_inc, 0.0);
-                    person->set(Vars::alcbase_high, 0.0);
-			    }
-
-			    // Handle accounting for alcstat to dummys
-                // abstainer drinker
-//                if(person->get(Vars::alcstat) == 1) {
-//                    person->set(Vars::abstainer, 1);
-//                    person->set(Vars::moderate, 0);
-//                    person->set(Vars::increasingRisk, 0);
-//                    person->set(Vars::highRisk, 0);
-//                }
-			    // moderate drinker
-			    if(person->get(Vars::alcstat) == 1) {
-			        person->set(Vars::alcstat4, 2);
-                    person->set(Vars::abstainer, 0);
-			        person->set(Vars::moderate, 1);
-			        person->set(Vars::increasingRisk, 0);
-                    person->set(Vars::highRisk, 0);
-                    // set alcbase to equal the correct var
-                    person->set(Vars::alcbase, person->get(Vars::alcbase_mod));
-                    person->set(Vars::alcbase_inc, 0);
-                    person->set(Vars::alcbase_high, 0);
-			    }
-			    // increasing risk
-                if(person->get(Vars::alcstat) == 2) {
-                    person->set(Vars::alcstat4, 3);
-                    person->set(Vars::abstainer, 0);
-                    person->set(Vars::moderate, 0);
-                    person->set(Vars::increasingRisk, 1);
-                    person->set(Vars::highRisk, 0);
-                    // set alcbase to equal the correct var
-                    person->set(Vars::alcbase, person->get(Vars::alcbase_inc));
-                    //person->set(Vars::alcbase_mod, 0);
-                    person->set(Vars::alcbase_high, 0);
-                    // fill the alcbase_mod for male and female differently
-                    if(person->test(Vars::male)) {
-                        // if male
-                        person->set(Vars::alcbase_mod, 21);
-                    }
-                    if(!person->test(Vars::male)) {
-                        // if female
-                        person->set(Vars::alcbase_mod, 15);
-                    }
-                }
-                // high risk
-                if(person->get(Vars::alcstat) == 3) {
-                    person->set(Vars::alcstat4, 4);
-                    person->set(Vars::abstainer, 0);
-                    person->set(Vars::moderate, 0);
-                    person->set(Vars::increasingRisk, 0);
-                    person->set(Vars::highRisk, 1);
-                    // set alcbase to equal the correct var
-                    person->set(Vars::alcbase, person->get(Vars::alcbase_high));
-                    person->set(Vars::alcbase_inc, 0);
-                    person->set(Vars::alcbase_mod, 0);
-                    // fill the alcbase_mod and alcbase_inc for male and female differently
-                    if(person->test(Vars::male)) {
-                        // if male
-                        person->set(Vars::alcbase_mod, 21);
-                        person->set(Vars::alcbase_inc, 50);
-                    }
-                    if(!person->test(Vars::male)) {
-                        // if female
-                        person->set(Vars::alcbase_mod, 15);
-                        person->set(Vars::alcbase_inc, 35);
-                    }
-                }
-			}
-
-			// Calculating and assigning/reassigning the most common alcohol consumption group
-			if (elsa_data) {
-
-			    // add 1 to elsa_waves for calculating proportion
-			    person->set(Vars::elsa_waves, Vars::elsa_waves + 1);
-
-			    // First increment the right variable based on current consumption group
-			    if(person->test(Vars::abstainer)) {
-			        person->set(Vars::abstainerTime, Vars::abstainerTime + 1);
-			    }
-                if(person->test(Vars::moderate)) {
-                    person->set(Vars::moderateTime, Vars::moderateTime + 1);
-                }
-                if(person->test(Vars::increasingRisk)) {
-                    person->set(Vars::increasingTime, Vars::increasingTime + 1);
-                }
-                if(person->test(Vars::highRisk)) {
-                    person->set(Vars::highTime, Vars::highTime + 1);
-                }
-
-                // Now recalculate the proportion of time spent in each consumption group
-                person->set(Vars::abstainerProp, Vars::abstainerTime / Vars::elsa_waves);
-                person->set(Vars::moderateProp, Vars::moderateTime / Vars::elsa_waves);
-                person->set(Vars::increasingProp, Vars::increasingTime / Vars::elsa_waves);
-                person->set(Vars::highProp, Vars::highTime / Vars::elsa_waves);
-
-                // Finally, set the MostCommon var to 1 based on the largest proportion
-                // (and unset any other vars)
-                if(person->get(Vars::abstainerProp) > person->get(Vars::moderateProp)) {
-                    if(person->get(Vars::abstainerProp) > person->get(Vars::increasingProp)) {
-                        if(person->get(Vars::abstainerProp) > person->get(Vars::highProp)) {
-                                person->set(Vars::abstainerMC, 1);
-                                person->set(Vars::moderateMC, 0);
-                                person->set(Vars::increasingMC, 0);
-                                person->set(Vars::highMC, 0);
-                        }
-                    }
-                }
-                if(person->get(Vars::moderateProp) > person->get(Vars::abstainerProp)) {
-                    if(person->get(Vars::moderateProp) > person->get(Vars::increasingProp)) {
-                        if(person->get(Vars::moderateProp) > person->get(Vars::highProp)) {
-                            person->set(Vars::abstainerMC, 0);
-                            person->set(Vars::moderateMC, 1);
-                            person->set(Vars::increasingMC, 0);
-                            person->set(Vars::highMC, 0);
-                        }
-                    }
-                }
-                if(person->get(Vars::increasingProp) > person->get(Vars::abstainerProp)) {
-                    if(person->get(Vars::increasingProp) > person->get(Vars::moderateProp)) {
-                        if(person->get(Vars::increasingProp) > person->get(Vars::highProp)) {
-                            person->set(Vars::abstainerMC, 0);
-                            person->set(Vars::moderateMC, 0);
-                            person->set(Vars::increasingMC, 1);
-                            person->set(Vars::highMC, 0);
-                        }
-                    }
-                }
-                if(person->get(Vars::highProp) > person->get(Vars::abstainerProp)) {
-                    if(person->get(Vars::highProp) > person->get(Vars::moderateProp)) {
-                        if(person->get(Vars::highProp) > person->get(Vars::increasingProp)) {
-                            person->set(Vars::abstainerMC, 0);
-                            person->set(Vars::moderateMC, 0);
-                            person->set(Vars::increasingMC, 0);
-                            person->set(Vars::highMC, 1);
-                        }
-                    }
-                }
-
-                /*if((person->get(Vars::abstainerProp) > person->get(Vars::moderateProp)) && (person->get(Vars::abstainerProp) > person->get(Vars::increasingProp)) && (person->get(Vars::abstainerProp) > person->get(Vars::highProp)) {
-                    person->set(Vars::abstainerMC, 1);
-                    person->set(Vars::moderateMC, 0);
-                    person->set(Vars::increasingMC, 0);
-                    person->set(Vars::highMC, 0);
-                }*/
-                /*if((person->get(Vars::moderateProp) > person->get(Vars::abstainerProp)) &&
-                        (person->get(Vars::moderateProp) > person->get(Vars::increasingProp)) &&
-                        (person->get(Vars::moderateProp) > person->get(Vars::highProp)) {
-                    person->set(Vars::abstainerMC, 0);
-                    person->set(Vars::moderateMC, 1);
-                    person->set(Vars::increasingMC, 0);
-                    person->set(Vars::highMC, 0);
-                }*/
-                /*if((person->get(Vars::increasingProp) > person->get(Vars::abstainerProp)) &&
-                        (person->get(Vars::increasingProp) > person->get(Vars::moderateProp)) &&
-                        (person->get(Vars::increasingProp) > person->get(Vars::highProp)) {
-                    person->set(Vars::abstainerMC, 0);
-                    person->set(Vars::moderateMC, 0);
-                    person->set(Vars::increasingMC, 1);
-                    person->set(Vars::highMC, 0);
-                }*/
-                /*if((person->get(Vars::highProp) > person->get(Vars::abstainerProp)) &&
-                        (person->get(Vars::highProp) > person->get(Vars::moderateProp)) &&
-                        (person->get(Vars::highProp) > person->get(Vars::increasingProp)) {
-                    person->set(Vars::abstainerMC, 0);
-                    person->set(Vars::moderateMC, 0);
-                    person->set(Vars::increasingMC, 0);
-                    person->set(Vars::highMC, 1);
-                }*/
-                
-			}
-
-			/*// Need to make sure that alcbase cannot be below 0
-			// If predicted below 0 then just assume not drank alcohol
-			if (elsa_data) {
-			    // If predicted value below 0 male
-			    if(person->get(Vars::alcbase_m) < 0) {
-			        // set back to 0
-			        person->set(Vars::alcbase_m, 0.0);
-			        // also set drink to 0 (this isn't actually definite, not everyone with 0 consumption is abstainer (for now))
-			        //person->set(Vars::drink, 0.0);
-			    } // If predicted value below 0 female
-                else if(person->get(Vars::alcbase_f) < 0) {
-                    // set back to 0
-                    person->set(Vars::alcbase_f, 0.0);
-                }
-			}*/
-
 			// Handle marriage status transitions
 			if (elsa_data) {
                 // Married = mstat == 1
@@ -762,6 +530,63 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     }
                 }
 			}
+
+			// Handle lnly transitions
+			if(elsa_data) {
+			    // lnly1 to other states
+			    if(person->get(Vars::l2lnly) == 1) {
+			        // now 2
+			        if(person->get(Vars::lnly) == 2) {
+			            person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 1);
+                        person->set(Vars::lnly3, 0);
+			        }
+                    // now 3
+                    if(person->get(Vars::lnly) == 3) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 1);
+                    }
+			    }
+
+                // lnly2 to other states
+                if(person->get(Vars::l2lnly) == 2) {
+                    // now 1
+                    if(person->get(Vars::lnly) == 1) {
+                        person->set(Vars::lnly1, 1);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 0);
+                    }
+                    // now 3
+                    if(person->get(Vars::lnly) == 3) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 1);
+                    }
+                }
+
+                // lnly3 to other states
+                if(person->get(Vars::l2lnly) == 3) {
+                    // now 1
+                    if(person->get(Vars::lnly) == 1) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 0);
+                        person->set(Vars::lnly3, 1);
+                    }
+                    // now 2
+                    if(person->get(Vars::lnly) == 2) {
+                        person->set(Vars::lnly1, 0);
+                        person->set(Vars::lnly2, 1);
+                        person->set(Vars::lnly3, 0);
+                    }
+                }
+			}
+
+			// Calculate wealth quintiles and assign TODO: Come back to this
+			//if(elsa_data) {
+			    // need sum of wealth first
+			    //double total_wealth = sum(atotb)
+			//}
 
 //			// If someone develops a difficulty in ADL (or more than 1), need to make sure anyadl gets updated correctly
 //			if (elsa_data) {

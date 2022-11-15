@@ -90,40 +90,36 @@ gen medicare_elig = 0
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole alcbase alcstat alcstat4 smokef abstainer moderate increasingRisk highRisk ///
+                        smoken hchole smokef alcfreq ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot educl alcstat alcstat4 ///
-                        abstainer moderate increasingRisk highRisk ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        psyche asthmae parkine itot educl alcfreq ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        mstat lnly alzhe demene workstat alcstat ///
-                        abstainer moderate increasingRisk highRisk ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        mstat lnly alzhe demene workstat smokef ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        lnly alzhe demene workstat smokef alcstat alcstat4 ///
-                        abstainer moderate increasingRisk highRisk ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        lnly alzhe demene workstat smokef ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly workstat alzhe arthre asthmae demene ///
-                        parkine psyche hipe hchole smokef alcstat alcstat4 ///
-                        abstainer moderate increasingRisk highRisk ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        parkine psyche hipe hchole smokef ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl workstat alzhe demene ///
-                        hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -147,8 +143,8 @@ replace srh5 = 0 if srh3 == 1
 foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
                         srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed unemployed ///
-                        retired alcbase alcstat alcstat4 abstainer moderate increasingRisk highRisk ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe {
+                        retired ///
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
@@ -177,10 +173,14 @@ if "`scen'" == "valid" {
     replace white = 1 if missing(white)
 }
 
-* Handle missing alcbase values within categories
-*replace alcbase_mod = 0 if missing(alcbase_mod) & moderate != 1
-*replace alcbase_inc = 0 if missing(alcbase_inc) & increasingRisk != 1
-*replace alcbase_high = 0 if missing(alcbase_high) & highRisk != 1
+** Handle missing lnly values if STILL missing after hotdecking and assigning lag to current and vice versa
+* Not hotdecking or assigning properly, or something else wrong with minimal population
+* Almost 50% of ELSA_long are lnly == 1, so seems fair to assign this
+*replace lnly = 1 if missing(lnly)
+*replace l2lnly = lnly if missing(l2lnly)
+*replace lnly1 = 1 if lnly == 1
+*replace l2lnly1 = 1 if l2lnly == 1
+** PROBLEM WASNT WITH MISSING DATA, just missing model definition in covariate definitions for minimal
 
 * New chronic disease vars
 replace angine = 0 if missing(angine)
@@ -262,19 +262,3 @@ replace l2smkstat = 2 if missing(l2smkstat)
 gen work = employed if !missing(employed)
 gen l2work = l2employed if !missing(l2employed)
 
-
-
-* Impute some missing alcbase stuff
-replace alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_mod = 0 if drink == 0 & !missing(drink)
-replace alcbase_mod = 15 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 0
-replace alcbase_mod = 21 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 1
-
-replace alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_inc = 0 if alcstat == 1 & !missing(alcstat)
-replace alcbase_inc = 0 if drink == 0 & !missing(drink)
-replace alcbase_inc = 35 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 0
-replace alcbase_inc = 50 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 1
-
-replace alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)

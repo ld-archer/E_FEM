@@ -22,9 +22,6 @@ local num_imputations 3
 local num_knn 5
 
 
-*** Impute information for the infrequent drinkers 
-*merge 1:1 idauniq using $outdata/alcbase_imputed.dta, update
-
 /* Variables from Harmonized ELSA:
 
 Section A: Demographics, Identifiers, and Weights::
@@ -134,7 +131,6 @@ r*vgactx_e
 r*mdactx_e
 r*ltactx_e
 r*drink
-r*alcbase
 r*mstat
 r*hchole
 r*hipe
@@ -158,6 +154,11 @@ r*hrtmre
 r*hrtrhme
 r*catracte
 r*osteoe
+r*complac
+r*leftout
+r*isolate
+r*lnlys3
+r*scako
 ;
 #d cr
 
@@ -218,7 +219,6 @@ foreach var in
     mdactx_e
     ltactx_e
     drink
-    alcbase
     mstat
     hchole
     hipe
@@ -242,6 +242,11 @@ foreach var in
     hrtrhme
     catracte
     osteoe
+    complac
+    leftout
+    isolate
+    lnlys3
+    scako
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -276,7 +281,7 @@ drop mheight* mweight*
 * Any variable missing wave 1 causes trouble for the minimal population, as it is derived from people in wave 1
 * Therefore, for only these specific variables we will impute by copying the wave 2 values onto wave 1
 * This will not affect transitions, as the transition population excludes wave 1
-local wav1missvars hchole lnlys
+local wav1missvars hchole lnlys complac leftout isolate lnlys3 scako
 foreach var in `wav1missvars' {
     gen `var'1 = .
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
@@ -289,8 +294,9 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre mbmi smokev smoken hhid inw insc inn
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
-    drink alcbase educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
+    drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+    complac leftout isolate lnlys3 scako
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -350,7 +356,6 @@ label variable demene "Dementia Ever"
 label variable itot "Total Family Income"
 label variable atotb "Total Family Wealth"
 label variable lbrf "Labour Force Status"
-label variable alcbase "Units of alcohol consumed in previous week"
 label variable GOR "Government Office Region"
 label variable angine "Angina ever"
 label variable hrtatte "Heart Attack ever"
@@ -359,6 +364,11 @@ label variable hrtmre "Heart Murmur ever"
 label variable hrtrhme "Abnormal Heart Rhythm"
 label variable catracte "Cataracts ever"
 label variable osteoe "Osteoporosis ever"
+label variable complac "How often feels lack of companionship"
+label variable leftout "How often feels left out"
+label variable isolate "How often feels isolated from others"
+label variable lnlys3 "Mean revised UCLA loneliness score, continuous"
+label variable scako "Frequency of Alcohol consumption in past 12 months"
 
 
 * Use harmonised education var
@@ -492,7 +502,7 @@ label variable srh5 "Self Reported Health Status: Poor"
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
 * Potentially in the future, we could just keep the high loneliness? Try full var first
-gen lnly = round(lnlys, 1)
+gen lnly = round(lnlys3, 1)
 label variable lnly "Loneliness Score, Low to High [1, 3]"
 * Now generate some dummys
 gen lnly1 = lnly == 1
@@ -502,8 +512,37 @@ gen lnly3 = lnly == 3
 label variable lnly1 "Loneliness level: low"
 label variable lnly2 "Loneliness level: medium"
 label variable lnly3 "Loneliness level: high"
-* Drop original
+* Drop 4 level summary score
 drop lnlys
+
+
+****** ALCOHOL ******
+** Moving from the previous consumptiong based alcohol vars in the FEM (alcbase/alcstat) to a frequency based version (scako)
+* First rename to something more useful (like alcfreq)
+ren scako alcfreq
+* Now define labels for each of the levels
+label define alcfreq 1 "Almost every day" 2 "five or six days a week" 3 "three or four days a week" 4 "once or twice a week" 5 "once or twice a month" 6 "once every couple of months" 7 "once or twice a year" 8 "not at all in the last 12 months"
+label values alcfreq alcfreq
+* handle missings
+replace alcfreq = . if alcfreq < 0
+* Create dummys for prediction and label
+gen alcfreq1 = alcfreq == 1
+gen alcfreq2 = alcfreq == 2
+gen alcfreq3 = alcfreq == 3
+gen alcfreq4 = alcfreq == 4
+gen alcfreq5 = alcfreq == 5
+gen alcfreq6 = alcfreq == 6
+gen alcfreq7 = alcfreq == 7
+gen alcfreq8 = alcfreq == 8
+label variable alcfreq1 "Alcohol consumption: Almost every day"
+label variable alcfreq2 "Alcohol consumption: five or six days a week"
+label variable alcfreq3 "Alcohol consumption: three or four days a week"
+label variable alcfreq4 "Alcohol consumption: once or twice a week"
+label variable alcfreq5 "Alcohol consumption: once or twice a month"
+label variable alcfreq6 "Alcohol consumption: once every couple of months"
+label variable alcfreq7 "Alcohol consumption: once or twice a year"
+label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
+
 
 ****** BMI ******
 * Handle missing bmi values
@@ -548,97 +587,6 @@ label values smkstat smkstat
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
 *gen heavy_smoker = (smokef >= 20) if !missing(smokef)
-
-
-*** Drinking intensity (Take 3)
-* First thing to do is impute alcbase for waves 1-3 (no data for this period. Won't be used in predictive models)
-preserve
-hotdeck alcbase using hotdeck_data/alcbase_imp, store seed(`seed') keep(_all) impute(1)
-use hotdeck_data/alcbase_imp1.dta, replace
-drop if wave > 3
-save hotdeck_data/alcbase_imp1.dta, replace
-restore
-drop if wave < 4
-append using hotdeck_data/alcbase_imp1.dta, keep(_all)
-* This logic is based on meetings with Alan Brennan of ScHARR
-* as well as his NIHR report (https://www.journalslibrary.nihr.ac.uk/phr/phr09040/#/abstract)
-* Grouping drinkers into 3 groups:
-*   Moderate:           
-*       Females:        1-15 units/week
-*       Males:          1-21 units/week
-*   Increasing-risk:    
-*       Females:        15-35 units/week
-*       Males:          21-50 units/week
-*   High-risk:          
-*       Females:        > 35 units/week
-*       Males:          > 50 units/week
-* Abstainers are handled differently from these three groups; that information is derived directly from the `drink' variable
-gen alcstat = .
-* Abstainer
-*replace alcstat = 1 if drink == 0 & !missing(drink)
-* Moderate drinker
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 14 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 1 if drink == 1 & alcbase >= 0 & alcbase <= 21 & male == 1 & !missing(alcbase) & !missing(drink)
-* Increasing-risk
-replace alcstat = 2 if drink == 1 & alcbase >= 15 & alcbase <= 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 2 if drink == 1 & alcbase >= 22 & alcbase <= 50 & male == 1 & !missing(alcbase) & !missing(drink)
-* High-risk
-replace alcstat = 3 if drink == 1 & alcbase > 35 & male == 0 & !missing(alcbase) & !missing(drink)
-replace alcstat = 3 if drink == 1 & alcbase > 50 & male == 1 & !missing(alcbase) & !missing(drink)
-
-*label define alcstat 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label define alcstat 1 "Moderate drinker" 2 "Increasing-risk drinker" 3 "High-risk drinker"
-label values alcstat alcstat
-
-** Finally set up the alcbase vars for each consumption group
-*gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
-*replace alcbase_mod = 0 if alcstat !=1 & !missing(alcbase) & !missing(alcstat)
-*gen alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
-*replace alcbase_inc = 0 if alcstat !=2 & !missing(alcbase) & !missing(alcstat)
-*gen alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
-*replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)
-
-gen alcbase_mod = alcbase if alcstat == 1 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_mod = 0 if drink == 0 & !missing(drink)
-replace alcbase_mod = 15 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 0
-replace alcbase_mod = 21 if alcstat > 1 & !missing(alcbase) & !missing(alcstat) & male == 1
-*replace alcbase_mod = 21 if alcstat > 1 & !missing(alcbase) & !missing(alcstat)
-
-gen alcbase_inc = alcbase if alcstat == 2 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_inc = 0 if alcstat == 1 & !missing(alcstat)
-replace alcbase_inc = 0 if drink == 0 & !missing(drink)
-replace alcbase_inc = 35 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 0
-replace alcbase_inc = 50 if alcstat > 2 & !missing(alcbase) & !missing(alcstat) & male == 1
-*replace alcbase_inc = 50 if alcstat > 2 & !missing(alcbase) & !missing(alcstat)
-
-gen alcbase_high = alcbase if alcstat == 3 & !missing(alcbase) & !missing(alcstat)
-replace alcbase_high = 0 if alcstat !=3 & !missing(alcbase) & !missing(alcstat)
-
-** Now generate a 4 level alcstat variable to include abstainer alongside consumption groups
-* This var will be used for validation and in predictive models
-gen alcstat4 = .
-replace alcstat4 = 1 if drink == 0 & !missing(drink)
-replace alcstat4 = 2 if alcstat == 1 & !missing(alcstat)
-replace alcstat4 = 3 if alcstat == 2 & !missing(alcstat)
-replace alcstat4 = 4 if alcstat == 3 & !missing(alcstat)
-label define alcstat4 1 "Abstainer" 2 "Moderate drinker" 3 "Increasing-risk drinker" 4 "High-risk drinker"
-label values alcstat4 alcstat4
-
-** Dummys
-gen abstainer = 1 if alcstat4 == 1 & !missing(alcstat4)
-replace abstainer = 0 if alcstat4 != 1 & !missing(alcstat4)
-gen moderate = 1 if alcstat4 == 2 & !missing(alcstat4)
-replace moderate = 0 if alcstat4 != 2 & !missing(alcstat4)
-gen increasingRisk = 1 if alcstat4 == 3 & !missing(alcstat4)
-replace increasingRisk = 0 if alcstat4 != 3 & !missing(alcstat4)
-gen highRisk = 1 if alcstat4 == 4 & !missing(alcstat4)
-replace highRisk = 0 if alcstat4 != 4 & !missing(alcstat4)
-
-label variable abstainer "Drank no alcohol in week before survey"
-label variable moderate "Moderate alcohol intake. Females: 1-14 units, Males: 1-21 units"
-label variable increasingRisk "Increasing-risk alcohol intake. Females: 15-35 units, Males: 22-50 units"
-label variable highRisk "High-risk alcohol intake. Females: 35+ units, Males: 50+ units"
-
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -704,6 +652,9 @@ forvalues n = 2001/2019 {
     drop c`n'cpindex
 }
 
+* FINAL finally, calculate wealth quintiles for prediction of other things (incorporate sampling weight cwtresp)
+xtile wealth_quintile = atotb[aw=cwtresp], n(5)
+
 ** Now adjust couple level (benefit unit level) data into individual values
 * To do this, multiply those in a couple by sqrt(2)
 bysort coupid wave: gen atotb_adjusted = atotb / sqrt(2) if _N == 2
@@ -728,29 +679,6 @@ recode lbrf (1/2 4= 1 Employed) ///
 gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
-
-*** Alcohol Lockdown Treatment var & MUP var
-gen alc_ldown_treated = 0
-gen mup_treated = 0
-
-*** Number of waves in ELSA (used in HealthModule.cpp to calculate groupProp and groupMC)
-bys hhidpn wave: gen elsa_waves = _N
-
-*** Length of time in alcohol consumption groups
-bys hhidpn wave: gen abstainerTime = sum(abstainer)
-bys hhidpn wave: gen moderateTime = sum(moderate)
-bys hhidpn wave: gen increasingTime = sum(increasingRisk)
-bys hhidpn wave: gen highTime = sum(highRisk)
-
-bys hhidpn: gen abstainerProp = abstainerTime / elsa_waves
-bys hhidpn: gen moderateProp = moderateTime / elsa_waves
-bys hhidpn: gen increasingProp = increasingTime / elsa_waves
-bys hhidpn: gen highProp = highTime / elsa_waves
-
-gen abstainerMC = (abstainerProp > moderateProp) & (abstainerProp > increasingProp) & (abstainerProp > highProp)
-gen moderateMC = (moderateProp > abstainerProp) & (moderateProp > increasingProp) & (moderateProp > highProp)
-gen increasingMC = (increasingProp > moderateProp) & (increasingProp > abstainerProp) & (increasingProp > highProp)
-gen highMC = (highProp > moderateProp) & (highProp > increasingTime) & (highProp > abstainerProp)
 
 
 ** This is broken, needs another attempt
@@ -820,6 +748,9 @@ foreach var in
     lnly1
     lnly2
     lnly3
+    complac
+    leftout
+    isolate
     alzhe
     demene
     itot
@@ -828,16 +759,6 @@ foreach var in
     employed
     unemployed
     retired
-    alcbase
-    alcbase_mod
-    alcbase_inc
-    alcbase_high
-    alcstat
-    alcstat4
-    abstainer
-    moderate
-    increasingRisk
-    highRisk
     GOR
     angine
     hrtatte
@@ -846,6 +767,15 @@ foreach var in
     hrtrhme
     catracte
     osteoe
+    alcfreq
+    alcfreq1
+    alcfreq2
+    alcfreq3
+    alcfreq4
+    alcfreq5
+    alcfreq6
+    alcfreq7
+    alcfreq8
     {;
         gen l2`var' = L.`var';
     };
