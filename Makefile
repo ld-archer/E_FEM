@@ -1,13 +1,14 @@
 export ROOT=$(CURDIR)
-DATADIR = $(CURDIR)/input_data
-BASEDIR = $(CURDIR)/base_data
-ESTIMATES = $(CURDIR)/FEM_Stata/Estimates
-ESTIMATION = $(CURDIR)/FEM_Stata/Estimation
+DATADIR = $(ROOT)/input_data
+BASEDIR = $(ROOT)/base_data
+ESTIMATES = $(ROOT)/FEM_Stata/Estimates
+ESTIMATION = $(ROOT)/FEM_Stata/Estimation
 RAW_ELSA = /home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se/
-ANALYSIS = $(CURDIR)/analysis/techdoc_ELSA
-MAKEDATA = $(CURDIR)/FEM_Stata/Makedata/ELSA
-OUTDATA = $(CURDIR)/output
-R = $(CURDIR)/FEM_R
+ANALYSIS = $(ROOT)/analysis/techdoc_ELSA
+MAKEDATA = $(ROOT)/FEM_Stata/Makedata/ELSA
+OUTDATA = $(ROOT)/output
+R = $(ROOT)/FEM_R
+FEM_CPP_settings = $(ROOT)/FEM_CPP_settings
 
 include fem.makefile
 
@@ -198,29 +199,29 @@ $(ESTIMATES)/ELSA_core/CV2/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATIO
 ### Estimates and Summary
 
 est_base:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(ROOT)/FEM_CPP_settings/ELSA/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(ROOT)/FEM_CPP_settings/hrs/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA dataout=$(FEM_CPP_settings)/ELSA/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/HRS dataout=$(FEM_CPP_settings)/hrs/models $(STATA) save_est_cpp.do
 
 est_CV:
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV1/models $(STATA) save_est_cpp.do
-	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_CV2/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV1 dataout=$(FEM_CPP_settings)/ELSA_CV1/models $(STATA) save_est_cpp.do
+	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA/CV2 dataout=$(FEM_CPP_settings)/ELSA_CV2/models $(STATA) save_est_cpp.do
 
 ## Estimates (now adjusted targets so they're not constantly re-running)
 
-est_minimal: $(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est
+est_minimal: $(FEM_CPP_settings)/ELSA_minimal/models/died.est
 
-est_core: $(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est
+est_core: $(FEM_CPP_settings)/ELSA_core/models/died.est
 
-est_core_CV: $(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est
+est_core_CV: $(FEM_CPP_settings)/ELSA_core_CV2/models/died.est
 
-$(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est:
+$(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est: $(ESTIMATES)/ELSA_core/died.ster
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core dataout=$(ROOT)/FEM_CPP_settings/ELSA_core/models $(STATA) save_est_cpp.do
 	
-$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est:
+$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est: $(ESTIMATES)/ELSA_core/CV1/died.ster $(ESTIMATES)/ELSA_core/CV2/died.ster
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV1 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV1/models $(STATA) save_est_cpp.do
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_core/CV2 dataout=$(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models $(STATA) save_est_cpp.do
 
-$(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est:
+$(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est: $(ESTIMATES)/ELSA_minimal/died.ster
 	cd $(ESTIMATION) && datain=$(ESTIMATES)/ELSA_minimal dataout=$(ROOT)/FEM_CPP_settings/ELSA_minimal/models $(STATA) save_est_cpp.do
 
 ## Summary outputs
@@ -234,20 +235,20 @@ summary_out_CV:
 	cd FEM_CPP_settings && measures_suffix=ELSA_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 # New targets (core and derivatives)
-summary_out_core: $(ROOT)/FEM_CPP_settings/summary_output_ELSA_core.txt
+summary_out_core: $(FEM_CPP_settings)/summary_output_ELSA_core.txt
 
-summary_out_core_CV: $(ROOT)/FEM_CPP_settings/summary_output_ELSA_core_CV2.txt
+summary_out_core_CV: $(FEM_CPP_settings)/summary_output_ELSA_core_CV2.txt
 
-summary_out_minimal: $(ROOT)/FEM_CPP_settings/summary_output_ELSA_minimal.txt
+summary_out_minimal: $(FEM_CPP_settings)/summary_output_ELSA_minimal.txt
 
-$(ROOT)/FEM_CPP_settings/summary_output_ELSA_core.txt:
+$(FEM_CPP_settings)/summary_output_ELSA_core.txt: $(ROOT)/FEM_CPP_settings/ELSA_core/models/died.est $(FEM_CPP_settings)/summary_output_gen.do $(FEM_CPP_settings)/measures_subpop_ELSA.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
-$(ROOT)/FEM_CPP_settings/summary_output_ELSA_core_CV2.txt:
+$(FEM_CPP_settings)/summary_output_ELSA_core_CV2.txt: $(ROOT)/FEM_CPP_settings/ELSA_core_CV2/models/died.est $(FEM_CPP_settings)/summary_output_gen.do $(FEM_CPP_settings)/measures_subpop_ELSA.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV1 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_core_CV2 subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
-$(ROOT)/FEM_CPP_settings/summary_output_ELSA_minimal.txt:
+$(FEM_CPP_settings)/summary_output_ELSA_minimal.txt: $(ROOT)/FEM_CPP_settings/ELSA_minimal/models/died.est $(FEM_CPP_settings)/summary_output_gen.do $(FEM_CPP_settings)/measures_subpop_ELSA.do
 	cd FEM_CPP_settings && measures_suffix=ELSA_minimal subpops=$(SUBPOP) $(STATA) summary_output_gen.do
 
 
