@@ -95,7 +95,7 @@ local lvars_mstat l2single l2cohab l2widowed                        /*Control: l
 * Loneliness
 local lvars_lnly l2lnly2 l2lnly3                                    /* Control: l2lnly1 - Loneliness score: Low*/
 * Alcohol consumption frequency
-local lvars_alcfreq alcfreq1 alcfreq2 alcfreq3 alcfreq5 alcfreq6 alcfreq7 alcfreq8 /* Control: alcfreq4 - Alcohol consumption frequency: once or twice a week*/
+local lvars_alcfreq l2alcfreq1 l2alcfreq2 l2alcfreq3 l2alcfreq5 l2alcfreq6 l2alcfreq7 l2alcfreq8 /* Control: alcfreq4 - Alcohol consumption frequency: once or twice a week*/
 
 
 
