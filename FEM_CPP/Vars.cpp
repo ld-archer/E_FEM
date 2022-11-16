@@ -670,9 +670,9 @@ VarsInfo::VarsInfo() {
     info[Vars::l2lnly1]             = VarInfo("l2lnly1", "Lag of Loneliness Score: Low", VarTypes::Boolean, Vars::l2lnly, 1);
     info[Vars::l2lnly2]             = VarInfo("l2lnly2", "Lag of Loneliness Score: Medium", VarTypes::Boolean, Vars::l2lnly, 2);
     info[Vars::l2lnly3]             = VarInfo("l2lnly3", "Lag of Loneliness Score: High", VarTypes::Boolean, Vars::l2lnly, 3);
-    info[Vars::plnly1]              = VarInfo("plnly1", "Probability of lnly == 1", VarTypes::Double);
-    info[Vars::plnly2]              = VarInfo("plnly2", "Probability of lnly == 2", VarTypes::Double);
-    info[Vars::plnly3]              = VarInfo("plnly3", "Probability of lnly == 3", VarTypes::Double);
+    info[Vars::plnly1]              = VarInfo("plnly1", "Probability of lnly == 1", VarTypes::Float);
+    info[Vars::plnly2]              = VarInfo("plnly2", "Probability of lnly == 2", VarTypes::Float);
+    info[Vars::plnly3]              = VarInfo("plnly3", "Probability of lnly == 3", VarTypes::Float);
     info[Vars::alzhe]               = VarInfo("alzhe", "Alzheimers ever", VarTypes::Boolean);
     info[Vars::l2alzhe]             = VarInfo("l2alzhe", "Lag of Alzheimers ever", VarTypes::Boolean);
     info[Vars::palzhe]              = VarInfo("palzhe", "Probability of Alzheimers ever", VarTypes::Float);
@@ -692,43 +692,43 @@ VarsInfo::VarsInfo() {
     info[Vars::pworkstat3]          = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
     info[Vars::angine]              = VarInfo("angine", "Angina ever", VarTypes::Boolean);
     info[Vars::l2angine]            = VarInfo("l2angine", "Lag of Angina ever", VarTypes::Boolean);
-    info[Vars::pangine]             = VarInfo("pangine", "Probability of Angina ever", VarTypes::Boolean);
+    info[Vars::pangine]             = VarInfo("pangine", "Probability of Angina ever", VarTypes::Float);
     info[Vars::hrtatte]              = VarInfo("hrtatte", "Heart Attack ever", VarTypes::Boolean);
     info[Vars::l2hrtatte]            = VarInfo("l2hrtatte", "Lag of Heart Attack ever", VarTypes::Boolean);
-    info[Vars::phrtatte]             = VarInfo("phrtatte", "Probability of Heart Attack ever", VarTypes::Boolean);
+    info[Vars::phrtatte]             = VarInfo("phrtatte", "Probability of Heart Attack ever", VarTypes::Float);
     info[Vars::conhrtfe]              = VarInfo("conhrtfe", "Congenital Heart Failure ever", VarTypes::Boolean);
     info[Vars::l2conhrtfe]            = VarInfo("l2conhrtfe", "Lag of Congenital Heart Failure ever", VarTypes::Boolean);
-    info[Vars::pconhrtfe]             = VarInfo("pconhrtfe", "Probability of Congenital Heart Failure ever", VarTypes::Boolean);
+    info[Vars::pconhrtfe]             = VarInfo("pconhrtfe", "Probability of Congenital Heart Failure ever", VarTypes::Float);
     info[Vars::hrtmre]              = VarInfo("hrtmre", "Heart Murmur ever", VarTypes::Boolean);
     info[Vars::l2hrtmre]            = VarInfo("l2hrtmre", "Lag of Heart Murmur ever", VarTypes::Boolean);
-    info[Vars::phrtmre]             = VarInfo("phrtmre", "Probability of Heart Murmur ever", VarTypes::Boolean);
+    info[Vars::phrtmre]             = VarInfo("phrtmre", "Probability of Heart Murmur ever", VarTypes::Float);
     info[Vars::hrtrhme]              = VarInfo("hrtrhme", "Abnormal Heart Rhythm ever", VarTypes::Boolean);
     info[Vars::l2hrtrhme]            = VarInfo("l2hrtrhme", "Lag of Abnormal Heart Rhythm ever", VarTypes::Boolean);
-    info[Vars::phrtrhme]             = VarInfo("phrtrhme", "Probability of Abnormal Heart Rhythm ever", VarTypes::Boolean);
+    info[Vars::phrtrhme]             = VarInfo("phrtrhme", "Probability of Abnormal Heart Rhythm ever", VarTypes::Float);
     info[Vars::catracte]              = VarInfo("catracte", "Cataracts ever", VarTypes::Boolean);
     info[Vars::l2catracte]            = VarInfo("l2catracte", "Lag of Cataracts ever", VarTypes::Boolean);
-    info[Vars::pcatracte]             = VarInfo("pcatracte", "Probability of Cataracts ever", VarTypes::Boolean);
+    info[Vars::pcatracte]             = VarInfo("pcatracte", "Probability of Cataracts ever", VarTypes::Float);
     info[Vars::osteoe]              = VarInfo("osteoe", "Osteoporosis ever", VarTypes::Boolean);
     info[Vars::l2osteoe]            = VarInfo("l2osteoe", "Lag of Osteoporosis ever", VarTypes::Boolean);
-    info[Vars::posteoe]             = VarInfo("posteoe", "Probability of Osteoporosis ever", VarTypes::Boolean);
+    info[Vars::posteoe]             = VarInfo("posteoe", "Probability of Osteoporosis ever", VarTypes::Float);
     info[Vars::alcfreq]             = VarInfo("alcfreq", "Frequency of Alcohol consumption in last 12 months", VarTypes::Short);
-    info[Vars::alcfreq1]             = VarInfo("alcfreq1", "Frequency of Alcohol consumption: Almost every day", VarTypes::Short, Vars::alcfreq, 1);
-    info[Vars::alcfreq2]             = VarInfo("alcfreq2", "Frequency of Alcohol consumption: five or six days a week", VarTypes::Short, Vars::alcfreq, 2);
-    info[Vars::alcfreq3]             = VarInfo("alcfreq3", "Frequency of Alcohol consumption: three or four days a week", VarTypes::Short, Vars::alcfreq, 3);
-    info[Vars::alcfreq4]             = VarInfo("alcfreq4", "Frequency of Alcohol consumption: once or twice a week", VarTypes::Short, Vars::alcfreq, 4);
-    info[Vars::alcfreq5]             = VarInfo("alcfreq5", "Frequency of Alcohol consumption: once or twice a month", VarTypes::Short, Vars::alcfreq, 5);
-    info[Vars::alcfreq6]             = VarInfo("alcfreq6", "Frequency of Alcohol consumption: once every couple of months", VarTypes::Short, Vars::alcfreq, 6);
-    info[Vars::alcfreq7]             = VarInfo("alcfreq7", "Frequency of Alcohol consumption: once or twice a year", VarTypes::Short, Vars::alcfreq, 7);
-    info[Vars::alcfreq8]             = VarInfo("alcfreq8", "Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Short, Vars::alcfreq, 8);
+    info[Vars::alcfreq1]             = VarInfo("alcfreq1", "Frequency of Alcohol consumption: Almost every day", VarTypes::Boolean, Vars::alcfreq, 1);
+    info[Vars::alcfreq2]             = VarInfo("alcfreq2", "Frequency of Alcohol consumption: five or six days a week", VarTypes::Boolean, Vars::alcfreq, 2);
+    info[Vars::alcfreq3]             = VarInfo("alcfreq3", "Frequency of Alcohol consumption: three or four days a week", VarTypes::Boolean, Vars::alcfreq, 3);
+    info[Vars::alcfreq4]             = VarInfo("alcfreq4", "Frequency of Alcohol consumption: once or twice a week", VarTypes::Boolean, Vars::alcfreq, 4);
+    info[Vars::alcfreq5]             = VarInfo("alcfreq5", "Frequency of Alcohol consumption: once or twice a month", VarTypes::Boolean, Vars::alcfreq, 5);
+    info[Vars::alcfreq6]             = VarInfo("alcfreq6", "Frequency of Alcohol consumption: once every couple of months", VarTypes::Boolean, Vars::alcfreq, 6);
+    info[Vars::alcfreq7]             = VarInfo("alcfreq7", "Frequency of Alcohol consumption: once or twice a year", VarTypes::Boolean, Vars::alcfreq, 7);
+    info[Vars::alcfreq8]             = VarInfo("alcfreq8", "Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Boolean, Vars::alcfreq, 8);
     info[Vars::l2alcfreq]            = VarInfo("l2alcfreq", "Lag of Frequency of Alcohol consumption in last 12 months", VarTypes::Short);
-    info[Vars::l2alcfreq1]           = VarInfo("l2alcfreq1", "Lag of Frequency of Alcohol consumption: Almost every day", VarTypes::Short, Vars::l2alcfreq, 1);
-    info[Vars::l2alcfreq2]           = VarInfo("l2alcfreq2", "Lag of Frequency of Alcohol consumption: five or six days a week", VarTypes::Short, Vars::l2alcfreq, 2);
-    info[Vars::l2alcfreq3]           = VarInfo("l2alcfreq3", "Lag of Frequency of Alcohol consumption: three or four days a week", VarTypes::Short, Vars::l2alcfreq, 3);
-    info[Vars::l2alcfreq4]           = VarInfo("l2alcfreq4", "Lag of Frequency of Alcohol consumption: once or twice a week", VarTypes::Short, Vars::l2alcfreq, 4);
-    info[Vars::l2alcfreq5]           = VarInfo("l2alcfreq5", "Lag of Frequency of Alcohol consumption: once or twice a month", VarTypes::Short, Vars::l2alcfreq, 5);
-    info[Vars::l2alcfreq6]           = VarInfo("l2alcfreq6", "Lag of Frequency of Alcohol consumption: once every couple of months", VarTypes::Short, Vars::l2alcfreq, 6);
-    info[Vars::l2alcfreq7]           = VarInfo("l2alcfreq7", "Lag of Frequency of Alcohol consumption: once or twice a year", VarTypes::Short, Vars::l2alcfreq, 7);
-    info[Vars::l2alcfreq8]           = VarInfo("l2alcfreq8", "Lag of Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Short, Vars::l2alcfreq, 8);
+    info[Vars::l2alcfreq1]           = VarInfo("l2alcfreq1", "Lag of Frequency of Alcohol consumption: Almost every day", VarTypes::Boolean, Vars::l2alcfreq, 1);
+    info[Vars::l2alcfreq2]           = VarInfo("l2alcfreq2", "Lag of Frequency of Alcohol consumption: five or six days a week", VarTypes::Boolean, Vars::l2alcfreq, 2);
+    info[Vars::l2alcfreq3]           = VarInfo("l2alcfreq3", "Lag of Frequency of Alcohol consumption: three or four days a week", VarTypes::Boolean, Vars::l2alcfreq, 3);
+    info[Vars::l2alcfreq4]           = VarInfo("l2alcfreq4", "Lag of Frequency of Alcohol consumption: once or twice a week", VarTypes::Boolean, Vars::l2alcfreq, 4);
+    info[Vars::l2alcfreq5]           = VarInfo("l2alcfreq5", "Lag of Frequency of Alcohol consumption: once or twice a month", VarTypes::Boolean, Vars::l2alcfreq, 5);
+    info[Vars::l2alcfreq6]           = VarInfo("l2alcfreq6", "Lag of Frequency of Alcohol consumption: once every couple of months", VarTypes::Boolean, Vars::l2alcfreq, 6);
+    info[Vars::l2alcfreq7]           = VarInfo("l2alcfreq7", "Lag of Frequency of Alcohol consumption: once or twice a year", VarTypes::Boolean, Vars::l2alcfreq, 7);
+    info[Vars::l2alcfreq8]           = VarInfo("l2alcfreq8", "Lag of Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Boolean, Vars::l2alcfreq, 8);
     info[Vars::palcfreq1]            = VarInfo("palcfreq1", "Probability of Frequency of Alcohol consumption: Almost every day", VarTypes::Float);
     info[Vars::palcfreq2]            = VarInfo("palcfreq2", "Probability of Frequency of Alcohol consumption: five or six days a week", VarTypes::Float);
     info[Vars::palcfreq3]            = VarInfo("palcfreq3", "Probability of Frequency of Alcohol consumption: three or four days a week", VarTypes::Float);
@@ -737,6 +737,27 @@ VarsInfo::VarsInfo() {
     info[Vars::palcfreq6]            = VarInfo("palcfreq6", "Probability of Frequency of Alcohol consumption: once every couple of months", VarTypes::Float);
     info[Vars::palcfreq7]            = VarInfo("palcfreq7", "Probability of Frequency of Alcohol consumption: once or twice a year", VarTypes::Float);
     info[Vars::palcfreq8]            = VarInfo("palcfreq8", "Probability of Frequency of Alcohol consumption: not at all in the last 12 months", VarTypes::Float);
+    info[Vars::sociso]              = VarInfo("sociso", "Index of Social Isolation [1-6]", VarTypes::Short);
+    info[Vars::l2sociso]              = VarInfo("l2sociso", "Lag of Index of Social Isolation [1-6]", VarTypes::Short);
+    info[Vars::sociso1]              = VarInfo("sociso1", "Index of Social Isolation == 1", VarTypes::Boolean, Vars::sociso, 1);
+    info[Vars::sociso2]              = VarInfo("sociso2", "Index of Social Isolation == 2", VarTypes::Boolean, Vars::sociso, 2);
+    info[Vars::sociso3]              = VarInfo("sociso3", "Index of Social Isolation == 3", VarTypes::Boolean, Vars::sociso, 3);
+    info[Vars::sociso4]              = VarInfo("sociso4", "Index of Social Isolation == 4", VarTypes::Boolean, Vars::sociso, 4);
+    info[Vars::sociso5]              = VarInfo("sociso5", "Index of Social Isolation == 5", VarTypes::Boolean, Vars::sociso, 5);
+    info[Vars::sociso6]              = VarInfo("sociso6", "Index of Social Isolation == 6", VarTypes::Boolean, Vars::sociso, 6);
+    info[Vars::l2sociso1]              = VarInfo("l2sociso1", "Lag of Index of Social Isolation == 1", VarTypes::Boolean, Vars::l2sociso, 1);
+    info[Vars::l2sociso2]              = VarInfo("l2sociso2", "Lag of Index of Social Isolation == 2", VarTypes::Boolean, Vars::l2sociso, 2);
+    info[Vars::l2sociso3]              = VarInfo("l2sociso3", "Lag of Index of Social Isolation == 3", VarTypes::Boolean, Vars::l2sociso, 3);
+    info[Vars::l2sociso4]              = VarInfo("l2sociso4", "Lag of Index of Social Isolation == 4", VarTypes::Boolean, Vars::l2sociso, 4);
+    info[Vars::l2sociso5]              = VarInfo("l2sociso5", "Lag of Index of Social Isolation == 5", VarTypes::Boolean, Vars::l2sociso, 5);
+    info[Vars::l2sociso6]              = VarInfo("l2sociso6", "Lag of Index of Social Isolation == 6", VarTypes::Boolean, Vars::l2sociso, 6);
+    info[Vars::psociso1]              = VarInfo("psociso1", "Probability of Index of Social Isolation == 1", VarTypes::Float);
+    info[Vars::psociso2]              = VarInfo("psociso2", "Probability of Index of Social Isolation == 2", VarTypes::Float);
+    info[Vars::psociso3]              = VarInfo("psociso3", "Probability of Index of Social Isolation == 3", VarTypes::Float);
+    info[Vars::psociso4]              = VarInfo("psociso4", "Probability of Index of Social Isolation == 4", VarTypes::Float);
+    info[Vars::psociso5]              = VarInfo("psociso5", "Probability of Index of Social Isolation == 5", VarTypes::Float);
+    info[Vars::psociso6]              = VarInfo("psociso6", "Probability of Index of Social Isolation == 6", VarTypes::Float);
+
 
 
 	
@@ -907,6 +928,13 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::alcfreq6] = Vars::l2alcfreq6;
     lag_map[Vars::alcfreq7] = Vars::l2alcfreq7;
     lag_map[Vars::alcfreq8] = Vars::l2alcfreq8;
+    lag_map[Vars::sociso] = Vars::l2sociso;
+    lag_map[Vars::sociso1] = Vars::l2sociso1;
+    lag_map[Vars::sociso2] = Vars::l2sociso2;
+    lag_map[Vars::sociso3] = Vars::l2sociso3;
+    lag_map[Vars::sociso4] = Vars::l2sociso4;
+    lag_map[Vars::sociso5] = Vars::l2sociso5;
+    lag_map[Vars::sociso6] = Vars::l2sociso6;
 
 
 
@@ -982,6 +1010,12 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::alcfreq6] =      Vars::palcfreq6;
     prob_map[Vars::alcfreq7] =      Vars::palcfreq7;
     prob_map[Vars::alcfreq8] =      Vars::palcfreq8;
+    prob_map[Vars::sociso1] =       Vars::psociso1;
+    prob_map[Vars::sociso2] =       Vars::psociso2;
+    prob_map[Vars::sociso3] =       Vars::psociso3;
+    prob_map[Vars::sociso4] =       Vars::psociso4;
+    prob_map[Vars::sociso5] =       Vars::psociso5;
+    prob_map[Vars::sociso6] =       Vars::psociso6;
 
 
 

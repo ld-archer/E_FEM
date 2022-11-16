@@ -120,6 +120,10 @@ keep
 	r*osteoe
 	r*lnlys3
 	r*scako
+	r*kcntm
+	r*rcntm
+	r*fcntm
+	r*socyr
 ;
 #d cr
 
@@ -181,6 +185,10 @@ local shapelist
 	r@osteoe
 	r@lnlys3
 	r@scako
+	r@kcntm
+	r@rcntm
+	r@fcntm
+	r@socyr
 ;
 #d cr
 
@@ -261,7 +269,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako {
+foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako kcntm rcntm fcntm socyr {
 	ren r`var' `var'
 }
 
@@ -302,7 +310,8 @@ replace exstat3 = 0 if exstat != 3
 *gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 *drop smokef
 
-*** Loneliness
+****** LONELINESS ******
+
 * loneliness is brought into our model as a summary score for 4 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
 * Potentially in the future, we could just keep the high loneliness? Try full var first
@@ -318,6 +327,33 @@ label variable lnly2 "Loneliness level: medium"
 label variable lnly3 "Loneliness level: high"
 * Drop original
 *drop lnlys3
+
+****** INDEX OF SOCIAL ISOLATION ******
+
+* Generate an index of social isolation as in this study by Shankar et al. (2011) - https://pubmed.ncbi.nlm.nih.gov/21534675/
+* Index ranges from 1-6, with a score of +1 for the following 5 things
+* - Not married/cohabiting with a partner
+* - Had less than monthly contact (including face-to-face, telephone, or written/email contact) with (+1 each):
+*     - children 
+*     - other immediate family 
+*     - friends
+* - Did not participate in any organisations, religious groups, or committees that meet at least once a year
+* 1-6 chosen instead of 0-5 because FEM doesn't like 0 values in ordinal variables for some reason
+gen sociso = 1
+replace sociso = sociso + 1 if married == 1 | cohab == 1 & !missing(mstat) /*Married or cohabiting*/
+replace sociso = sociso + 1 if kcntm == 0 & !missing(kcntm) /*Kids contact less than monthly*/
+replace sociso = sociso + 1 if rcntm == 0 & !missing(rcntm) /*Relatives contact less than monthly*/
+replace sociso = sociso + 1 if fcntm == 0 & !missing(fcntm) /*friends contact less than monthly*/
+replace sociso = sociso + 1 if socyr == 0 & !missing(socyr) /*not member of religious group, committee, or other organisation*/
+* drop elements of index
+drop kcntm rcntm fcntm socyr
+* Dummy vars
+gen sociso1 = (sociso == 1) & !missing(sociso)
+gen sociso2 = (sociso == 2) & !missing(sociso)
+gen sociso3 = (sociso == 3) & !missing(sociso)
+gen sociso4 = (sociso == 4) & !missing(sociso)
+gen sociso5 = (sociso == 5) & !missing(sociso)
+gen sociso6 = (sociso == 6) & !missing(sociso)
 
 ****** ALCOHOL ******
 ** Moving from the previous consumptiong based alcohol vars in the FEM (alcbase/alcstat) to a frequency based version (scako)
@@ -541,6 +577,13 @@ label var lnly "Loneliness Score [1,3]"
 label var lnly1 "Loneliness Score: Low"
 label var lnly2 "Loneliness Score: Medium"
 label var lnly3 "Loneliness Score: High"
+label var sociso "Social Isolation"
+label var sociso1 "Social Isolation == 1"
+label var sociso2 "Social Isolation == 2"
+label var sociso3 "Social Isolation == 3"
+label var sociso4 "Social Isolation == 4"
+label var sociso5 "Social Isolation == 5"
+label var sociso6 "Social Isolation == 6"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -571,7 +614,7 @@ save varlabs.dta, replace
 restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
-local risk smoken smokev smokef bmi drink lnly lnly1 lnly2 lnly3 alcfreq alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8
+local risk smoken smokev smokef bmi drink lnly /*lnly1 lnly2 lnly3*/ alcfreq /*alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8*/ sociso sociso1 sociso2 sociso3 sociso4 sociso5 sociso6
 local binecon employed unemployed retired
 local cntecon itotx atotbx
 local demog age_yrs male white

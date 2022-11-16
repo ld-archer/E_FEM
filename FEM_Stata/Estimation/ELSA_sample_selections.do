@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat drink exstat mstat workstat atotb itot {
+foreach v in adlstat iadlstat drink exstat mstat workstat atotb itot sociso {
     local select_`v' !died 
 }
 
@@ -38,7 +38,7 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 logbmi hchole hipe mstat lnly alzhe demene ///
                 workstat atotb itot smokef ///
                 angine hrtatte ///
-                conhrtfe hrtmre hrtrhme catracte osteoe lnly
+                conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso
 
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'
