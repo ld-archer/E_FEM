@@ -658,6 +658,26 @@ namespace Vars
         palcfreq6,                    ///< Probability of Frequency of Alcohol consumption: once every couple of months
         palcfreq7,                    ///< Probability of Frequency of Alcohol consumption: once or twice a year
         palcfreq8,                    ///< Probability of Frequency of Alcohol consumption: not at all in the last 12 months
+        sociso,                     ///< Index of Social Isolation [1-6]
+        l2sociso,                     ///< Lag of Index of Social Isolation [1-6]
+        sociso1,                    ///< Index of Social Isolation == 1
+        sociso2,                    ///< Index of Social Isolation == 2
+        sociso3,                    ///< Index of Social Isolation == 3
+        sociso4,                    ///< Index of Social Isolation == 4
+        sociso5,                    ///< Index of Social Isolation == 5
+        sociso6,                    ///< Index of Social Isolation == 6
+        l2sociso1,                    ///< Lag of Index of Social Isolation == 1
+        l2sociso2,                    ///< Lag of Index of Social Isolation == 2
+        l2sociso3,                    ///< Lag of Index of Social Isolation == 3
+        l2sociso4,                    ///< Lag of Index of Social Isolation == 4
+        l2sociso5,                    ///< Lag of Index of Social Isolation == 5
+        l2sociso6,                    ///< Lag of Index of Social Isolation == 6
+        psociso1,                    ///< Probability of Index of Social Isolation == 1
+        psociso2,                    ///< Probability of Index of Social Isolation == 2
+        psociso3,                    ///< Probability of Index of Social Isolation == 3
+        psociso4,                    ///< Probability of Index of Social Isolation == 4
+        psociso5,                    ///< Probability of Index of Social Isolation == 5
+        psociso6,                    ///< Probability of Index of Social Isolation == 6
 		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

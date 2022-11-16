@@ -64,6 +64,9 @@ local measures
 					a_lnly		
 					p_lnly1		p_lnly2 	p_lnly3
 					n_lnly1		n_lnly2		n_lnly3
+					a_sociso
+					p_sociso1	p_sociso2	p_sociso3	p_sociso4
+					p_sociso5	p_sociso6
 					a_workstat
 					p_employed  i_employed  n_employed
 					p_unemployed i_unemployed n_unemployed
@@ -71,9 +74,7 @@ local measures
 					n_anydisease 	p_anydisease	a_anydisease
 					n_nodisease		p_nodisease		a_nodisease
 					n_disabled		p_disabled		a_disabled
-					n_not_disabled  p_not_disabled	a_not_disabled
-			
-										
+					n_not_disabled  p_not_disabled	a_not_disabled			
 ;
 #d cr
 

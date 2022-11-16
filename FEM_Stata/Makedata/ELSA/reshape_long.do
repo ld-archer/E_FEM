@@ -159,6 +159,10 @@ r*leftout
 r*isolate
 r*lnlys3
 r*scako
+r*kcntm
+r*rcntm
+r*fcntm
+r*socyr
 ;
 #d cr
 
@@ -247,6 +251,10 @@ foreach var in
     isolate
     lnlys3
     scako
+    kcntm
+    rcntm
+    fcntm
+    socyr
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -296,7 +304,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
-    complac leftout isolate lnlys3 scako
+    complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -369,6 +377,10 @@ label variable leftout "How often feels left out"
 label variable isolate "How often feels isolated from others"
 label variable lnlys3 "Mean revised UCLA loneliness score, continuous"
 label variable scako "Frequency of Alcohol consumption in past 12 months"
+label variable kcntm "Monthly or more contact with children"
+label variable rcntm "Monthly or more contact with relatives"
+label variable fcntm "Monthly or more contact with friends"
+label variable socyr "Whether participates in social activities (org, religious group, committee)"
 
 
 * Use harmonised education var
@@ -525,6 +537,7 @@ label define alcfreq 1 "Almost every day" 2 "five or six days a week" 3 "three o
 label values alcfreq alcfreq
 * handle missings
 replace alcfreq = . if alcfreq < 0
+* TODO: Move these dummy definitions to generate_transition_pop.do
 * Create dummys for prediction and label
 gen alcfreq1 = alcfreq == 1
 gen alcfreq2 = alcfreq == 2
@@ -544,7 +557,7 @@ label variable alcfreq7 "Alcohol consumption: once or twice a year"
 label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
 
 
-****** BMI ******
+****** BMI & OBESITY ******
 * Handle missing bmi values
 bys hhidpn: ipolate bmi wave, gen(bmi_ipolate) epolate
 replace bmi = bmi_ipolate if missing(bmi)
@@ -573,6 +586,8 @@ gen obese3 = (logbmi >= log(40.0)) if !missing(bmi)
 gen bmi2 = exp(logbmi)
 egen bmi_cat = cut(bmi2), at(0 25 30 200)
 
+****** SMOKING ******
+
 * Handle weird smoking status (smoke now but not smoke ever, nonsensical)
 *count if smokev==0 & smoken==1
 replace smokev = 1 if smoken==1 & smokev==0
@@ -587,6 +602,8 @@ label values smkstat smkstat
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
 *gen heavy_smoker = (smokef >= 20) if !missing(smokef)
+
+****** EXERCISE ******
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -610,9 +627,8 @@ replace exstat3 = 0 if exstat != 3
 * Drop the exercise vars now
 drop ltactx_e mdactx_e vgactx_e
 
+****** INCOME AND WEALTH ******
 
-
-*** Income and Wealth
 ** Replace top-coded values of itot with 900000 (see p599 harmonised codebook)
 replace itot = 900000 if itot == .t
 
@@ -652,9 +668,6 @@ forvalues n = 2001/2019 {
     drop c`n'cpindex
 }
 
-* FINAL finally, calculate wealth quintiles for prediction of other things (incorporate sampling weight cwtresp)
-xtile wealth_quintile = atotb[aw=cwtresp], n(5)
-
 ** Now adjust couple level (benefit unit level) data into individual values
 * To do this, multiply those in a couple by sqrt(2)
 bysort coupid wave: gen atotb_adjusted = atotb / sqrt(2) if _N == 2
@@ -666,7 +679,11 @@ replace itot = itot_adjusted if !missing(itot_adjusted)
 * Finally drop the adjusted vars
 drop atotb_adjusted itot_adjusted
 
-*** Labour Force Status
+* FINAL finally, calculate wealth quintiles for prediction of other things (incorporate sampling weight cwtresp)
+xtile wealth_quintile = atotb[aw=cwtresp], n(5)
+
+****** LABOUR FORCE STATUS ******
+
 * Recoding the lbrf var to three categories
 * 1 - Working (includes self-employed and partly retired)
 * 2 - Unemployed
@@ -680,15 +697,33 @@ gen employed = workstat == 1
 gen unemployed = workstat == 2
 gen retired = workstat == 3
 
+****** INDEX OF SOCIAL ISOLATION ******
 
-** This is broken, needs another attempt
-/* ** Handle cases where two or more proportions are equal
-* Just set to the highest of the two com
-replace moderateMC = 1 if (abstainerProp == moderateProp)
-replace increasingMC = 1 if (increasingProp == moderateProp) | (increasingProp == abstainerProp)
-replace highMC = 1 if (highProp == abstainerProp) | (highProp == moderateProp) | (highProp == increasingProp)
-replace moderateMC = 0 if increasingMC | highMC
-replace increasingMC = 0 if highMC */
+* Generate an index of social isolation as in this study by Shankar et al. (2011) - https://pubmed.ncbi.nlm.nih.gov/21534675/
+* Index ranges from 1-6, with a score of +1 for the following 5 things
+* - Not married/cohabiting with a partner
+* - Had less than monthly contact (including face-to-face, telephone, or written/email contact) with (+1 each):
+*     - children 
+*     - other immediate family 
+*     - friends
+* - Did not participate in any organisations, religious groups, or committees that meet at least once a year
+* 1-6 chosen instead of 0-5 because FEM doesn't like 0 values in ordinal variables for some reason
+gen sociso = 1
+replace sociso = sociso + 1 if married == 1 | cohab == 1 & !missing(mstat) /*Married or cohabiting*/
+replace sociso = sociso + 1 if kcntm == 0 & !missing(kcntm) /*Kids contact less than monthly*/
+replace sociso = sociso + 1 if rcntm == 0 & !missing(rcntm) /*Relatives contact less than monthly*/
+replace sociso = sociso + 1 if fcntm == 0 & !missing(fcntm) /*friends contact less than monthly*/
+replace sociso = sociso + 1 if socyr == 0 & !missing(socyr) /*not member of religious group, committee, or other organisation*/
+* drop elements of index
+drop kcntm rcntm fcntm socyr
+* Dummy vars
+gen sociso1 = (sociso == 1) & !missing(sociso)
+gen sociso2 = (sociso == 2) & !missing(sociso)
+gen sociso3 = (sociso == 3) & !missing(sociso)
+gen sociso4 = (sociso == 4) & !missing(sociso)
+gen sociso5 = (sociso == 5) & !missing(sociso)
+gen sociso6 = (sociso == 6) & !missing(sociso)
+
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
@@ -776,6 +811,7 @@ foreach var in
     alcfreq6
     alcfreq7
     alcfreq8
+    sociso
     {;
         gen l2`var' = L.`var';
     };
