@@ -124,6 +124,7 @@ keep
 	r*rcntm
 	r*fcntm
 	r*socyr
+	r*mstat
 ;
 #d cr
 
@@ -189,6 +190,7 @@ local shapelist
 	r@rcntm
 	r@fcntm
 	r@socyr
+	r@mstat
 ;
 #d cr
 
@@ -269,7 +271,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako kcntm rcntm fcntm socyr {
+foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako kcntm rcntm fcntm socyr mstat {
 	ren r`var' `var'
 }
 
@@ -284,6 +286,7 @@ label var drink "R drinks alcohol"
 label var lnlys "R average of 4 level loneliness summary score"
 label var lnlys3 "R average of 3 level loneliness summary score"
 label var scako "Alcohol consumption frequency, [1-8]"
+label var mstat "Marriage / Partnership status"
 
 
 * Generate an exercise status variable to hold exercise info in single var
@@ -309,6 +312,29 @@ replace exstat3 = 0 if exstat != 3
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
 *gen heavy_smoker = (smokef >= 20) if !missing(smokef)
 *drop smokef
+
+****** MARRIAGE/PARTNERSHIP STATUS ******
+
+* Generate partnership status vars, then drop mstat
+* mstat values: 1 - Married
+*               3 - Partnered
+*               4 - Separated
+*               5 - Divorced
+*               7 - Widowed
+*               8 - Never Married
+replace mstat = 2 if inlist(mstat, 4,5,8)
+replace mstat = 4 if mstat == 7
+label define mstat 1 "Married" 2 "Single" 3 "Cohabiting" 4 "Widowed"
+label values mstat mstat
+
+gen married = mstat == 1
+gen single = mstat == 2
+gen cohab = mstat == 3
+gen widowed = mstat == 4
+label variable married "Married"
+label variable single "Single"
+label variable cohab "Cohabiting"
+label variable widowed "Widowed"
 
 ****** LONELINESS ******
 
