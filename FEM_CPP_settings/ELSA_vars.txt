@@ -359,13 +359,21 @@ married_educl_interaction = married * educl : Interaction between married and sp
 age_elsa = if(age<=50,50,if(age>=100,100,floor(age)))
 
 | Alcfreq assignment
-alcfreq1 = (alcfreq == 1) :: boolean
-alcfreq2 = (alcfreq == 2) :: boolean
-alcfreq3 = (alcfreq == 3) :: boolean
-alcfreq4 = (alcfreq == 4) :: boolean
-alcfreq5 = (alcfreq == 5) :: boolean
-alcfreq6 = (alcfreq == 6) :: boolean
-alcfreq7 = (alcfreq == 7) :: boolean
-alcfreq8 = (alcfreq == 8) :: boolean
+|alcfreq1 = (alcfreq == 1) :: boolean
+|alcfreq2 = (alcfreq == 2) :: boolean
+|alcfreq3 = (alcfreq == 3) :: boolean
+|alcfreq4 = (alcfreq == 4) :: boolean
+|alcfreq5 = (alcfreq == 5) :: boolean
+|alcfreq6 = (alcfreq == 6) :: boolean
+|alcfreq7 = (alcfreq == 7) :: boolean
+|alcfreq8 = (alcfreq == 8) :: boolean
 
-alcfreq = if(drink == 0, 8) :: short
+|alcfreq = if(drink == 0, 8) :: short
+
+| Social Isolation Vars
+|sociso1 = (sociso == 1) :: boolean
+|sociso2 = (sociso == 2) :: boolean
+|sociso3 = (sociso == 3) :: boolean
+|sociso4 = (sociso == 4) :: boolean
+|sociso5 = (sociso == 5) :: boolean
+|sociso6 = (sociso == 6) :: boolean
