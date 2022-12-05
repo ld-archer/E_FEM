@@ -1,0 +1,189 @@
+---
+title: "Social_Isolation_and_Loneliness"
+output: html_notebook
+---
+
+In this notebook, we prepare all the figures and tables for the paper 'Projecting the impact of loneliness and social isolation on the health outcomes of England's future elderly population'. We want to investigate how loneliness and social isolation will affect health outcomes, both together and separately, when we project an elderly population into the future using the English Future Elderly model. 
+
+# Setup
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(reactable)
+require(haven)
+require(ggplot2)
+require(jtools)
+
+
+
+```
+
+## Data
+
+```{r}
+# Directories
+base_output_dir <- "output/COMPLETE/"
+input_dir <- "input_data/"
+
+source('FEM_R/utilities.R')
+
+# Inputs
+long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
+stock <- read_dta(paste0(input_dir, 'ELSA_stock.dta'))
+repl <- read_dta(paste0(input_dir, 'ELSA_repl.dta'))
+trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
+
+# Outputs
+base_full <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
+cohort_full <- read_dta(paste0(base_output_dir, 'ELSA_core_cohort/ELSA_core_cohort_summary.dta'))
+```
+
+
+# Sample Statistics
+
+In this section, we will calculate a lot of sample statistics on the stock, replenishing, and transition populations, and generate a table that can be easily copied into latex. We will also investigate the distribution of both the loneliness and social isolation measures we have added to the FEM, and particularly look to see how both loneliness and social isolation is distributed among different demographic groups. I am also interested in the individual elements of the index of social isolation, because I want to investigate some of the reasons why social isolation may be distributed differently to loneliness. 
+
+## Sample Statistic Calculations
+
+We want sample statistics on a number of characteristics of our input populations:
+- Demographics
+    - Age
+    - BMI
+    - Gender
+    - Education
+- Married/cohabiting %
+- Loneliness score
+- Social Isolation Index
+- Risk Behaviours
+    - Smoking
+    - Alcohol frequency
+    - Physical Activity
+- Mental conditions
+    - Depression
+    - More?
+- Chronic Diseases
+    - Any
+    - Hypertension
+    - CVD
+    - Diabetes
+    - Cancer
+    - Alzheimers/Dementia
+    
+Samples must be weighted by survey cross-sectional weight - `cwtresp`
+
+
+
+```{r, echo=FALSE}
+### Going to update the previous function from utilities.R here
+# copy the data so we don't overwrite anything
+s <- stock
+
+# try it first to see what we get
+#weighted.survey.means(s)
+
+weighted.survey.means <- function(init.pop, transition=FALSE) {
+  
+  require(survey)
+  
+  if(!transition) {
+    design <- svydesign(id = ~idauniq,
+                        weights = ~weight,
+                        data = init.pop)
+  } else if(transition) {
+    # Error from missing cwtresp var - drop all that are missing to solve
+    init.pop <- init.pop[complete.cases(init.pop$cwtresp),]
+    design <- svydesign(id = ~idauniq,
+                        weights = ~cwtresp,
+                        data = init.pop)
+  }
+  print(svymean(~age, design, na.rm=TRUE))
+  print(svyvar(~age, design, na.rm=TRUE))
+  print(svymean(~male, design, na.rm=TRUE))
+  print(svymean(~bmi, design, na.rm=TRUE))
+  print(svyvar(~bmi, design, na.rm=TRUE))
+  print(svymean(~smoken, design, na.rm=TRUE))
+  print(svymean(~smokev, design, na.rm=TRUE))
+  print(svymean(~hsless, design, na.rm=TRUE))
+  print(svymean(~college, design, na.rm=TRUE))
+  print('---------------------')
+  print(svymean(~cancre, design, na.rm=TRUE))
+  print(svymean(~diabe, design, na.rm=TRUE))
+  print(svymean(~hearte, design, na.rm=TRUE))
+  print(svymean(~stroke, design, na.rm=TRUE))
+  print(svymean(~lunge, design, na.rm=TRUE))
+  print(svymean(~hibpe, design, na.rm=TRUE))
+  print(svymean(~alzhe, design, na.rm=TRUE))
+  print(svymean(~demene, design, na.rm=TRUE))
+  print(svymean(~hchole, design, na.rm=TRUE))
+}
+
+s <- s %>% filter(!is.na(s$strat))
+
+weighted.survey.means(s)
+
+```
+
+
+```{r}
+## Lets try to make a table
+require(survey)
+
+# First create survey design object for weighted stats
+design <- svydesign(id = ~idauniq,
+                    weights = ~weight,
+                    data = s)
+
+# Now calculate means (and SE)
+# Age + Sex + BMI + Smoking Status + Education MEANS
+means <- svymean(~age+male+bmi+smoken+smokev+hsless+college, design, na.rm=TRUE)
+mean.df <- as.data.frame(means, optional = TRUE)
+mean.df <- tibble::rownames_to_column(mean.df, 'Variable')
+
+# Need counts of non missing data per variable to calculate SD from SE
+counts <- s %>% summarise_each(funs(sum(!is.na(.)))) %>%
+  select(age, male, bmi, smoken, smokev, hsless, college) %>%
+  t() %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column('Variable') %>%
+  rename(n = 'V1')
+
+# Lovely, now merge
+mean.df <- merge(counts, mean.df, by = 'Variable')
+
+# Now we can calculate SD
+mean.df$SD <- mean.df$SE * sqrt(mean.df$n)
+
+
+
+
+
+print(mean.df)
+```
+
+
+## Distribution of Lnly
+```{r}
+
+```
+
+## Distribution of SocIso
+
+## Latex outputs
+
+# Results
+
+## Functions
+
+## Baseline
+
+### Life Years
+
+### Disability-free Life Years
+
+### Disease-free Life Years
+
+## Interventions

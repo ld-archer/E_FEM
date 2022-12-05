@@ -1,4 +1,43 @@
 
+########## SAMPLE STATISTICS ##########
+
+
+weighted.survey.means <- function(init.pop, transition=FALSE) {
+  
+  require(survey)
+  
+  if(!transition) {
+    design <- svydesign(id = ~idauniq,
+                        weights = ~weight,
+                        data = init.pop)
+  } else if(transition) {
+    # Error from missing cwtresp var - drop all that are missing to solve
+    init.pop <- init.pop[complete.cases(init.pop$cwtresp),]
+    design <- svydesign(id = ~idauniq,
+                        weights = ~cwtresp,
+                        data = init.pop)
+  }
+  print(svymean(~age, design, na.rm=TRUE))
+  print(svyvar(~age, design, na.rm=TRUE))
+  print(svymean(~male, design, na.rm=TRUE))
+  print(svymean(~bmi, design, na.rm=TRUE))
+  print(svyvar(~bmi, design, na.rm=TRUE))
+  print(svymean(~smoken, design, na.rm=TRUE))
+  print(svymean(~smokev, design, na.rm=TRUE))
+  print(svymean(~hsless, design, na.rm=TRUE))
+  print(svymean(~college, design, na.rm=TRUE))
+  print('---------------------')
+  print(svymean(~cancre, design, na.rm=TRUE))
+  print(svymean(~diabe, design, na.rm=TRUE))
+  print(svymean(~hearte, design, na.rm=TRUE))
+  print(svymean(~stroke, design, na.rm=TRUE))
+  print(svymean(~lunge, design, na.rm=TRUE))
+  print(svymean(~hibpe, design, na.rm=TRUE))
+  print(svymean(~alzhe, design, na.rm=TRUE))
+  print(svymean(~demene, design, na.rm=TRUE))
+  print(svymean(~hchole, design, na.rm=TRUE))
+}
+
 # Function to calculate AUDIT-C scores and the accompanying AUDIT-C group in
 # Understanding Society data. This function is specific to the COVID-19 dataset.
 calc_audit_C19 <- function(indresp_data, wave_letter) {
