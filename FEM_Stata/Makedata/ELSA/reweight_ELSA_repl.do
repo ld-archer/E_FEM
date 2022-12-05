@@ -86,4 +86,55 @@ else if "`scen'" == "base_nodrink" {
 	saveold $outdata/ELSA_repl_nodrink.dta, replace v(12)
 }
 
+
+
+** Now generate some new repls for no loneliness and/or social isolation
+preserve
+
+* First remove loneliness and leave everything else
+replace lnly = 1
+replace lnly1 = 1
+replace lnly2 = 0
+replace lnly3 = 0
+replace l2lnly = 1
+replace l2lnly1 = 1
+replace l2lnly2 = 0
+replace l2lnly3 = 0
+saveold $outdata/ELSA_repl_nolnly.dta, replace v(12)
+
+restore
+
+* Now remove social isolation and leave everything else
+replace sociso = 1
+replace sociso1 = 1
+replace sociso2 = 0
+replace sociso3 = 0
+replace l2sociso = 1
+replace l2sociso1 = 1
+replace l2sociso2 = 0
+replace l2sociso3 = 0
+saveold $outdata/ELSA_repl_nosociso.dta, replace v(12)
+
+restore
+
+* Now remove both
+replace lnly = 1
+replace lnly1 = 1
+replace lnly2 = 0
+replace lnly3 = 0
+replace l2lnly = 1
+replace l2lnly1 = 1
+replace l2lnly2 = 0
+replace l2lnly3 = 0
+replace sociso = 1
+replace sociso1 = 1
+replace sociso2 = 0
+replace sociso3 = 0
+replace l2sociso = 1
+replace l2sociso1 = 1
+replace l2sociso2 = 0
+replace l2sociso3 = 0
+saveold $outdata/ELSA_repl_nolnlysociso.dta, replace v(12)
+
+
 capture log close 
