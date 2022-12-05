@@ -90,6 +90,7 @@ inw*sc
 inw*n
 inw3lh
 r*cwtresp
+r*strat
 r*iwindy
 r*iwindm
 rabyear
@@ -184,11 +185,11 @@ forvalues wv = $firstwave/$lastwave {
 
 * Rename variables to make reshape easier and have names consistent with US FEM
 * Respondent?
-* REMOVED: strat,
 #d ;
 foreach var in 
     iwstat
     cwtresp
+    strat
     iwindy
     iwindm
     agey
@@ -296,9 +297,8 @@ foreach var in `wav1missvars' {
 }
 
 * Reshape data from wide to long
-* REMOVED: strat
 #d ;
-reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda 
+reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata beda 
     toilta mapa phonea moneya medsa shopa mealsa housewka hibpe diabe cancre lunge 
     hearte stroke psyche arthre mbmi smokev smoken hhid inw insc inn
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
@@ -313,6 +313,7 @@ reshape long iwstat cwtresp iwindy iwindm agey walkra dressa batha eata beda
 rename mbmi bmi
 
 
+label variable strat "ELSA Stratification Variable"
 label variable iwindy "Interview Year"
 label variable iwindm "Interview Month"
 label variable inw "Response indicator"
