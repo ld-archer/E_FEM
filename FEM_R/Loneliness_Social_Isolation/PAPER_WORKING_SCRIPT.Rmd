@@ -25,21 +25,26 @@ require(jtools)
 ## Data
 
 ```{r}
-# Directories
-base_output_dir <- "output/COMPLETE/"
+## Directories
+base_output_dir <- "output/LNLY_SOCISO/"
 input_dir <- "input_data/"
 
 source('FEM_R/utilities.R')
 
-# Inputs
+## Inputs
 long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
 stock <- read_dta(paste0(input_dir, 'ELSA_stock.dta'))
 repl <- read_dta(paste0(input_dir, 'ELSA_repl.dta'))
 trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
 
-# Outputs
+## Outputs
+### Baseline
 base_full <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
 cohort_full <- read_dta(paste0(base_output_dir, 'ELSA_core_cohort/ELSA_core_cohort_summary.dta'))
+### Interventions
+no.lonely <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_cohort/ELSA_nolnly_cohort_summary.dta'))
+no.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nosociso_cohort/ELSA_nosociso_cohort_summary.dta'))
+no.lnly.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_nosociso_cohort/ELSA_nolnly_nosociso_cohort_summary.dta'))
 ```
 
 
@@ -176,14 +181,184 @@ print(mean.df)
 
 # Results
 
+Looking at three outcomes in particular, and maybe some other supporting stuff if its interesting enough.
+
+The three outcomes are:
+- Life Years
+- Disability-free Life Years
+- Disease-free Life Years
+
 ## Functions
+
+### Cohort
+
+Can work out Life Years and DFLYs from summary output for cohort populations.
+
+We do this by multiplying the number of people alive by 2 each year to get the total number of people living (life years) per wave (2 years each wave). We then get the total number of life years for all people at each wave, and can therefore work out the average life years per person by dividing the total by number of people alive at each wave.
+
+Using these calculation we can make comparisons between baseline and intervention scenarios in terms of average life years.
+
+```{r "LifeYears"}
+# Calculate average life years for an entire cohort from 50
+cohortLifeyear <- function(c) {
+  c.tot.lfyrs <- c$m_endpop_all * 2
+  c.sum.tot.lfyrs <- sum(c.tot.lfyrs)
+  c.avg.lfyr <- c.sum.tot.lfyrs / c$m_endpop_all[1]
+  return(c.avg.lfyr)
+}
+
+# Compare cohort LifeYears from 50 between two summary outputs (baseline vs int)
+lifeyearComparison <- function(c, i, int.name) {
+  
+  c.avg.lfyr <- cohortLifeyear(c)
+  
+  i.avg.lfyr <- cohortLifeyear(i)
+  
+  print(int.name)
+  print(paste('Cohort Average Lifeyears:        ', signif(c.avg.lfyr, digits=4)))
+  print(paste('Intervention Average Lifeyears:  ', signif(i.avg.lfyr, digits=4)))
+  print(paste('Increase:                        ', signif(x = (i.avg.lfyr - c.avg.lfyr), digits=4)))
+}
+
+# This function calculates the average number of life years in the model when diagnosed with a chronic disease
+diseaseVarLifeyear <- function(c, var) {
+  
+  prevVar <- paste0('p_', var, '_all')
+  
+  c.tot.var.lfyrs <- c[,prevVar] * c$m_endpop_all * 2
+  c.sum.var.lfyrs <- sum(c.tot.var.lfyrs)
+  c.avg.var.lfyrs <- c.sum.var.lfyrs / c$m_endpop_all[1]
+  
+  print(paste0(var, ':    ', signif(c.avg.var.lfyrs, digits=4)))
+}
+```
+
+```{r "Disability"}
+# Calculate disability life years
+disabilityLifeYearsCohort <- function(c) {
+  total_dis <- c$a_disabled_all * c$m_endpop_all
+  sum_tot_dis <- sum(total_dis)
+  avg_dis <- sum_tot_dis / c$m_endpop_all[1]
+  return(avg_dis)
+}
+
+# Compare disability life years between scenarios
+disabilityLifeYearComp <- function(c, i, int.name) {
+  c.avg.dis <- disabilityLifeYearsCohort(c)
+  i.avg.dis <- disabilityLifeYearsCohort(i)
+  print(int.name)
+  print(paste('Cohort Average Disabled Lifeyears:        ', signif(c.avg.dis, digits=4)))
+  print(paste('Intervention Average Disabled Lifeyears:  ', signif(i.avg.dis, digits=4)))
+  print(paste('Increase:                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+}
+
+# Calculate disability free life years
+disabilityFreeLifeYearsCohort <- function(c) {
+  total_disfree <- c$a_not_disabled_all * c$m_endpop_all
+  sum_tot_disfree <- sum(total_disfree)
+  avg_disfree <- sum_tot_disfree / c$m_endpop_all[1]
+  return(avg_disfree)
+}
+
+# Compare disability free life years between scenarios
+disabilityFreeLifeYearsComp <- function(c, i, int.name) {
+  c.avg.dis <- disabilityFreeLifeYearsCohort(c)
+  i.avg.dis <- disabilityFreeLifeYearsCohort(i)
+  print(int.name)
+  print(paste('Cohort Average Disability Free Lifeyears:        ', signif(c.avg.dis, digits=4)))
+  print(paste('Intervention Average Disability Free Lifeyears:  ', signif(i.avg.dis, digits=4)))
+  print(paste('Increase:                                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+}
+```
+
+```{r "Disease"}
+# Calculate disease life years
+diseaseLifeYearsCohort <- function(c) {
+  total_dis <- c$a_anydisease_all * c$m_endpop_all
+  sum_tot_dis <- sum(total_dis)
+  avg_dis <- sum_tot_dis / c$m_endpop_all[1]
+  return(avg_dis)
+}
+
+# Compare disease life years between scenarios
+diseaseLifeYearComp <- function(c, i, int.name) {
+  c.avg.dis <- diseaseLifeYearsCohort(c)
+  i.avg.dis <- diseaseLifeYearsCohort(i)
+  print(int.name)
+  print(paste('Cohort Average Diseased Lifeyears:        ', signif(c.avg.dis, digits=4)))
+  print(paste('Intervention Average Diseased Lifeyears:  ', signif(i.avg.dis, digits=4)))
+  print(paste('Increase:                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+}
+
+# Calculate disease free life years
+diseaseFreeLifeYearsCohort <- function(c) {
+  total_disfree <- c$a_nodisease_all * c$m_endpop_all
+  sum_tot_disfree <- sum(total_disfree)
+  avg_disfree <- sum_tot_disfree / c$m_endpop_all[1]
+  return(avg_disfree)
+}
+
+# Compare disease free life years between scenarios
+diseaseFreeLifeYearsComp <- function(c, i, int.name) {
+  c.avg.dis <- diseaseFreeLifeYearsCohort(c)
+  i.avg.dis <- diseaseFreeLifeYearsCohort(i)
+  print(int.name)
+  print(paste('Cohort Average Disease Free Lifeyears:        ', signif(c.avg.dis, digits=4)))
+  print(paste('Intervention Average Disease Free Lifeyears:  ', signif(i.avg.dis, digits=4)))
+  print(paste('Increase:                                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+}
+```
+
+
+### Whole Population
+
+
 
 ## Baseline
 
 ### Life Years
+```{r}
+coh.ly <- cohortLifeyear(cohort_full)
+
+# Total lifeyears
+print(paste('Cohort Average Lifeyears:        ', signif(coh.ly, digits=4)))
+
+# Cohort disease life years
+diseaseVarLifeyear(cohort_full, 'cancre')
+diseaseVarLifeyear(cohort_full, 'diabe')
+diseaseVarLifeyear(cohort_full, 'hearte')
+diseaseVarLifeyear(cohort_full, 'lunge')
+diseaseVarLifeyear(cohort_full, 'hibpe')
+diseaseVarLifeyear(cohort_full, 'stroke')
+diseaseVarLifeyear(cohort_full, 'alzhe')
+diseaseVarLifeyear(cohort_full, 'demene')
+```
+
 
 ### Disability-free Life Years
 
 ### Disease-free Life Years
 
 ## Interventions
+
+### Burden of Loneliness
+```{r}
+coh.ly <- cohortLifeyear(cohort_full)
+nolnly.ly <- cohortLifeyear(no.lonely)
+
+lifeyearComparison(cohort_full, no.lonely, 'No Loneliness')
+lifeyearComparison(cohort_full, no.sociso, 'No Social Isolation')
+lifeyearComparison(cohort_full, no.lnly.sociso, 'No Loneliness OR Social Isolation')
+```
+
+
+
+
+
+
+
+
+
+
+
+

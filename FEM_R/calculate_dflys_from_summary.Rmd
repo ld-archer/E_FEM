@@ -12,7 +12,7 @@ First setup and reading in data files.
 # Setup
 ```{r "setup", include=FALSE}
 # Need to set up the environment
-workingDir <- "/home/luke/Documents/E_FEM_clean/tmp_output/"
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/COMPLETE/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
@@ -33,20 +33,20 @@ require(ggplot2)
 cohort <- read_dta('ELSA_core_cohort/ELSA_core_cohort_summary.dta')
 
 # Hearte (cohort and pop)
-heart_c <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta')
+#heart_c <- read_dta('ELSA_core_remove_hearte_c/ELSA_core_remove_hearte_c_summary.dta')
 #heart_p <- read_dta('ELSA_core_remove_hearte_p/ELSA_core_remove_hearte_p_summary.dta')
 
 # Smoking (cohort)
-smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
+#smok <- read_dta('ELSA_core_remove_smoken/ELSA_core_remove_smoken_summary.dta')
 
 # BMI (cohort)
 #nomorbid <- read_dta('ELSA_core_nomorbid/ELSA_core_nomorbid_summary.dta')
 #obese2 <- read_dta('ELSA_core_noobese2/ELSA_core_noobese2_summary.dta')
-obese1 <- read_dta('ELSA_core_noobese1/ELSA_core_noobese1_summary.dta')
+#obese1 <- read_dta('ELSA_core_noobese1/ELSA_core_noobese1_summary.dta')
 
 # Drinking (pop)
-nodrink_p <- read_dta('ELSA_core_remove_drink_p/ELSA_core_remove_drink_p_summary.dta')
-nodrink_c <- read_dta('ELSA_core_remove_drink_c/ELSA_core_remove_drink_c_summary.dta')
+#nodrink_p <- read_dta('ELSA_core_remove_drink_p/ELSA_core_remove_drink_p_summary.dta')
+#nodrink_c <- read_dta('ELSA_core_remove_drink_c/ELSA_core_remove_drink_c_summary.dta')
 #noBadDrink <- read_dta('ELSA_core_remove_problem_drink_p/ELSA_core_remove_problem_drink_p_summary.dta')
 ```
 
@@ -103,7 +103,7 @@ diseaseVarLifeyear <- function(c, var) {
 ### Cohort
 ```{r}
 # Cohort life years
-c <- cohort
+c <- cohort_full
 c.ly <- cohortLifeyear(c)
 print(paste0('Cohort Life Years: ', signif(c.ly, digits=4)))
 print('-------------------')
@@ -377,3 +377,9 @@ ggplot(data = combined2, aes(x = year, y = dis_by_person, color = source)) +
   geom_line()
 
 ```
+
+
+```{r}
+
+```
+
