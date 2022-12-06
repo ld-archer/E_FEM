@@ -58,11 +58,12 @@ alcohol2: core_prep simulation_alcohol2 alcohol_doc
 handovers: SUBPOP = handovers
 handovers: core_complete handover_plots
 
-alcohol_all: alcohol alcohol2
-
 everything: core_debug alcohol handovers roc
 
 validation: core_debug handovers roc
+
+lnly_sociso: SUBPOP = lnly_sociso
+lnly_sociso: core_prep simulation_lnly_sociso
 
 
 ### Combined rules
@@ -285,6 +286,11 @@ simulation_alcohol:
 
 simulation_alcohol2:
 	$(MPI) ELSA_Alcohol_Intervention_2.settings.txt
+
+simulation_lnly_sociso: $(OUTDATA)/LNLY_SOCISO/ELSA_core_base/ELSA_core_base_summary.dta
+
+$(OUTDATA)/LNLY_SOCISO/ELSA_core_base/ELSA_core_base_summary.dta: $(ROOT)/ELSA_lonely_sociso.csv $(ROOT)/ELSA_lonely_sociso.settings.txt $(ROOT)/FEM $(FEM_CPP_settings)/ELSA_vars.txt $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_repl.dta
+	$(MPI) ELSA_lonely_sociso.settings.txt
 
 
 ### Handovers and Validation
