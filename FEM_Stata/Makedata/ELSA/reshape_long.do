@@ -813,6 +813,12 @@ foreach var in
     alcfreq7
     alcfreq8
     sociso
+    sociso1
+    sociso2
+    sociso3
+    sociso4
+    sociso5
+    sociso6
     {;
         gen l2`var' = L.`var';
     };
@@ -840,6 +846,21 @@ replace educ = . if missing(educ)
 *** Drop Vars That Are Not Necessary ***
 drop r*scwtresp
 drop r*fagey
+
+
+*** DROP VARS CURRENTLY NOT IN USE ***
+* These variables are not in use at the minute, and all they do is pollute the std::out and logs so I'm going to remove them for now
+*drop r*idauniq
+*drop r*GOR
+*drop r*inw
+*drop r*insc
+*drop r*inw3lh
+*drop r*strat
+*drop r*radyear
+*drop r*lbrf
+*drop r*complac
+*drop r*leftout
+*drop r*isolate
 
 *save ../../../input_data/ELSA_long.dta, replace
 save $outdata/ELSA_long.dta, replace

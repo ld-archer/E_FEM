@@ -103,6 +103,7 @@ replace l2lnly3 = 0
 saveold $outdata/ELSA_repl_nolnly.dta, replace v(12)
 
 restore
+preserve
 
 * Now remove social isolation and leave everything else
 replace sociso = 1

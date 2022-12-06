@@ -25,12 +25,12 @@ gen l2iadl1 = (l2iadlstat == 2) if !missing(l2iadlstat)
 gen l2iadl2p = (l2iadlstat == 3) if !missing(l2iadlstat)
 
 * Social Isolation dummy vars
-gen l2sociso1 = (l2sociso == 1) if !missing(l2sociso)
-gen l2sociso2 = (l2sociso == 2) if !missing(l2sociso)
-gen l2sociso3 = (l2sociso == 3) if !missing(l2sociso)
-gen l2sociso4 = (l2sociso == 4) if !missing(l2sociso)
-gen l2sociso5 = (l2sociso == 5) if !missing(l2sociso)
-gen l2sociso6 = (l2sociso == 6) if !missing(l2sociso)
+*gen l2sociso1 = (l2sociso == 1) if !missing(l2sociso)
+*gen l2sociso2 = (l2sociso == 2) if !missing(l2sociso)
+*gen l2sociso3 = (l2sociso == 3) if !missing(l2sociso)
+*gen l2sociso4 = (l2sociso == 4) if !missing(l2sociso)
+*gen l2sociso5 = (l2sociso == 5) if !missing(l2sociso)
+*gen l2sociso6 = (l2sociso == 6) if !missing(l2sociso)
 
 * Age splines
 local age_var age
