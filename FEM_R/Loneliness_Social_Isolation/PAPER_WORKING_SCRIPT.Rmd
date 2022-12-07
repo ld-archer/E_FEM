@@ -5,6 +5,28 @@ output: html_notebook
 
 In this notebook, we prepare all the figures and tables for the paper 'Projecting the impact of loneliness and social isolation on the health outcomes of England's future elderly population'. We want to investigate how loneliness and social isolation will affect health outcomes, both together and separately, when we project an elderly population into the future using the English Future Elderly model. 
 
+
+
+
+
+# README!!!!!!!!!
+
+Need some investigation as the outcomes are not what we expect:
+- Check deaths by subgroup per wave
+    - Make sure the underlying data shows what we expect
+    - Should also extend this to see incidence of chronic disease by subgroup
+- Check the indices have been created successfully
+    - Loneliness should be fine, but we can test by recreating the summary measure from the three vars
+    - Social isolation could be wrong. Check each member of the index for any of these weird relationships
+- Look at the sample we are providing to the transition models
+    - Is the sample correct? Check the paper the social isolation index is based on and see what sample they used. Maybe we can recreate this and try to recreate the results they got for their cox PH model
+
+
+
+
+
+
+
 # Setup
 
 ```{r setup, include=FALSE}
@@ -17,10 +39,19 @@ require(reactable)
 require(haven)
 require(ggplot2)
 require(jtools)
-
+require(ggfortify)
+require(survival)
+require(survminer)
+require(lazyeval)
 
 
 ```
+
+```{r}
+source('../HAZARDS/source/hazard_utils.R')
+source('FEM_R/utilities.R')
+```
+
 
 ## Data
 
@@ -28,8 +59,6 @@ require(jtools)
 ## Directories
 base_output_dir <- "output/LNLY_SOCISO/"
 input_dir <- "input_data/"
-
-source('FEM_R/utilities.R')
 
 ## Inputs
 long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
@@ -179,6 +208,105 @@ print(mean.df)
 
 ## Latex outputs
 
+# Survival Analysis (For Testing)
+
+```{r}
+prepped.long <- prepare_ELSA(elsa_long = long, 
+                         wave_start = 1, 
+                         wave_end = 9, 
+                         print_counts = TRUE)
+```
+
+## Deaths
+### Subgroup
+```{r}
+deaths_by_subgroup <- function(elsa, subgroup) {
+  
+  dead.subgroup <- elsa %>% 
+    filter(died == 1) %>%
+    group_by(sociso) %>%
+    count()
+  
+  return(dead.subgroup)
+}
+
+test.out <- deaths_by_subgroup(prepped.long, 'sociso')
+test.out
+
+dead.subgroup <- prepped.long %>%
+  filter(died == 1) %>%
+  group_by(lnly) %>%
+  summarise(n = n())
+
+dead.subgroup
+
+prepped.long %>% count(lnly)
+```
+
+```{r}
+# Only extract rows when someone died
+dead <- prepped.long %>% filter(died == 1)
+
+# Report total number of deaths and number per wave
+print(paste0('Number of people who died during survey: ', nrow(dead), '/', length(unique(prepped.long$idauniq))))
+table(dead$wave)
+
+dead.alcstat <- dead %>%
+  group_by(wave, lnly) %>%
+  count() %>%
+  rename(Deaths = 'n')
+# 
+# # replace NA with 'unknown'
+# dead.alcstat$alcstat6 <- as.character(dead.alcstat$alcstat6)
+# dead.alcstat[is.na(dead.alcstat)] <- 'Unknown'
+# dead.alcstat$alcstat6 <- as.factor(dead.alcstat$alcstat6)
+# 
+# dead.alcstat
+# 
+# # Now plot deaths by alcstat6 at each wave
+# ggplot(data = dead.alcstat, mapping = aes(x = wave, y = Deaths, fill = alcstat6)) +
+#   geom_bar(stat = 'identity', position = 'dodge') +
+#   labs(title = 'Deaths stratified by alcstat6 categories',
+#        x = 'Wave',
+#        y = 'Number of Deaths')
+# 
+# ## GOOD (not really big problems but the code works fine)
+# # Now calculate the proportion of each group that die each wave
+# 
+# # First calculate n by group at each wave (including the unknowns)
+# counts.subgroup <- test %>% 
+#   group_by(wave, alcstat6) %>%
+#   count() %>%
+#   rename(Total_sample = 'n')
+# 
+# # Replace NA with 'unknown'
+# counts.subgroup$alcstat6 <- as.character(counts.subgroup$alcstat6)
+# counts.subgroup[is.na(counts.subgroup)] <- 'Unknown'
+# counts.subgroup$alcstat6 <- as.factor(counts.subgroup$alcstat6)
+# 
+# # now merge total and deaths together
+# counts <- merge(counts.subgroup, dead.alcstat, by = c('wave', 'alcstat6'), all = TRUE)
+# 
+# # finally, calculate proportion of deaths per subgroup
+# counts$death_prop <- (counts$Deaths / counts$Total_sample) * 100
+# 
+# # Now plot death_prop by alcstat6 at each wave
+# ggplot(data = counts, mapping = aes(x = wave, y = death_prop, fill = alcstat6)) +
+#   geom_bar(stat = 'identity', position = 'dodge') +
+#   labs(title = 'Proportion of deaths per wave within alcstat6 categories',
+#        x = 'Wave',
+#        y = 'Percentage of Sample')
+# # one more without unknown
+# ggplot(data = filter(counts, alcstat6 != 'Unknown'), mapping = aes(x = wave, y = death_prop, fill = alcstat6)) +
+#   geom_bar(stat = 'identity', position = 'dodge') +
+#   labs(title = 'Proportion of deaths per wave within alcstat6 categories',
+#        x = 'Wave',
+#        y = 'Percentage of Sample')
+```
+
+
+
+
 # Results
 
 Looking at three outcomes in particular, and maybe some other supporting stuff if its interesting enough.
@@ -188,7 +316,7 @@ The three outcomes are:
 - Disability-free Life Years
 - Disease-free Life Years
 
-## Functions
+## Life Years Functions
 
 ### Cohort
 
@@ -341,7 +469,9 @@ diseaseVarLifeyear(cohort_full, 'demene')
 
 ## Interventions
 
-### Burden of Loneliness
+### Burden of Chronic Diseases
+
+#### Life Years
 ```{r}
 coh.ly <- cohortLifeyear(cohort_full)
 nolnly.ly <- cohortLifeyear(no.lonely)
@@ -351,7 +481,18 @@ lifeyearComparison(cohort_full, no.sociso, 'No Social Isolation')
 lifeyearComparison(cohort_full, no.lnly.sociso, 'No Loneliness OR Social Isolation')
 ```
 
+#### Disability Free Life Years
+```{r}
+disabilityFreeLifeYearsComp(cohort_full, no.lonely, 'No Loneliness')
+disabilityFreeLifeYearsComp(cohort_full, no.sociso, 'No Social Isolation')
+disabilityFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'No Loneliness OR Social Isolation')
+```
 
+```{r}
+diseaseFreeLifeYearsComp(cohort_full, no.lonely, 'No Loneliness')
+diseaseFreeLifeYearsComp(cohort_full, no.sociso, 'No Social Isolation')
+diseaseFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'No Loneliness OR Social Isolation')
+```
 
 
 

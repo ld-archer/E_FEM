@@ -38,6 +38,13 @@ weighted.survey.means <- function(init.pop, transition=FALSE) {
   print(svymean(~hchole, design, na.rm=TRUE))
 }
 
+########## Life Years and DFLYs ##########
+
+
+
+
+########## ALCOHOL CALCULATIONS ##########
+
 # Function to calculate AUDIT-C scores and the accompanying AUDIT-C group in
 # Understanding Society data. This function is specific to the COVID-19 dataset.
 calc_audit_C19 <- function(indresp_data, wave_letter) {
