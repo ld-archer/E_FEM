@@ -96,6 +96,7 @@ FEM_CPP_settings/summary_output_ELSA_*
 # R files
 FEM_R/*.nb.html
 FEM_R/Alcohol/*
+FEM_R/*/*.nb.html
 .Rhistory
 input_data/.RData
 input_data/*.mids
