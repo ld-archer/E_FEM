@@ -109,30 +109,38 @@ local lvars_sociso l2sociso2 l2sociso3 l2sociso4 l2sociso5 l2sociso6 /* Control:
 * 16/6/21 - now includes l2hibpe & `lvars_funclimit'
 *global allvars_died        $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2hibpe `lvars_smoke' l2demene `lvars_funclimit'
 * FROM covar_defincoreLEGACY
-global allvars_died             $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_died             $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+global allvars_died             $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 
 *** Chronic Diseases
 *CANCRE
 global allvars_cancre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev `lvars_lnly' `lvars_alcfreq'
 * DIABE
 *global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
-global allvars_diabe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole `lvars_exercise' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_diabe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole `lvars_exercise' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+global allvars_diabe            $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 * Heart Health
 *global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
-global allvars_hearte           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_lnly' `lvars_alcfreq'
+*global allvars_hearte           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_lnly' `lvars_alcfreq'
+global allvars_hearte           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 global allvars_angine           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
 global allvars_hrtatte          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
 global allvars_conhrtfe         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
 global allvars_hrtmre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
 global allvars_hrtrhme          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
 * Alzhe & Demene
-global allvars_alzhe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
-global allvars_demene           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_alzhe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_demene           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+global allvars_alzhe            $dvars $lvars_age `lvars_lnly' `lvars_sociso'
+global allvars_demene           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 * Other
-global allvars_hibpe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole `lvars_exercise' `lvars_sociso' `lvars_alcfreq'
+*global allvars_hibpe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole `lvars_exercise' `lvars_sociso' `lvars_alcfreq'
+global allvars_hibpe            $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 global allvars_lunge            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
-global allvars_stroke           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
-global allvars_hchole           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_exercise' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_stroke           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+global allvars_stroke           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
+*global allvars_hchole           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_exercise' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+global allvars_hchole           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 global allvars_srh              $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
 global allvars_asthmae          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
 global allvars_catracte         $dvars $lvars_age l2diabe l2hibpe `lvars_smoke' /* https://cks.nice.org.uk/topics/cataracts/background-information/causes-risk-factors/ */
@@ -162,8 +170,10 @@ global allvars_itot             $dvars $lvars_age `lvars_workstat' `lvars_funcli
 
 *** Disabilities
 * 16/6/21 - Now includes l2alzhe
-global allvars_adlstat          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
-global allvars_iadlstat         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_adlstat          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_iadlstat         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+global allvars_adlstat          $dvars $lvars_age `lvars_lnly' `lvars_sociso'
+global allvars_iadlstat         $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 
 *** Workstat
 global allvars_workstat         $dvars $lvars_age `lvars_funclimit'
