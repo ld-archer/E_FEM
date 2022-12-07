@@ -43,6 +43,8 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::memrye,
 		Vars::alzhmr,
 		Vars::drink,
+		Vars::lnly,
+		Vars::sociso,
 	};
 
 	int nInitVars = sizeof(init_vars)/sizeof(Vars::Vars_t);
@@ -73,6 +75,8 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 		Vars::drink,
 		Vars::smoke_start,
 		Vars::smoke_stop,
+        Vars::lnly,
+        Vars::sociso,
 	};
 
 
