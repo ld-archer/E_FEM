@@ -18,6 +18,21 @@ PYTHON = python
 RSCRIPT = Rscript
 
 
+### TODO
+
+# Need a target to go through setup for the model, meaning creation of directories, renaming things etc.
+# Folders in FEM_Stata/Estimates/
+#	ELSA
+#	ELSA_core
+# 	ELSA_minimal
+#		CV1 CV2
+# In input_data
+#	cross_validation
+#	wave_specific (and wave specific files to be added in)
+# In FEM_Stata/Makedata
+# 	hotdeck_data/
+
+
 ### Help
 
 .phony: help
@@ -395,7 +410,7 @@ $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summ
 	mv FEM_R/model_analysis_core.nb.html debug/core/core_$(TIMESTAMP)
 	cp -r output/COMPLETE/ debug/core/core_$(TIMESTAMP)
 	cp -r $(ESTIMATES)/ELSA/ $(ESTIMATES)/ELSA_minimal/ debug/core/core_$(TIMESTAMP)
-	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_CV1/ FEM_CPP_settings/ELSA_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core/core_$(TIMESTAMP)
+	cp -r FEM_CPP_settings/ELSA_core/ FEM_CPP_settings/ELSA_core_CV1/ FEM_CPP_settings/ELSA_core_CV2/ FEM_CPP_settings/ELSA_minimal/ debug/core/core_$(TIMESTAMP)
 	mkdir -p debug/core/core_$(TIMESTAMP)/logs/
 	cp -r FEM_Stata/Makedata/ELSA/*.log debug/core/core_$(TIMESTAMP)/logs/
 	cp -r FEM_Stata/Estimation/*.log debug/core/core_$(TIMESTAMP)/logs/
@@ -403,7 +418,7 @@ $(R)/model_analysis_core.nb.html: output/COMPLETE/ELSA_minimal/ELSA_minimal_summ
 	mkdir -p debug/core/core_$(TIMESTAMP)/settings/
 	cp -r FEM_CPP_settings/ debug/core/core_$(TIMESTAMP)/settings/
 	# Finally, open html file in firefox
-	firefox file:///home/luke/Documents/E_FEM_clean/E_FEM/debug/core/core_$(TIMESTAMP)/model_analysis_core.nb.html
+	firefox file:///home/luke/Documents/WORK/E_FEM/E_FEM/debug/core/core_$(TIMESTAMP)/model_analysis_core.nb.html
 
 
 scen_doc: $(R)/IJM_PAPER1_ALL_ANALYSES.nb.html $(DATADIR)/detailed_output/tot/tot_test_smoken_int[2].do

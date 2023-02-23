@@ -299,5 +299,4 @@ forvalues wv = 1/9 {
     save $outdata/H_ELSA_g2_wv_specific.dta, replace
     *save ../../../input_data/H_ELSA_g2_wv_specific.dta, replace
 }
-
 capture log close
