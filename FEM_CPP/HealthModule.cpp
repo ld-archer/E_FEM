@@ -445,17 +445,17 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
 			        if(person->get(Vars::workstat) == 3) {
 			            // Now not employed
 			            person->set(Vars::employed, 0.0);
-			            // Not unemployed
-                        person->set(Vars::unemployed, 0.0);
+			            // Not inactive
+                        person->set(Vars::inactive, 0.0);
                         // set retired indicator
                         person->set(Vars::retired, 1.0);
 			        }
-                    // Now unemployed
+                    // Now inactive
                     if(person->get(Vars::workstat) == 2) {
                         // Now not employed
                         person->set(Vars::employed, 0.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 1.0);
+                        // Now inactive
+                        person->set(Vars::inactive, 1.0);
                         // set retired indicator
                         person->set(Vars::retired, 0.0);
                     }
@@ -463,20 +463,20 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     if(person->get(Vars::workstat) == 1) {
                         // Maintain employed
                         person->set(Vars::employed, 1.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 0.0);
+                        // Not inactive
+                        person->set(Vars::inactive, 0.0);
                         // Not retired
                         person->set(Vars::retired, 0.0);
                     }
 			    }
-                // previously unemployed
+                // previously inactive
                 if(person->get(Vars::l2workstat) == 2) {
                     // Now employed
                     if(person->get(Vars::workstat) == 1) {
                         // Now not employed
                         person->set(Vars::employed, 1.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 0.0);
+                        // Not inactive
+                        person->set(Vars::inactive, 0.0);
                         // set retired indicator
                         person->set(Vars::retired, 0.0);
                     }
@@ -484,17 +484,17 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     if(person->get(Vars::workstat) == 3) {
                         // Now not employed
                         person->set(Vars::employed, 0.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 0.0);
+                        // Not inactive
+                        person->set(Vars::inactive, 0.0);
                         // set retired indicator
                         person->set(Vars::retired, 1.0);
                     }
-                    // Still unemployed (just make sure)
+                    // Still inactive (just make sure)
                     if(person->get(Vars::workstat) == 2) {
                         // Maintain employed
                         person->set(Vars::employed, 0.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 1.0);
+                        // Not inactive
+                        person->set(Vars::inactive, 1.0);
                         // Not retired
                         person->set(Vars::retired, 0.0);
                     }
@@ -505,8 +505,8 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     if(person->get(Vars::workstat) == 3) {
                         // Now not employed
                         person->set(Vars::employed, 0.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 0.0);
+                        // Not inactive
+                        person->set(Vars::inactive, 0.0);
                         // set retired indicator
                         person->set(Vars::retired, 1.0);
                     }
@@ -514,17 +514,17 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                     if(person->get(Vars::workstat) == 1) {
                         // Now not employed
                         person->set(Vars::employed, 1.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 0.0);
+                        // Not inactive
+                        person->set(Vars::inactive, 0.0);
                         // set retired indicator
                         person->set(Vars::retired, 0.0);
                     }
-                    // Still unemployed (just make sure)
+                    // Still inactive (just make sure)
                     if(person->get(Vars::workstat) == 2) {
                         // Maintain employed
                         person->set(Vars::employed, 0.0);
-                        // Not unemployed
-                        person->set(Vars::unemployed, 1.0);
+                        // Not inactive
+                        person->set(Vars::inactive, 1.0);
                         // Not retired
                         person->set(Vars::retired, 0.0);
                     }

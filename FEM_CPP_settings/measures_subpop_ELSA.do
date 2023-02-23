@@ -69,7 +69,7 @@ local measures
 					p_sociso5	p_sociso6
 					a_workstat
 					p_employed  i_employed  n_employed
-					p_unemployed i_unemployed n_unemployed
+					p_inactive i_inactive n_inactive
 					p_retired	i_retired	n_retired
 					n_anydisease 	p_anydisease	a_anydisease
 					n_nodisease		p_nodisease		a_nodisease

@@ -9,6 +9,7 @@ FEM_Stata/Estimation/*.log
 # C++
 *.o
 FEM_CPP/optimized/*.o
+FEM_CPP/optimized/*.d
 *.d
 
 # log files
