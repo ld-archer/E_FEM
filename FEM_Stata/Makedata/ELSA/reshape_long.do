@@ -687,15 +687,15 @@ xtile wealth_quintile = atotb[aw=cwtresp], n(5)
 
 * Recoding the lbrf var to three categories
 * 1 - Working (includes self-employed and partly retired)
-* 2 - Unemployed
+* 2 - Inactive
 * 3 - Retired (including disabled and caring for home/family)
-recode lbrf (1/2 4= 1 Employed) ///
-            (3    = 2 Unemployed) ///
-            (5/7  = 3 Retired) ///
+recode lbrf (1/2   = 1 "Employed") ///
+            (3 6/7 = 2 "Inactive") ///
+            (4/5   = 3 "Retired") ///
             , copyrest gen(workstat)
-*drop lbrf
+drop lbrf
 gen employed = workstat == 1
-gen unemployed = workstat == 2
+gen inactive = workstat == 2
 gen retired = workstat == 3
 
 ****** INDEX OF SOCIAL ISOLATION ******

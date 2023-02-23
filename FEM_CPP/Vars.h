@@ -600,13 +600,13 @@ namespace Vars
         workstat,                   ///< Work Status
         l2workstat,                 ///< Lag of workstat
         employed,                   ///< Employed
-        unemployed,                 ///< Unemployed
+        inactive,                 ///< inactive
         retired,                    ///< Retired
         l2employed,                 ///< Lag of Employed
-        l2unemployed,               ///< Lag of Unemployed
+        l2inactive,               ///< Lag of inactive
         l2retired,                  ///< Lag of Retired
         pworkstat1,                  ///< Probability of Employed (workstat == 1)
-        pworkstat2,                ///< Probability of Unemployed (workstat == 2)
+        pworkstat2,                ///< Probability of inactive (workstat == 2)
         pworkstat3,                   ///< Probability of Retired (workstat == 3)
         //heavy_smoker,               ///< Heavy Smoker (10+ cigs/day)
         //l2heavy_smoker,             ///< Lag of Heavy Smoker (10+ cigs/day)

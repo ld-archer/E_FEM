@@ -429,13 +429,13 @@ foreach var in lbrf_e {
 ren lbrf_e lbrf
 
 * Sort out labour force var and generate dummys
-recode lbrf (1/2 4= 1 Employed) ///
-            (3    = 2 Unemployed) ///
-            (5/7  = 3 Retired) ///
+recode lbrf (1/2   = 1 "Employed") ///
+            (3 6/7 = 2 "Inactive") ///
+            (4/5   = 3 "Retired") ///
             , copyrest gen(workstat)
-*drop lbrf
+drop lbrf
 gen employed = workstat == 1
-gen unemployed = workstat == 2
+gen inactive = workstat == 2
 gen retired = workstat == 3
 
 *** Money vars
@@ -613,7 +613,7 @@ label var sociso6 "Social Isolation == 6"
 
 label var workstat "Working Status"
 label var employed "Employed"
-label var unemployed "Unemployed"
+label var inactive "Inactive"
 label var retired "Retired"
 
 label var itotx "Total Family Income (thou.)"
@@ -641,7 +641,7 @@ restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
 local risk smoken smokev smokef bmi drink lnly /*lnly1 lnly2 lnly3*/ alcfreq /*alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8*/ sociso sociso1 sociso2 sociso3 sociso4 sociso5 sociso6
-local binecon employed unemployed retired
+local binecon employed inactive retired
 local cntecon itotx atotbx
 local demog age_yrs male white
 local unweighted died
