@@ -142,7 +142,7 @@ replace srh5 = 0 if srh3 == 1
 * Impute some vars by simply copying lag to current and/or vice versa
 foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed unemployed ///
+                        srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed inactive ///
                         retired ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly {
                             

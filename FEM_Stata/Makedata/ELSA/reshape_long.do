@@ -793,7 +793,7 @@ foreach var in
     atotb
     workstat
     employed
-    unemployed
+    inactive
     retired
     GOR
     angine

@@ -86,7 +86,7 @@ local lvars_exercise l2exstat1 l2exstat2                            /*Control: l
 * Functional Limitations
 local lvars_funclimit l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p        /*Control: NoADL*/
 * Workstat vars
-local lvars_workstat l2employed l2unemployed                        /*Control: l2retired - retired*/
+local lvars_workstat l2employed l2inactive                        /*Control: l2retired - retired*/
 * Self Reported Health
 local lvars_srh l2srh1 l2srh2 l2srh4 l2srh5
 * National Statistics Socio-Economic Classification

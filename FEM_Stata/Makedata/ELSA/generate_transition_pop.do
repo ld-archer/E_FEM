@@ -97,7 +97,7 @@ label variable l2exstat3 "Lag: Activity level - High"
 label variable l2drink "Lag: Drank alcohol in last 12 months"
 label variable l2demene "Lag: Dementia"
 label variable l2employed "Lag: Employed"
-label variable l2unemployed "Lag: Unemployed"
+label variable l2inactive "Lag: Inactive"
 
 
 * Save the file
