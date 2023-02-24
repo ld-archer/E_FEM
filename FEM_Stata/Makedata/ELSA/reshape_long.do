@@ -164,6 +164,7 @@ r*kcntm
 r*rcntm
 r*fcntm
 r*socyr
+r*jphysl
 ;
 #d cr
 
@@ -256,6 +257,7 @@ foreach var in
     rcntm
     fcntm
     socyr
+    jphysl
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -304,7 +306,7 @@ reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata be
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
-    complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr
+    complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr jphysl
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -382,6 +384,7 @@ label variable kcntm "Monthly or more contact with children"
 label variable rcntm "Monthly or more contact with relatives"
 label variable fcntm "Monthly or more contact with friends"
 label variable socyr "Whether participates in social activities (org, religious group, committee)"
+label variable jphysl "Level of physical effort required in current job"
 
 
 * Use harmonised education var
@@ -606,6 +609,20 @@ label values smkstat smkstat
 
 ****** EXERCISE ******
 
+** 23/02/23 Changing this variable to a binary variable defined in:
+* Shankar et al. (2011) - https://psycnet.apa.org/record/2011-08649-001
+
+* Active - Moderate or vigorous physical activity more than once per week OR if employed, occupation is any of standing, physical work, or heavy manual work
+* Not Active - Moderate or vigorous physical activity only once a week or less AND if employed, occupation is reported as primarily sedentary
+
+gen physically_active = .
+* First check activity level then job
+* (Moderate &| Vigorous) &| (Occupation physical activity level)
+replace physically_active = 1 if (mdactx_e == 2 | vgactx_e == 2) | (inlist(jphysl, 2, 3, 4)) 
+replace physically_active = 0 if (mdactx_e != 2 & vgactx_e != 2) & (jphysl == 1)
+replace physically_active = 1 if inlist(jphysl, 2, 3, 4) & !missing(jphysl)
+replace physically_active = 0 if jphysl == 1
+
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
 *   1 - No exercise
@@ -626,7 +643,7 @@ gen exstat3 = 1 if exstat == 3
 replace exstat3 = 0 if exstat != 3
 
 * Drop the exercise vars now
-drop ltactx_e mdactx_e vgactx_e
+*drop ltactx_e mdactx_e vgactx_e
 
 ****** INCOME AND WEALTH ******
 
