@@ -1,0 +1,117 @@
+---
+title: "Workstat"
+output: html_notebook
+---
+
+
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(reactable)
+require(haven)
+require(ggplot2)
+require(jtools)
+require(ggfortify)
+require(survival)
+require(survminer)
+require(lazyeval)
+
+
+```
+
+```{r}
+source('../HAZARDS/source/hazard_utils.R')
+source('FEM_R/utilities.R')
+```
+
+
+
+```{r}
+## Directories
+base_output_dir <- "output/COMPLETE/"
+input_dir <- "input_data/"
+## Inputs
+long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
+stock <- read_dta(paste0(input_dir, 'ELSA_stock.dta'))
+repl <- read_dta(paste0(input_dir, 'ELSA_repl.dta'))
+trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
+## Outputs
+### Baseline
+base <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
+cohort <- read_dta(paste0(base_output_dir, 'ELSA_core_cohort/ELSA_core_cohort_summary.dta'))
+### Cross-Validation
+cv1 <- read_dta(paste0(base_output_dir, 'ELSA_CV1/ELSA_CV1_summary.dta'))
+#cv1.full <- read_dta(paste0(base_output_dir, 'ELSA_CV1/detailed_output/ELSA_CV1_summary.dta'))
+cv2 <- read_dta(paste0(base_output_dir, 'ELSA_CV2/ELSA_CV2_summary.dta'))
+### Interventions
+#no.lonely <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_cohort/ELSA_nolnly_cohort_summary.dta'))
+#no.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nosociso_cohort/ELSA_nosociso_cohort_summary.dta'))
+#no.lnly.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_nosociso_cohort/ELSA_nolnly_nosociso_cohort_summary.dta'))
+```
+
+Newly recoded var is 3 levels:
+
+- Employed
+- Inactive
+- Unemployed
+
+Model won't run, saying l2inactive is not a valid variable. First thing to check
+is that the variable has been properly created and check balance.
+
+```{r}
+# First long file
+workstat.long <- long %>% 
+  select(idauniq, wave, workstat, l2workstat, employed, 
+         inactive, retired, l2employed, l2inactive, l2retired) %>%
+  group_by(wave) %>%
+  summarise(employed = sum(employed),
+            inactive = sum(inactive),
+            retired = sum(retired)) %>%
+  pivot_longer(cols = employed:retired,
+               names_to = 'workstat',
+               values_to = 'count')
+
+test.long$wave <- as.integer(test.long$wave)
+```
+
+```{r}
+ggplot(data = workstat.long, aes(x = wave, y = count, group = workstat, color=workstat)) +
+  geom_line() +
+  scale_x_continuous(breaks=c(1:9)) +
+  labs(title = 'Workstat in ELSA') +
+  xlab('Wave') +
+  ylab('Count')
+```
+
+
+
+#### Outputs
+
+```{r}
+# First long file
+test.CV1 <- cv1 %>% 
+  select(year, a_workstat_all, p_employed_all, 
+         p_inactive_all, p_retired_all) %>%
+  group_by(year) %>%
+  summarise(employed = sum(p_employed_all),
+            inactive = sum(p_inactive_all),
+            retired = sum(p_retired_all)) %>%
+  pivot_longer(cols = employed:retired,
+               names_to = 'workstat',
+               values_to = 'prevalence')
+
+test.long$wave <- as.integer(test.long$wave)
+```
+
+```{r}
+ggplot(data = test.CV1, aes(x = year, y = count, group = workstat, color=workstat)) +
+  geom_line() +
+  scale_x_continuous(breaks=c(1:9)) +
+  labs(title = 'Workstat in ELSA') +
+  xlab('Wave') +
+  ylab('Prevalence')
+```
