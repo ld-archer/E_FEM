@@ -615,13 +615,13 @@ label values smkstat smkstat
 * Active - Moderate or vigorous physical activity more than once per week OR if employed, occupation is any of standing, physical work, or heavy manual work
 * Not Active - Moderate or vigorous physical activity only once a week or less AND if employed, occupation is reported as primarily sedentary
 
-gen physically_active = .
+gen physact = .
 * First check activity level then job
 * (Moderate &| Vigorous) &| (Occupation physical activity level)
-replace physically_active = 1 if (mdactx_e == 2 | vgactx_e == 2) | (inlist(jphysl, 2, 3, 4)) 
-replace physically_active = 0 if (mdactx_e != 2 & vgactx_e != 2) & (jphysl == 1)
-replace physically_active = 1 if inlist(jphysl, 2, 3, 4) & !missing(jphysl)
-replace physically_active = 0 if jphysl == 1
+replace physact = 1 if (mdactx_e == 2 | vgactx_e == 2) | (inlist(jphysl, 2, 3, 4)) 
+replace physact = 0 if (mdactx_e != 2 & vgactx_e != 2) & (jphysl == 1)
+replace physact = 1 if inlist(jphysl, 2, 3, 4) & !missing(jphysl)
+replace physact = 0 if jphysl == 1
 
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
@@ -629,18 +629,18 @@ replace physically_active = 0 if jphysl == 1
 *   2 - Light exercise 1+ times per week
 *   3 - Moderate/Vigorous exercise 1+ times per week
 * Third try now
-gen exstat = .
-replace exstat = 1 if (ltactx_e == 4 | ltactx_e == 5) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
-replace exstat = 2 if (ltactx_e == 2 | ltactx_e == 3) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
-replace exstat = 3 if (mdactx_e == 2 | mdactx_e == 3) | (vgactx_e == 2 | vgactx_e == 3)
+*gen exstat = .
+*replace exstat = 1 if (ltactx_e == 4 | ltactx_e == 5) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+*replace exstat = 2 if (ltactx_e == 2 | ltactx_e == 3) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+*replace exstat = 3 if (mdactx_e == 2 | mdactx_e == 3) | (vgactx_e == 2 | vgactx_e == 3)
 
 * Now dummy categorical vars for including in transition models
-gen exstat1 = 1 if exstat == 1
-replace exstat1 = 0 if exstat != 1
-gen exstat2 = 1 if exstat == 2
-replace exstat2 = 0 if exstat != 2
-gen exstat3 = 1 if exstat == 3
-replace exstat3 = 0 if exstat != 3
+*gen exstat1 = 1 if exstat == 1
+*replace exstat1 = 0 if exstat != 1
+*gen exstat2 = 1 if exstat == 2
+*replace exstat2 = 0 if exstat != 2
+*gen exstat3 = 1 if exstat == 3
+*replace exstat3 = 0 if exstat != 3
 
 * Drop the exercise vars now
 *drop ltactx_e mdactx_e vgactx_e
@@ -776,10 +776,7 @@ foreach var in
     asthmae
     parkine
     drink
-    exstat
-    exstat1
-    exstat2
-    exstat3
+    physact
     overwt
     obese1
     obese2

@@ -59,7 +59,7 @@ local measures
 					a_alcfreq
 					p_alcfreq1 p_alcfreq2 p_alcfreq3 p_alcfreq4
 					p_alcfreq5 p_alcfreq6 p_alcfreq7 p_alcfreq8 
-					a_exstat	p_exstat1 	p_exstat2	p_exstat3
+					p_physact	n_physact	i_physact
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		
 					p_lnly1		p_lnly2 	p_lnly3

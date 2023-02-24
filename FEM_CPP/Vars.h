@@ -561,17 +561,17 @@ namespace Vars
 		l2vgactx_e,					///< Lag of Number of times done vigorous exercise per week, stored as Short
 		l2mdactx_e,					///< Lag of  Number of times done moderate exercise per week, stored as Short
 		l2ltactx_e,					///< Lag of  Number of times done light exercise per week, stored as Short
-		exstat,						///< Exercise Status, Approx. range [0, 1], stored as Short
-		l2exstat,					///< Lag of exercise Status, Approx. range [0, 1], stored as Short
-		exstat1,					///< exstat1 [0, 1]
-		exstat2,					///< exstat2 [0, 1]
-		exstat3,					///< exstat3 [0, 1]
-		l2exstat1,					///< l2exstat1 [0, 1]
-		l2exstat2,					///< l2exstat2 [0, 1]
-		l2exstat3,					///< l2exstat3 [0, 1]
-		pexstat1,					///< Probability of exstat==1
-		pexstat2,					///< Probability of exstat==2
-		pexstat3,					///< Probability of exstat==3
+		//exstat,						///< Exercise Status, Approx. range [0, 1], stored as Short
+		//l2exstat,					///< Lag of exercise Status, Approx. range [0, 1], stored as Short
+		//exstat1,					///< exstat1 [0, 1]
+		//exstat2,					///< exstat2 [0, 1]
+		//exstat3,					///< exstat3 [0, 1]
+		//l2exstat1,					///< l2exstat1 [0, 1]
+		//l2exstat2,					///< l2exstat2 [0, 1]
+		//l2exstat3,					///< l2exstat3 [0, 1]
+		//pexstat1,					///< Probability of exstat==1
+		//pexstat2,					///< Probability of exstat==2
+		//pexstat3,					///< Probability of exstat==3
 		rdd_treated,				///< Whether treated with ReduceDrinkDays intervention
 		l2rdd_treated,				///< Lag of whether treated with ReduceDrinkDays intervention
 		ssi_treated,				///< Whether treated with SmokeStopIntervention
@@ -678,6 +678,9 @@ namespace Vars
         psociso4,                    ///< Probability of Index of Social Isolation == 4
         psociso5,                    ///< Probability of Index of Social Isolation == 5
         psociso6,                    ///< Probability of Index of Social Isolation == 6
+        physact,                    ///< Physiaclly Active
+        l2physact,                  ///< Lag of physically active
+        pphysact,                   ///< Probability of Physically active
 		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

@@ -1,10 +1,10 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 global bin_econ
 global ols logbmi atotb itot smokef
-global order adlstat iadlstat srh exstat lnly alcfreq sociso
+global order adlstat iadlstat srh lnly alcfreq sociso
 global unorder workstat mstat
 
 * Variable names
@@ -31,6 +31,7 @@ global bin_hlth_names
     "Abnormal Heart Rhythm"
     "Cataracts"
     "Osteoporosis"
+    "Physically Active"
 ;
 global bin_econ_names
 ;
@@ -50,7 +51,6 @@ global order_names
     "ADL status"
     "IADL status"
     "Self-Reported Health Status"
-    "Exercise status"
     "Rounded categorical revised UCLA loneliness score [1-3]"
     "Alcohol consumption frequency [1-8]"
     "Index of Social Isolation [1-6]"
@@ -82,7 +82,7 @@ global lvars_econ
 * Smoking
 local lvars_smoke l2smokev l2smoken l2smokef
 * Exercise vars
-local lvars_exercise l2exstat1 l2exstat2                            /*Control: l2exstat3 - High activity level*/
+*local lvars_exercise l2exstat1 l2exstat2                            /*Control: l2exstat3 - High activity level*/
 * Functional Limitations
 local lvars_funclimit l2adl1 l2adl2 l2adl3p l2iadl1 l2iadl2p        /*Control: NoADL*/
 * Workstat vars
@@ -117,34 +117,34 @@ global allvars_died             $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 global allvars_cancre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smokev `lvars_lnly' `lvars_alcfreq'
 * DIABE
 *global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
-*global allvars_diabe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole `lvars_exercise' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_diabe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2physact `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
 global allvars_diabe            $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 * Heart Health
 *global allvars_hearte       $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
-*global allvars_hearte           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise' `lvars_lnly' `lvars_alcfreq'
+*global allvars_hearte           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2physact `lvars_lnly' `lvars_alcfreq'
 global allvars_hearte           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
-global allvars_angine           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
-global allvars_hrtatte          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
-global allvars_conhrtfe         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
-global allvars_hrtmre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
-global allvars_hrtrhme          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe `lvars_exercise'
+global allvars_angine           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2physact
+global allvars_hrtatte          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2physact
+global allvars_conhrtfe         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2physact
+global allvars_hrtmre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2physact
+global allvars_hrtrhme          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2physact
 * Alzhe & Demene
-*global allvars_alzhe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
-*global allvars_demene           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_alzhe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_demene           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
 global allvars_alzhe            $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 global allvars_demene           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 * Other
-*global allvars_hibpe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole `lvars_exercise' `lvars_sociso' `lvars_alcfreq'
+*global allvars_hibpe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hchole l2physact `lvars_sociso' `lvars_alcfreq'
 global allvars_hibpe            $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 global allvars_lunge            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
 *global allvars_stroke           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2diabe l2hchole l2smoken `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
 global allvars_stroke           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
-*global allvars_hchole           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_exercise' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+*global allvars_hchole           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2physact `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
 global allvars_hchole           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 global allvars_srh              $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
 global allvars_asthmae          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke'
 global allvars_catracte         $dvars $lvars_age l2diabe l2hibpe `lvars_smoke' /* https://cks.nice.org.uk/topics/cataracts/background-information/causes-risk-factors/ */
-global allvars_osteoe           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2asthmae `lvars_exercise'   /* arthritis https://www.nhs.uk/conditions/osteoporosis/causes/ */
+global allvars_osteoe           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2asthmae l2physact   /* arthritis https://www.nhs.uk/conditions/osteoporosis/causes/ */
 
 
 *** Smoking 
@@ -155,12 +155,12 @@ global allvars_smokef           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 
 *** Drinking
 /* https://alcohol.addictionblog.org/alcoholism-causes-and-risk-factors/ */
-global allvars_drink            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' `lvars_lnly'
-global allvars_alcfreq          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise' `lvars_lnly'
+global allvars_drink            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact `lvars_lnly'
+global allvars_alcfreq          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact `lvars_lnly'
 
 
 *** Logbmi & other health
-global allvars_logbmi           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_exercise'
+global allvars_logbmi           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact
 
 
 *** Economic vars (atotb & itot)
@@ -172,20 +172,21 @@ global allvars_itot             $dvars $lvars_age `lvars_workstat' `lvars_funcli
 * 16/6/21 - Now includes l2alzhe
 *global allvars_adlstat          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
 *global allvars_iadlstat         $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2stroke l2demene l2alzhe l2osteoe l2catracte `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
-global allvars_adlstat          $dvars $lvars_age `lvars_lnly' `lvars_sociso'
-global allvars_iadlstat         $dvars $lvars_age `lvars_lnly' `lvars_sociso'
+global allvars_adlstat          $dvars $lvars_age `lvars_lnly' `lvars_sociso' l2physact
+global allvars_iadlstat         $dvars $lvars_age `lvars_lnly' `lvars_sociso' l2physact
 
 *** Workstat
 global allvars_workstat         $dvars $lvars_age `lvars_funclimit'
 
 *** Exercise
-global allvars_exstat           $dvars $lvars_age `lvars_funclimit' `lvars_exercise'
+*global allvars_exstat           $dvars $lvars_age `lvars_funclimit' l2physact
+global allvars_physact          $dvars $lvars_age `lvars_funclimit'
 
 *** Loneliness
 * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4225959/
-global allvars_lnly             $dvars $lvars_age atotb `lvars_workstat' /*`lvars_mstat'*/
+global allvars_lnly             $dvars $lvars_age atotb `lvars_workstat' l2physact
 *** Social Isolation
-global allvars_sociso           $dvars $lvars_age atotb `lvars_workstat'
+global allvars_sociso           $dvars $lvars_age atotb `lvars_workstat' l2physact
 
 *** Marriage Status
 global allvars_mstat            $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p

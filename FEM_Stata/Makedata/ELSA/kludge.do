@@ -140,7 +140,7 @@ replace srh4 = 0 if srh3 == 1
 replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
+foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
                         srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed inactive ///
                         retired ///
@@ -212,7 +212,7 @@ replace l2itot = itot if missing(l2itot) & !missing(itot)
 replace hchole = 0 if missing(hchole)
 replace l2hchole = 0 if missing(l2hchole)
 
-* Exstat more complicated still due to dummy variables
+/* * Exstat more complicated still due to dummy variables
 * Exstat == 3 is most common value, 3 is moderate/heavy exercise more than once a week
 replace exstat = 3 if missing(exstat)
 replace l2exstat = 3 if missing(l2exstat)
@@ -222,7 +222,7 @@ replace exstat3 = l2exstat3 if missing(exstat3)
 * Handle missing lagged exstat vars
 replace l2exstat1 = exstat1 if missing(l2exstat1)
 replace l2exstat2 = exstat2 if missing(l2exstat2)
-replace l2exstat3 = exstat3 if missing(l2exstat3)
+replace l2exstat3 = exstat3 if missing(l2exstat3) */
 
 * Now replace any missing lag with current, and assign the lag as the value for flogbmi50
 replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)
