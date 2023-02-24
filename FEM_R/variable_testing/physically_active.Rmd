@@ -1,0 +1,181 @@
+---
+title: "Workstat"
+output: html_notebook
+---
+
+
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(reactable)
+require(haven)
+require(ggplot2)
+require(jtools)
+require(ggfortify)
+require(survival)
+require(survminer)
+require(lazyeval)
+
+
+```
+
+```{r}
+source('../HAZARDS/source/hazard_utils.R')
+source('FEM_R/utilities.R')
+```
+
+
+
+```{r}
+## Directories
+base_output_dir <- "output/COMPLETE/"
+input_dir <- "input_data/"
+## Inputs
+long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
+stock <- read_dta(paste0(input_dir, 'ELSA_stock.dta'))
+repl <- read_dta(paste0(input_dir, 'ELSA_repl.dta'))
+trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
+## Outputs
+### Baseline
+base <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
+cohort <- read_dta(paste0(base_output_dir, 'ELSA_core_cohort/ELSA_core_cohort_summary.dta'))
+### Cross-Validation
+cv1 <- read_dta(paste0(base_output_dir, 'ELSA_CV1/ELSA_CV1_summary.dta'))
+#cv1.full <- read_dta(paste0(base_output_dir, 'ELSA_CV1/detailed_output/ELSA_CV1_summary.dta'))
+cv2 <- read_dta(paste0(base_output_dir, 'ELSA_CV2/ELSA_CV2_summary.dta'))
+### Interventions
+#no.lonely <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_cohort/ELSA_nolnly_cohort_summary.dta'))
+#no.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nosociso_cohort/ELSA_nosociso_cohort_summary.dta'))
+#no.lnly.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_nosociso_cohort/ELSA_nolnly_nosociso_cohort_summary.dta'))
+```
+
+```{r}
+# First long file
+physact.long <- long %>% 
+  select(idauniq, wave, age, male, educ, workstat, employed, inactive, retired,
+         physically_active) %>%
+  replace_na(list(physically_active = -9)) %>%
+  group_by(wave, physically_active) %>%
+  summarise(n = n(), 
+            age.mean = mean(age, na.rm=TRUE),
+            age.median = median(age, na.rm=TRUE),
+            age.5064 = sum(age >= 50 & age < 65, na.rm=TRUE),
+            age.6579 = sum(age >= 65 & age < 80, na.rm=TRUE),
+            age.80p = sum(age > 79, na.rm=TRUE),
+            male.prop = (sum(male, na.rm=TRUE) / n),
+            female = (n - sum(male, na.rm=TRUE)),
+            educ.mean = mean(educ, na.rm=TRUE),
+            educ1 = sum(educ == 1, na.rm=TRUE),
+            educ2 = sum(educ == 2, na.rm=TRUE),
+            educ3 = sum(educ == 3, na.rm=TRUE),
+            workstat.mean = mean(workstat, na.rm=TRUE),
+            employed = sum(employed, na.rm=TRUE),
+            inactive = sum(inactive, na.rm=TRUE),
+            retired = sum(retired, na.rm=TRUE))
+
+physact.long$wave <- as.integer(physact.long$wave)
+physact.long$physically_active <- as.factor(physact.long$physically_active)
+```
+
+#### By Age
+
+```{r}
+ggplot(data = physact.long, aes(x = wave, y = n, group = physically_active, colour = physically_active)) +
+  geom_line() +
+  scale_x_continuous(breaks=c(1:9)) +
+  labs(title = 'Number') +
+  xlab('Wave') +
+  ylab('Count')
+
+ggplot(data = physact.long, aes(x = wave, y = age.mean, group = physically_active, colour = physically_active)) +
+  geom_line() +
+  scale_x_continuous(breaks=c(1:9)) +
+  labs(title = 'Mean Age') +
+  xlab('Wave') +
+  ylab('Count')
+
+age.groups <- physact.long %>% 
+  select(wave, physically_active, age.5064, 
+                                      age.6579, age.80p) %>%
+  pivot_longer(cols = age.5064:age.80p,
+               names_to = 'age_group',
+               values_to = 'count')
+
+ggplot(data = age.groups, aes(x = wave, y = count, group = physically_active, colour = physically_active)) +
+  geom_line() +
+  scale_x_continuous(breaks=c(1:9)) +
+  facet_grid(age_group ~ .) +
+  labs(title = 'Count by Age Group') +
+  xlab('Wave') +
+  ylab('Count')
+ 
+# ggplot(data = physact.long, aes(x = wave, y = age.mean, group = physically_active, colour = physically_active)) +
+#   geom_line() +
+#   scale_x_continuous(breaks=c(1:9)) +
+#   labs(title = 'Mean Age') +
+#   xlab('Wave') +
+#   ylab('Count')
+```
+
+#### By Sex
+
+```{r}
+ggplot(data = physact.long, aes(x = wave, y = male.prop, group = physically_active, colour = physically_active)) +
+  geom_line() +
+  scale_x_continuous(breaks=c(1:9)) +
+  labs(title = 'Number') +
+  xlab('Wave') +
+  ylab('Count')
+```
+
+#### By Educ
+
+
+
+### Job Physically Active
+
+New variable being used to determine physically active var above. Just want to 
+plot and see.
+
+```{r}
+# First long file
+jphysl.long <- long %>% 
+  select(idauniq, wave, age, male, educ, workstat, employed, inactive, retired,
+         jphysl) %>%
+  group_by(wave, jphysl) %>%
+  summarise(n = n(), 
+            age.mean = mean(age),
+            age.median = median(age),
+            age.5064 = sum(age >= 50 & age < 65),
+            age.6579 = sum(age >= 65 & age < 80),
+            age.80p = sum(age > 79),
+            male = sum(male),
+            female = (n - sum(male)),
+            educ.mean = mean(educ),
+            educ1 = sum(educ == 1),
+            educ2 = sum(educ == 2),
+            educ3 = sum(educ == 3),
+            workstat.mean = mean(workstat),
+            employed = sum(employed),
+            inactive = sum(inactive),
+            retired = sum(retired))
+
+jphysl.long$wave <- as.integer(physact.long$wave)
+```
+
+
+
+```{r}
+ggplot(data = jphysl.long, aes(x = wave, y = count)) +
+  geom_line() +
+  scale_x_continuous(breaks=c(1:9)) +
+  labs(title = 'Workstat in ELSA') +
+  xlab('Wave') +
+  ylab('Count')
+```
+
+

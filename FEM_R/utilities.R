@@ -1,4 +1,42 @@
 
+
+########## LOOKFOR ##########
+
+lookfor <- function(data,
+                    keywords = "weight|sample",
+                    labels = TRUE,
+                    ignore.case = TRUE) {
+  # search scope
+  n <- names(data)
+  if(!length(n)) stop("there are no names to search in that object")
+  # search function
+  look <- function(x) { grep(paste(keywords, collapse="|"), x, ignore.case = ignore.case) }
+  # names search
+  x <- look(n)
+  variable <- n[x]
+  # foreign objects
+  l <- attr(data, "variable.labels")
+  if(is.null(l)) l <- attr(data, "var.labels")
+  # memisc objects
+  if(grepl("data.set|importer", class(data))) {
+    suppressMessages(suppressWarnings(require(memisc)))
+    l <- as.vector(description(data))
+  }
+  if(length(l) & labels) {
+    # search labels
+    y <- look(l)
+    # remove duplicates, reorder
+    x <- sort(c(x, y[!(y %in% x)]))
+    # add variable labels
+    variable <- n[x]
+    label <- l[x]
+    variable <- cbind(variable, label)
+  }
+  # output
+  if(length(x)) return(as.data.frame(variable, x))
+  else message("Nothing found. Sorry.")
+}
+
 ########## SAMPLE STATISTICS ##########
 
 

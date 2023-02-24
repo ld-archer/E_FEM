@@ -164,6 +164,7 @@ r*kcntm
 r*rcntm
 r*fcntm
 r*socyr
+r*jphysl
 ;
 #d cr
 
@@ -256,6 +257,7 @@ foreach var in
     rcntm
     fcntm
     socyr
+    jphysl
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -304,7 +306,7 @@ reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata be
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
-    complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr
+    complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr jphysl
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -382,6 +384,7 @@ label variable kcntm "Monthly or more contact with children"
 label variable rcntm "Monthly or more contact with relatives"
 label variable fcntm "Monthly or more contact with friends"
 label variable socyr "Whether participates in social activities (org, religious group, committee)"
+label variable jphysl "Level of physical effort required in current job"
 
 
 * Use harmonised education var
@@ -606,27 +609,41 @@ label values smkstat smkstat
 
 ****** EXERCISE ******
 
+** 23/02/23 Changing this variable to a binary variable defined in:
+* Shankar et al. (2011) - https://psycnet.apa.org/record/2011-08649-001
+
+* Active - Moderate or vigorous physical activity more than once per week OR if employed, occupation is any of standing, physical work, or heavy manual work
+* Not Active - Moderate or vigorous physical activity only once a week or less AND if employed, occupation is reported as primarily sedentary
+
+gen physact = .
+* First check activity level then job
+* (Moderate &| Vigorous) &| (Occupation physical activity level)
+replace physact = 1 if (mdactx_e == 2 | vgactx_e == 2) | (inlist(jphysl, 2, 3, 4)) 
+replace physact = 0 if (mdactx_e != 2 & vgactx_e != 2) & (jphysl == 1)
+replace physact = 1 if inlist(jphysl, 2, 3, 4) & !missing(jphysl)
+replace physact = 0 if jphysl == 1
+
 * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
 *   1 - No exercise
 *   2 - Light exercise 1+ times per week
 *   3 - Moderate/Vigorous exercise 1+ times per week
 * Third try now
-gen exstat = .
-replace exstat = 1 if (ltactx_e == 4 | ltactx_e == 5) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
-replace exstat = 2 if (ltactx_e == 2 | ltactx_e == 3) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
-replace exstat = 3 if (mdactx_e == 2 | mdactx_e == 3) | (vgactx_e == 2 | vgactx_e == 3)
+*gen exstat = .
+*replace exstat = 1 if (ltactx_e == 4 | ltactx_e == 5) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+*replace exstat = 2 if (ltactx_e == 2 | ltactx_e == 3) & (mdactx_e == 4 | mdactx_e == 5) & (vgactx_e == 4 | vgactx_e == 5)
+*replace exstat = 3 if (mdactx_e == 2 | mdactx_e == 3) | (vgactx_e == 2 | vgactx_e == 3)
 
 * Now dummy categorical vars for including in transition models
-gen exstat1 = 1 if exstat == 1
-replace exstat1 = 0 if exstat != 1
-gen exstat2 = 1 if exstat == 2
-replace exstat2 = 0 if exstat != 2
-gen exstat3 = 1 if exstat == 3
-replace exstat3 = 0 if exstat != 3
+*gen exstat1 = 1 if exstat == 1
+*replace exstat1 = 0 if exstat != 1
+*gen exstat2 = 1 if exstat == 2
+*replace exstat2 = 0 if exstat != 2
+*gen exstat3 = 1 if exstat == 3
+*replace exstat3 = 0 if exstat != 3
 
 * Drop the exercise vars now
-drop ltactx_e mdactx_e vgactx_e
+*drop ltactx_e mdactx_e vgactx_e
 
 ****** INCOME AND WEALTH ******
 
@@ -687,15 +704,15 @@ xtile wealth_quintile = atotb[aw=cwtresp], n(5)
 
 * Recoding the lbrf var to three categories
 * 1 - Working (includes self-employed and partly retired)
-* 2 - Unemployed
+* 2 - Inactive
 * 3 - Retired (including disabled and caring for home/family)
-recode lbrf (1/2 4= 1 Employed) ///
-            (3    = 2 Unemployed) ///
-            (5/7  = 3 Retired) ///
+recode lbrf (1/2   = 1 "Employed") ///
+            (3 6/7 = 2 "Inactive") ///
+            (4/5   = 3 "Retired") ///
             , copyrest gen(workstat)
-*drop lbrf
+drop lbrf
 gen employed = workstat == 1
-gen unemployed = workstat == 2
+gen inactive = workstat == 2
 gen retired = workstat == 3
 
 ****** INDEX OF SOCIAL ISOLATION ******
@@ -759,10 +776,7 @@ foreach var in
     asthmae
     parkine
     drink
-    exstat
-    exstat1
-    exstat2
-    exstat3
+    physact
     overwt
     obese1
     obese2
@@ -793,7 +807,7 @@ foreach var in
     atotb
     workstat
     employed
-    unemployed
+    inactive
     retired
     GOR
     angine

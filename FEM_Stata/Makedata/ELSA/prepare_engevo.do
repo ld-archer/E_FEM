@@ -4,7 +4,8 @@ capture log close
 
 clear all
 
-import excel "/home/luke/Documents/E_FEM_clean/E_FEM/input_data/engevo2019.xls", sheet("Table 1") cellrange(A5:U62) clear
+*import excel "/home/luke/Documents/WORK/E_FEM/E_FEM/input_data/engevo2019.xls", sheet("Table 1") cellrange(A5:U62) clear
+import excel "/home/luke/Documents/WORK/E_FEM/E_FEM/input_data/engevo2019.xls", sheet("Table 1") cellrange(A5:U62) clear
 
 * Empty 
 drop C D E

@@ -639,17 +639,17 @@ VarsInfo::VarsInfo() {
 	//info[Vars::pdrinkd_stat2]		= VarInfo("pdrinkd_stat2", "Probability of drinkd_stat==2", VarTypes::Float);
 	//info[Vars::pdrinkd_stat3]		= VarInfo("pdrinkd_stat3", "Probability of drinkd_stat==3", VarTypes::Float);
 	//info[Vars::pdrinkd_stat4]		= VarInfo("pdrinkd_stat4", "Probability of drinkd_stat==4", VarTypes::Float);
-	info[Vars::exstat]				= VarInfo("exstat", "Exercise Status, Approx Range [1, 3] stored as Short", VarTypes::Short, true);
-	info[Vars::exstat1]				= VarInfo("exstat1", "exstat 1 [0, 1]", VarTypes::Boolean, Vars::exstat, 1);
-	info[Vars::exstat2]				= VarInfo("exstat2", "exstat 2 [0, 1]", VarTypes::Boolean, Vars::exstat, 2);
-	info[Vars::exstat3]				= VarInfo("exstat3", "exstat 3 [0, 1]", VarTypes::Boolean, Vars::exstat, 3);
-	info[Vars::l2exstat]			= VarInfo("l2exstat", "Lag of Exercise Status, Approx Range [1, 3] stored as Short", VarTypes:: Short, true);
-	info[Vars::l2exstat1]			= VarInfo("l2exstat1", "l2exstat 1 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 1);
-	info[Vars::l2exstat2]			= VarInfo("l2exstat2", "l2exstat 2 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 2);
-	info[Vars::l2exstat3]			= VarInfo("l2exstat3", "l2exstat 3 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 3);
-	info[Vars::pexstat1]			= VarInfo("pexstat1", "Probability of exstat==1", VarTypes::Double);
-	info[Vars::pexstat2]			= VarInfo("pexstat2", "Probability of exstat==2", VarTypes::Double);
-	info[Vars::pexstat3]			= VarInfo("pexstat3", "Probability of exstat==3", VarTypes::Double);
+	//info[Vars::exstat]				= VarInfo("exstat", "Exercise Status, Approx Range [1, 3] stored as Short", VarTypes::Short, true);
+	//info[Vars::exstat1]				= VarInfo("exstat1", "exstat 1 [0, 1]", VarTypes::Boolean, Vars::exstat, 1);
+	//info[Vars::exstat2]				= VarInfo("exstat2", "exstat 2 [0, 1]", VarTypes::Boolean, Vars::exstat, 2);
+	//info[Vars::exstat3]				= VarInfo("exstat3", "exstat 3 [0, 1]", VarTypes::Boolean, Vars::exstat, 3);
+	//info[Vars::l2exstat]			= VarInfo("l2exstat", "Lag of Exercise Status, Approx Range [1, 3] stored as Short", VarTypes:: Short, true);
+	//info[Vars::l2exstat1]			= VarInfo("l2exstat1", "l2exstat 1 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 1);
+	//info[Vars::l2exstat2]			= VarInfo("l2exstat2", "l2exstat 2 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 2);
+	//info[Vars::l2exstat3]			= VarInfo("l2exstat3", "l2exstat 3 [0, 1]", VarTypes::Boolean, Vars::l2exstat, 3);
+	//info[Vars::pexstat1]			= VarInfo("pexstat1", "Probability of exstat==1", VarTypes::Double);
+	//info[Vars::pexstat2]			= VarInfo("pexstat2", "Probability of exstat==2", VarTypes::Double);
+	//info[Vars::pexstat3]			= VarInfo("pexstat3", "Probability of exstat==3", VarTypes::Double);
 	//info[Vars::psmoken]				= VarInfo("psmoken", "Probability of smoking now, stored as Float", VarTypes::Float);
 	info[Vars::ssi_treated]			= VarInfo("ssi_treated", "Whether treated with SmokeStopIntervention", VarTypes::Boolean);
 	info[Vars::l2ssi_treated]  		= VarInfo("l2ssi_treated", "Lag of whether treated with SmokeStopIntervention", VarTypes::Boolean);
@@ -682,13 +682,13 @@ VarsInfo::VarsInfo() {
     info[Vars::workstat]            = VarInfo("workstat", "Work status, [1, 3]", VarTypes::Short);
     info[Vars::l2workstat]          = VarInfo("l2workstat", "Lag of Work status, [1, 3]", VarTypes::Short);
     info[Vars::employed]            = VarInfo("employed", "Employed", VarTypes::Boolean, Vars::workstat, 1);
-    info[Vars::unemployed]          = VarInfo("unemployed", "Unemployed", VarTypes::Boolean, Vars::workstat, 2);
+    info[Vars::inactive]          = VarInfo("inactive", "Inactive in workforce", VarTypes::Boolean, Vars::workstat, 2);
     info[Vars::retired]             = VarInfo("retired", "Retired", VarTypes::Boolean, Vars::workstat, 3);
     info[Vars::l2employed]          = VarInfo("l2employed", "Lag of Employed", VarTypes::Boolean, Vars::l2workstat, 1);
-    info[Vars::l2unemployed]        = VarInfo("l2unemployed", "Lag of Unemployed", VarTypes::Boolean, Vars::l2workstat, 2);
+    info[Vars::l2inactive]        = VarInfo("l2inactive", "Lag of Inactive in workforce", VarTypes::Boolean, Vars::l2workstat, 2);
     info[Vars::l2retired]           = VarInfo("l2retired", "Lag of Retired", VarTypes::Boolean, Vars::l2workstat, 3);
     info[Vars::pworkstat1]          = VarInfo("pworkstat1", "Probability of employed (workstat == 1)", VarTypes::Float);
-    info[Vars::pworkstat2]          = VarInfo("pworkstat2", "Probability of unemployed (workstat == 2)", VarTypes::Float);
+    info[Vars::pworkstat2]          = VarInfo("pworkstat2", "Probability of inactive (workstat == 2)", VarTypes::Float);
     info[Vars::pworkstat3]          = VarInfo("pworkstat3", "Probability of retired (workstat == 3)", VarTypes::Float);
     info[Vars::angine]              = VarInfo("angine", "Angina ever", VarTypes::Boolean);
     info[Vars::l2angine]            = VarInfo("l2angine", "Lag of Angina ever", VarTypes::Boolean);
@@ -757,6 +757,9 @@ VarsInfo::VarsInfo() {
     info[Vars::psociso4]              = VarInfo("psociso4", "Probability of Index of Social Isolation == 4", VarTypes::Float);
     info[Vars::psociso5]              = VarInfo("psociso5", "Probability of Index of Social Isolation == 5", VarTypes::Float);
     info[Vars::psociso6]              = VarInfo("psociso6", "Probability of Index of Social Isolation == 6", VarTypes::Float);
+    info[Vars::physact]                 = VarInfo("physact", "Physically active", VarTypes::Boolean);
+    info[Vars::l2physact]               = VarInfo("l2physact", "Lag of Physically active", VarTypes::Boolean);
+    info[Vars::pphysact]                = VarInfo("pphysact", "Probability of Physically active", VarTypes::Float);
 
 
 
@@ -892,7 +895,7 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::rdd_treated] = Vars::l2rdd_treated;
 	lag_map[Vars::ssi_treated] = Vars::l2ssi_treated;
 	lag_map[Vars::mei_treated] = Vars::l2mei_treated;
-	lag_map[Vars::exstat]	= Vars::l2exstat;
+	//lag_map[Vars::exstat]	= Vars::l2exstat;
 	lag_map[Vars::ei_treated] = Vars::l2ei_treated;
 	lag_map[Vars::srh] = Vars::l2srh;
 	lag_map[Vars::srh1] = Vars::l2srh1;
@@ -909,7 +912,7 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::demene] = Vars::l2demene;
     lag_map[Vars::workstat] = Vars::l2workstat;
     lag_map[Vars::employed] = Vars::l2employed;
-    lag_map[Vars::unemployed] = Vars::l2unemployed;
+    lag_map[Vars::inactive] = Vars::l2inactive;
     lag_map[Vars::retired] = Vars::l2retired;
     //lag_map[Vars::heavy_smoker] = Vars::l2heavy_smoker;
     lag_map[Vars::angine] = Vars::l2angine;
@@ -935,6 +938,7 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::sociso4] = Vars::l2sociso4;
     lag_map[Vars::sociso5] = Vars::l2sociso5;
     lag_map[Vars::sociso6] = Vars::l2sociso6;
+    lag_map[Vars::physact] = Vars::l2physact;
 
 
 
@@ -979,6 +983,7 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::hrtrhme] =       Vars::phrtrhme;
     prob_map[Vars::catracte] =      Vars::pcatracte;
     prob_map[Vars::osteoe] =        Vars::posteoe;
+    prob_map[Vars::physact] =       Vars::pphysact;
 
 	// Ordered
 	//prob_map[Vars::smokev] =		Vars::psmkstat2;
@@ -988,9 +993,9 @@ VarsInfo::VarsInfo() {
 	prob_map[Vars::adl3p] = 		Vars::padlstat4;
 	prob_map[Vars::iadl1] = 		Vars::piadlstat2;
 	prob_map[Vars::iadl2p] = 		Vars::piadlstat3;
-	prob_map[Vars::exstat1] =		Vars::pexstat1;
-	prob_map[Vars::exstat2] =		Vars::pexstat2;
-	prob_map[Vars::exstat3] =		Vars::pexstat3;
+	//prob_map[Vars::exstat1] =		Vars::pexstat1;
+	//prob_map[Vars::exstat2] =		Vars::pexstat2;
+	//prob_map[Vars::exstat3] =		Vars::pexstat3;
 	prob_map[Vars::srh1] =          Vars::psrh1;
     prob_map[Vars::srh2] =          Vars::psrh2;
     prob_map[Vars::srh3] =          Vars::psrh3;
@@ -1000,7 +1005,7 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::lnly2] =         Vars::plnly2;
     prob_map[Vars::lnly3] =         Vars::plnly3;
     prob_map[Vars::employed] =      Vars::pworkstat1;
-    prob_map[Vars::unemployed] =    Vars::pworkstat2;
+    prob_map[Vars::inactive] =    Vars::pworkstat2;
     prob_map[Vars::retired] =       Vars::pworkstat3;
     prob_map[Vars::alcfreq1] =      Vars::palcfreq1;
     prob_map[Vars::alcfreq2] =      Vars::palcfreq2;

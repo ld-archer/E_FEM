@@ -91,30 +91,30 @@ if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
                         smoken hchole smokef alcfreq ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl alcfreq ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly physact
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
                         mstat lnly alzhe demene workstat smokef ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
                         lnly alzhe demene workstat smokef ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly workstat alzhe arthre asthmae demene ///
                         parkine psyche hipe hchole smokef ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
@@ -140,9 +140,9 @@ replace srh4 = 0 if srh3 == 1
 replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
-foreach var of varlist  asthmae parkine exstat cancre diabe hearte hibpe ///
+foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed unemployed ///
+                        srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed inactive ///
                         retired ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly {
                             
@@ -212,7 +212,7 @@ replace l2itot = itot if missing(l2itot) & !missing(itot)
 replace hchole = 0 if missing(hchole)
 replace l2hchole = 0 if missing(l2hchole)
 
-* Exstat more complicated still due to dummy variables
+/* * Exstat more complicated still due to dummy variables
 * Exstat == 3 is most common value, 3 is moderate/heavy exercise more than once a week
 replace exstat = 3 if missing(exstat)
 replace l2exstat = 3 if missing(l2exstat)
@@ -222,7 +222,7 @@ replace exstat3 = l2exstat3 if missing(exstat3)
 * Handle missing lagged exstat vars
 replace l2exstat1 = exstat1 if missing(l2exstat1)
 replace l2exstat2 = exstat2 if missing(l2exstat2)
-replace l2exstat3 = exstat3 if missing(l2exstat3)
+replace l2exstat3 = exstat3 if missing(l2exstat3) */
 
 * Now replace any missing lag with current, and assign the lag as the value for flogbmi50
 replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)

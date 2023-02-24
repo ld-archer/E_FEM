@@ -1,10 +1,10 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
+global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 global bin_econ
 global ols logbmi atotb itot smokef
-global order adlstat iadlstat exstat srh lnly alcfreq sociso
+global order adlstat iadlstat srh lnly alcfreq sociso
 global unorder mstat workstat
 
 * Variable names
@@ -35,6 +35,7 @@ global bin_hlth_names
     "Abnormal Heart Rhythm"
     "Cataracts"
     "Osteoporosis"
+    "Physically Active"
 ;
 global bin_econ_names
 ;

@@ -93,6 +93,7 @@ keep
 	r*ltactx_e
 	r*mdactx_e
 	r*vgactx_e
+	r*jphysl
 	
 	r*walkra
 	r*dressa
@@ -162,6 +163,7 @@ local shapelist
 	r@ltactx_e
 	r@mdactx_e
 	r@vgactx_e
+	r@jphysl
 	
 	r@walkra
 	r@dressa
@@ -271,7 +273,7 @@ recode died (0 7 9 = .) (1 4 6 = 0) (5 = 1)
 label var died "Whether died or not in this wave"
 
 *** Risk factors
-foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako kcntm rcntm fcntm socyr mstat {
+foreach var in mbmi smokev smoken drink smokef lnlys lnlys3 ltactx_e mdactx_e vgactx_e scako kcntm rcntm fcntm socyr mstat jphysl{
 	ren r`var' `var'
 }
 
@@ -287,9 +289,26 @@ label var lnlys "R average of 4 level loneliness summary score"
 label var lnlys3 "R average of 3 level loneliness summary score"
 label var scako "Alcohol consumption frequency, [1-8]"
 label var mstat "Marriage / Partnership status"
+label var jphysl "Job physical activity level"
 
 
-* Generate an exercise status variable to hold exercise info in single var
+****** EXERCISE ******
+
+** 23/02/23 Changing this variable to a binary variable defined in:
+* Shankar et al. (2011) - https://psycnet.apa.org/record/2011-08649-001
+
+* Active - Moderate or vigorous physical activity more than once per week OR if employed, occupation is any of standing, physical work, or heavy manual work
+* Not Active - Moderate or vigorous physical activity only once a week or less AND if employed, occupation is reported as primarily sedentary
+
+gen physact = .
+* First check activity level then job
+* (Moderate &| Vigorous) &| (Occupation physical activity level)
+replace physact = 1 if (mdactx_e == 2 | vgactx_e == 2) | (inlist(jphysl, 2, 3, 4)) 
+replace physact = 0 if (mdactx_e != 2 & vgactx_e != 2) & (jphysl == 1)
+replace physact = 1 if inlist(jphysl, 2, 3, 4) & !missing(jphysl)
+replace physact = 0 if jphysl == 1
+
+/* * Generate an exercise status variable to hold exercise info in single var
 * Three levels:
 *   1 - No exercise
 *   2 - Light exercise 1+ times per week
@@ -306,7 +325,7 @@ replace exstat1 = 0 if exstat != 1
 gen exstat2 = 1 if exstat == 2
 replace exstat2 = 0 if exstat != 2
 gen exstat3 = 1 if exstat == 3
-replace exstat3 = 0 if exstat != 3
+replace exstat3 = 0 if exstat != 3 */
 
 * Second attempt at smoking intensity variable
 * Going to do a simple 'heavy smoker' var, for respondents that smoke 10 or more cigarettes/day
@@ -429,13 +448,13 @@ foreach var in lbrf_e {
 ren lbrf_e lbrf
 
 * Sort out labour force var and generate dummys
-recode lbrf (1/2 4= 1 Employed) ///
-            (3    = 2 Unemployed) ///
-            (5/7  = 3 Retired) ///
+recode lbrf (1/2   = 1 "Employed") ///
+            (3 6/7 = 2 "Inactive") ///
+            (4/5   = 3 "Retired") ///
             , copyrest gen(workstat)
-*drop lbrf
+drop lbrf
 gen employed = workstat == 1
-gen unemployed = workstat == 2
+gen inactive = workstat == 2
 gen retired = workstat == 3
 
 *** Money vars
@@ -596,9 +615,10 @@ label variable alcfreq5 "Alcohol consumption: once or twice a month"
 label variable alcfreq6 "Alcohol consumption: once every couple of months"
 label variable alcfreq7 "Alcohol consumption: once or twice a year"
 label variable alcfreq8 "Alcohol consumption: not at all in the last 12 months"
-label var exstat1 "Exstat - Low activity"
-label var exstat2 "Exstat - Moderate activity"
-label var exstat3 "Exstat - High activity"
+*label var exstat1 "Exstat - Low activity"
+*label var exstat2 "Exstat - Moderate activity"
+*label var exstat3 "Exstat - High activity"
+label var physact "Physically active"
 label var lnly "Loneliness Score [1,3]"
 label var lnly1 "Loneliness Score: Low"
 label var lnly2 "Loneliness Score: Medium"
@@ -613,7 +633,7 @@ label var sociso6 "Social Isolation == 6"
 
 label var workstat "Working Status"
 label var employed "Employed"
-label var unemployed "Unemployed"
+label var inactive "Inactive"
 label var retired "Retired"
 
 label var itotx "Total Family Income (thou.)"
@@ -640,8 +660,8 @@ save varlabs.dta, replace
 restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
-local risk smoken smokev smokef bmi drink lnly /*lnly1 lnly2 lnly3*/ alcfreq /*alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8*/ sociso sociso1 sociso2 sociso3 sociso4 sociso5 sociso6
-local binecon employed unemployed retired
+local risk smoken smokev smokef bmi drink lnly /*lnly1 lnly2 lnly3*/ alcfreq /*alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8*/ sociso /*sociso1 sociso2 sociso3 sociso4 sociso5 sociso6*/ physact
+local binecon employed inactive retired
 local cntecon itotx atotbx
 local demog age_yrs male white
 local unweighted died

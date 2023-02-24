@@ -59,7 +59,7 @@ local measures
 					a_alcfreq
 					p_alcfreq1 p_alcfreq2 p_alcfreq3 p_alcfreq4
 					p_alcfreq5 p_alcfreq6 p_alcfreq7 p_alcfreq8 
-					a_exstat	p_exstat1 	p_exstat2	p_exstat3
+					p_physact	n_physact	i_physact
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		
 					p_lnly1		p_lnly2 	p_lnly3
@@ -69,7 +69,7 @@ local measures
 					p_sociso5	p_sociso6
 					a_workstat
 					p_employed  i_employed  n_employed
-					p_unemployed i_unemployed n_unemployed
+					p_inactive i_inactive n_inactive
 					p_retired	i_retired	n_retired
 					n_anydisease 	p_anydisease	a_anydisease
 					n_nodisease		p_nodisease		a_nodisease

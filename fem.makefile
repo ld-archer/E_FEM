@@ -2,7 +2,7 @@ SHELL           = /bin/sh
 srcdir          = FEM_CPP
 DEFS            = 
 dCPPFLAGS        = -Wall -Werror -g -MMD
-CPPFLAGS       = -Wall -Werror -O3 -MMD -ffast-math -msse2
+CPPFLAGS       = -Wall -O3 -MMD -ffast-math -msse2
 LIBS            =  -lpthread
 
 SOURCES := $(notdir $(wildcard $(srcdir)/*.cpp))

@@ -14,7 +14,7 @@ Do all this for both minimal models and cross-validation.
 
 ```{r setup, include=FALSE}
 # Need to set up the working directory
-workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/output/COMPLETE/"
+workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/output/COMPLETE/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)

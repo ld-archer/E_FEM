@@ -7,9 +7,10 @@ FEM_Stata/Estimation/*.log
 *.png
 
 # C++
-*.o
 FEM_CPP/optimized/*.o
-*.d
+FEM_CPP/optimized/*.d
+FEM_CPP/cmake-build-debug/
+FEM_CPP/cmake-build-debug/*
 
 # log files
 log_*.txt
