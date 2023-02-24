@@ -176,10 +176,10 @@ if "`scen'" == "valid" {
 ** Handle missing lnly values if STILL missing after hotdecking and assigning lag to current and vice versa
 * Not hotdecking or assigning properly, or something else wrong with minimal population
 * Almost 50% of ELSA_long are lnly == 1, so seems fair to assign this
-*replace lnly = 1 if missing(lnly)
-*replace l2lnly = lnly if missing(l2lnly)
-*replace lnly1 = 1 if lnly == 1
-*replace l2lnly1 = 1 if l2lnly == 1
+replace lnly = 1 if missing(lnly)
+replace l2lnly = lnly if missing(l2lnly)
+replace lnly1 = 1 if lnly == 1
+replace l2lnly1 = 1 if l2lnly == 1
 ** PROBLEM WASNT WITH MISSING DATA, just missing model definition in covariate definitions for minimal
 
 * New chronic disease vars

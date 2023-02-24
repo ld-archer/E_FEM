@@ -57,7 +57,7 @@ source('FEM_R/utilities.R')
 
 ```{r}
 ## Directories
-base_output_dir <- "output/LNLY_SOCISO/"
+base_output_dir <- "output/LNLY_SOCISO_TEST/"
 input_dir <- "input_data/"
 
 ## Inputs
@@ -502,4 +502,8 @@ diseaseFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'No Loneliness OR Social I
 
 
 
+
+```{r}
+
+```
 

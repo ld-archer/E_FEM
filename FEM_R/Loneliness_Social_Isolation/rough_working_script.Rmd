@@ -34,7 +34,7 @@ source('FEM_R/utilities.R')
 
 ```{r}
 ## Directories
-base_output_dir <- "output/COMPLETE/"
+base_output_dir <- "output/LNLY_SOCISO_TEST/"
 input_dir <- "input_data/"
 ## Inputs
 long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
@@ -44,16 +44,36 @@ trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
 ## Outputs
 ### Baseline
 base <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
+base.detail <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
 cohort <- read_dta(paste0(base_output_dir, 'ELSA_core_cohort/ELSA_core_cohort_summary.dta'))
 ### Cross-Validation
-cv1 <- read_dta(paste0(base_output_dir, 'ELSA_CV1/ELSA_CV1_summary.dta'))
+#cv1 <- read_dta(paste0(base_output_dir, 'ELSA_CV1/ELSA_CV1_summary.dta'))
 #cv1.full <- read_dta(paste0(base_output_dir, 'ELSA_CV1/detailed_output/ELSA_CV1_summary.dta'))
-cv2 <- read_dta(paste0(base_output_dir, 'ELSA_CV2/ELSA_CV2_summary.dta'))
+#cv2 <- read_dta(paste0(base_output_dir, 'ELSA_CV2/ELSA_CV2_summary.dta'))
 ### Interventions
 #no.lonely <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_cohort/ELSA_nolnly_cohort_summary.dta'))
 #no.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nosociso_cohort/ELSA_nosociso_cohort_summary.dta'))
 #no.lnly.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_nosociso_cohort/ELSA_nolnly_nosociso_cohort_summary.dta'))
 ```
+
+```{r}
+detailed_output_append <- function(base.out.dir, scenario) {
+  ## function to read in all files in a detailed output and collect into 1 object
+  
+  path <- paste0('output/', base.out.dir, scenario, 'detailed_output/')
+  
+  filelist <- list.files(path,
+                         full.names = TRUE)
+  return(do.call(rbind, lapply(filelist, read_dta)))
+}
+
+path <- 'output/LNLY_SOCISO_TEST/ELSA_core_base/detailed_output/'
+
+base.detail <- detailed_output_append(base.out.dir = base_output_dir, scenario = 'ELSA_core_base')
+
+```
+
+
 
 ## NEW PHYSICALLY_ACTIVE
 

@@ -37,6 +37,16 @@ lookfor <- function(data,
   else message("Nothing found. Sorry.")
 }
 
+########## DETAILED OUTPUT APPEND ##########
+
+detailed_output_append <- function(base.out.dir, scenario) {
+  ## function to read in all files in a detailed output and collect into 1 object
+  path <- paste0(base.out.dir, scenario, '/detailed_output/')
+  filelist <- list.files(path,
+                         full.names = TRUE)
+  return(do.call(rbind, lapply(filelist, read_dta)))
+}
+
 ########## SAMPLE STATISTICS ##########
 
 
