@@ -285,9 +285,9 @@ simulation_minimal:
 simulation_core:
 	$(MPI) ELSA_core.settings.txt
 
-simulation_core_complete: $(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta 
+simulation_core_complete: $(OUTDATA)/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta 
 
-$(OUTDATA)/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt $(ROOT)/FEM $(FEM_CPP_settings)/ELSA_vars.txt $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_repl.dta
+$(OUTDATA)/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt $(ROOT)/FEM $(FEM_CPP_settings)/ELSA_vars.txt $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_repl.dta
 	$(MPI) ELSA_core_complete.settings.txt
 
 simulation_core_scen:
