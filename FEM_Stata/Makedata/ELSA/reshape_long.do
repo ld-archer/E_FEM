@@ -727,13 +727,14 @@ gen retired = workstat == 3
 * - Did not participate in any organisations, religious groups, or committees that meet at least once a year
 * 1-6 chosen instead of 0-5 because FEM doesn't like 0 values in ordinal variables for some reason
 gen sociso = 1
-replace sociso = sociso + 1 if married == 1 | cohab == 1 & !missing(mstat) /*Married or cohabiting*/
+replace sociso = sociso + 1 if married != 1 & cohab != 1 & !missing(mstat) /*Not Married or cohabiting*/
 replace sociso = sociso + 1 if kcntm == 0 & !missing(kcntm) /*Kids contact less than monthly*/
 replace sociso = sociso + 1 if rcntm == 0 & !missing(rcntm) /*Relatives contact less than monthly*/
 replace sociso = sociso + 1 if fcntm == 0 & !missing(fcntm) /*friends contact less than monthly*/
 replace sociso = sociso + 1 if socyr == 0 & !missing(socyr) /*not member of religious group, committee, or other organisation*/
+replace sociso = . if missing(mstat) & missing(kcntm) & missing(rcntm) & missing(fcntm) & missing(socyr)
 * drop elements of index
-drop kcntm rcntm fcntm socyr
+*drop kcntm rcntm fcntm socyr
 * Dummy vars
 gen sociso1 = (sociso == 1) & !missing(sociso)
 gen sociso2 = (sociso == 2) & !missing(sociso)
@@ -839,7 +840,7 @@ foreach var in
 ;
 #d cr
 
-
+*TODO: Remove the dummy vars from this list (alcfreq, sociso, lnly) & define them in the transition population instead (generate_transition_pop.do)
 
 * Generate smoke_start and smoke_stop vars
 gen smoke_start = 1 if l2smoken == 0 & smoken == 1
@@ -856,6 +857,9 @@ replace smoke_stop = 0 if l2smoken == 1 & smoken == 1
 generate missing_educ = missing(educ)
 * Now replace all special missing codes with simple missing (.) This is because the imputation model will only impute records with simple missing
 replace educ = . if missing(educ)
+
+replace lnly = . if missing(lnly)
+replace sociso = . if missing(sociso)
 
 *** Drop Vars That Are Not Necessary ***
 drop r*scwtresp

@@ -11,7 +11,7 @@ local out_file : env OUTPUT
 *use ../../../input_data/ELSA_long.dta, clear
 use $outdata/ELSA_long.dta, clear
 
-*keep if wave >= 2
+keep if wave >= 2
 
 * Add any additional derived variables used in the transition estimation (eg. categorical BMI variables)
 

@@ -91,35 +91,35 @@ save $outdata/test_pre_hotdeck.dta, replace
 
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
-                        smokev lunge lnly workstat alzhe arthre asthmae demene parkine psyche ///
+                        smokev lunge lnly sociso workstat alzhe arthre asthmae demene parkine psyche ///
                         smoken hchole smokef alcfreq ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl alcfreq ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly physact
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso physact
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        mstat lnly alzhe demene workstat smokef ///
+                        mstat lnly sociso alzhe demene workstat smokef ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl ///
-                        lnly alzhe demene workstat smokef ///
+                        lnly sociso alzhe demene workstat smokef ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
-                        lunge smoken itot lnly workstat alzhe arthre asthmae demene ///
+                        lunge smoken itot lnly sociso workstat alzhe arthre asthmae demene ///
                         parkine psyche hipe hchole smokef ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "ROC" {
-    local hotdeck_vars lnly logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
+    local hotdeck_vars lnly sociso logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl workstat alzhe demene ///
                         hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
@@ -148,7 +148,7 @@ foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
                         srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed inactive ///
                         retired ///
-                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly {
+                        angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
