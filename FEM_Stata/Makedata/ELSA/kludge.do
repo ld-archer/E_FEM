@@ -216,18 +216,6 @@ replace l2itot = itot if missing(l2itot) & !missing(itot)
 replace hchole = 0 if missing(hchole)
 replace l2hchole = 0 if missing(l2hchole)
 
-/* * Exstat more complicated still due to dummy variables
-* Exstat == 3 is most common value, 3 is moderate/heavy exercise more than once a week
-replace exstat = 3 if missing(exstat)
-replace l2exstat = 3 if missing(l2exstat)
-replace exstat1 = l2exstat1 if missing(exstat1)
-replace exstat2 = l2exstat2 if missing(exstat2)
-replace exstat3 = l2exstat3 if missing(exstat3)
-* Handle missing lagged exstat vars
-replace l2exstat1 = exstat1 if missing(l2exstat1)
-replace l2exstat2 = exstat2 if missing(l2exstat2)
-replace l2exstat3 = exstat3 if missing(l2exstat3) */
-
 * Now replace any missing lag with current, and assign the lag as the value for flogbmi50
 replace l2logbmi = logbmi if missing(l2logbmi) & !missing(logbmi)
 gen flogbmi50 = l2logbmi
@@ -266,4 +254,3 @@ replace l2smkstat = 2 if missing(l2smkstat)
 gen work = employed if !missing(employed)
 gen l2work = l2employed if !missing(l2employed)
 
-save $outdata/test_post_kludge.dta, replace
