@@ -1,0 +1,112 @@
+---
+title: "FEM Transition Models"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+
+```
+
+```{r}
+source('../HAZARDS/source/hazard_utils.R')
+source('FEM_R/utilities.R')
+```
+
+
+Load in data needed to fit these models (transition pop).
+
+```{r}
+input_dir <- "input_data/"
+trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
+long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
+```
+
+
+# Mortality
+
+```{r}
+# Currently in the FEM (2/3/23) the mortality model only depends on demographics, loneliness, and social isolation
+# This was to try and get the largest effect in mortality from interventions in these variables
+# Lets try the minimal model first and go from there
+
+# Mortality is a probit model with binary outcome
+
+# make sure mortality if factor
+trans$died <- factor(trans$died)
+
+# check cross tabs with lnly and sociso
+xtabs(formula = ~died + l2lnly, data = trans, addNA = TRUE)
+xtabs(formula = ~died + l2sociso, data = trans, addNA = TRUE)
+```
+
+So we at least have some deaths from each group to work with. Now check the proportion of each group and see if there is a relationship between loneliness / social isolation and mortality.
+
+```{r}
+xtabs(formula = ~died + l2lnly, data = trans, addNA = TRUE)
+xtabs(formula = ~died + l2sociso, data = trans, addNA = TRUE)
+```
+
+So we do have an association between the lag of loneliness and mortality.
+
+Lets check the percentages.
+
+```{r}
+lnly <- as.data.frame(xtabs(formula = ~died + l2lnly, data = trans, addNA = TRUE))
+sociso <- as.data.frame(xtabs(formula = ~died + l2sociso, data = trans, addNA = TRUE))
+
+lnly.check <- lnly %>% 
+  group_by(l2lnly) %>%
+  mutate(total = sum(Freq)) %>%
+  mutate(prop = (Freq / total) * 100)
+
+sociso.check <- sociso %>% 
+  group_by(l2sociso) %>%
+  mutate(total = sum(Freq)) %>%
+  mutate(prop = (Freq / total) * 100)
+```
+
+```{r}
+lnly.check
+```
+
+Loneliness shows a pretty good relationship with mortality in the way that we expect. The lowest rate of mortality is in the loneliness == 1 group, which is low loneliness. Then we get higher for loneliness == 2, and higher still for loneliness == 3. Unfortunately the highest rate is in the missing group, where most people will be imputed or removed. Still happy that the relationship holds up.
+
+```{r}
+sociso.check
+```
+
+The previous output of this chunk wasn't very good, and prompted a closer look at the creation of the sociso index and the component variables. I found a problem in this definition (was a chain of replace commands that meant that the last replace was most important). Now the variable looks excellent in terms of mortality! We see the lowest rates of mortality in the sociso == 1 group (lowest / no social isolation), and higher rates of mortality as time goes on. Magnificent! 
+
+
+Time to fit some models. Start with mortality, and do the minimal (just demographics), lnly/sociso, and full version.
+
+```{r}
+form.mort.min <- 'died ~ male + white + hsless + college + l2age65l + l2age6574 + l2age75p'
+
+probit.mort.min <- glm(formula = form.mort.min, family = binomial(link = 'probit'),
+                    data = trans)
+
+summary(probit.mort.min)
+```
+
+Now try an iteration with lnly and sociso.
+
+```{r}
+form.mort.min <- 'died ~ male + white + hsless + college + 
+                  l2age65l + l2age6574 + l2age75p + 
+                  l2lnly2 + l2lnly3 +
+                  l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 + l2sociso6'
+
+probit.mort.min <- glm(formula = form.mort.min, family = binomial(link = 'probit'),
+                    data = trans)
+
+summary(probit.mort.min)
+```
+
+
