@@ -44,7 +44,7 @@ trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
 ## Outputs
 ### Baseline
 base <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
-base.detail <- read_dta(paste0(base_output_dir, 'ELSA_core_base/ELSA_core_base_summary.dta'))
+base.detail <- detailed_output_append(base.out.dir = base_output_dir, scenario = 'ELSA_core_base')
 cohort <- read_dta(paste0(base_output_dir, 'ELSA_core_cohort/ELSA_core_cohort_summary.dta'))
 ### Cross-Validation
 #cv1 <- read_dta(paste0(base_output_dir, 'ELSA_CV1/ELSA_CV1_summary.dta'))
@@ -56,24 +56,62 @@ cohort <- read_dta(paste0(base_output_dir, 'ELSA_core_cohort/ELSA_core_cohort_su
 #no.lnly.sociso <- read_dta(paste0(base_output_dir, 'ELSA_nolnly_nosociso_cohort/ELSA_nolnly_nosociso_cohort_summary.dta'))
 ```
 
+## LONELINESS
+
 ```{r}
-detailed_output_append <- function(base.out.dir, scenario) {
-  ## function to read in all files in a detailed output and collect into 1 object
-  
-  path <- paste0('output/', base.out.dir, scenario, 'detailed_output/')
-  
-  filelist <- list.files(path,
-                         full.names = TRUE)
-  return(do.call(rbind, lapply(filelist, read_dta)))
-}
+lnly.test <- base.detail %>%
+  select(hhidpn, year, lnly) %>%
+  group_by(year, lnly) %>%
+  count()
 
-path <- 'output/LNLY_SOCISO_TEST/ELSA_core_base/detailed_output/'
-
-base.detail <- detailed_output_append(base.out.dir = base_output_dir, scenario = 'ELSA_core_base')
-
+lnly.test
 ```
 
+It appears that values of 0 are being assigned to lnly at some point which should not happen! First check the stock dataset and go from there.
 
+```{r}
+lnly.stock.test <- stock %>%
+  select(idauniq, year, lnly) %>%
+  group_by(year, lnly) %>%
+  count()
+
+lnly.stock.test
+
+## Try the same in the long files
+lnly.long.test <- long %>%
+  select(idauniq, year, lnly) %>%
+  filter(year == 2012) %>%
+  group_by(year, lnly) %>%
+  count()
+
+lnly.long.test
+```
+
+Appears the lnly values of zero must come from these missing values, first check in stata as R loses the value labels when reading .dta files.
+
+Stata output looking at the long file:
+
+. keep if year == 2012
+(88,070 observations deleted)
+
+. tab lnly, m
+
+ Loneliness |
+ Score, Low |
+to High [1, |
+         3] |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |      5,156       44.96       44.96
+          2 |      2,309       20.14       65.10
+          3 |        366        3.19       68.29
+          . |        866        7.55       75.84
+         .c |      2,698       23.53       99.37
+         .m |         72        0.63      100.00
+------------+-----------------------------------
+      Total |     11,467      100.00
+
+
+Majority of missing cases here are due to not being in the self-completion sample. Makes sense. However what does not make sense is that kludge is not properly imputing the missing values. 
 
 ## NEW PHYSICALLY_ACTIVE
 
@@ -290,3 +328,4 @@ ggplot(data = test.long, aes(x = wave, y = count, group = workstat, color=workst
   xlab('Wave') +
   ylab('Count')
 ```
+

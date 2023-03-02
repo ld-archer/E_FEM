@@ -85,6 +85,8 @@ gen mcare_pta = 0
 gen mcare_ptb = 0
 gen medicare_elig = 0
 
+save $outdata/test_pre_hotdeck.dta, replace
+
 *** ELSA Specific Imputation ***
 
 if "`scen'" == "base" {
@@ -130,6 +132,8 @@ foreach var of varlist `hotdeck_vars' {
     hotdeck `var' using hotdeck_data/`var'_imp, store seed(`seed') keep(_all) impute(1)
     use hotdeck_data/`var'_imp1.dta, clear
 }
+
+save $outdata/test_post_hotdeck.dta, replace
 
 * Handle missing srh data (~400 without srh data). Set to 3 (good) if still missing, median
 replace srh = 3 if missing(srh)
@@ -262,3 +266,4 @@ replace l2smkstat = 2 if missing(l2smkstat)
 gen work = employed if !missing(employed)
 gen l2work = l2employed if !missing(l2employed)
 
+save $outdata/test_post_kludge.dta, replace
