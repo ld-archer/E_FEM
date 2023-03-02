@@ -192,94 +192,127 @@ forvalues wv = 1/9 {
     ****** Social Isolation Variables ******
     * Children (varname - kcntm : kids contact monthly)
     if `wv' <= 5 {
-        gen kcntm = .
-        replace kcntm = 0 if scchd == 2 /*No children*/
-        replace kcntm = 1 if scchdg > 0 & scchdg < 4 & !missing(scchdg) /*Not missing & meet up at least once or twice a month*/
-        replace kcntm = 0 if scchdg >= 4 & !missing(scchdg) /*meet up less than once or twice a month*/
-        replace kcntm = 1 if scchdh > 0 & scchdh < 4 & !missing(scchdh) /*Not missing & speak on phone at least once or twice a month*/
-        replace kcntm = 0 if scchdh >= 4 & !missing(scchdh) /*speak on phone less than once or twice a month*/
-        replace kcntm = 1 if scchdi > 0 & scchdi < 4 & !missing(scchdi) /*Not missing & write/email at least once or twice a month*/
-        replace kcntm = 0 if scchdi >= 4 & !missing(scchdi) /*Not missing & write/email less than once or twice a month*/
+        *gen kcntm = .
+        *replace kcntm = 0 if scchd == 2 /*No children*/
+        *replace kcntm = 1 if scchdg > 0 & scchdg < 4 & !missing(scchdg) /*Not missing & meet up at least once or twice a month*/
+        *replace kcntm = 0 if scchdg >= 4 & !missing(scchdg) /*meet up less than once or twice a month*/
+        *replace kcntm = 1 if scchdh > 0 & scchdh < 4 & !missing(scchdh) /*Not missing & speak on phone at least once or twice a month*/
+        *replace kcntm = 0 if scchdh >= 4 & !missing(scchdh) /*speak on phone less than once or twice a month*/
+        *replace kcntm = 1 if scchdi > 0 & scchdi < 4 & !missing(scchdi) /*Not missing & write/email at least once or twice a month*/
+        *replace kcntm = 0 if scchdi >= 4 & !missing(scchdi) /*Not missing & write/email less than once or twice a month*/
 
+        gen kcntm = .
+        replace kcntm = 0 if (scchd == 2) | (scchdg >= 4 & !missing(scchdg)) | (scchdh >= 4 & !missing(scchdh)) | (scchdi >= 4 & !missing(scchdi))
+        replace kcntm = 1 if (scchdg > 0 & scchdg < 4 & !missing(scchdg)) | (scchdh > 0 & scchdh < 4 & !missing(scchdh)) | (scchdi > 0 & scchdi < 4 & !missing(scchdi))
+
+        *rename kcntm r`wv'kcntm
         rename kcntm r`wv'kcntm
     }
     else if `wv' >=6 {
         * Wave 6 onwards includes text
+        *gen kcntm = .
+        *replace kcntm = 0 if scchd == 2 /*No children*/
+        *replace kcntm = 1 if scchdg > 0 & scchdg < 4 & !missing(scchdg) /*Not missing & meet up at least once or twice a month*/
+        *replace kcntm = 0 if scchdg >= 4 & !missing(scchdg) /*meet up less than once or twice a month*/
+        *replace kcntm = 1 if scchdh > 0 & scchdh < 4 & !missing(scchdh) /*Not missing & speak on phone at least once or twice a month*/
+        *replace kcntm = 0 if scchdh >= 4 & !missing(scchdh) /*speak on phone less than once or twice a month*/
+        *replace kcntm = 1 if scchdi > 0 & scchdi < 4 & !missing(scchdi) /*Not missing & write/email at least once or twice a month*/
+        *replace kcntm = 0 if scchdi >= 4 & !missing(scchdi) /*Not missing & write/email less than once or twice a month*/
+        *replace kcntm = 1 if scchdt > 0 & scchdt < 4 & !missing(scchdt) /*Not missing & text at least once or twice a month*/
+        *replace kcntm = 0 if scchdt >= 4 & !missing(scchdt) /*Not missing & text less than once or twice a month*/
+
         gen kcntm = .
-        replace kcntm = 0 if scchd == 2 /*No children*/
-        replace kcntm = 1 if scchdg > 0 & scchdg < 4 & !missing(scchdg) /*Not missing & meet up at least once or twice a month*/
-        replace kcntm = 0 if scchdg >= 4 & !missing(scchdg) /*meet up less than once or twice a month*/
-        replace kcntm = 1 if scchdh > 0 & scchdh < 4 & !missing(scchdh) /*Not missing & speak on phone at least once or twice a month*/
-        replace kcntm = 0 if scchdh >= 4 & !missing(scchdh) /*speak on phone less than once or twice a month*/
-        replace kcntm = 1 if scchdi > 0 & scchdi < 4 & !missing(scchdi) /*Not missing & write/email at least once or twice a month*/
-        replace kcntm = 0 if scchdi >= 4 & !missing(scchdi) /*Not missing & write/email less than once or twice a month*/
-        replace kcntm = 1 if scchdt > 0 & scchdt < 4 & !missing(scchdt) /*Not missing & text at least once or twice a month*/
-        replace kcntm = 0 if scchdt >= 4 & !missing(scchdt) /*Not missing & text less than once or twice a month*/
+        replace kcntm = 0 if (scchd == 2) | (scchdg >= 4 & !missing(scchdg)) | (scchdh >= 4 & !missing(scchdh)) | (scchdi >= 4 & !missing(scchdi)) | (scchdt >= 4 & !missing(scchdt))
+        replace kcntm = 1 if (scchdg > 0 & scchdg < 4 & !missing(scchdg)) | (scchdh > 0 & scchdh < 4 & !missing(scchdh)) | (scchdi > 0 & scchdi < 4 & !missing(scchdi)) | (scchdt > 0 & scchdt < 4 & !missing(scchdt))
+
 
         rename kcntm r`wv'kcntm
+        *rename kcntm2 r`wv'kcntm2
     }
     * Relatives (varname - rcntm : relatives contact monthly)
     if inlist(`wv', 1, 4) {
+        *gen rcntm = .
+        *replace rcntm = 0 if scfam == 2 /*No relatives*/
+        *replace rcntm = 1 if scfamg > 0 & scfamg < 4 & !missing(scfamg) /*Not missing & meet up at least once or twice a month*/
+        *replace rcntm = 0 if scfamg >= 4 & !missing(scfamg) /*meet up less than once or twice a month*/
+        *replace rcntm = 1 if scfami > 0 & scfami < 4 & !missing(scfami) /*Not missing & write/email at least once or twice a month*/
+        *replace rcntm = 0 if scfami >= 4 & !missing(scfami) /*write/email less than once or twice a month*/
+
         gen rcntm = .
-        replace rcntm = 0 if scfam == 2 /*No relatives*/
-        replace rcntm = 1 if scfamg > 0 & scfamg < 4 & !missing(scfamg) /*Not missing & meet up at least once or twice a month*/
-        replace rcntm = 0 if scfamg >= 4 & !missing(scfamg) /*meet up less than once or twice a month*/
-        replace rcntm = 1 if scfami > 0 & scfami < 4 & !missing(scfami) /*Not missing & write/email at least once or twice a month*/
-        replace rcntm = 0 if scfami >= 4 & !missing(scfami) /*write/email less than once or twice a month*/
+        replace rcntm = 0 if (scfam == 2) | (scfamg >= 4 & !missing(scfamg)) | (scfami >= 4 & !missing(scfami))
+        replace rcntm = 1 if (scfamg > 0 & scfamg < 4 & !missing(scfamg)) | (scfami > 0 & scfami < 4 & !missing(scfami))
 
         rename rcntm r`wv'rcntm
     }
     else if inlist(`wv', 2, 3, 5) {
+        *gen rcntm = .
+        *replace rcntm = 0 if scfam == 2 /*No relatives*/
+        *replace rcntm = 1 if scfamg > 0 & scfamg < 4 & !missing(scfamg) /*Not missing & meet up at least once or twice a month*/
+        *replace rcntm = 0 if scfamg >= 4 & !missing(scfamg) /*meet up less than once or twice a month*/
+        *replace rcntm = 1 if scfami > 0 & scfami < 4 & !missing(scfami) /*Not missing & write/email at least once or twice a month*/
+        *replace rcntm = 0 if scfami >= 4 & !missing(scfami) /*write/email less than once or twice a month*/
+        *replace rcntm = 1 if scfamh > 0 & scfamh < 4 & !missing(scfamh) /*Not missing & speak on phone at least once or twice a month*/
+        *replace rcntm = 0 if scfamh >= 4 & !missing(scfamh) /*speak on phone less than once or twice a month*/
+
         gen rcntm = .
-        replace rcntm = 0 if scfam == 2 /*No relatives*/
-        replace rcntm = 1 if scfamg > 0 & scfamg < 4 & !missing(scfamg) /*Not missing & meet up at least once or twice a month*/
-        replace rcntm = 0 if scfamg >= 4 & !missing(scfamg) /*meet up less than once or twice a month*/
-        replace rcntm = 1 if scfami > 0 & scfami < 4 & !missing(scfami) /*Not missing & write/email at least once or twice a month*/
-        replace rcntm = 0 if scfami >= 4 & !missing(scfami) /*write/email less than once or twice a month*/
-        replace rcntm = 1 if scfamh > 0 & scfamh < 4 & !missing(scfamh) /*Not missing & speak on phone at least once or twice a month*/
-        replace rcntm = 0 if scfamh >= 4 & !missing(scfamh) /*speak on phone less than once or twice a month*/
+        replace rcntm = 0 if (scfam == 2) | (scfamg >= 4 & !missing(scfamg)) | (scfami >= 4 & !missing(scfami)) | (scfamh >= 4 & !missing(scfamh)) 
+        replace rcntm = 1 if (scfamg > 0 & scfamg < 4 & !missing(scfamg)) | (scfami > 0 & scfami < 4 & !missing(scfami)) | (scfamh > 0 & scfamh < 4 & !missing(scfamh))
 
         rename rcntm r`wv'rcntm
     }
     else if inlist(`wv', 6, 7, 8, 9) {
+        *gen rcntm = .
+        *replace rcntm = 0 if scfam == 2 /*No relatives*/
+        *replace rcntm = 1 if scfamg > 0 & scfamg < 4 & !missing(scfamg) /*Not missing & meet up at least once or twice a month*/
+        *replace rcntm = 0 if scfamg >= 4 & !missing(scfamg) /*meet up less than once or twice a month*/
+        *replace rcntm = 1 if scfami > 0 & scfami < 4 & !missing(scfami) /*Not missing & write/email at least once or twice a month*/
+        *replace rcntm = 0 if scfami >= 4 & !missing(scfami) /*write/email less than once or twice a month*/
+        *replace rcntm = 1 if scfamh > 0 & scfamh < 4 & !missing(scfamh) /*Not missing & speak on phone at least once or twice a month*/
+        *replace rcntm = 0 if scfamh >= 4 & !missing(scfamh) /*speak on phone less than once or twice a month*/
+        *replace rcntm = 1 if scfamt > 0 & scfamt < 4 & !missing(scfamt) /*Not missing & text at least once or twice a month*/
+        *replace rcntm = 0 if scfamt >= 4 & !missing(scfamt) /*Not missing & text less than once or twice a month*/
+
         gen rcntm = .
-        replace rcntm = 0 if scfam == 2 /*No relatives*/
-        replace rcntm = 1 if scfamg > 0 & scfamg < 4 & !missing(scfamg) /*Not missing & meet up at least once or twice a month*/
-        replace rcntm = 0 if scfamg >= 4 & !missing(scfamg) /*meet up less than once or twice a month*/
-        replace rcntm = 1 if scfami > 0 & scfami < 4 & !missing(scfami) /*Not missing & write/email at least once or twice a month*/
-        replace rcntm = 0 if scfami >= 4 & !missing(scfami) /*write/email less than once or twice a month*/
-        replace rcntm = 1 if scfamh > 0 & scfamh < 4 & !missing(scfamh) /*Not missing & speak on phone at least once or twice a month*/
-        replace rcntm = 0 if scfamh >= 4 & !missing(scfamh) /*speak on phone less than once or twice a month*/
-        replace rcntm = 1 if scfamt > 0 & scfamt < 4 & !missing(scfamt) /*Not missing & text at least once or twice a month*/
-        replace rcntm = 0 if scfamt >= 4 & !missing(scfamt) /*Not missing & text less than once or twice a month*/
+        replace rcntm = 0 if (scfam == 2) | (scfamg >= 4 & !missing(scfamg)) | (scfami >= 4 & !missing(scfami)) | (scfamh >= 4 & !missing(scfamh)) | (scfamt >= 4 & !missing(scfamt))
+        replace rcntm = 1 if (scfamg > 0 & scfamg < 4 & !missing(scfamg)) | (scfami > 0 & scfami < 4 & !missing(scfami)) | (scfamh > 0 & scfamh < 4 & !missing(scfamh)) | (scfamt > 0 & scfamt < 4 & !missing(scfamt))
 
         rename rcntm r`wv'rcntm
     }
     * Friends (varname - fcntm : friends contact monthly)
     if `wv' <= 5 {
+        *gen fcntm = .
+        *replace fcntm = 0 if scfrd == 2 /*No friends*/
+        *replace fcntm = 1 if scfrdg > 0 & scfrdg < 4 & !missing(scfrdg) /*Not missing & meet up at least once or twice a month*/
+        *replace fcntm = 0 if scfrdg >= 4 & !missing(scfrdg) /*meet up less than once or twice a month*/
+        *replace fcntm = 1 if scfrdh > 0 & scfrdh < 4 & !missing(scfrdh) /*Not missing & speak on phone at least once or twice a month*/
+        *replace fcntm = 0 if scfrdh >= 4 & !missing(scfrdh) /*speak on phone less than once or twice a month*/
+        *replace fcntm = 1 if scfrdi > 0 & scfrdi < 4 & !missing(scfrdi) /*Not missing & write/email at least once or twice a month*/
+        *replace fcntm = 0 if scfrdi >= 4 & !missing(scfrdi) /*Not missing & write/email less than once or twice a month*/
+
+        *if () | () | () | () 
+
         gen fcntm = .
-        replace fcntm = 0 if scfrd == 2 /*No friends*/
-        replace fcntm = 1 if scfrdg > 0 & scfrdg < 4 & !missing(scfrdg) /*Not missing & meet up at least once or twice a month*/
-        replace fcntm = 0 if scfrdg >= 4 & !missing(scfrdg) /*meet up less than once or twice a month*/
-        replace fcntm = 1 if scfrdh > 0 & scfrdh < 4 & !missing(scfrdh) /*Not missing & speak on phone at least once or twice a month*/
-        replace fcntm = 0 if scfrdh >= 4 & !missing(scfrdh) /*speak on phone less than once or twice a month*/
-        replace fcntm = 1 if scfrdi > 0 & scfrdi < 4 & !missing(scfrdi) /*Not missing & write/email at least once or twice a month*/
-        replace fcntm = 0 if scfrdi >= 4 & !missing(scfrdi) /*Not missing & write/email less than once or twice a month*/
+        replace fcntm = 0 if (scfrd == 2) | (scfrdg >= 4 & !missing(scfrdg)) | (scfrdh >= 4 & !missing(scfrdh)) | (scfrdi >= 4 & !missing(scfrdi))
+        replace fcntm = 1 if (scfrdg > 0 & scfrdg < 4 & !missing(scfrdg)) | (scfrdh > 0 & scfrdh < 4 & !missing(scfrdh)) | (scfrdi > 0 & scfrdi < 4 & !missing(scfrdi))
 
         rename fcntm r`wv'fcntm
     }
     else if `wv' >=6 {
         * Wave 6 onwards includes text
+        *gen fcntm = .
+        *replace fcntm = 0 if scfrd == 2 /*No friends*/
+        *replace fcntm = 1 if scfrdg > 0 & scfrdg < 4 & !missing(scfrdg) /*Not missing & meet up at least once or twice a month*/
+        *replace fcntm = 0 if scfrdg >= 4 & !missing(scfrdg) /*meet up less than once or twice a month*/
+        *replace fcntm = 1 if scfrdh > 0 & scfrdh < 4 & !missing(scfrdh) /*Not missing & speak on phone at least once or twice a month*/
+        *replace fcntm = 0 if scfrdh >= 4 & !missing(scfrdh) /*speak on phone less than once or twice a month*/
+        *replace fcntm = 1 if scfrdi > 0 & scfrdi < 4 & !missing(scfrdi) /*Not missing & write/email at least once or twice a month*/
+        *replace fcntm = 0 if scfrdi >= 4 & !missing(scfrdi) /*Not missing & write/email less than once or twice a month*/
+        *replace fcntm = 1 if scfrdt > 0 & scfrdt < 4 & !missing(scfrdt) /*Not missing & text at least once or twice a month*/
+        *replace fcntm = 0 if scfrdt >= 4 & !missing(scfrdt) /*Not missing & text less than once or twice a month*/
+
         gen fcntm = .
-        replace fcntm = 0 if scfrd == 2 /*No friends*/
-        replace fcntm = 1 if scfrdg > 0 & scfrdg < 4 & !missing(scfrdg) /*Not missing & meet up at least once or twice a month*/
-        replace fcntm = 0 if scfrdg >= 4 & !missing(scfrdg) /*meet up less than once or twice a month*/
-        replace fcntm = 1 if scfrdh > 0 & scfrdh < 4 & !missing(scfrdh) /*Not missing & speak on phone at least once or twice a month*/
-        replace fcntm = 0 if scfrdh >= 4 & !missing(scfrdh) /*speak on phone less than once or twice a month*/
-        replace fcntm = 1 if scfrdi > 0 & scfrdi < 4 & !missing(scfrdi) /*Not missing & write/email at least once or twice a month*/
-        replace fcntm = 0 if scfrdi >= 4 & !missing(scfrdi) /*Not missing & write/email less than once or twice a month*/
-        replace fcntm = 1 if scfrdt > 0 & scfrdt < 4 & !missing(scfrdt) /*Not missing & text at least once or twice a month*/
-        replace fcntm = 0 if scfrdt >= 4 & !missing(scfrdt) /*Not missing & text less than once or twice a month*/
+        replace fcntm = 0 if (scfrd == 2) | (scfrdg >= 4 & !missing(scfrdg)) | (scfrdh >= 4 & !missing(scfrdh)) | (scfrdi >= 4 & !missing(scfrdi)) | (scfrdt >= 4 & !missing(scfrdt))
+        replace fcntm = 1 if (scfrdg > 0 & scfrdg < 4 & !missing(scfrdg)) | (scfrdh > 0 & scfrdh < 4 & !missing(scfrdh)) | (scfrdi > 0 & scfrdi < 4 & !missing(scfrdi)) | (scfrdt > 0 & scfrdt < 4 & !missing(scfrdt))
 
         rename fcntm r`wv'fcntm
     }
