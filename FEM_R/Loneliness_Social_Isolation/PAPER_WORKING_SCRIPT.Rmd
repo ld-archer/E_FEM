@@ -488,6 +488,7 @@ disabilityFreeLifeYearsComp(cohort_full, no.sociso, 'No Social Isolation')
 disabilityFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'No Loneliness OR Social Isolation')
 ```
 
+#### Disease Free Life Years
 ```{r}
 diseaseFreeLifeYearsComp(cohort_full, no.lonely, 'No Loneliness')
 diseaseFreeLifeYearsComp(cohort_full, no.sociso, 'No Social Isolation')
