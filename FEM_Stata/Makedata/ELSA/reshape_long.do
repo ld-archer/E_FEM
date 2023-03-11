@@ -165,6 +165,9 @@ r*rcntm
 r*fcntm
 r*socyr
 r*jphysl
+h*hhres
+r*gcareinhh1w
+r*child
 ;
 #d cr
 
@@ -176,6 +179,8 @@ forvalues wv = $firstwave/$lastwave {
 
     rename h`wv'atotb r`wv'atotb
     rename h`wv'itot r`wv'itot
+
+    rename h`wv'hhres r`wv'hhres
 }
 
 * Also rename exercise variables in the near future
@@ -258,6 +263,10 @@ foreach var in
     fcntm
     socyr
     jphysl
+    hhres
+    socyr
+    gcareinhh1w
+    child
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -306,7 +315,8 @@ reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata be
     asthmae parkine itearn ipubpen atotf vgactx_e mdactx_e ltactx_e 
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
-    complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr jphysl
+    complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr jphysl hhres 
+    gcareinhh1w child
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -385,6 +395,10 @@ label variable rcntm "Monthly or more contact with relatives"
 label variable fcntm "Monthly or more contact with friends"
 label variable socyr "Whether participates in social activities (org, religious group, committee)"
 label variable jphysl "Level of physical effort required in current job"
+label variable hhres "Number of people in household"
+label variable socyr "Whether participates in social activities"
+label variable gcareinhh1w "Cared for someone in household in past week"
+label variable child "Number of children"
 
 
 * Use harmonised education var
@@ -515,7 +529,7 @@ label variable srh4 "Self Reported Health Status: Fair"
 label variable srh5 "Self Reported Health Status: Poor"
 
 *** Loneliness
-* loneliness is brought into our model as a summary score for 4 questions relating to loneliness
+* loneliness is brought into our model as a summary score for 3 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
 * Potentially in the future, we could just keep the high loneliness? Try full var first
 gen lnly = round(lnlys3, 1)
@@ -528,8 +542,8 @@ gen lnly3 = lnly == 3
 label variable lnly1 "Loneliness level: low"
 label variable lnly2 "Loneliness level: medium"
 label variable lnly3 "Loneliness level: high"
-* Drop 4 level summary score
-drop lnlys
+* Drop 3 level summary score
+*drop lnlys3
 
 
 ****** ALCOHOL ******
@@ -697,6 +711,10 @@ replace itot = itot_adjusted if !missing(itot_adjusted)
 * Finally drop the adjusted vars
 drop atotb_adjusted itot_adjusted
 
+* Lets create log versions of these variables too
+gen logatotb = log(atotb)
+gen logitot = log(itot)
+
 * FINAL finally, calculate wealth quintiles for prediction of other things (incorporate sampling weight cwtresp)
 xtile wealth_quintile = atotb[aw=cwtresp], n(5)
 
@@ -742,6 +760,10 @@ gen sociso3 = (sociso == 3) & !missing(sociso)
 gen sociso4 = (sociso == 4) & !missing(sociso)
 gen sociso5 = (sociso == 5) & !missing(sociso)
 gen sociso6 = (sociso == 6) & !missing(sociso)
+
+****** CHILDLESS ******
+
+gen childless = child > 0
 
 
 *** Generate lagged variables ***
@@ -799,6 +821,7 @@ foreach var in
     lnly1
     lnly2
     lnly3
+    lnlys3
     complac
     leftout
     isolate
@@ -806,6 +829,8 @@ foreach var in
     demene
     itot
     atotb
+    logatotb
+    logitot
     workstat
     employed
     inactive
@@ -834,6 +859,10 @@ foreach var in
     sociso4
     sociso5
     sociso6
+    hhres
+    socyr
+    gcareinhh1w
+    wealth_quintile
     {;
         gen l2`var' = L.`var';
     };

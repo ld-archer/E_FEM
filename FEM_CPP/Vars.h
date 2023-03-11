@@ -30,8 +30,8 @@ namespace Vars
 		anyrx_meps,								///< Any prescriptions from MEPS model
 		arthre,					///< Arthritis ever, stored as Boolean
 		asthmae,				///< Asthma ever, stored as Boolean
-		atotb,                  ///< Total Family Wealth
-		itot,                    ///< Total Family Income
+		//atotb,                  ///< Total Family Wealth
+		//itot,                    ///< Total Family Income
 		births,                   ///< Count of childbirth events (0,1,2), stored as Short
 		black,                    ///< Non-Hispanic black [0, 1], stored as Boolean
 		bornus,                   ///< Born in the U.S.? [0, 1], stored as Boolean
@@ -211,8 +211,8 @@ namespace Vars
 		l2anyhi,                   ///< Lag of HI cov -gov/emp/other, [0, 1], stored as Boolean
 		l2arthre,					///< Lag of arthritis ever, stored as Boolean
 		l2asthmae,					///< Lag of asthma ever, stored as Boolean
-		l2atotb,                    ///< Lag of Total Family Wealth
-		l2itot,                      ///< Lag of Total Family Income
+		//l2atotb,                    ///< Lag of Total Family Wealth
+		//l2itot,                      ///< Lag of Total Family Income
 		l2bpcontrol,               ///< Lag of bpcontrol
 		l2bs_treated,              ///< Lag of treated with bariatric surgery, stored as Boolean
 		l2cancre,                  ///< Lag of Cancer, [0, 1], stored as Boolean
@@ -681,6 +681,17 @@ namespace Vars
         physact,                    ///< Physiaclly Active
         l2physact,                  ///< Lag of physically active
         pphysact,                   ///< Probability of Physically active
+        logatotb,                   ///< Log of atotb (total family wealth)
+        l2logatotb,                 ///< Lag of Log of atotb (total family wealth)
+        hhres,                      ///< Number of residents in household
+        l2hhres,                    ///< Lag of Number of residents in household
+        socyr,                      ///< Whether participates in social activities
+        l2socyr,                    ///< Lag of Whether participates in social activities
+        gcareinhh1w,                ///< Whether cared for someone in household in past week
+        l2gcareinhh1w,              ///< Lag of Whether cared for someone in household in past week
+        childless,                  ///< Does not have children
+        logitot,                    ///< Log(itot)
+        l2logitot,                  ///< Lag of Log(itot)
 		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

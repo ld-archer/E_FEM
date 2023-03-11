@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 global bin_econ
-global ols logbmi atotb itot smokef
+global ols logbmi logatotb logitot smokef
 global order adlstat iadlstat srh lnly alcfreq sociso
 global unorder workstat mstat
 
@@ -94,11 +94,11 @@ local lvars_nssec l2nssec1 l2nssec2 l2nssec3 l2nssec4 l2nssec5 l2nssec6 l2nssec7
 * Relationship Status vars
 local lvars_mstat l2single l2cohab l2widowed                        /*Control: l2married - married*/
 * Loneliness
-local lvars_lnly l2lnly2 l2lnly3                                    /* Control: l2lnly1 - Loneliness score: Low*/
+local lvars_lnly l2lnly1 l2lnly2                                    /* Control: l2lnly1 - Loneliness score: Low*/
 * Alcohol consumption frequency
 local lvars_alcfreq l2alcfreq1 l2alcfreq2 l2alcfreq3 l2alcfreq5 l2alcfreq6 l2alcfreq7 l2alcfreq8 /* Control: alcfreq4 - Alcohol consumption frequency: once or twice a week*/
 * Social Isolation
-local lvars_sociso l2sociso2 l2sociso3 l2sociso4 l2sociso5 l2sociso6 /* Control: l2sociso1 - No Social Isolation */
+local lvars_sociso l2sociso1 l2sociso2 l2sociso3 l2sociso4 l2sociso5 /* Control: l2sociso1 - No Social Isolation */
 
 
 
@@ -111,6 +111,7 @@ local lvars_sociso l2sociso2 l2sociso3 l2sociso4 l2sociso5 l2sociso6 /* Control:
 * FROM covar_defincoreLEGACY
 *global allvars_died             $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
 global allvars_died             $dvars $lvars_age `lvars_lnly' `lvars_sociso'
+*global allvars_died             $dvars $lvars_age sociso
 
 *** Chronic Diseases
 *CANCRE
@@ -164,8 +165,8 @@ global allvars_logbmi           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2ph
 
 
 *** Economic vars (atotb & itot)
-global allvars_atotb            $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink /*`lvars_mstat'*/
-global allvars_itot             $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink /*`lvars_mstat'*/
+global allvars_logatotb            $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink /*`lvars_mstat'*/
+global allvars_logitot             $dvars $lvars_age `lvars_workstat' `lvars_funclimit' `lvars_smoke' l2drink /*`lvars_mstat'*/
 
 
 *** Disabilities
@@ -184,9 +185,9 @@ global allvars_physact          $dvars $lvars_age `lvars_funclimit'
 
 *** Loneliness
 * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4225959/
-global allvars_lnly             $dvars $lvars_age atotb `lvars_workstat' l2physact
+global allvars_lnly             $dvars $lvars_age `lvars_mstat' `lvars_workstat' l2physact l2anyadl l2anyiadl l2srh5 l2psyche l2logatotb l2hhres l2socyr l2gcareinhh1w childless
 *** Social Isolation
-global allvars_sociso           $dvars $lvars_age atotb `lvars_workstat' l2physact
+global allvars_sociso           $dvars $lvars_age `lvars_workstat' l2physact
 
 *** Marriage Status
 global allvars_mstat            $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p

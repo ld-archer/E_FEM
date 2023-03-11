@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat drink mstat workstat atotb itot sociso physact {
+foreach v in adlstat iadlstat drink mstat workstat logatotb logitot sociso physact {
     local select_`v' !died 
 }
 
@@ -35,7 +35,7 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
                 smoke_start smoke_stop alcfreq ///
                 logbmi hchole hipe mstat lnly alzhe demene ///
-                workstat atotb itot smokef ///
+                workstat logatotb logitot smokef ///
                 angine hrtatte ///
                 conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso physact
 

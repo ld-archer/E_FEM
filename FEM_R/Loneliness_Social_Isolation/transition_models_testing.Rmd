@@ -10,6 +10,7 @@ knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
 require(haven)
+require(MASS)
 
 ```
 
@@ -37,8 +38,17 @@ long <- read_dta(paste0(input_dir, 'ELSA_long.dta'))
 
 # Mortality is a probit model with binary outcome
 
-# make sure mortality if factor
+# make sure responses are factor where necessary
 trans$died <- factor(trans$died)
+trans$lnly <- factor(trans$lnly)
+trans$sociso <- factor(trans$sociso)
+trans$male <- factor(trans$male)
+trans$hsless <- factor(trans$hsless)
+trans$college <- factor(trans$college)
+trans$l2employed <- factor(trans$l2employed)
+trans$l2inactive <- factor(trans$l2inactive)
+trans$l2physact <- factor(trans$l2physact)
+
 
 # check cross tabs with lnly and sociso
 xtabs(formula = ~died + l2lnly, data = trans, addNA = TRUE)
@@ -69,6 +79,8 @@ sociso.check <- sociso %>%
   group_by(l2sociso) %>%
   mutate(total = sum(Freq)) %>%
   mutate(prop = (Freq / total) * 100)
+
+#write.csv(lnly.check, )
 ```
 
 ```{r}
@@ -82,6 +94,26 @@ sociso.check
 ```
 
 The previous output of this chunk wasn't very good, and prompted a closer look at the creation of the sociso index and the component variables. I found a problem in this definition (was a chain of replace commands that meant that the last replace was most important). Now the variable looks excellent in terms of mortality! We see the lowest rates of mortality in the sociso == 1 group (lowest / no social isolation), and higher rates of mortality as time goes on. Magnificent! 
+
+Lets have one more go with these limited to waves 1-6, as no more deaths are recorded after wave 6.
+
+```{r}
+trans2 <- trans %>% filter(wave < 7)
+
+lnly2 <- as.data.frame(xtabs(formula = ~died + l2lnly, data = trans2, addNA = TRUE))
+sociso2 <- as.data.frame(xtabs(formula = ~died + l2sociso, data = trans2, addNA = TRUE))
+
+lnly.check2 <- lnly2 %>%
+  group_by(l2lnly) %>%
+  mutate(total = sum(Freq)) %>%
+  mutate(prop = (Freq / total) * 100)
+
+sociso.check2 <- sociso2 %>%
+  group_by(l2sociso) %>%
+  mutate(total = sum(Freq)) %>%
+  mutate(prop = (Freq / total) * 100)
+```
+
 
 
 Time to fit some models. Start with mortality, and do the minimal (just demographics), lnly/sociso, and full version.
@@ -98,15 +130,130 @@ summary(probit.mort.min)
 Now try an iteration with lnly and sociso.
 
 ```{r}
-form.mort.min <- 'died ~ male + white + hsless + college + 
+form.mort.ls <- 'died ~ male + white + hsless + college + 
                   l2age65l + l2age6574 + l2age75p + 
-                  l2lnly2 + l2lnly3 +
-                  l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 + l2sociso6'
+                  l2lnly1 + l2lnly2 + l2lnly3 +
+                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 + l2sociso6'
 
-probit.mort.min <- glm(formula = form.mort.min, family = binomial(link = 'probit'),
+probit.mort.ls <- glm(formula = form.mort.ls, family = binomial(link = 'probit'),
                     data = trans)
 
-summary(probit.mort.min)
+summary(probit.mort.ls)
 ```
 
+Interesting. Mirrors the FEM transition model, although not exactly. Same sign for each var and similar relative magnitude (i.e. in the sociso levels). The sociso relationship is great now but the loneliness is not so clear cut. This actually mirrors the literature so we could be on to something here! Try a version where the reference factors are different, might be good to pick the worst of each var and then we can see where the relationship falls down. 
+
+```{r}
+form.mort.ls2 <- 'died ~ male + white + hsless + college + 
+                  l2age65l + l2age6574 + l2age75p + 
+                  l2lnly1 + l2lnly2 +
+                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5'
+
+probit.mort.ls2 <- glm(formula = form.mort.ls2, family = binomial(link = 'probit'),
+                    data = trans)
+
+summary(probit.mort.ls2)
+```
+
+*Chefs kiss*. Exaclty what we want to see. Probability of mortality increases with higher rates of loneliness and social isolation. Appears that loneliness here is more highly associated with mortality than social isolation, but I have an idea about that. Perhaps, with loneliness being the subjective feeling and social isolation the objective situation, social isolation is more likely in people in palliative care or close to end of life already. These people are harder to follow in ELSA, and institutionalised people are removed from the survey. Maybe a contributing factor.
+
+Try one more version, with chronic diseases and stuff.
+
+```{r}
+form.mort.full <- 'died ~ male + white + hsless + college + 
+                  l2age65l + l2age6574 + l2age75p + 
+                  l2lnly1 + l2lnly2 +
+                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 +
+                  l2cancre + l2diabe + l2hearte + l2alzhe + l2demene + l2lunge +
+                  l2stroke'
+
+probit.mort.full <- glm(formula = form.mort.full, family = binomial(link = 'probit'),
+                    data = trans)
+
+summary(probit.mort.full)
+```
+
+# Loneliness and Social Isolation
+
+Now lets have a go at fitting models to lnly and sociso.
+
+## Loneliness
+
+```{r}
+# Get a sample comparable to the sample used in FEM
+trans.lnly <- trans %>%
+  dplyr::select(idauniq, wave, died, lnly, male, white, hsless, college, l2age65l, l2age6574, l2age75p, atotb, l2employed, l2inactive, l2physact) %>%
+  filter(wave > 1) %>%
+  filter(died == 0)
+trans.lnly.complete <- trans.lnly[complete.cases(trans.lnly),]
+
+
+## MINIMAL
+form.lnly.min <- 'lnly ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+probit.lnly.min <- polr(formula = form.lnly.min,
+                    data = trans.lnly,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Minimal model:')
+summary(probit.lnly.min)
+
+## FULL
+form.lnly <- 'lnly ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + scale(atotb) + l2employed + l2inactive + l2physact'
+probit.lnly <- polr(formula = form.lnly,
+                    data = trans.lnly,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Full model:')
+summary(probit.lnly)
+```
+
+Now use these models as a testbed using ideas from literature.
+
+First up [Cohen-Mansfield et al (2015)](https://www.cambridge.org/core/journals/international-psychogeriatrics/article/abs/correlates-and-predictors-of-loneliness-in-olderadults-a-review-of-quantitative-results-informed-by-qualitative-insights/EF57448627F1EF5CFD89F83C3F188175).
+
+Shortlist of variables I already have or can easily test:
+- [x] gender
+- [x] age
+- [x] unmarried status
+- [x] income (wealth?)
+- [x] education
+- nursing home resident (may be issues with 0 analysis weight) (nhmliv)
+- [x] participates in social activities (socyr)
+- [x] care for someone in household (R*GCAREINHH1W)
+- [x] Childless (child)
+- [x] living alone / few individuals in household (H*HHRES)
+- [x] self reported health == poor (SRH == 1)
+- [x] functional status == poor (ADL == 3+, IADL == 2+)
+- [x] depression (psychiatric problems - emotional, nervous, or psychiatric)
+
+```{r}
+## TEST
+form.lnly.test <- 'lnly ~ male + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2cohab + l2widowed + l2single + l2employed + l2inactive + l2physact + l2anyadl + l2anyiadl + l2srh5 + l2psyche + l2hhres + l2socyr + l2gcareinhh1w + childless + scale(l2logatotb)'
+probit.lnly.test <- polr(formula = form.lnly.test,
+                    data = trans,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Test model:')
+summary(probit.lnly.test)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+```
 

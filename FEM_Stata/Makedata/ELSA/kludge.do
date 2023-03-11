@@ -92,35 +92,35 @@ save $outdata/test_pre_hotdeck.dta, replace
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly sociso workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole smokef alcfreq ///
+                        smoken hchole smokef alcfreq logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot educl alcfreq ///
+                        psyche asthmae parkine itot educl alcfreq logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso physact
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot hchole hipe educl ///
+                        psyche asthmae parkine itot hchole hipe educl logatotb logitot hhres socyr gcareinhh1w ///
                         mstat lnly sociso alzhe demene workstat smokef ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot hchole hipe educl ///
+                        psyche asthmae parkine itot hchole hipe educl logatotb logitot hhres socyr gcareinhh1w ///
                         lnly sociso alzhe demene workstat smokef ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly sociso workstat alzhe arthre asthmae demene ///
-                        parkine psyche hipe hchole smokef ///
+                        parkine psyche hipe hchole smokef logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly sociso logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
-                        psyche asthmae parkine itot educl workstat alzhe demene ///
+                        psyche asthmae parkine itot educl workstat alzhe demene logatotb logitot hhres socyr gcareinhh1w ///
                         hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq
 }
 else {
@@ -146,8 +146,8 @@ replace srh5 = 0 if srh3 == 1
 * Impute some vars by simply copying lag to current and/or vice versa
 foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
                         lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
-                        srh3 srh4 srh5 atotb itot hipe mstat alzhe demene employed inactive ///
-                        retired ///
+                        srh3 srh4 srh5 hipe mstat alzhe demene employed inactive ///
+                        retired logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
@@ -204,13 +204,18 @@ replace l2osteoe = 0 if missing(l2osteoe)
 
 
 * Still missing atotb, so impute with mean
-quietly summ atotb
-replace atotb = r(mean) if missing(atotb)
-replace l2atotb = atotb if missing(l2atotb) & !missing(atotb)
+quietly summ logatotb
+replace logatotb = r(mean) if missing(logatotb)
+replace l2logatotb = logatotb if missing(l2logatotb) & !missing(logatotb)
 * Same for itot
-quietly summ itot
-replace itot = r(mean) if missing(itot)
-replace l2itot = itot if missing(l2itot) & !missing(itot)
+quietly summ logitot
+replace logitot = r(mean) if missing(logitot)
+replace l2logitot = logitot if missing(l2logitot) & !missing(logitot)
+
+*replace logatotb = log(atotb) if missing(logatotb)
+*replace l2logatotb = log(l2atotb) if missing(l2logatotb)
+*replace logitot = log(itot) if missing(logitot)
+*replace l2logitot = log(l2itot) if missing(l2logitot)
 
 * Still missing some hchole
 replace hchole = 0 if missing(hchole)

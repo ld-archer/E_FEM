@@ -96,8 +96,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::arthre]				= VarInfo("arthre", "Arthritis ever", VarTypes::Boolean);
 	info[Vars::asthmae]				= VarInfo("asthmae", "Asthma ever", VarTypes::Boolean);
 	//info[Vars::atotf]				= VarInfo("atotf", "Net value of non-housing financial wealth", VarTypes::Float);
-	info[Vars::atotb]               = VarInfo("atotb", "Total Family Wealth", VarTypes::Float);
-    info[Vars::itot]               = VarInfo("itot", "Total Family Income", VarTypes::Float);
+	//info[Vars::atotb]               = VarInfo("atotb", "Total Family Wealth", VarTypes::Float);
+    //info[Vars::itot]               = VarInfo("itot", "Total Family Income", VarTypes::Float);
 	info[Vars::births]                = VarInfo("births", "Count of childbirth events", VarTypes::Short,true);
 	info[Vars::black]                = VarInfo("black", "Non-Hispanic black [0, 1]", VarTypes::Boolean);
 	info[Vars::bornus]               = VarInfo("bornus", "Born in U.S.? [0, 1]", VarTypes::Boolean);
@@ -282,8 +282,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2arthre]			= VarInfo("l2arthre", "Lag of Arthritis ever", VarTypes::Boolean);
 	info[Vars::l2asthmae]			= VarInfo("l2asthmae", "Lag of Asthma ever", VarTypes::Boolean);
 	//info[Vars::l2atotf]				= VarInfo("l2atotf", "Lag of net value of non-housing financial wealth", VarTypes::Float);
-	info[Vars::l2atotb]             = VarInfo("l2atotb", "Lag of Total Family Wealth", VarTypes::Float);
-    info[Vars::l2itot]             = VarInfo("l2itot", "Lag of Total Family Income", VarTypes::Float);
+	//info[Vars::l2atotb]             = VarInfo("l2atotb", "Lag of Total Family Wealth", VarTypes::Float);
+    //info[Vars::l2itot]             = VarInfo("l2itot", "Lag of Total Family Income", VarTypes::Float);
 	info[Vars::l2bs_treated]          = VarInfo("l2bs_treated", "Lag of treated with bariatric surgery", VarTypes::Boolean);
 	info[Vars::l2bpcontrol]           = VarInfo("l2bpcontrol", "Lag of bpcontrol", VarTypes::Boolean);
 	info[Vars::l2cancre]              = VarInfo("l2cancre", "Lag of Cancer, [0, 1]", VarTypes::Boolean);
@@ -328,6 +328,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2logiearn]            = VarInfo("l2logiearn", "Lag of logiearn, Approx Range [0, 0.0716395]", VarTypes::Float);
 	info[Vars::l2logiearnuc]	     = VarInfo("l2logiearnuc", "Lag of logiearnuc", VarTypes::Float);
 	info[Vars::l2logiearnx]           = VarInfo("l2logiearnx", "Lag of logiearnx, Approx Range [0, 0.0599147]", VarTypes::Float);
+    info[Vars::l2logatotb]            = VarInfo("l2logatotb", "Lag of Log of atotb (wealth)", VarTypes::Float);
 	info[Vars::l2low_tics]            = VarInfo("l2low_tics", "Lag of low tics score", VarTypes::Short);
 	info[Vars::l2lunge]               = VarInfo("l2lunge", "Lag of Lung disease, [0, 1]", VarTypes::Boolean);
 	info[Vars::l2lungoxy]             = VarInfo("l2lungoxy", "Lag of lungoxy", VarTypes::Boolean);
@@ -347,6 +348,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::logiearn]             = VarInfo("logiearn", "Approx Range [0, 0.0716395]", VarTypes::Float);
 	info[Vars::logiearnuc] 	     = VarInfo("logiearnuc", "IHS of uncapped earnings", VarTypes::Float);
 	info[Vars::logiearnx]            = VarInfo("logiearnx", "(IHT of earnings in 1000s)/100 if working,zero otherwise Approx Range [0, 0.0599147]", VarTypes::Float);
+    info[Vars::logatotb]            = VarInfo("logatotb", "Log of atotb (wealth)", VarTypes::Float);
 	info[Vars::low_tics]	         = VarInfo("low_tics", "Low TICS score", VarTypes::Short);
 	info[Vars::l2partdied]					 = VarInfo("l2partdied", "Lag of partner/spouse died", VarTypes::Boolean);
 	info[Vars::l2paternity]          = VarInfo("l2paternity", "Lag count of children fathered", VarTypes::Short);
@@ -760,6 +762,16 @@ VarsInfo::VarsInfo() {
     info[Vars::physact]                 = VarInfo("physact", "Physically active", VarTypes::Boolean);
     info[Vars::l2physact]               = VarInfo("l2physact", "Lag of Physically active", VarTypes::Boolean);
     info[Vars::pphysact]                = VarInfo("pphysact", "Probability of Physically active", VarTypes::Float);
+    info[Vars::hhres]                   = VarInfo("hhres", "Number of residents in household", VarTypes::Short);
+    info[Vars::l2hhres]                   = VarInfo("l2hhres", "Lag of Number of residents in household", VarTypes::Short);
+    info[Vars::socyr]                   = VarInfo("socyr", "Whether participates in social activity", VarTypes::Boolean);
+    info[Vars::l2socyr]                 = VarInfo("l2socyr", "Lag of Whether participates in social activity", VarTypes::Boolean);
+    info[Vars::gcareinhh1w]           = VarInfo("gcareinhh1w", "Whether cared for someone in household in past week", VarTypes::Boolean);
+    info[Vars::l2gcareinhh1w]           = VarInfo("l2gcareinhh1w", "Lag of Whether cared for someone in household in past week", VarTypes::Boolean);
+    info[Vars::childless]               = VarInfo("childless", "Does not have children", VarTypes::Boolean);
+    info[Vars::logitot]                 = VarInfo("logitot", "Log(itot)", VarTypes::Float);
+    info[Vars::l2logitot]                 = VarInfo("l2logitot", "Lag of Log(itot)", VarTypes::Float);
+
 
 
 
@@ -883,8 +895,10 @@ VarsInfo::VarsInfo() {
 	lag_map[Vars::arthre] = Vars::l2arthre;
 	lag_map[Vars::psyche] = Vars::l2psyche;	
 	lag_map[Vars::parkine] = Vars::l2parkine;
-	lag_map[Vars::atotb] = Vars::l2atotb;
-	lag_map[Vars::itot] = Vars::l2itot;
+	//lag_map[Vars::atotb] = Vars::l2atotb;
+    lag_map[Vars::logatotb] = Vars::l2logatotb;
+	//lag_map[Vars::itot] = Vars::l2itot;
+    lag_map[Vars::logitot] = Vars::l2logitot;
 	lag_map[Vars::drink] = Vars::l2drink;
 	//lag_map[Vars::heavy_drinker] = Vars::l2heavy_drinker;
 	//lag_map[Vars::freq_drinker] = Vars::l2freq_drinker;
@@ -939,6 +953,9 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::sociso5] = Vars::l2sociso5;
     lag_map[Vars::sociso6] = Vars::l2sociso6;
     lag_map[Vars::physact] = Vars::l2physact;
+    lag_map[Vars::hhres] = Vars::l2hhres;
+    lag_map[Vars::socyr] = Vars::l2socyr;
+    lag_map[Vars::gcareinhh1w] = Vars::l2gcareinhh1w;
 
 
 
