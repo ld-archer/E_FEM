@@ -179,7 +179,7 @@ mean.df <- tibble::rownames_to_column(mean.df, 'Variable')
 
 # Need counts of non missing data per variable to calculate SD from SE
 counts <- s %>% summarise_each(funs(sum(!is.na(.)))) %>%
-  select(age, male, bmi, smoken, smokev, hsless, college) %>%
+  dplyr::select(age, male, bmi, smoken, smokev, hsless, college) %>%
   t() %>%
   as.data.frame() %>%
   tibble::rownames_to_column('Variable') %>%

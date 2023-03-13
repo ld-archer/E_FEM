@@ -228,7 +228,7 @@ Shortlist of variables I already have or can easily test:
 
 ```{r}
 ## TEST
-form.lnly.test <- 'lnly ~ male + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2cohab + l2widowed + l2single + l2employed + l2inactive + l2physact + l2anyadl + l2anyiadl + l2srh5 + l2psyche + l2hhres + l2socyr + l2gcareinhh1w + childless + scale(l2logatotb)'
+form.lnly.test <- 'lnly ~ male + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2cohab + l2widowed + l2single + l2employed + l2inactive + l2physact + l2anyadl + l2anyiadl + l2srh5 + l2hhres + l2socyr + l2gcareinhh1w + childless + scale(l2logatotb) + l2cesd'
 probit.lnly.test <- polr(formula = form.lnly.test,
                     data = trans,
                     Hess = TRUE,
@@ -237,7 +237,50 @@ print('Test model:')
 summary(probit.lnly.test)
 ```
 
+## Social Isolation
 
+First recreate the minimal and current models before trying anything new.
+
+```{r}
+# Get a sample comparable to the sample used in FEM
+trans.sociso <- trans %>%
+  dplyr::select(idauniq, wave, died, sociso, male, white, hsless, college, l2age65l, l2age6574, l2age75p, atotb, l2employed, l2inactive, l2physact) %>%
+  filter(wave > 1) %>%
+  filter(died == 0)
+trans.sociso.complete <- trans.sociso[complete.cases(trans.sociso),]
+
+
+## MINIMAL
+form.sociso.min <- 'sociso ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+probit.sociso.min <- polr(formula = form.sociso.min,
+                    data = trans.sociso,
+                    Hess = TRUE,
+                    na.action = na.omit)
+# print('Minimal model:')
+summary(probit.sociso.min)
+
+## FULL
+form.sociso <- 'sociso ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + scale(atotb) + l2employed + l2inactive + l2physact'
+probit.sociso <- polr(formula = form.sociso,
+                    data = trans.sociso,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Full model:')
+summary(probit.sociso)
+```
+
+Now trying the predictors from the loneliness model minus some variables that would be too strongly correlated with the outcome (specifically socyr).
+
+```{r}
+## TEST
+form.sociso.test <- 'sociso ~ male + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2cohab + l2widowed + l2single + l2physact + l2srh5 + l2hhres + l2gcareinhh1w + childless + scale(l2logatotb) + l2cesd + l2sight + l2hearing + l2ahown'
+probit.sociso.test <- polr(formula = form.sociso.test,
+                    data = trans,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Test model:')
+summary(probit.sociso.test)
+```
 
 
 
