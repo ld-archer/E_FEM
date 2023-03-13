@@ -168,6 +168,10 @@ r*jphysl
 h*hhres
 r*gcareinhh1w
 r*child
+r*cesd
+r*sight
+r*hearing
+h*ahown
 ;
 #d cr
 
@@ -181,6 +185,7 @@ forvalues wv = $firstwave/$lastwave {
     rename h`wv'itot r`wv'itot
 
     rename h`wv'hhres r`wv'hhres
+    rename h`wv'ahown r`wv'ahown
 }
 
 * Also rename exercise variables in the near future
@@ -267,6 +272,10 @@ foreach var in
     socyr
     gcareinhh1w
     child
+    cesd
+    sight
+    hearing
+    ahown
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -316,7 +325,7 @@ reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata be
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
     complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr jphysl hhres 
-    gcareinhh1w child
+    gcareinhh1w child cesd sight hearing ahown
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -399,6 +408,10 @@ label variable hhres "Number of people in household"
 label variable socyr "Whether participates in social activities"
 label variable gcareinhh1w "Cared for someone in household in past week"
 label variable child "Number of children"
+label variable cesd "Center for Epidemiologic Studies Depression Scale (CESD)"
+label variable sight "Self-rated eyesight"
+label variable hearing "Self-rated hearing"
+label variable ahown "Whether owns home"
 
 
 * Use harmonised education var
@@ -751,6 +764,14 @@ replace sociso = sociso + 1 if rcntm == 0 & !missing(rcntm) /*Relatives contact 
 replace sociso = sociso + 1 if fcntm == 0 & !missing(fcntm) /*friends contact less than monthly*/
 replace sociso = sociso + 1 if socyr == 0 & !missing(socyr) /*not member of religious group, committee, or other organisation*/
 replace sociso = . if missing(mstat) & missing(kcntm) & missing(rcntm) & missing(fcntm) & missing(socyr)
+* Now count number of missing to understand data a bit better
+gen sociso_mflag = 0
+replace sociso_mflag = sociso_mflag + 1 if missing(mstat)
+replace sociso_mflag = sociso_mflag + 1 if missing(kcntm)
+replace sociso_mflag = sociso_mflag + 1 if missing(rcntm)
+replace sociso_mflag = sociso_mflag + 1 if missing(fcntm)
+replace sociso_mflag = sociso_mflag + 1 if missing(socyr)
+
 * drop elements of index
 *drop kcntm rcntm fcntm socyr
 * Dummy vars
@@ -863,6 +884,10 @@ foreach var in
     socyr
     gcareinhh1w
     wealth_quintile
+    cesd
+    sight
+    hearing
+    ahown
     {;
         gen l2`var' = L.`var';
     };

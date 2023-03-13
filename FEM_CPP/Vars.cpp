@@ -771,6 +771,14 @@ VarsInfo::VarsInfo() {
     info[Vars::childless]               = VarInfo("childless", "Does not have children", VarTypes::Boolean);
     info[Vars::logitot]                 = VarInfo("logitot", "Log(itot)", VarTypes::Float);
     info[Vars::l2logitot]                 = VarInfo("l2logitot", "Lag of Log(itot)", VarTypes::Float);
+    info[Vars::cesd]                    = VarInfo("cesd", "Center for Epidemiological Studies - Depression (CESD) scale", VarTypes::Short);
+    info[Vars::l2cesd]                  = VarInfo("l2cesd", "Lag of Center for Epidemiological Studies - Depression (CESD) scale", VarTypes::Short);
+    info[Vars::sight]                    = VarInfo("sight", "Self-rated eyesight", VarTypes::Boolean);
+    info[Vars::l2sight]                  = VarInfo("l2sight", "Lag of Self-rated eyesight", VarTypes::Boolean);
+    info[Vars::hearing]                    = VarInfo("hearing", "Self-rated hearing", VarTypes::Boolean);
+    info[Vars::l2hearing]                  = VarInfo("l2hearing", "Lag of Self-rated hearing", VarTypes::Boolean);
+    info[Vars::ahown]                    = VarInfo("ahown", "Whether owns home", VarTypes::Short);
+    info[Vars::l2ahown]                  = VarInfo("l2ahown", "Lag of Whether owns home", VarTypes::Short);
 
 
 
@@ -956,6 +964,10 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::hhres] = Vars::l2hhres;
     lag_map[Vars::socyr] = Vars::l2socyr;
     lag_map[Vars::gcareinhh1w] = Vars::l2gcareinhh1w;
+    lag_map[Vars::cesd] = Vars::l2cesd;
+    lag_map[Vars::sight] = Vars::l2sight;
+    lag_map[Vars::hearing] = Vars::l2hearing;
+    lag_map[Vars::ahown] = Vars::l2ahown;
 
 
 

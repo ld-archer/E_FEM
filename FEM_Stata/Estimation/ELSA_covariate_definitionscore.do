@@ -185,9 +185,9 @@ global allvars_physact          $dvars $lvars_age `lvars_funclimit'
 
 *** Loneliness
 * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4225959/
-global allvars_lnly             $dvars $lvars_age `lvars_mstat' `lvars_workstat' l2physact l2anyadl l2anyiadl l2srh5 l2psyche l2logatotb l2hhres l2socyr l2gcareinhh1w childless
+global allvars_lnly             $dvars $lvars_age `lvars_mstat' `lvars_workstat' l2physact l2anyadl l2anyiadl l2srh5 l2logatotb l2hhres l2socyr l2gcareinhh1w childless l2cesd
 *** Social Isolation
-global allvars_sociso           $dvars $lvars_age `lvars_workstat' l2physact
+global allvars_sociso           $dvars $lvars_age `lvars_mstat' l2physact l2srh5 l2logatotb l2hhres l2gcareinhh1w childless l2cesd l2sight l2hearing l2ahown
 
 *** Marriage Status
 global allvars_mstat            $dvars $lvars_age `lvars_workstat' l2logbmi_l30 l2logbmi_30p

@@ -692,6 +692,14 @@ namespace Vars
         childless,                  ///< Does not have children
         logitot,                    ///< Log(itot)
         l2logitot,                  ///< Lag of Log(itot)
+        cesd,                       ///< Center for Epidemiological Studies - Depression (CESD) scale
+        l2cesd,                     ///< Lag of Center for Epidemiological Studies - Depression (CESD) scale
+        sight,                      ///< Self-rated eyesight
+        l2sight,                    ///< Lag of Self-rated eyesight
+        hearing,                    ///< Self-rated hearing
+        l2hearing,                  ///< Lag of Self-rated hearing
+        ahown,                      ///< Whether owns home
+        l2ahown,                    ///< Lag of Whether owns home
 		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};
