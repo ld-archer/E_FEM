@@ -172,6 +172,9 @@ r*cesd
 r*sight
 r*hearing
 h*ahown
+r*tr20
+r*verbf
+r*orient
 ;
 #d cr
 
@@ -276,6 +279,9 @@ foreach var in
     sight
     hearing
     ahown
+    tr20
+    verbf
+    orient
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -325,7 +331,7 @@ reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata be
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
     complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr jphysl hhres 
-    gcareinhh1w child cesd sight hearing ahown
+    gcareinhh1w child cesd sight hearing ahown tr20 verbf orient
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -412,6 +418,9 @@ label variable cesd "Center for Epidemiologic Studies Depression Scale (CESD)"
 label variable sight "Self-rated eyesight"
 label variable hearing "Self-rated hearing"
 label variable ahown "Whether owns home"
+label variable tr20 "Word recall summary score"
+label variable verbf "Verbal fluency score"
+label variable orient "Cognition Orient (summary date naming)"
 
 
 * Use harmonised education var
@@ -888,6 +897,9 @@ foreach var in
     sight
     hearing
     ahown
+    tr20
+    verbf
+    orient
     {;
         gen l2`var' = L.`var';
     };
