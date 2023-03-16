@@ -173,6 +173,23 @@ probit.mort.full <- glm(formula = form.mort.full, family = binomial(link = 'prob
 summary(probit.mort.full)
 ```
 
+I like the previous model, lets also do a few test versions.
+
+```{r}
+form.mort.test <- 'died ~ male + white + hsless + college + 
+                  l2age65l + l2age6574 + l2age75p + 
+                  l2lnly1 + l2lnly2 +
+                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 +
+                  l2cancre + l2diabe + l2hearte + l2alzhe + l2demene + l2lunge +
+                  l2stroke + l2smokev + l2smoken + l2smokef'
+
+probit.mort.test <- glm(formula = form.mort.test, family = binomial(link = 'probit'),
+                    data = trans)
+
+summary(probit.mort.test)
+```
+
+
 # Loneliness and Social Isolation
 
 Now lets have a go at fitting models to lnly and sociso.

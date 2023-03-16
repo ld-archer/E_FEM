@@ -109,8 +109,8 @@ local lvars_sociso l2sociso1 l2sociso2 l2sociso3 l2sociso4 l2sociso5 /* Control:
 * 16/6/21 - now includes l2hibpe & `lvars_funclimit'
 *global allvars_died        $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2hibpe `lvars_smoke' l2demene `lvars_funclimit'
 * FROM covar_defincoreLEGACY
-*global allvars_died             $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke' `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
-global allvars_died             $dvars $lvars_age `lvars_lnly' `lvars_sociso'
+global allvars_died             $dvars $lvars_age l2cancre l2hearte l2diabe l2lunge l2stroke l2demene `lvars_smoke' `lvars_lnly' `lvars_sociso'
+*global allvars_died             $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 *global allvars_died             $dvars $lvars_age sociso
 
 *** Chronic Diseases
