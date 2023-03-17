@@ -35,7 +35,6 @@ workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
-require(reactable)
 require(haven)
 require(ggplot2)
 require(jtools)
@@ -48,7 +47,7 @@ require(lazyeval)
 ```
 
 ```{r}
-source('../HAZARDS/source/hazard_utils.R')
+#source('../HAZARDS/source/hazard_utils.R')
 source('FEM_R/utilities.R')
 ```
 
@@ -342,10 +341,17 @@ lifeyearComparison <- function(c, i, int.name) {
   
   i.avg.lfyr <- cohortLifeyear(i)
   
+  df <- data.frame(outcome = c('LifeYears', 'LifeYears'),
+                   intervention = c(int.name, int.name),
+                   scenario = c('cohort', 'intervention'),
+                   lifeyear = c(c.avg.lfyr, i.avg.lfyr))
+  
   print(int.name)
   print(paste('Cohort Average Lifeyears:        ', signif(c.avg.lfyr, digits=4)))
   print(paste('Intervention Average Lifeyears:  ', signif(i.avg.lfyr, digits=4)))
   print(paste('Increase:                        ', signif(x = (i.avg.lfyr - c.avg.lfyr), digits=4)))
+  
+  return(df)
 }
 
 # This function calculates the average number of life years in the model when diagnosed with a chronic disease
@@ -378,6 +384,7 @@ disabilityLifeYearComp <- function(c, i, int.name) {
   print(paste('Cohort Average Disabled Lifeyears:        ', signif(c.avg.dis, digits=4)))
   print(paste('Intervention Average Disabled Lifeyears:  ', signif(i.avg.dis, digits=4)))
   print(paste('Increase:                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+  return(df)
 }
 
 # Calculate disability free life years
@@ -392,10 +399,15 @@ disabilityFreeLifeYearsCohort <- function(c) {
 disabilityFreeLifeYearsComp <- function(c, i, int.name) {
   c.avg.dis <- disabilityFreeLifeYearsCohort(c)
   i.avg.dis <- disabilityFreeLifeYearsCohort(i)
+  df <- data.frame(outcome = c('DisabilityFree', 'DisabilityFree'),
+                   intervention = c(int.name, int.name),
+                   scenario = c('cohort', 'intervention'),
+                   lifeyear = c(c.avg.dis, i.avg.dis))
   print(int.name)
   print(paste('Cohort Average Disability Free Lifeyears:        ', signif(c.avg.dis, digits=4)))
   print(paste('Intervention Average Disability Free Lifeyears:  ', signif(i.avg.dis, digits=4)))
   print(paste('Increase:                                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+  return(df)
 }
 ```
 
@@ -430,10 +442,15 @@ diseaseFreeLifeYearsCohort <- function(c) {
 diseaseFreeLifeYearsComp <- function(c, i, int.name) {
   c.avg.dis <- diseaseFreeLifeYearsCohort(c)
   i.avg.dis <- diseaseFreeLifeYearsCohort(i)
+  df <- data.frame(outcome = c('DiseaseFree', 'DiseaseFree'),
+                   intervention = c(int.name, int.name),
+                   scenario = c('cohort', 'intervention'),
+                   lifeyear = c(c.avg.dis, i.avg.dis))
   print(int.name)
   print(paste('Cohort Average Disease Free Lifeyears:        ', signif(c.avg.dis, digits=4)))
   print(paste('Intervention Average Disease Free Lifeyears:  ', signif(i.avg.dis, digits=4)))
   print(paste('Increase:                                        ', signif(x = (i.avg.dis - c.avg.dis), digits=4)))
+  return(df)
 }
 ```
 
@@ -488,16 +505,167 @@ disabilityFreeLifeYearsComp(cohort_full, no.sociso, 'No Social Isolation')
 disabilityFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'No Loneliness OR Social Isolation')
 ```
 
+[1] "No Loneliness"
+[1] "Cohort Average Disability Free Lifeyears:         12.55"
+[1] "Intervention Average Disability Free Lifeyears:   13.67"
+[1] "Increase:                                         1.121"
+[1] "No Social Isolation"
+[1] "Cohort Average Disability Free Lifeyears:         12.55"
+[1] "Intervention Average Disability Free Lifeyears:   12.63"
+[1] "Increase:                                         0.08628"
+[1] "No Loneliness OR Social Isolation"
+[1] "Cohort Average Disability Free Lifeyears:         12.55"
+[1] "Intervention Average Disability Free Lifeyears:   13.76"
+[1] "Increase:                                         1.208"
+
 #### Disease Free Life Years
 ```{r}
 diseaseFreeLifeYearsComp(cohort_full, no.lonely, 'No Loneliness')
 diseaseFreeLifeYearsComp(cohort_full, no.sociso, 'No Social Isolation')
 diseaseFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'No Loneliness OR Social Isolation')
 ```
+[1] "No Loneliness"
+[1] "Cohort Average Disease Free Lifeyears:         5.48"
+[1] "Intervention Average Disease Free Lifeyears:   5.668"
+[1] "Increase:                                         0.1873"
+[1] "No Social Isolation"
+[1] "Cohort Average Disease Free Lifeyears:         5.48"
+[1] "Intervention Average Disease Free Lifeyears:   5.623"
+[1] "Increase:                                         0.1427"
+[1] "No Loneliness OR Social Isolation"
+[1] "Cohort Average Disease Free Lifeyears:         5.48"
+[1] "Intervention Average Disease Free Lifeyears:   5.852"
+[1] "Increase:                                         0.3715"
+#### Visualise
+
+Lets write some functions to visualise this information, so will need to collect them into dataframes first.
+
+```{r}
+
+ly.lnly <- lifeyearComparison(cohort_full, no.lonely, 'L')
+ly.sociso <- lifeyearComparison(cohort_full, no.sociso, 'S')
+ly.lnly.sociso <- lifeyearComparison(cohort_full, no.lnly.sociso, 'LS')
+
+ly <- rbind(ly.lnly, ly.sociso)
+ly.all <- rbind(ly.lnly, ly.sociso, ly.lnly.sociso)
+ly.wide <- ly %>% 
+  pivot_wider(names_from = scenario,
+                              values_from = lifeyear,
+                              names_repair = 'unique')
+colnames(ly.wide) <- c('outcome', 'scenario', 'cohort', 'intervention')
+
+disab.lnly <- disabilityFreeLifeYearsComp(cohort_full, no.lonely, 'L')
+disab.sociso <- disabilityFreeLifeYearsComp(cohort_full, no.sociso, 'S')
+disab.lnly.sociso <- disabilityFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'LS')
+
+disab <- rbind(disab.lnly, disab.sociso)
+disab.all <- rbind(disab.lnly, disab.sociso, disab.lnly.sociso)
+disab.wide <- disab %>% 
+  pivot_wider(names_from = scenario,
+                              values_from = lifeyear,
+                              names_repair = 'unique')
+colnames(disab.wide) <- c('outcome', 'scenario', 'cohort', 'intervention')
+
+disease.lnly <- diseaseFreeLifeYearsComp(cohort_full, no.lonely, 'L')
+disease.sociso <- diseaseFreeLifeYearsComp(cohort_full, no.sociso, 'S')
+disease.lnly.sociso <- diseaseFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'LS')
+
+disease <- rbind(disease.lnly, disease.sociso)
+disease.all <- rbind(disease.lnly, disease.sociso, disease.lnly.sociso)
+disease.wide <- disease %>% 
+  pivot_wider(names_from = scenario,
+                              values_from = lifeyear,
+                              names_repair = 'unique')
+colnames(disease.wide) <- c('outcome', 'scenario', 'cohort', 'intervention')
+
+lifeyears <- rbind(ly.wide, disab.wide, disease.wide)
+lifeyears['change'] <- lifeyears['intervention'] - lifeyears['cohort']
+```
+
+Now plot.
+
+```{r}
+ggplot(data = filter(lifeyears, outcome == 'LifeYears'),
+       aes(x = scenario, y = change, color = scenario, fill = scenario)) +
+  geom_col()
+
+ggplot(data = filter(lifeyears, outcome == 'DisabilityFree'),
+       aes(x = scenario, y = change, color = scenario, fill = scenario)) +
+  geom_col()
+
+ggplot(data = filter(lifeyears, outcome == 'DiseaseFree'),
+       aes(x = scenario, y = change, color = scenario, fill = scenario)) +
+  geom_col()
+
+combined <- ggplot(data = lifeyears, aes(x = factor(scenario, levels = c('L', 'S', 'LS')), y = change, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~factor(outcome, levels = c('LifeYears', 'DisabilityFree', 'DiseaseFree'))) +
+  labs(x = 'Scenario', y = 'Increase') +
+  scale_fill_discrete(labels = c('No Loneliness', 'No Social Isolation'))
+  #scale_color_manual(labels = c('No Loneliness', 'No Loneliness or Social Isolation', 'No Social Isolation', values = c('red', 'green', 'blue')))
+
+combined
+
+# Save plot into FEM_R/Loneliness_Social_Isolation/plots/
+path <- 'FEM_R/Loneliness_Social_Isolation/plots/'
+
+ggsave(filename = 'ly_dfly_facet_L_S.png',
+      plot = combined,
+      path = path,
+      width = 9,
+      height = 6)
+```
 
 
+### Sub-populations
+
+Need to get the detailed output for this, but this will be a really nice thing to include.
+We can show the improvements in similar plots by different subgroups. Hopefully we'll see bigger improvements in specific subgroups, perhaps a certain age group or gender. The literature I was reading about this suggests that each intervention should affect both genders differently, so should be interesting. 
+
+Lets start by appending detailed output and working on a function to get it into a plottable format.
+
+```{r}
+cohort <- detailed_output_append(base.out.dir = 'output/LNLY_SOCISO_TEST/',
+                              scenario = 'ELSA_core_cohort')
+```
+
+```{r}
+coh <- cohort
+
+#base2 <- base %>% group_by(hhidpn, mcrep) %>%
+#                  mutate(smoken_init = ())
+
+# generate lifeyear for people who have not died
+coh$lifeyear <- 1 - coh$died
+# generate the number of repetitions for each person
+coh$nreps <- max(coh$mcrep) + 1
+# now generate the lifeyear intermediate (lifeyears per person)
+coh2 <- coh %>% 
+  group_by(hhidpn, year) %>%
+  mutate(nreps = n())# %>%
+  #ungroup() %>%
+  #group_by(hhidpn) %>%
+  #summarise(n_LY = sum(lifeyear),
+  #       mean_LY = n_LY / nreps,
+  #       n_DFLY = sum(nodisease),
+  #       mean_DFLY = n_DFLY / nreps,
+  #       two_yr_LY = mean_LY * 2,
+  #       two_yr_DFLY = mean_DFLY * 2,
+  #       weight_intermed = sum(weight),
+  #       weight2 = weight_intermed / nreps)
 
 
+#mean <- coh %>% summarise(LY = mean(mean_LY),
+#                          DFLY = mean(mean_DFLY))
+```
+
+
+#### Gender
+```{r}
+
+print('Female')
+
+```
 
 
 

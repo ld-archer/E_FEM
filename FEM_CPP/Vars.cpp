@@ -779,6 +779,12 @@ VarsInfo::VarsInfo() {
     info[Vars::l2hearing]                  = VarInfo("l2hearing", "Lag of Self-rated hearing", VarTypes::Boolean);
     info[Vars::ahown]                    = VarInfo("ahown", "Whether owns home", VarTypes::Short);
     info[Vars::l2ahown]                  = VarInfo("l2ahown", "Lag of Whether owns home", VarTypes::Short);
+    info[Vars::tr20]                    = VarInfo("tr20", "Total word recall", VarTypes::Short);
+    info[Vars::l2tr20]                    = VarInfo("l2tr20", "Lag of Total word recall", VarTypes::Short);
+    info[Vars::verbf]                    = VarInfo("verbf", "Verbal Fluency", VarTypes::Short);
+    info[Vars::l2verbf]                    = VarInfo("l2verbf", "Lag of Verbal Fluency", VarTypes::Short);
+    info[Vars::orient]                    = VarInfo("orient", "Date Naming (orientation)", VarTypes::Short);
+    info[Vars::l2orient]                    = VarInfo("l2orient", "Lag of Date Naming (orientation)", VarTypes::Short);
 
 
 
@@ -968,6 +974,9 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::sight] = Vars::l2sight;
     lag_map[Vars::hearing] = Vars::l2hearing;
     lag_map[Vars::ahown] = Vars::l2ahown;
+    lag_map[Vars::tr20] = Vars::l2tr20;
+    lag_map[Vars::verbf] = Vars::l2verbf;
+    lag_map[Vars::orient] = Vars::l2orient;
 
 
 

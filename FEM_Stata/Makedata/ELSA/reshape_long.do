@@ -322,6 +322,10 @@ foreach var in `wav1missvars' {
     replace `var'1 = `var'2 if missing(`var'1) & !missing(`var'2)
 }
 
+** Copy wave 5 verbf onto wave 6 as we don't have verbf for wave 6
+gen verbf6 = .
+replace verbf6 = verbf5 if missing(verbf6) & !missing(verbf5)
+
 * Reshape data from wide to long
 #d ;
 reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata beda 
@@ -795,6 +799,13 @@ gen sociso6 = (sociso == 6) & !missing(sociso)
 
 gen childless = child > 0
 
+*** COPY VERBF INFORMATION ***
+
+
+
+****** COMBINE DEMENTIA VARS ******
+rename demene demene_initial
+gen demene = alzhe | demene_initial if !missing(alzhe) | !missing(demene_initial)
 
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)

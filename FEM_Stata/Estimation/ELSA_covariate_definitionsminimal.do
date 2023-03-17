@@ -3,7 +3,7 @@
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 global bin_econ
-global ols logbmi atotb itot smokef
+global ols logbmi atotb itot smokef tr20 verbf orient
 global order adlstat iadlstat srh lnly alcfreq sociso
 global unorder mstat workstat
 
@@ -44,6 +44,9 @@ global ols_names
     "Total Family Wealth"
     "Total Couple Level Income"
     "Smoking Intensity (# cigs/day)"
+    "Total word recall"
+    "Verbal fluency score"
+    "Date naming (orient)"
 ;
 global count_names
     "Number of pints of beer consumed in week before survey"

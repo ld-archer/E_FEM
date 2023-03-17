@@ -700,6 +700,12 @@ namespace Vars
         l2hearing,                  ///< Lag of Self-rated hearing
         ahown,                      ///< Whether owns home
         l2ahown,                    ///< Lag of Whether owns home
+        tr20,                       ///< Total word recall
+        l2tr20,                     ///< Lag of Total word recall
+        verbf,                      ///< Verbal fluency
+        l2verbf,                    ///< Lag of Verbal fluency
+        orient,                     ///< Date naming (orientation)
+        l2orient,                   ///< Lag of Date naming (orientation)
 		NVars,                     ///< A counter for the number of valid variables
 		_NONE                     ///< A special value for no variable, used in mappings where there is no valid second
 		};

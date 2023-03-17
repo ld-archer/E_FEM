@@ -92,7 +92,7 @@ save $outdata/test_pre_hotdeck.dta, replace
 if "`scen'" == "base" {
     local hotdeck_vars logbmi white itot educl cancre hibpe diabe hearte stroke ///
                         smokev lunge lnly sociso workstat alzhe arthre asthmae demene parkine psyche ///
-                        smoken hchole smokef alcfreq logatotb logitot hhres socyr gcareinhh1w ///
+                        smoken hchole smokef tr20 verbf orient alcfreq logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact ///
                         cesd sight hearing ahown
 }
@@ -105,21 +105,21 @@ else if "`scen'" == "CV1" |  {
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl logatotb logitot hhres socyr gcareinhh1w ///
-                        mstat lnly sociso alzhe demene workstat smokef ///
+                        mstat lnly sociso alzhe demene workstat smokef tr20 verbf orient ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
                         cesd sight hearing ahown
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl logatotb logitot hhres socyr gcareinhh1w ///
-                        lnly sociso alzhe demene workstat smokef ///
+                        lnly sociso alzhe demene workstat smokef tr20 verbf orient ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
                         cesd sight hearing ahown
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly sociso workstat alzhe arthre asthmae demene ///
-                        parkine psyche hipe hchole smokef logatotb logitot hhres socyr gcareinhh1w ///
+                        parkine psyche hipe hchole smokef tr20 verbf orient logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
                         cesd sight hearing ahown
 }
@@ -155,7 +155,7 @@ foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
                         srh3 srh4 srh5 hipe mstat alzhe demene employed inactive ///
                         retired logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso ///
-                        cesd sight hearing ahown {
+                        cesd sight hearing ahown tr20 verbf orient {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')

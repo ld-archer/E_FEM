@@ -37,6 +37,72 @@ lookfor <- function(data,
   else message("Nothing found. Sorry.")
 }
 
+########## PREPARING SUMMARY OUTPUT FILE ##########
+
+prepare_ELSA <- function(elsa_long, 
+                         wave_start = 1, 
+                         wave_end = 6, 
+                         print_counts = TRUE) {
+  
+  # Get important variables
+  # Select waves 1-6
+  # Check if present in both first and last
+  subset <- elsa_long %>% dplyr::select(idauniq, wave, died,
+                                        age, male, white,                    # demographics
+                                        educ, hsless, college,               # demographics
+                                        smokev, smoken, smokef,              # smoking status
+                                        hibpe, bmi, stroke, hearte, diabe,   # health measures
+                                        atotb, itot,                         # wealth/income
+                                        lnly, sociso,                        # loneliness/social isolation
+                                        cwtresp, inw, insc) %>%                    # survey stuff
+    filter(wave >= wave_start, wave <= wave_end) %>%
+    group_by(idauniq) %>%
+    mutate(n = n(),
+           in_first = ((dplyr::first(inw) == 1) & (dplyr::first(wave) == 1)),
+           first_age = dplyr::first(age),
+           died_wave_2 = ((wave == 2) & (died == 1)),
+           age_group = cut(x = first_age, 
+                           breaks = c(50, 60, 70, 80, 90, 100),
+                           labels = c('50-60', '60-70', '70-80', '80-90', '90-100'), 
+                           include.lowest = TRUE)) %>%
+    filter((in_first == TRUE), 
+           (first_age >= 50),
+           ((n > 1)  | (died_wave_2 == 1))) %>% # Make sure they were in for more than 1 wave (or died in second)
+    dplyr::select(-in_first, -n)
+  
+  # check and change var types
+  subset$idauniq <- as.factor(subset$idauniq)
+  subset$wave <- as.numeric(subset$wave)
+  subset$died <- as.numeric(subset$died)
+  subset$age <- as.numeric(subset$age)
+  subset$age_group <- as.factor(subset$age_group)
+  subset$male <- as.factor(subset$male)
+  subset$white <- as.factor(subset$white)
+  subset$educ <- as.factor(subset$educ)
+  subset$smokev <- as.factor(subset$smokev)
+  subset$smoken <- as.factor(subset$smoken)
+  subset$smokef <- as.factor(subset$smokef)
+  subset$hibpe <- as.factor(subset$hibpe)
+  subset$bmi <- as.numeric(subset$bmi)
+  subset$stroke <- as.factor(subset$stroke)
+  subset$hearte <- as.factor(subset$hearte)
+  subset$diabe <- as.factor(subset$diabe)
+  subset$atotb <- as.numeric(subset$atotb)
+  subset$itot <- as.numeric(subset$itot)
+  subset$cwtresp <- as.numeric(subset$cwtresp)
+  subset$lnly <- as.factor(subset$lnly)
+  subset$sociso <- as.factor(subset$sociso)
+  
+  if(print_counts) {
+    # How many people in the dataset?
+    counts <- n_distinct(subset$idauniq)
+    print(paste0("There are ", counts, " individuals in the prepared dataset."))
+    print('-------------------')
+  }
+  
+  return(subset)
+}
+
 ########## DETAILED OUTPUT APPEND ##########
 
 detailed_output_append <- function(base.out.dir, scenario) {
