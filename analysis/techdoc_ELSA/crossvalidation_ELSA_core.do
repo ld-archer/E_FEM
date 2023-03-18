@@ -126,6 +126,17 @@ keep
 	r*fcntm
 	r*socyr
 	r*mstat
+	r*jphysl
+	h*hhres
+	r*gcareinhh1w
+	r*child
+	r*cesd
+	r*sight
+	r*hearing
+	h*ahown
+	r*tr20
+	r*verbf
+	r*orient
 ;
 #d cr
 
@@ -193,6 +204,17 @@ local shapelist
 	r@fcntm
 	r@socyr
 	r@mstat
+	r@jphysl
+	h@hhres
+	r@gcareinhh1w
+	r@child
+	r@cesd
+	r@sight
+	r@hearing
+	h@ahown
+	r@tr20
+	r@verbf
+	r@orient
 ;
 #d cr
 
@@ -290,6 +312,22 @@ label var lnlys3 "R average of 3 level loneliness summary score"
 label var scako "Alcohol consumption frequency, [1-8]"
 label var mstat "Marriage / Partnership status"
 label var jphysl "Job physical activity level"
+
+*** Others
+foreach var in hhres gcareinhh1w child cesd sight hearing ahown tr20 verbf orient {
+	ren r`var' `var'
+}
+
+label var hhres "Number of people in household"
+label var gcareinhh1w "Provided care to someone in hhold in last week"
+label var child "Number of children"
+label var cesd "R CESD score"
+label var sight "R self-reported sight"
+label var hearing "R self-reported hearing"
+label var ahown "R owns own home"
+label var tr20 "R total word recall"
+label var verbf "R verbal fluency"
+label var orient "R date naming (orient)"
 
 
 ****** EXERCISE ******
@@ -531,6 +569,10 @@ label var atotbx "Total Family Wealth in 1000s (max 2000) if positive, zero othe
 * Interview year
 gen iwyear = 2000 + 2*wave
 
+****** CHILDLESS ******
+
+gen childless = child > 0
+
 
 gen FEM = 0
 gen year = iwyear
@@ -643,6 +685,18 @@ label var age_yrs "Age at interview"
 label var male "Male"
 label var white "White"
 
+label var hhres "Number of people living in household"
+label var gcareinhh1w "Cared for someone in hhold in last week"
+label var child "Number of children"
+label var childless "No children"
+label var cesd "CESD score"
+label var sight "Self-reported eyesight"
+label var hearing "Self-reported hearing"
+label var ahown "Whether owns own home"
+label var tr20 "Total word recall"
+label var verbf "Verbal fluency"
+label var orient "Date naming (orient)"
+
 
 * Replace smokef to missing for people who don't smoke
 replace smokef = . if smoken == 0 & !missing(smoken)
@@ -659,9 +713,9 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl alzhe demene catracte
-local risk smoken smokev smokef bmi drink lnly /*lnly1 lnly2 lnly3*/ alcfreq /*alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8*/ sociso /*sociso1 sociso2 sociso3 sociso4 sociso5 sociso6*/ physact
-local binecon employed inactive retired
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl demene catracte tr20 verbf orient
+local risk smoken smokev smokef bmi drink lnly alcfreq sociso physact cesd sight hearing 
+local binecon employed inactive retired ahown
 local cntecon itotx atotbx
 local demog age_yrs male white
 local unweighted died
