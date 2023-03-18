@@ -154,7 +154,57 @@ weighted.survey.means <- function(init.pop, transition=FALSE) {
 
 ########## Life Years and DFLYs ##########
 
-
+ly_outcomes_from_detailed_output <- function(coh) {
+  
+  # generate lifeyear for people who have not died
+  coh$lifeyear <- 1 - coh$died
+  # generate the number of repetitions for each person
+  coh$nreps <- max(coh$mcrep) + 1
+  
+  # now the giant pipeline to calculate LYs, DFLYs (both) and confidence intervals
+  coh.sum <- coh %>%
+    group_by(hhidpn, year) %>%
+    mutate(nreps = n()) %>%
+    group_by(hhidpn, mcrep) %>%
+    summarise(n = n(),
+              n_LY = sum(lifeyear),
+              n_DiseaseFLY = sum(nodisease),
+              n_DisabilityFLY = sum(nodisability),
+              two_yr_LY = n_LY * 2,
+              two_yr_DiseaseFLY = n_DiseaseFLY * 2,
+              two_yr_DisabilityFLY = n_DisabilityFLY * 2,
+              weight_intermed = sum(weight) / n) %>%
+    group_by(hhidpn) %>%
+    summarise(mean_LY_ind = mean(two_yr_LY),
+              mean_DiseaseFLY_ind = mean(two_yr_DiseaseFLY),
+              mean_DisabilityFLY_ind = mean(two_yr_DisabilityFLY),
+              weight = mean(weight_intermed)) %>%
+    summarise(n = n(),
+              LY_mean = weighted.mean(mean_LY_ind, w = weight),
+              LY_sd = sd(mean_LY_ind),
+              DiseaseFLY_mean = weighted.mean(mean_DiseaseFLY_ind, w = weight),
+              DiseaseFLY_sd = sd(mean_DiseaseFLY_ind),
+              DisabilityFLY_mean = weighted.mean(mean_DisabilityFLY_ind, w = weight),
+              DisabilityFLY_sd = sd(mean_DisabilityFLY_ind),
+              LY_margin = qt(p=0.975, df=n-1) * (LY_sd / sqrt(n)),
+              LY_min = LY_mean - LY_margin,
+              LY_max = LY_mean + LY_margin,
+              DiseaseFLY_margin = qt(p=0.975, df=n-1) * (DiseaseFLY_sd / sqrt(n)),
+              DiseaseFLY_min = DiseaseFLY_mean - DiseaseFLY_margin,
+              DiseaseFLY_max = DiseaseFLY_mean + DiseaseFLY_margin,
+              DisabilityFLY_margin = qt(p=0.975, df=n-1) * (DisabilityFLY_sd / sqrt(n)),
+              DisabilityFLY_min = DisabilityFLY_mean - DisabilityFLY_margin,
+              DisabilityFLY_max = DisabilityFLY_mean + DisabilityFLY_margin) %>%
+    select(-n) %>%
+    pivot_longer(cols = everything(),
+                 names_sep = '_',
+                 names_to = c('outcome', 'statistic')) %>%
+    filter(statistic %in% c('mean', 'min', 'max')) %>%
+    pivot_wider(values_from = 'value',
+                names_from = 'statistic')
+  
+  return(coh.sum)
+}
 
 
 ########## ALCOHOL CALCULATIONS ##########
