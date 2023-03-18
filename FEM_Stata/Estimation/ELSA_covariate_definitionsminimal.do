@@ -1,11 +1,11 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte hibpe lunge stroke arthre psyche died asthmae parkine drink smoke_start smoke_stop hchole hipe alzhe demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
+global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
 global bin_econ
-global ols logbmi atotb itot smokef tr20 verbf orient
+global ols logbmi logatotb logitot smokef tr20 verbf orient
 global order adlstat iadlstat srh lnly alcfreq sociso
-global unorder mstat workstat
+global unorder workstat mstat
 
 * Variable names
 #d ;
@@ -13,20 +13,15 @@ global bin_hlth_names
     "Cancer"
     "Diabetes"
     "Heart Disease"
+    "Stroke"
     "Hypertension"
     "Lung Disease"
-    "Stroke"
-    "Arthritis"
-    "Pyschological Problems"
-    "Died"
     "Asthma"
-    "Parkinsons Disease"
+    "Died"
     "Drinks Alcohol"
     "Started Smoking"
     "Stopped Smoking"
     "High Cholesterol"
-    "Hip Fracture"
-    "Alzheimers"
     "Dementia"
     "Angina"
     "Heart Attack"
@@ -57,14 +52,14 @@ global count_names
 global order_names 
     "ADL status"
     "IADL status"
-    "Exercise status"
     "Self-Reported Health Status"
     "Rounded categorical revised UCLA loneliness score [1-3]"
     "Alcohol consumption frequency [1-8]"
+    "Index of Social Isolation [1-6]"
 ;
 global unorder_names
-    "Marriage Status"
     "Work Status"
+    "Marriage Status"
 ;
 #d cr
 
