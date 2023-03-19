@@ -207,7 +207,7 @@ replace lnly3 = lnly == 3 if !missing(lnly)
 replace l2lnly1 = l2lnly == 1 if !missing(l2lnly)
 replace l2lnly2 = l2lnly == 2 if !missing(l2lnly)
 replace l2lnly3 = l2lnly == 3 if !missing(l2lnly)
-saveold $outdata/ELSA_repl_real_lnly.dta2, replace v(12)
+saveold $outdata/ELSA_repl_real_lnly.dta, replace v(12)
 
 restore
 

@@ -670,6 +670,14 @@ both <- detailed_output_append(base.out.dir = out.dir,
                               scenario = 'ELSA_nolnly_nosociso_cohort')
 ```
 
+```{r}
+# save these large files in case I overwrite the output stuff
+write.csv(cohort, file = 'input_data/detailed_output/cohort_append_large.csv')
+write.csv(nolnly, file = 'input_data/detailed_output/nolnly_append_large.csv')
+write.csv(nosociso, file = 'input_data/detailed_output/nosociso_append_large.csv')
+write.csv(both, file = 'input_data/detailed_output/both_append_large.csv')
+```
+
 
 ```{r}
 # Calculate LY outcomes for all scenarios
@@ -754,34 +762,180 @@ ly.change <- ly.all %>%
          S_max = S_change + margin_No_Social_Isolation,
          LS_min = LS_change - margin_Neither,
          LS_max = LS_change + margin_Neither) %>%
+  select(outcome, contains('L_'), contains('S_'), contains('LS_'), -contains('No_Social_Isolation')) %>%
   pivot_longer(cols = L_change:LS_max,
-               names_to = 'scenario',
-               values_to = 'LifeYears')
+               names_sep = '_',
+               names_to = c('scenario', 'statistic'),
+               values_to = 'LifeYears') %>%
+  pivot_wider(names_from = 'statistic',
+              values_from = 'LifeYears')
+
+ly.change$scenario <- factor(ly.change$scenario, levels = c('L', 'S', 'LS'))
   
+combined.plot <- ggplot(data = ly.change, aes(x = scenario, y = change, fill=scenario)) +
+  geom_col() +
+  facet_wrap(~outcome) +
+  geom_errorbar(aes(ymin = min, ymax = max)) +
+  labs(title = 'Life Years, Disease Free Life Years, and Disability Free Life Years') +
+  xlab('Scenario') +
+  ylab('Change (years)')
+
+combined.plot
 
 
+path <- 'FEM_R/Loneliness_Social_Isolation/plots/'
 
- # %>%
- #  mutate(L_min = L - margin_No_Loneliness,
- #         L_max = L + margin_No_Loneliness,
- #         S_min = S - margin_No_Social_Isolation,
- #         S_max = S + margin_No_Social_Isolation,
- #         LS_min = LS - margin_Neither,
- #         LS_max = LS + margin_Neither)
-
-
-
-
-#ggplot(data = ly.change, aes(x = outcome, y = LifeYears, fill = scenario)) +
-  #geom_col(position = 'dodge', stat = 'identity') +
-  #geom_errorbar(ymin = (LifeYears - margin), ymax = (LifeYears + margin))
+ggsave(filename = 'ly_dfly_facet_all_confints.png',
+      plot = combined.plot,
+      path = path,
+      width = 9,
+      height = 6)
 ```
+
+### Realistic Intervention
+
+```{r}
+lnly.real <- detailed_output_append(base.out.dir = out.dir,
+                              scenario = 'ELSA_real_lnly')
+lnly.sociso <- detailed_output_append(base.out.dir = out.dir,
+                              scenario = 'ELSA_real_sociso')
+```
+
+```{r}
+ly.lnly.real <- ly_outcomes_from_detailed_output(lnly.real)
+ly.sociso.real <- ly_outcomes_from_detailed_output(lnly.sociso)
+
+ly.lnly.real$scenario <- 'Loneliness'
+ly.sociso.real$scenario <- 'Social_Isolation'
+
+ly.comb.list <- list(ly.coh, ly.lnly.real, ly.sociso.real)
+ly.combined <- do.call(rbind, ly.comb.list)
+
+# arrange columns properly
+ly.combined <- ly.combined %>% select(scenario, everything())
+
+ly.combined$scenario <- factor(ly.combined$scenario, levels = c('Baseline', 'Loneliness', 'Social_Isolation'))
+ly.combined$outcome <- factor(ly.combined$outcome, levels = c('LY', 'DiseaseFLY', 'DisabilityFLY'))
+```
+
+#### LY & DFLYs
+```{r}
+ly.ly <- ly.combined %>% 
+  filter(outcome == 'LY') %>%
+  select(-outcome)
+
+ggplot(data = ly.ly, aes(x = scenario, y = mean, fill = scenario)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = min, ymax = max),
+                width = 0.2) +
+  labs(title = 'Life Year Comparison between Intervention Scenarios') +
+  xlab("Scenario") +
+  ylab("Mean Life Years")
+
+ly.disease <- ly.combined %>%
+  filter(outcome == 'DiseaseFLY') %>%
+  select(-outcome)
+
+ggplot(data = ly.disease, aes(x = scenario, y = mean, fill = scenario)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = min, ymax = max),
+                width = 0.2) +
+  labs(title = 'Disease Free Life Year Comparison between Intervention Scenarios') +
+  xlab("Scenario") +
+  ylab("Mean Disease Free Life Years")
+
+ly.disability <- ly.combined %>%
+  filter(outcome == 'DisabilityFLY') %>%
+  select(-outcome)
+
+ggplot(data = ly.disability, aes(x = scenario, y = mean, fill = scenario)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = min, ymax = max),
+                width = 0.2) +
+  labs(title = 'Disability Free Life Year Comparison between Intervention Scenarios') +
+  xlab("Scenario") +
+  ylab("Mean Disability Free Life Years")
+```
+
+Now change plots.
+
+```{r}
+# Now do change plots starting with the ly.all object
+ly.change.real <- ly.combined %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('mean', 'min', 'max', 'margin')) %>%
+  mutate(L_change = mean_Loneliness - mean_Baseline,
+         S_change = mean_Social_Isolation - mean_Baseline,
+         L_min = L_change - margin_Loneliness,
+         L_max = L_change + margin_Loneliness,
+         S_min = S_change - margin_Social_Isolation,
+         S_max = S_change + margin_Social_Isolation) %>%
+  select(outcome, contains('L_'), contains('S_')) %>%
+  pivot_longer(cols = L_change:S_max,
+               names_sep = '_',
+               names_to = c('scenario', 'statistic'),
+               values_to = 'LifeYears') %>%
+  pivot_wider(names_from = 'statistic',
+              values_from = 'LifeYears')
+
+ly.change.real$scenario <- factor(ly.change.real$scenario, levels = c('L', 'S', 'LS'))
+  
+combined.plot <- ggplot(data = ly.change.real, aes(x = scenario, y = change, fill=scenario)) +
+  geom_col() +
+  facet_wrap(~outcome) +
+  geom_errorbar(aes(ymin = min, ymax = max)) +
+  labs(title = 'Life Years, Disease Free Life Years, and Disability Free Life Years') +
+  xlab('Scenario') +
+  ylab('Change (years)')
+
+combined.plot
+```
+
 
 
 ### Sub-populations
 
 Need to get the detailed output for this, but this will be a really nice thing to include.
 We can show the improvements in similar plots by different subgroups. Hopefully we'll see bigger improvements in specific subgroups, perhaps a certain age group or gender. The literature I was reading about this suggests that each intervention should affect both genders differently, so should be interesting. 
+
+As a first step, lets get the breakdown by gender and age group of loneliness and social isolation (for planning interventions).
+
+```{r}
+lnly.check <- repl %>%
+  select(hhidpn, year, age, male, lnly) %>%
+  filter(year == 2012) %>%
+  group_by(lnly, male) %>%
+  count()
+
+lnly.check2 <- repl %>%
+  filter(year == 2012) %>%
+  select(male, lnly) %>%
+  group_by(lnly) %>%
+  summarise(n = n(),
+            male = sum(male) / n,
+            female = 1 - male)
+
+lnly.check3 <- long %>%
+  select(male, lnly) %>%
+  group_by(lnly) %>%
+  summarise(n = n(),
+            male = sum(male) / n,
+            female = 1 - male)
+
+lnly.check4 <- stock %>%
+  select(male, lnly) %>%
+  group_by(lnly) %>%
+  summarise(n = n(),
+            male = sum(male) / n,
+            female = 1 - male)
+
+lnly.check5 <- repl %>%
+  filter(year == 2012) %>%
+  select(hhidpn, year, age, male, childless, lnly) %>%
+  group_by(lnly, male, childless) %>%
+  count()
+```
+
 
 #### Gender
 
