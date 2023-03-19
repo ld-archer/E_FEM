@@ -204,7 +204,6 @@ local shapelist
 	r@fcntm
 	r@socyr
 	r@mstat
-	r@jphysl
 	h@hhres
 	r@gcareinhh1w
 	r@child
@@ -314,8 +313,12 @@ label var mstat "Marriage / Partnership status"
 label var jphysl "Job physical activity level"
 
 *** Others
-foreach var in hhres gcareinhh1w child cesd sight hearing ahown tr20 verbf orient {
+foreach var in gcareinhh1w child cesd sight hearing tr20 verbf orient {
 	ren r`var' `var'
+}
+
+foreach var in hhres ahown {
+	ren h`var' `var'
 }
 
 label var hhres "Number of people in household"
@@ -739,6 +742,9 @@ foreach tp in binhlth risk binecon cntecon demog {
 				continue
 			}
 			else if ("`var'" == "alcfreq" | "`var'" == "alcfreq1" | "`var'" == "alcfreq2" | "`var'" == "alcfreq3" | "`var'" == "alcfreq4" | "`var'" == "alcfreq5" | "`var'" == "alcfreq6" | "`var'" == "alcfreq7" | "`var'" == "alcfreq8") & `wave' == 1 {
+				continue
+			}
+			else if "`var'" == "verbf" & `wave' == 6 {
 				continue
 			}
 			

@@ -2,9 +2,10 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
-global bin_econ
-global ols logbmi logatotb logitot smokef tr20 verbf orient
-global order adlstat iadlstat srh lnly alcfreq sociso
+global bin_econ 
+global ols logbmi logatotb logitot orient
+global count smokef tr20 verbf
+global order adlstat iadlstat srh lnly alcfreq sociso sight hearing
 global unorder workstat mstat
 
 * Variable names
@@ -44,10 +45,9 @@ global ols_names
     "Date naming (orient)"
 ;
 global count_names
-    "Number of pints of beer consumed in week before survey"
-    "Number of glasses of wine consumed in week before survey"
-    "Number of measures of spirits consumed in week before survey"
     "Number of cigarettes consumed per day"
+    "Total word recall"
+    "Verbal fluency score"
 ;
 global order_names 
     "ADL status"
@@ -133,7 +133,7 @@ global allvars_hrtmre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lva
 global allvars_hrtrhme          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2hibpe l2hchole l2diabe l2physact
 * Alzhe & Demene
 global allvars_alzhe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
-global allvars_demene           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq'
+global allvars_demene           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2physact l2hchole l2stroke l2hibpe l2smokev `lvars_lnly' `lvars_sociso' `lvars_alcfreq' l2sight l2hearing
 *global allvars_alzhe            $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 *global allvars_demene           $dvars $lvars_age `lvars_lnly' `lvars_sociso'
 * Other
@@ -149,6 +149,10 @@ global allvars_asthmae          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lva
 global allvars_catracte         $dvars $lvars_age l2diabe l2hibpe `lvars_smoke' /* https://cks.nice.org.uk/topics/cataracts/background-information/causes-risk-factors/ */
 global allvars_osteoe           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2asthmae l2physact   /* arthritis https://www.nhs.uk/conditions/osteoporosis/causes/ */
 
+
+*** Sight and Hearing
+global allvars_sight            $dvars $lvars_age l2catracte l2logbmi_l30 l2logbmi_30p l2hchole l2hibpe `lvars_alcfreq' l2smoken l2smokev
+global allvars_hearing          $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2smoken l2smokev l2hibpe l2diabe l2stroke l2sight
 
 *** Smoking 
 global allvars_smoke_start      $dvars $lvars_age l2logbmi_l30 l2logbmi_30p

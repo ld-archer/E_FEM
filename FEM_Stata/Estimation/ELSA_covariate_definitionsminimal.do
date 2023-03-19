@@ -2,9 +2,10 @@
 
 *** DEPENDANT VARIABLES
 global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
-global bin_econ
-global ols logbmi logatotb logitot smokef tr20 verbf orient
-global order adlstat iadlstat srh lnly alcfreq sociso
+global bin_econ 
+global ols logbmi logatotb logitot orient
+global count smokef tr20 verbf
+global order adlstat iadlstat srh lnly alcfreq sociso sight hearing
 global unorder workstat mstat
 
 * Variable names
@@ -44,10 +45,9 @@ global ols_names
     "Date naming (orient)"
 ;
 global count_names
-    "Number of pints of beer consumed in week before survey"
-    "Number of glasses of wine consumed in week before survey"
-    "Number of measures of spirits consumed in week before survey"
     "Number of cigarettes consumed per day"
+    "Total word recall"
+    "Verbal fluency score"
 ;
 global order_names 
     "ADL status"

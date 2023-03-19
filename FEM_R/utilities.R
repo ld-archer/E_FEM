@@ -199,7 +199,7 @@ ly_outcomes_from_detailed_output <- function(coh) {
     pivot_longer(cols = everything(),
                  names_sep = '_',
                  names_to = c('outcome', 'statistic')) %>%
-    filter(statistic %in% c('mean', 'min', 'max')) %>%
+    filter(statistic %in% c('mean', 'min', 'max', 'margin')) %>%
     pivot_wider(values_from = 'value',
                 names_from = 'statistic')
   

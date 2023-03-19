@@ -5,7 +5,7 @@ quietly include ../../../fem_env.do
 * This sets the scenario for use in naming files, trending variables, etc.
 local scen : env scen
 
-local expansion 1
+local expansion 10
 
 clear all
 
@@ -38,7 +38,42 @@ foreach var of varlist cancre diabe hearte hibpe lunge stroke arthre psyche {
 */
 
 * Expand the sample based on expansion factor
-*multiply_persons `expansion'
+multiply_persons `expansion'
+
+
+*scalar expansion_factor=`expansion'
+*scalar expansion_size=round(log10(expansion_factor)) + 1
+
+*di expansion_factor
+*di expansion_size
+
+*count
+
+*codebook hhid*
+
+*expand expansion_factor
+*replace cwtresp = cwtresp / expansion_factor
+*bys hhidpn: replace hhid = hhid * 10^expansion_size + (_n-1)
+*bys hhidpn: replace hhidpn = hhidpn * 10^expansion_size + (_n-1)
+
+*count
+
+*codebook hhid*
+
+*foreach v of varlist hhid hhidpn {
+*	sum `v'
+*	local max = r(max)
+*	di `max'
+*	local max = round(log10(`max')) + 2
+*	di `max'
+*	format %`max'.0g `v'
+*}
+
+*count
+
+*codebook hhid*
+
+
 
 tempfile base_cohort
 save `base_cohort'
@@ -61,13 +96,22 @@ forvalues yy = 2012 (2) 2082 {
     quietly {
         recast long hhid
         desc hhid*
-        tostring hhid, gen(hhidstr) usedisplayformat
-        tostring hhidpn, gen(hhidpnstr) usedisplayformat
+        tostring hhid, gen(hhidstr)
+        tostring hhidpn, gen(hhidpnstr)
   		drop hhid hhidpn
   		gen hhid = "-`yy'" + hhidstr
   		gen hhidpn = "-`yy'" + hhidpnstr
   		destring hhid hhidpn, replace
     }
+    
+    *recast long hhid
+    *desc hhid*
+    *tostring hhid, generate(hhidstr)
+    *tostring hhidpn, generate(hhidpnstr) usedisplayformat
+    *drop hhid hhidpn
+    *gen hhid = "-`yy'" + hhidstr
+    *gen hhidpn = "-`yy'" + hhidpnstr
+    *destring hhid hhidpn, replace
 
     * Save the temporary files
     tempfile cohort_`yy'

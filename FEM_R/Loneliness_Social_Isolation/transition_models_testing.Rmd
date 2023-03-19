@@ -448,7 +448,64 @@ summary(probit.tr20.test)
 ##  + l2physact + l2hearing + l2adlstat + l2iadlstat + l2socyr + l2cesd + l2smoken + l2smoke
 ```
 
+# Sight
 
+NOTE: Higher values of sight (self-rated eyesight) are worse. 1 == Excellent, 5 == Poor, 6 == Blind.
+
+```{r}
+trans.notDead$sight <- as.factor(trans.notDead$sight)
+
+## MINIMAL
+form.sight.min <- 'sight ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+probit.sight.min <- polr(formula = form.sight.min,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Minimal model:')
+summary(probit.sight.min)
+
+## TEST
+form.sight <- 'sight ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2catracte + l2logbmi_l30 + l2logbmi_30p + l2hchole + l2hibpe + l2alcfreq + l2smoken + l2smokev + l2stroke'
+probit.sight <- polr(formula = form.sight,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Full model:')
+summary(probit.sight)
+```
+
+AIC: 143800.44 : Initial
+AIC: 128596.87 : Added alcfreq
+AIC: 128133.34 : Added smoken smokev
+AIC: 128039.81 : Added stroke
+
+# Hearing
+
+Using this paper - [Kiely et al.](https://academic.oup.com/biomedgerontology/article/67/9/997/513794?login=false).
+
+```{r}
+trans.notDead$hearing <- as.factor(trans.notDead$hearing)
+
+## MINIMAL
+form.hearing.min <- 'hearing ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+probit.hearing.min <- polr(formula = form.hearing.min,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Minimal model:')
+summary(probit.hearing.min)
+
+## TEST
+form.hearing <- 'hearing ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2logbmi_l30 + l2logbmi_30p + l2smoken + l2smokev + l2hibpe + l2diabe + l2stroke + l2sight'
+probit.hearing <- polr(formula = form.hearing,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit)
+print('Full model:')
+summary(probit.hearing)
+```
+
+AIC: 152711.79 : initial
 
 ```{r}
 

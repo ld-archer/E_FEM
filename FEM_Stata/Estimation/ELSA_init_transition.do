@@ -314,34 +314,34 @@ if "`defmod'" == "ELSA_core" | "`defmod'" == "core" {
 	xml_tab b_*, save("`ster'/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/estimates`defmod'.xls") append sheet(ols) pvalue
-	*xml_tab count_*, save("`ster'/estimates`defmod'.xls") append sheet(counts) pvalue
+	xml_tab count_*, save("`ster'/estimates`defmod'.xls") append sheet(counts) pvalue
 	xml_tab m_*, save("`ster'/estimates`defmod'.xls") append sheet(m) pvalue
 
 	xml_tab b_*, save("`ster'/FEM_estimates_table.xml") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/FEM_estimates_table.xml") append sheet(ols) pvalue
-	*xml_tab count_*, save("`ster'/FEM_estimates_table.xml") append sheet(counts) pvalue
+	xml_tab count_*, save("`ster'/FEM_estimates_table.xml") append sheet(counts) pvalue
 	xml_tab m_*, save("`ster'/FEM_estimates_table.xml") append sheet(m) pvalue
 }
 else if "`defmod'" == "CV1" | "`defmod'" == "core_CV1" {
 	xml_tab b_*, save("`ster'/CV1/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/CV1/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV1/estimates`defmod'.xls") append sheet(ols) pvalue
-	*xml_tab count_*, save("`ster'/CV1/estimates`defmod'.xls") append sheet(counts) pvalue
+	xml_tab count_*, save("`ster'/CV1/estimates`defmod'.xls") append sheet(counts) pvalue
 
 	xml_tab b_*, save("`ster'/CV1/FEM_estimates_table.xml") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/CV1/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV1/FEM_estimates_table.xml") append sheet(ols) pvalue
-	*xml_tab count_*, save("`ster'/CV1/FEM_estimates_table.xml") append sheet(counts) pvalue
+	xml_tab count_*, save("`ster'/CV1/FEM_estimates_table.xml") append sheet(counts) pvalue
 }
 else if "`defmod'" == "CV2" | "`defmod'" == "core_CV2" {
 	xml_tab b_*, save("`ster'/CV2/estimates`defmod'.xls") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/CV2/estimates`defmod'.xls") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV2/estimates`defmod'.xls") append sheet(ols) pvalue
-	*xml_tab count_*, save("`ster'/CV2/estimates`defmod'.xls") append sheet(counts) pvalue
+	xml_tab count_*, save("`ster'/CV2/estimates`defmod'.xls") append sheet(counts) pvalue
 
 	xml_tab b_*, save("`ster'/CV2/FEM_estimates_table.xml") replace sheet(binaries) pvalue
 	xml_tab o_*, save("`ster'/CV2/FEM_estimates_table.xml") append sheet(oprobits) pvalue `drops'
 	xml_tab ols_*, save("`ster'/CV2/FEM_estimates_table.xml") append sheet(ols) pvalue
-	*xml_tab count_*, save("`ster'/CV2/FEM_estimates_table.xml") append sheet(counts) pvalue
+	xml_tab count_*, save("`ster'/CV2/FEM_estimates_table.xml") append sheet(counts) pvalue
 }

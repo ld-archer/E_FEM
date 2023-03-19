@@ -6,7 +6,7 @@ scalar expansion_size=round(log10(expansion_factor)) + 1
 
 if(expansion_factor != 1) {
   expand expansion_factor
-  replace weight = weight / expansion_factor
+  replace cwtresp = cwtresp / expansion_factor
   bys hhidpn: replace hhid = hhid * 10^expansion_size + (_n-1)
   bys hhidpn: replace hhidpn = hhidpn * 10^expansion_size + (_n-1)
 

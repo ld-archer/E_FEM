@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat drink mstat workstat logatotb logitot sociso physact tr20 orient {
+foreach v in adlstat iadlstat drink mstat workstat logatotb logitot sociso physact tr20 orient sight hearing {
     local select_`v' !died 
 }
 
