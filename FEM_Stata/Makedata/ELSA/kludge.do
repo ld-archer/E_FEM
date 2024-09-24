@@ -126,8 +126,8 @@ else if "`scen'" == "valid" {
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly sociso logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl workstat alzhe demene logatotb logitot hhres socyr gcareinhh1w ///
-                        hchole hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq ///
-                        cesd sight hearing ahown
+                        hchole smokef hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
+                        cesd sight hearing ahown tr20 verbf orient
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -151,7 +151,7 @@ replace srh5 = 0 if srh3 == 1
 
 * Impute some vars by simply copying lag to current and/or vice versa
 foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
-                        lunge stroke arthre psyche drink smoken smokev hchole srh1 srh2 ///
+                        lunge stroke arthre psyche drink smoken smokev smokef hchole srh1 srh2 ///
                         srh3 srh4 srh5 hipe mstat alzhe demene employed inactive ///
                         retired logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso ///
@@ -162,7 +162,7 @@ foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
 }
 
 * Some lags still missing info
-foreach var of varlist arthre asthmae cancre diabe hearte hibpe lunge psyche stroke parkine alzhe demene {
+foreach var of varlist arthre asthmae cancre diabe hearte hibpe lunge psyche stroke parkine alzhe demene gcareinhh1w {
     replace l2`var' = 0 if missing(`var') & missing(l2`var')
 }
 

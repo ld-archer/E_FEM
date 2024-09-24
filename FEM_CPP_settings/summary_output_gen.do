@@ -303,6 +303,10 @@ forvalues x = 1/`measures_l' {
 			local sel "& male == 0 & age > 74 & drink == 1"
 			local samp "female drinker aged 75 plus"
 		}
+		else if "`b'" == "abstainer" {
+			local sel "& abstainer == 1"
+			local samp "Abstains from Alcohol"
+		}
 		else if "`b'" == "moderate" {
 			local sel "& moderate == 1"
 			local samp "moderate drinker"

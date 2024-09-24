@@ -57,27 +57,28 @@ core: core_prep simulation_core
 core_complete: ELSA core_complete_prep simulation_core_complete detailed_append_core_CV2 Ttests_core
 
 core_debug: SUBPOP = debug
-core_debug: core_complete debug_doc_core
+core_debug: clean_settings core_complete debug_doc_core
 
 core_scen: core_prep simulation_core_scen detailed_appends scen_doc
 
 roc: SUBPOP = roc
-roc: core_prep simulation_core_roc roc_validation
+roc: clean_settings core_prep simulation_core_roc roc_validation
 
 alcohol: SUBPOP = alcohol
-alcohol: core_prep cv_prep simulation_alcohol alcohol_doc
+alcohol: clean_settings core_prep cv_prep simulation_alcohol alcohol_doc
 
 alcohol2: SUBPOP = alcohol
-alcohol2: core_prep simulation_alcohol2 alcohol_doc
+alcohol2: clean_settings core_prep simulation_alcohol2 alcohol_doc
 
 handovers: SUBPOP = handovers
-handovers: core_complete handover_plots
+handovers: clean_settings core_complete handover_plots
 
 everything: core_debug alcohol handovers roc
 
-validation: core_debug handovers roc
+validation_full: core_debug handovers roc
 
 lnly_sociso: SUBPOP = lnly_sociso
+lnly_sociso: clean_settings
 lnly_sociso: core_prep simulation_lnly_sociso
 
 
@@ -106,7 +107,7 @@ stata_extensions.txt: stata_extensions.do
 
 ### Populations
 
-ELSA: $(DATADIR)/H_ELSA_g2.dta 
+ELSA: $(DATADIR)/H_ELSA_g3.dta 
 
 ELSA_lifehistory: $(DATADIR)/H_ELSA_LH_a.dta
 
@@ -114,7 +115,7 @@ ELSA_EOL: $(DATADIR)/H_ELSA_EOL_a2.dta
 
 populations: $(DATADIR)/H_ELSA_g2_wv_specific.dta $(DATADIR)/cross_validation/crossvalidation.dta $(DATADIR)/ELSA_long.dta $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta $(DATADIR)/ELSA_repl_base.dta $(DATADIR)/ELSA_transition.dta
 
-$(DATADIR)/H_ELSA_g2.dta: $(MAKEDATA)/H_ELSA_long.do
+$(DATADIR)/H_ELSA_g3.dta: $(MAKEDATA)/H_ELSA_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) H_ELSA_long.do
 
 $(DATADIR)/H_ELSA_LH_a.dta: $(MAKEDATA)/H_ELSA_LH_long.do
@@ -123,13 +124,13 @@ $(DATADIR)/H_ELSA_LH_a.dta: $(MAKEDATA)/H_ELSA_LH_long.do
 $(DATADIR)/H_ELSA_EOL_a2.dta: $(MAKEDATA)/h_elsa_eol_long.do
 	cd $(MAKEDATA) && datain=$(RAW_ELSA) dataout=$(DATADIR) $(STATA) h_elsa_eol_long.do
 
-$(DATADIR)/H_ELSA_g2_wv_specific.dta: $(MAKEDATA)/wave_specific_data.do $(DATADIR)/H_ELSA_g2.dta
+$(DATADIR)/H_ELSA_g2_wv_specific.dta: $(MAKEDATA)/wave_specific_data.do $(DATADIR)/H_ELSA_g3.dta
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) wave_specific_data.do
 	
 $(DATADIR)/cross_validation/crossvalidation.dta: $(MAKEDATA)/ID_selection_CV.do 
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR)/cross_validation $(STATA) ID_selection_CV.do
 
-$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_g2.dta $(MAKEDATA)/wave_specific_data2.do
+$(DATADIR)/ELSA_long.dta: $(MAKEDATA)/reshape_long.do $(DATADIR)/H_ELSA_g3.dta $(MAKEDATA)/wave_specific_data2.do
 	cd $(MAKEDATA) && datain=$(DATADIR) dataout=$(DATADIR) $(STATA) reshape_long.do
 
 $(DATADIR)/ELSA_stock_base.dta $(DATADIR)/ELSA_stock_base_CV1.dta $(DATADIR)/ELSA_stock_base_CV2.dta: $(DATADIR)/ELSA_long.dta $(MAKEDATA)/generate_stock_pop.do $(MAKEDATA)/kludge.do
@@ -190,13 +191,13 @@ transitions_core_CV: $(ESTIMATES)/ELSA_core/CV1/died.ster $(ESTIMATES)/ELSA_core
 
 transitions_minimal: $(ESTIMATES)/ELSA_minimal/died.ster
 
-$(ESTIMATES)/ELSA/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
+$(ESTIMATES)/ELSA/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=ELSA $(STATA) ELSA_init_transition.do
 
-$(ESTIMATES)/ELSA/crossvalidation1/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
+$(ESTIMATES)/ELSA/crossvalidation1/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV1 $(STATA) ELSA_init_transition.do
 
-$(ESTIMATES)/ELSA/crossvalidation2/died.est: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
+$(ESTIMATES)/ELSA/crossvalidation2/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsELSA.do $(ESTIMATION)/ELSA_sample_selections.do
 	cd $(ESTIMATION) && DATAIN=$(DATADIR) && dataout=$(DATADIR) && SUFFIX=CV2 $(STATA) ELSA_init_transition.do
 
 $(ESTIMATES)/ELSA_minimal/died.ster: $(DATADIR)/ELSA_transition.dta $(ESTIMATION)/ELSA_init_transition.do $(ESTIMATION)/ELSA_covariate_definitionsminimal.do $(ESTIMATION)/ELSA_sample_selections.do
@@ -270,24 +271,24 @@ $(FEM_CPP_settings)/summary_output_ELSA_minimal.txt: $(ROOT)/FEM_CPP_settings/EL
 
 ### FEM Simulation
 
-simulation_base:
+simulation_base: 
 	$(MPI) ELSA_example.settings.txt
 
-simulation_CV1:
+simulation_CV1: $(FEM_CPP_settings)/summary_output_ELSA_core_CV2.txt
 	$(MPI) ELSA_cross-validation1.settings.txt
 
-simulation_CV2:
+simulation_CV2: $(FEM_CPP_settings)/summary_output_ELSA_core_CV2.txt
 	$(MPI) ELSA_cross-validation2.settings.txt
 
-simulation_minimal:
+simulation_minimal: $(FEM_CPP_settings)/summary_output_ELSA_minimal.txt
 	$(MPI) ELSA_minimal.settings.txt
 
-simulation_core:
+simulation_core: 
 	$(MPI) ELSA_core.settings.txt
 
-simulation_core_complete: $(OUTDATA)/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta 
+simulation_core_complete: $(OUTDATA)/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta
 
-$(OUTDATA)/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt $(ROOT)/FEM $(FEM_CPP_settings)/ELSA_vars.txt $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_repl.dta
+$(OUTDATA)/COMPLETE/ELSA_minimal/ELSA_minimal_summary.dta: $(ROOT)/ELSA_core_complete.csv $(ROOT)/ELSA_core_complete.settings.txt $(ROOT)/FEM $(FEM_CPP_settings)/ELSA_vars.txt $(DATADIR)/ELSA_stock.dta $(DATADIR)/ELSA_repl.dta $(FEM_CPP_settings)/summary_output_ELSA_core.txt
 	$(MPI) ELSA_core_complete.settings.txt
 
 simulation_core_scen:
@@ -337,6 +338,7 @@ roc_validation2: $(MAKEDATA)/roc_validation.do
 
 roc_validation: $(MAKEDATA)/roc_validation.do
 	mkdir -p $(OUTDATA)/ROC/roc_img/old/
+	mkdir -p $(OUTDATA)/ROC/roc_plots/
 	rm -f $(OUTDATA)/ROC/old/*.pdf
 	cp -f $(OUTDATA)/ROC/roc_img/*.pdf ../ROC_Analysis/old/
 	cd $(MAKEDATA) && datain=$(OUTDATA)/ROC dataout=$(OUTDATA)/ROC $(STATA) roc_validation.do
@@ -465,6 +467,11 @@ move_results:
 	cp -r output/SCENARIO/* ../tmp_output/
 
 clean_all: clean_logs clean_models clean_handovers clean_settings clean_hotdecks
+
+clean_data:
+	rm -f input_data/ELSA_stock*.dta
+	rm -f input_data/ELSA_repl*.dta
+	rm -f input_data/ELSA_transition*.dta
 
 clean_logs:
 	rm -f *.log
