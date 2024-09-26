@@ -11,14 +11,8 @@ set maxvar 15000
 **************************************************
 
 ***define folder locations***
-<<<<<<< HEAD
 local stataraw "/home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se"
 local output "/home/luke/Documents/E_FEM_clean/E_FEM/input_data"
-=======
-*local stataraw "/home/luke/Documents/WORK/E_FEM/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se/"
-local stataraw "/home/luke/Documents/WORK/E_FEM/ELSA/UKDA-5050-stata_17-09-24/stata/stata13_se"
-local output "/home/luke/Documents/WORK/E_FEM/E_FEM/input_data"
->>>>>>> 579ef59543f416d1f41d6fe14b1925318b9273af
 
 ***define raw files***
 *Using 38th edition, released March 2023
