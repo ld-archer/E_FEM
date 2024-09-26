@@ -98,7 +98,8 @@ InterventionFactory::InterventionFactory(IVariableProvider* vp, ITimeSeriesProvi
 
 	Vars::Vars_t ordvars[] = {
 		Vars::painstat,
-		//Vars::exstat
+		Vars::lnly,
+		Vars::sociso,
 	};
 
 	int nOrdVars = sizeof(ordvars)/sizeof(Vars::Vars_t);

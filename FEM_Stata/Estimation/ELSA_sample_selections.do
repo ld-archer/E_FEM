@@ -2,7 +2,7 @@
 
 * Selection criteria for models that only rely on not being dead
 * These are all PREVALENCE models - estimate for anyone who has not died
-foreach v in adlstat iadlstat drink mstat workstat logatotb logitot sociso physact tr20 orient sight hearing {
+foreach v in adlstat iadlstat drink mstat workstat logatotb logitot sociso physact tr20 orient sight hearing cesd {
     local select_`v' !died 
 }
 
@@ -34,7 +34,7 @@ if "`defmod'" == "CV2" {
 * varlist holds all that we estimate transition models for
 local varlist adlstat iadlstat drink exstat cancre diabe ///
                 hearte hibpe lunge stroke arthre psyche asthmae parkine died ///
-                smoke_start smoke_stop alcfreq ///
+                smoke_start smoke_stop alcfreq cesd ///
                 logbmi hchole hipe mstat lnly demene ///
                 workstat logatotb logitot smokef ///
                 angine hrtatte tr20 verbf orient ///

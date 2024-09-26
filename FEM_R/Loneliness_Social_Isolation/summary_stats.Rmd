@@ -1,0 +1,210 @@
+---
+title: "Loneliness and Social Isolation Summary Statistics"
+output: html_notebook
+---
+
+
+
+
+
+# Setup
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(ggplot2)
+```
+
+```{r}
+source('FEM_R/utilities.R')
+```
+
+# Data
+
+```{r}
+input_dir <- "input_data/"
+trans <- read_dta(paste0(input_dir, 'ELSA_transition.dta'))
+repl <- read_dta(paste0(input_dir, 'ELSA_repl.dta'))
+repl <- repl %>% 
+  filter(year == 2012)
+```
+
+
+# Loneliness
+
+```{r}
+xtabs(~lnly, data = trans)
+```
+
+```{r}
+#weighted.mean(trans$lnly1, w = trans$cwtresp, na.rm = TRUE)
+
+
+lnly.sum <- trans %>%
+  filter(died == 0) %>%
+  filter(cwtresp != 0) %>%
+  dplyr::select(hhidpn, wave, lnly, lnly1, lnly2, lnly3, cwtresp) %>%
+  group_by(lnly1) %>%
+  summarise(n = n())
+
+lnly.sum
+```
+
+```{r}
+repl.object <- repl %>%
+  filter(died == 0) %>%
+  drop_na(lnly) %>%
+  dplyr::select(hhidpn, male, age, lnly, lnly1, lnly2, lnly3, weight)
+
+lnly.repl.sum <- repl.object %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = weight) * 100,
+            lnly2 = weighted.mean(lnly2, w = weight) * 100,
+            lnly3 = weighted.mean(lnly3, w = weight) * 100)
+lnly.repl.sum
+
+lnly.repl.gender <- repl.object %>%
+  group_by(male) %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = weight) * 100,
+            lnly2 = weighted.mean(lnly2, w = weight) * 100,
+            lnly3 = weighted.mean(lnly3, w = weight) * 100)
+lnly.repl.gender
+```
+
+## Full Transition Pop
+
+```{r}
+trans.object <- trans %>%
+  filter(died == 0) %>%
+  filter(cwtresp != 0) %>%
+  drop_na(lnly) %>%
+  filter(age > 49) %>%
+  dplyr::select(hhidpn, male, age, 
+         lnly, lnly1, lnly2, lnly3,
+         sociso, sociso1, sociso2, sociso3,
+         cwtresp,
+         gcareinhh1w,
+         mstat,
+         hhres) %>%
+  mutate(age.group = cut(age, 
+                         breaks = c(49,65,75,120),
+                         labels = c('50-64', '65-74', '75+')),
+         live.alone = hhres == 1)
+
+lnly.trans.sum <- trans.object %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = cwtresp) * 100,
+            lnly2 = weighted.mean(lnly2, w = cwtresp) * 100,
+            lnly3 = weighted.mean(lnly3, w = cwtresp) * 100)
+lnly.trans.sum
+
+lnly.trans.gender <- trans.object %>%
+  group_by(male) %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = cwtresp) * 100,
+            lnly2 = weighted.mean(lnly2, w = cwtresp) * 100,
+            lnly3 = weighted.mean(lnly3, w = cwtresp) * 100)
+lnly.trans.gender
+
+lnly.trans.age <- trans.object %>%
+  group_by(age.group) %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = cwtresp) * 100,
+            lnly2 = weighted.mean(lnly2, w = cwtresp) * 100,
+            lnly3 = weighted.mean(lnly3, w = cwtresp) * 100)
+lnly.trans.age
+
+lnly.trans.carer <- trans.object %>%
+  group_by(gcareinhh1w) %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = cwtresp) * 100,
+            lnly2 = weighted.mean(lnly2, w = cwtresp) * 100,
+            lnly3 = weighted.mean(lnly3, w = cwtresp) * 100)
+lnly.trans.carer
+
+lnly.trans.mstat <- trans.object %>%
+  group_by(mstat) %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = cwtresp) * 100,
+            lnly2 = weighted.mean(lnly2, w = cwtresp) * 100,
+            lnly3 = weighted.mean(lnly3, w = cwtresp) * 100)
+lnly.trans.mstat
+
+lnly.trans.hhres <- trans.object %>%
+  group_by(live.alone) %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = cwtresp) * 100,
+            lnly2 = weighted.mean(lnly2, w = cwtresp) * 100,
+            lnly3 = weighted.mean(lnly3, w = cwtresp) * 100)
+lnly.trans.hhres
+```
+
+```{r}
+sociso.trans.sum <- trans.object %>%
+  summarise(sociso1 = weighted.mean(sociso1, w = cwtresp) * 100,
+            sociso2 = weighted.mean(sociso2, w = cwtresp) * 100,
+            sociso3 = weighted.mean(sociso3, w = cwtresp) * 100)
+sociso.trans.sum
+
+sociso.trans.gender <- trans.object %>%
+  group_by(male) %>%
+  summarise(sociso1 = weighted.mean(sociso1, w = cwtresp) * 100,
+            sociso2 = weighted.mean(sociso2, w = cwtresp) * 100,
+            sociso3 = weighted.mean(sociso3, w = cwtresp) * 100)
+sociso.trans.gender
+
+sociso.trans.age <- trans.object %>%
+  group_by(age.group) %>%
+  summarise(sociso1 = weighted.mean(sociso1, w = cwtresp) * 100,
+            sociso2 = weighted.mean(sociso2, w = cwtresp) * 100,
+            sociso3 = weighted.mean(sociso3, w = cwtresp) * 100)
+sociso.trans.age
+
+sociso.trans.carer <- trans.object %>%
+  group_by(gcareinhh1w) %>%
+  summarise(sociso1 = weighted.mean(sociso1, w = cwtresp) * 100,
+            sociso2 = weighted.mean(sociso2, w = cwtresp) * 100,
+            sociso3 = weighted.mean(sociso3, w = cwtresp) * 100)
+sociso.trans.carer
+
+sociso.trans.mstat <- trans.object %>%
+  group_by(mstat) %>%
+  summarise(sociso1 = weighted.mean(sociso1, w = cwtresp) * 100,
+            sociso2 = weighted.mean(sociso2, w = cwtresp) * 100,
+            sociso3 = weighted.mean(sociso3, w = cwtresp) * 100)
+sociso.trans.mstat
+
+sociso.trans.hhres <- trans.object %>%
+  group_by(live.alone) %>%
+  summarise(sociso1 = weighted.mean(sociso1, w = cwtresp) * 100,
+            sociso2 = weighted.mean(sociso2, w = cwtresp) * 100,
+            sociso3 = weighted.mean(sociso3, w = cwtresp) * 100)
+sociso.trans.hhres
+```
+
+
+# Transition Cohort
+
+```{r}
+trans.object.cohort <- trans.object %>%
+  filter(age %in% c(50, 51))
+
+lnly.cohort.sum <- trans.object %>%
+  summarise(lnly1 = weighted.mean(lnly1, w = cwtresp) * 100,
+            lnly2 = weighted.mean(lnly2, w = cwtresp) * 100,
+            lnly3 = weighted.mean(lnly3, w = cwtresp) * 100)
+lnly.cohort.sum
+
+lnly.cohort.gender <- trans.object.cohort %>%
+  group_by(male) %>%
+  summarise(lnly1.prop = weighted.mean(lnly1, w = cwtresp, na.rm = TRUE) * 100,
+            lnly2.prop = weighted.mean(lnly2, w = cwtresp, na.rm = TRUE) * 100,
+            lnly3.prop = weighted.mean(lnly3, w = cwtresp, na.rm = TRUE) * 100)
+lnly.cohort.gender
+```
+
+
+
+
+
+```{r}
+
+```
+

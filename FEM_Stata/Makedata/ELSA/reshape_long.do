@@ -554,6 +554,21 @@ label variable srh3 "Self Reported Health Status: Good"
 label variable srh4 "Self Reported Health Status: Fair"
 label variable srh5 "Self Reported Health Status: Poor"
 
+*** Center for Epidemiologic Studies Depression Scale (CESD)
+* FEM doesn't like 0 values, so going to shift this up by 1
+replace cesd = cesd + 1
+
+* Now dummys
+gen cesd1 = cesd == 1
+gen cesd2 = cesd == 2
+gen cesd3 = cesd == 3
+gen cesd4 = cesd == 4
+gen cesd5 = cesd == 5
+gen cesd6 = cesd == 6
+gen cesd7 = cesd == 7
+gen cesd8 = cesd == 8
+gen cesd9 = cesd == 9
+
 *** Loneliness
 * loneliness is brought into our model as a summary score for 3 questions relating to loneliness
 * To use this score (which is ordinal, containing non-integers), we are going to round the values and keep them as 3 categories: low, medium and high
@@ -561,9 +576,9 @@ label variable srh5 "Self Reported Health Status: Poor"
 gen lnly = round(lnlys3, 1)
 label variable lnly "Loneliness Score, Low to High [1, 3]"
 * Now generate some dummys
-gen lnly1 = lnly == 1
-gen lnly2 = lnly == 2
-gen lnly3 = lnly == 3
+gen lnly1 = lnly == 1 if !missing(lnly)
+gen lnly2 = lnly == 2 if !missing(lnly)
+gen lnly3 = lnly == 3 if !missing(lnly)
 * Labels
 label variable lnly1 "Loneliness level: low"
 label variable lnly2 "Loneliness level: medium"
@@ -785,15 +800,32 @@ replace sociso_mflag = sociso_mflag + 1 if missing(rcntm)
 replace sociso_mflag = sociso_mflag + 1 if missing(fcntm)
 replace sociso_mflag = sociso_mflag + 1 if missing(socyr)
 
+********** NEW VERSION OF THIS (22/3/23) **********
+* First lets get a summary version of this to handle missing values
+* We want to get the fraction of these that are true (i.e. proportion from 0-1) and multiply by 6
+* To get this proportion we need to divide the score by 6 - sociso_mflag
+gen sociso_prop = sociso / (6 - sociso_mflag) if !missing(sociso) & !missing(sociso_mflag)
+
+* Now multiply the prop by 6 & round to get a score from 1 - 6, low to high
+gen sociso_v2 = round(sociso_prop * 6, 1)
+replace sociso_v2 = . if insc == 0
+* Now recode to a 1-3 scale
+recode sociso_v2 (1/2=1) (3/4=2) (5/6=3)
+
+drop sociso sociso_prop
+rename sociso_v2 sociso
+
+* Drop the original variable and rename the new one
+
 * drop elements of index
 *drop kcntm rcntm fcntm socyr
 * Dummy vars
 gen sociso1 = (sociso == 1) & !missing(sociso)
 gen sociso2 = (sociso == 2) & !missing(sociso)
 gen sociso3 = (sociso == 3) & !missing(sociso)
-gen sociso4 = (sociso == 4) & !missing(sociso)
-gen sociso5 = (sociso == 5) & !missing(sociso)
-gen sociso6 = (sociso == 6) & !missing(sociso)
+*gen sociso4 = (sociso == 4) & !missing(sociso)
+*gen sociso5 = (sociso == 5) & !missing(sociso)
+*gen sociso6 = (sociso == 6) & !missing(sociso)
 
 ****** CHILDLESS ******
 
@@ -897,14 +929,20 @@ foreach var in
     sociso1
     sociso2
     sociso3
-    sociso4
-    sociso5
-    sociso6
     hhres
     socyr
     gcareinhh1w
     wealth_quintile
     cesd
+    cesd1
+    cesd2
+    cesd3
+    cesd4
+    cesd5
+    cesd6
+    cesd7
+    cesd8
+    cesd9
     sight
     hearing
     ahown

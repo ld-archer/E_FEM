@@ -5,7 +5,7 @@ quietly include ../../../fem_env.do
 * This sets the scenario for use in naming files, trending variables, etc.
 local scen : env scen
 
-local expansion 10
+local expansion 15
 
 clear all
 

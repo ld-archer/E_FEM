@@ -189,9 +189,9 @@ if "`scen'" == "valid" {
 * Almost 50% of ELSA_long are lnly == 1, so seems fair to assign this
 replace lnly = 1 if missing(lnly)
 replace l2lnly = lnly if missing(l2lnly)
-replace lnly1 = 1 if lnly == 1
-replace l2lnly1 = 1 if l2lnly == 1
-** PROBLEM WASNT WITH MISSING DATA, just missing model definition in covariate definitions for minimal
+replace lnly1 = lnly == 1 if !missing(lnly)
+replace lnly2 = lnly == 2 if !missing(lnly)
+replace lnly3 = lnly == 3 if !missing(lnly)
 
 * New chronic disease vars
 replace angine = 0 if missing(angine)
@@ -208,6 +208,29 @@ replace hrtrhme = 0 if missing(hrtrhme)
 replace l2hrtrhme = 0 if missing(l2hrtrhme)
 replace osteoe = 0 if missing(osteoe)
 replace l2osteoe = 0 if missing(l2osteoe)
+
+* CESD
+* Now dummys
+replace cesd1 = cesd == 1
+replace cesd2 = cesd == 2
+replace cesd3 = cesd == 3
+replace cesd4 = cesd == 4
+replace cesd5 = cesd == 5
+replace cesd6 = cesd == 6
+replace cesd7 = cesd == 7
+replace cesd8 = cesd == 8
+replace cesd9 = cesd == 9
+
+* Now dummys
+replace l2cesd1 = l2cesd == 1
+replace l2cesd2 = l2cesd == 2
+replace l2cesd3 = l2cesd == 3
+replace l2cesd4 = l2cesd == 4
+replace l2cesd5 = l2cesd == 5
+replace l2cesd6 = l2cesd == 6
+replace l2cesd7 = l2cesd == 7
+replace l2cesd8 = l2cesd == 8
+replace l2cesd9 = l2cesd == 9
 
 
 * Still missing atotb, so impute with mean

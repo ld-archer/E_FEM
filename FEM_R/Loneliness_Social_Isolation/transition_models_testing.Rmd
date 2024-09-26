@@ -5,17 +5,18 @@ output: html_notebook
 
 ```{r setup, include=FALSE}
 # Need to set up the working directory
-workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/"
+#workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/"
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
 require(haven)
 require(MASS)
-
+require(pscl)
 ```
 
 ```{r}
-source('../HAZARDS/source/hazard_utils.R')
+#source('../HAZARDS/source/hazard_utils.R')
 source('FEM_R/utilities.R')
 ```
 
@@ -88,6 +89,7 @@ sociso.check <- sociso %>%
   mutate(prop = (Freq / total) * 100)
 
 #write.csv(lnly.check, )
+rm(lnly, sociso)
 ```
 
 ```{r}
@@ -99,6 +101,11 @@ Loneliness shows a pretty good relationship with mortality in the way that we ex
 ```{r}
 sociso.check
 ```
+
+```{r}
+rm(lnly.check, sociso.check)
+```
+
 
 The previous output of this chunk wasn't very good, and prompted a closer look at the creation of the sociso index and the component variables. I found a problem in this definition (was a chain of replace commands that meant that the last replace was most important). Now the variable looks excellent in terms of mortality! We see the lowest rates of mortality in the sociso == 1 group (lowest / no social isolation), and higher rates of mortality as time goes on. Magnificent! 
 
@@ -119,6 +126,8 @@ sociso.check2 <- sociso2 %>%
   group_by(l2sociso) %>%
   mutate(total = sum(Freq)) %>%
   mutate(prop = (Freq / total) * 100)
+
+rm(lnly2, sociso2, lnly.check2, sociso.check2)
 ```
 
 
@@ -132,6 +141,8 @@ probit.mort.min <- glm(formula = form.mort.min, family = binomial(link = 'probit
                     data = trans2)
 
 summary(probit.mort.min)
+
+rm(form.mort.min, probit.mort.min)
 ```
 
 Now try an iteration with lnly and sociso.
@@ -139,13 +150,14 @@ Now try an iteration with lnly and sociso.
 ```{r}
 form.mort.ls <- 'died ~ male + white + hsless + college + 
                   l2age65l + l2age6574 + l2age75p + 
-                  l2lnly1 + l2lnly2 + l2lnly3 +
-                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 + l2sociso6'
+                  l2lnly1 + l2lnly2 +
+                  l2sociso1 + l2sociso2'
 
 probit.mort.ls <- glm(formula = form.mort.ls, family = binomial(link = 'probit'),
                     data = trans2)
 
 summary(probit.mort.ls)
+rm(form.mort.ls, probit.mort.ls)
 ```
 
 Interesting. Mirrors the FEM transition model, although not exactly. Same sign for each var and similar relative magnitude (i.e. in the sociso levels). The sociso relationship is great now but the loneliness is not so clear cut. This actually mirrors the literature so we could be on to something here! Try a version where the reference factors are different, might be good to pick the worst of each var and then we can see where the relationship falls down. 
@@ -154,12 +166,13 @@ Interesting. Mirrors the FEM transition model, although not exactly. Same sign f
 form.mort.ls2 <- 'died ~ male + white + hsless + college + 
                   l2age65l + l2age6574 + l2age75p + 
                   l2lnly1 + l2lnly2 +
-                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5'
+                  l2sociso1 + l2sociso2'
 
 probit.mort.ls2 <- glm(formula = form.mort.ls2, family = binomial(link = 'probit'),
                     data = trans2)
 
 summary(probit.mort.ls2)
+rm(form.mort.ls2, probit.mort.ls2)
 ```
 
 *Chefs kiss*. Exaclty what we want to see. Probability of mortality increases with higher rates of loneliness and social isolation. Appears that loneliness here is more highly associated with mortality than social isolation, but I have an idea about that. Perhaps, with loneliness being the subjective feeling and social isolation the objective situation, social isolation is more likely in people in palliative care or close to end of life already. These people are harder to follow in ELSA, and institutionalised people are removed from the survey. Maybe a contributing factor.
@@ -170,7 +183,7 @@ Try one more version, with chronic diseases and stuff.
 form.mort.full <- 'died ~ male + white + hsless + college + 
                   l2age65l + l2age6574 + l2age75p + 
                   l2lnly1 + l2lnly2 +
-                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 +
+                  l2sociso1 + l2sociso2 +
                   l2cancre + l2diabe + l2hearte + l2alzhe + l2demene + l2lunge +
                   l2stroke'
 
@@ -178,6 +191,7 @@ probit.mort.full <- glm(formula = form.mort.full, family = binomial(link = 'prob
                     data = trans2)
 
 summary(probit.mort.full)
+rm(form.mort.full, probit.mort.full)
 ```
 
 ### Test
@@ -188,18 +202,38 @@ I like the previous model, lets also do a few test versions.
 form.mort.test <- 'died ~ male + white + hsless + college + 
                   l2age65l + l2age6574 + l2age75p + 
                   l2lnly1 + l2lnly2 +
-                  l2sociso1 + l2sociso2 + l2sociso3 + l2sociso4 + l2sociso5 +
+                  l2sociso1 + l2sociso2 +
                   l2cancre + l2diabe + l2hearte + l2demene + l2lunge +
                   l2stroke + l2smokev + l2smoken + l2smokef +
-                  l2alcfreq1 + l2alcfreq2 + l2alcfreq3 + l2alcfreq5 + 
-                  l2alcfreq6 + l2alcfreq7 + l2alcfreq8'
+                  l2alcfreq7 + l2alcfreq8'
 
 probit.mort.test <- glm(formula = form.mort.test, family = binomial(link = 'probit'),
                     data = trans2)
 
 summary(probit.mort.test)
+
+rm(form.mort.test, probit.mort.test)
 ```
 
+AIC: 6668.7
+
+```{r}
+form.mort.test2 <- 'died ~ male + white + hsless + college + 
+                  l2age65l + l2age6574 + l2age75p + 
+                  l2lnly1 + l2lnly2 +
+                  l2sociso1 + l2sociso2 +
+                  l2cancre + l2diabe + l2hearte + l2lunge +
+                  l2stroke + l2smokev + l2smoken +
+                  l2alcfreq7 + l2alcfreq8 +
+                  l2srh4 + l2srh5'
+
+probit.mort.test2 <- glm(formula = form.mort.test2, family = binomial(link = 'probit'),
+                    data = trans2)
+
+summary(probit.mort.test2)
+
+rm(form.mort.test2, probit.mort.test2)
+```
 
 # Loneliness and Social Isolation
 
@@ -219,7 +253,7 @@ trans.lnly.complete <- trans.lnly[complete.cases(trans.lnly),]
 ## MINIMAL
 form.lnly.min <- 'lnly ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
 probit.lnly.min <- polr(formula = form.lnly.min,
-                    data = trans.lnly,
+                    data = trans.notDead,
                     Hess = TRUE,
                     na.action = na.omit)
 print('Minimal model:')
@@ -228,11 +262,13 @@ summary(probit.lnly.min)
 ## FULL
 form.lnly <- 'lnly ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + scale(atotb) + l2employed + l2inactive + l2physact'
 probit.lnly <- polr(formula = form.lnly,
-                    data = trans.lnly,
+                    data = trans.notDead,
                     Hess = TRUE,
                     na.action = na.omit)
 print('Full model:')
 summary(probit.lnly)
+
+rm(form.lnly.min, probit.lnly.min, form.lnly, probit.lnly, trans.lnly)
 ```
 
 Now use these models as a testbed using ideas from literature.
@@ -256,13 +292,18 @@ Shortlist of variables I already have or can easily test:
 
 ```{r}
 ## TEST
-form.lnly.test <- 'lnly ~ male + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2cohab + l2widowed + l2single + l2employed + l2inactive + l2physact + l2anyadl + l2anyiadl + l2srh5 + l2hhres + l2socyr + l2gcareinhh1w + childless + scale(l2logatotb) + l2cesd'
+form.lnly.test <- 'lnly ~ male + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2cohab + l2widowed + l2single + l2employed + l2inactive + l2physact + l2anyadl + l2anyiadl + l2srh5 + l2socyr + l2gcareinhh1w + scale(l2logatotb) + l2cesd'
 probit.lnly.test <- polr(formula = form.lnly.test,
-                    data = trans,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Test model:')
 summary(probit.lnly.test)
+# + l2hhres + childless
+
+rm(form.lnly.test, probit.lnly.test)
 ```
 
 ## Social Isolation
@@ -272,7 +313,7 @@ First recreate the minimal and current models before trying anything new.
 ```{r}
 # Get a sample comparable to the sample used in FEM
 trans.sociso <- trans %>%
-  dplyr::select(idauniq, wave, died, sociso, male, white, hsless, college, l2age65l, l2age6574, l2age75p, atotb, l2employed, l2inactive, l2physact) %>%
+  dplyr::select(cwtresp, idauniq, wave, died, sociso, male, white, hsless, college, l2age65l, l2age6574, l2age75p, atotb, l2employed, l2inactive, l2physact) %>%
   filter(wave > 1) %>%
   filter(died == 0)
 trans.sociso.complete <- trans.sociso[complete.cases(trans.sociso),]
@@ -281,20 +322,26 @@ trans.sociso.complete <- trans.sociso[complete.cases(trans.sociso),]
 ## MINIMAL
 form.sociso.min <- 'sociso ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
 probit.sociso.min <- polr(formula = form.sociso.min,
-                    data = trans.sociso,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 # print('Minimal model:')
 summary(probit.sociso.min)
 
 ## FULL
 form.sociso <- 'sociso ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + scale(atotb) + l2employed + l2inactive + l2physact'
 probit.sociso <- polr(formula = form.sociso,
-                    data = trans.sociso,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Full model:')
 summary(probit.sociso)
+
+rm(trans.sociso, trans.sociso.complete, form.sociso.min, probit.sociso.min, form.sociso, probit.sociso)
 ```
 
 Now trying the predictors from the loneliness model minus some variables that would be too strongly correlated with the outcome (specifically socyr).
@@ -303,11 +350,15 @@ Now trying the predictors from the loneliness model minus some variables that wo
 ## TEST
 form.sociso.test <- 'sociso ~ male + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2cohab + l2widowed + l2single + l2physact + l2srh5 + l2hhres + l2gcareinhh1w + childless + scale(l2logatotb) + l2cesd + l2sight + l2hearing + l2ahown'
 probit.sociso.test <- polr(formula = form.sociso.test,
-                    data = trans,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Test model:')
 summary(probit.sociso.test)
+
+rm(form.sociso.test, probit.sociso.test)
 ```
 
 # Functional Limitations
@@ -316,41 +367,49 @@ Lets have a go at adlstat and iadlstat.
 
 Data:
 ```{r}
-trans.adlstat <- trans %>%
-  dplyr::select(idauniq, wave, died, adlstat, iadlstat, male, white, hsless, 
-                college, l2age65l, l2age6574, l2age75p, l2stroke, l2demene, 
-                l2alzhe, l2osteoe, l2catracte, l2lnly, l2lnly1, l2lnly2, 
-                l2sociso, l2cesd, l2cohab, l2widowed, l2single, l2married,
-                l2alcfreq, l2smoken, l2smokef, l2smokev, l2tr20, l2verbf,
-                l2orient) %>%
-  filter(wave > 1) %>%
-  filter(died == 0)
-trans.adlstat.complete <- trans.adlstat[complete.cases(trans.adlstat),]
-
-trans.adlstat.complete$adlstat <- as.factor(trans.adlstat.complete$adlstat)
-trans.adlstat.complete$iadlstat <- as.factor(trans.adlstat.complete$iadlstat)
+# trans.adlstat <- trans %>%
+#   dplyr::select(idauniq, wave, died, adlstat, iadlstat, male, white, hsless, 
+#                 college, l2age65l, l2age6574, l2age75p, l2stroke, l2demene, 
+#                 l2alzhe, l2osteoe, l2catracte, l2lnly, l2lnly1, l2lnly2, 
+#                 l2sociso, l2cesd, l2cohab, l2widowed, l2single, l2married,
+#                 l2alcfreq, l2smoken, l2smokef, l2smokev, l2tr20, l2verbf,
+#                 l2orient) %>%
+#   filter(wave > 1) %>%
+#   filter(died == 0)
+# trans.adlstat.complete <- trans.adlstat[complete.cases(trans.adlstat),]
+# 
+# trans.adlstat.complete$adlstat <- as.factor(trans.adlstat.complete$adlstat)
+# trans.adlstat.complete$iadlstat <- as.factor(trans.adlstat.complete$iadlstat)
 ```
 
 ## ADLSTAT
 
 ```{r}
+trans.notDead$adlstat <- as.factor(trans.notDead$adlstat)
+trans.notDead$iadlstat <- as.factor(trans.notDead$iadlstat)
 ## MINIMAL
 form.adlstat.min <- 'adlstat ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
 probit.adlstat.min <- polr(formula = form.adlstat.min,
-                    data = trans.adlstat.complete,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Minimal model:')
 summary(probit.adlstat.min)
 
 ## FULL
 form.adlstat <- 'adlstat ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2stroke + l2demene + l2alzhe + l2osteoe + l2catracte + l2lnly + l2sociso'
 probit.adlstat <- polr(formula = form.adlstat,
-                    data = trans.adlstat.complete,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Full model:')
 summary(probit.adlstat)
+
+rm(form.adlstat.min, probit.adlstat.min, form.adlstat, probit.adlstat)
 ```
 
 Now testing.
@@ -361,11 +420,15 @@ form.adlstat.test <- 'adlstat ~ male + white + hsless + college +
 scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2stroke + l2demene + l2osteoe + l2catracte + l2lnly + l2sociso + l2cesd + l2married + 
 l2widowed + l2alcfreq + l2smokev + l2tr20 + l2verbf + l2orient'
 probit.adlstat.test <- polr(formula = form.adlstat.test,
-                    data = trans.adlstat.complete,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Test model:')
 summary(probit.adlstat.test)
+
+rm(form.adlstat.test, probit.adlstat.test)
 ```
 
 AIC: 64881.53
@@ -382,20 +445,26 @@ Stay there for now?
 ## MINIMAL
 form.iadlstat.min <- 'iadlstat ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
 probit.iadlstat.min <- polr(formula = form.iadlstat.min,
-                    data = trans.adlstat.complete,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Minimal model:')
 summary(probit.iadlstat.min)
 
 ## FULL
 form.iadlstat <- 'iadlstat ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2stroke + l2demene + l2alzhe + l2osteoe + l2catracte + l2lnly + l2sociso'
 probit.iadlstat <- polr(formula = form.iadlstat,
-                    data = trans.adlstat.complete,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Full model:')
 summary(probit.iadlstat)
+
+rm(form.iadlstat.min, probit.iadlstat.min, form.iadlstat, probit.iadlstat)
 ```
 
 Now test.
@@ -406,11 +475,15 @@ form.iadlstat.test <- 'iadlstat ~ male + white + hsless + college +
 scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2stroke + l2demene + l2osteoe + l2catracte + l2lnly + l2sociso + l2cesd + l2married + 
 l2widowed + l2alcfreq + l2smokev + l2tr20 + l2verbf + l2orient'
 probit.iadlstat.test <- polr(formula = form.iadlstat.test,
-                    data = trans.adlstat.complete,
+                    data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Test model:')
 summary(probit.iadlstat.test)
+
+rm(form.iadlstat.test, probit.iadlstat.test)
 ```
 
 # Cognitive Function Vars
@@ -418,34 +491,42 @@ summary(probit.iadlstat.test)
 ## TR20
 
 ```{r}
-## MINIMAL
-form.tr20.min <- 'tr20 ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
-probit.tr20.min <- lm(formula = form.tr20.min,
-                    data = trans.notDead,
-                    na.action = na.omit)
-print('Minimal model:')
-summary(probit.tr20.min)
-
-## TEST
-form.tr20 <- 'tr20 ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
-probit.tr20 <- lm(formula = form.tr20,
-                    data = trans.notDead,
-                    na.action = na.omit)
-print('Full model:')
-summary(probit.tr20)
+# ## MINIMAL
+# form.tr20.min <- 'tr20 ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) | male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+# probit.tr20.min <- lm(formula = form.tr20.min,
+#                             data = trans.notDead,
+#                             na.action = na.omit,
+#                             weights = cwtresp,
+#                             dist = 'poisson')
+# print('Minimal model:')
+# summary(probit.tr20.min)
+# 
+# ## TEST
+# form.tr20 <- 'tr20 ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) | male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+# probit.tr20 <- lm(formula = form.tr20,
+#                         data = trans.notDead,
+#                         na.action = na.omit,
+#                         weights = cwtresp)
+# print('Full model:')
+# summary(probit.tr20)
+# 
+# rm(form.tr20.min, probit.tr20.min, form.tr20, probit.tr20)
 ```
 
 ```{r}
-## TEST
-form.tr20.test <- 'tr20 ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2hearing + l2sight + l2adlstat + l2iadlstat + l2cesd + l2smoken + l2employed + l2retired'
-probit.tr20.test <- lm(formula = form.tr20.test,
-                    data = trans.notDead,
-                    na.action = na.omit)
-print('Full model:')
-summary(probit.tr20.test)
-
-# l2lnly
-##  + l2physact + l2hearing + l2adlstat + l2iadlstat + l2socyr + l2cesd + l2smoken + l2smoke
+# ## TEST
+# form.tr20.test <- 'tr20 ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2hearing + l2sight + l2adlstat + l2iadlstat + l2cesd + l2smoken + l2employed + l2retired'
+# probit.tr20.test <- zeroinfl(formula = form.tr20.test,
+#                         data = trans.notDead,
+#                         na.action = na.omit,
+#                         weights = cwtresp)
+# print('Full model:')
+# summary(probit.tr20.test)
+# 
+# # l2lnly
+# ##  + l2physact + l2hearing + l2adlstat + l2iadlstat + l2socyr + l2cesd + l2smoken + l2smoke
+# 
+# rm(form.tr20.test, probit.tr20.test)
 ```
 
 # Sight
@@ -460,7 +541,9 @@ form.sight.min <- 'sight ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2a
 probit.sight.min <- polr(formula = form.sight.min,
                     data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Minimal model:')
 summary(probit.sight.min)
 
@@ -469,9 +552,13 @@ form.sight <- 'sight ~ male + white + hsless + college + scale(l2age65l) + scale
 probit.sight <- polr(formula = form.sight,
                     data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Full model:')
 summary(probit.sight)
+
+rm(form.sight.min, probit.sight.min, form.sight, probit.sight)
 ```
 
 AIC: 143800.44 : Initial
@@ -491,7 +578,9 @@ form.hearing.min <- 'hearing ~ male + scale(l2age65l) + scale(l2age6574) + scale
 probit.hearing.min <- polr(formula = form.hearing.min,
                     data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Minimal model:')
 summary(probit.hearing.min)
 
@@ -500,12 +589,82 @@ form.hearing <- 'hearing ~ male + white + hsless + college + scale(l2age65l) + s
 probit.hearing <- polr(formula = form.hearing,
                     data = trans.notDead,
                     Hess = TRUE,
-                    na.action = na.omit)
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
 print('Full model:')
 summary(probit.hearing)
+
+rm(form.hearing.min, probit.hearing.min, form.hearing, probit.hearing)
 ```
 
 AIC: 152711.79 : initial
+
+# Self Rated Health
+
+```{r}
+trans.notDead$srh <- as.factor(trans.notDead$srh)
+
+## MINIMAL
+form.srh.min <- 'srh ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+probit.srh.min <- polr(formula = form.srh.min,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
+print('Minimal model:')
+summary(probit.srh.min)
+
+## TEST
+form.srh <- 'srh ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2logbmi_l30 + l2logbmi_30p + l2smoken + l2smokev + l2hearte + l2diabe + l2lunge + l2stroke + l2adl1 + l2adl2 + l2adl3p + l2iadl1 + l2iadl2p + l2employed + l2inactive + l2sight + l2hearing + l2physact'
+probit.srh <- polr(formula = form.srh,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
+print('Full model:')
+summary(probit.srh)
+
+
+#$dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' `lvars_workstat' `lvars_funclimit' l2hearte l2diabe l2lunge l2stroke
+
+rm(form.srh.min, probit.srh.min, form.srh, probit.srh)
+```
+
+AIC: 107499.08 
+AIC: 78886.70 : Sight, hearing, and physact
+
+
+# Depression
+
+```{r}
+trans.notDead$cesd <- as.factor(trans.notDead$cesd)
+
+## MINIMAL
+form.cesd.min <- 'cesd ~ male + scale(l2age65l) + scale(l2age6574) + scale(l2age75p)'
+probit.cesd.min <- polr(formula = form.cesd.min,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
+print('Minimal model:')
+summary(probit.cesd.min)
+
+## TEST
+form.cesd <- 'cesd ~ male + white + hsless + college + scale(l2age65l) + scale(l2age6574) + scale(l2age75p) + l2logbmi_l30 + l2logbmi_30p + l2smoken + l2smokev + l2stroke + l2cancre + l2diabe + l2hearte + l2gcareinhh1w + l2lnly + l2sociso + l2physact + l2anyadl + l2anyiadl + l2alcfreq7 + l2alcfreq8 + l2srh4 + l2srh5'
+probit.cesd <- polr(formula = form.cesd,
+                    data = trans.notDead,
+                    Hess = TRUE,
+                    na.action = na.omit,
+                    weights = cwtresp,
+                    method = 'probit')
+print('Full model:')
+summary(probit.cesd)
+```
+
 
 ```{r}
 

@@ -65,8 +65,8 @@ local measures
 					p_lnly1		p_lnly2 	p_lnly3
 					n_lnly1		n_lnly2		n_lnly3
 					a_sociso
-					p_sociso1	p_sociso2	p_sociso3	p_sociso4
-					p_sociso5	p_sociso6
+					p_sociso1	p_sociso2	p_sociso3
+					n_sociso1	n_sociso2	n_sociso3
 					a_workstat
 					p_employed  i_employed  n_employed
 					p_inactive i_inactive n_inactive

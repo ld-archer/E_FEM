@@ -31,7 +31,7 @@ Need some investigation as the outcomes are not what we expect:
 
 ```{r setup, include=FALSE}
 # Need to set up the working directory
-workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/"
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
 knitr::opts_knit$set(root.dir = workingDir)
 
 require(tidyverse)
@@ -537,6 +537,7 @@ diseaseFreeLifeYearsComp(cohort_full, no.lnly.sociso, 'No Loneliness OR Social I
 [1] "Cohort Average Disease Free Lifeyears:         5.48"
 [1] "Intervention Average Disease Free Lifeyears:   5.852"
 [1] "Increase:                                         0.3715"
+
 #### Visualise
 
 Lets write some functions to visualise this information, so will need to collect them into dataframes first.
@@ -696,9 +697,11 @@ ly.list <- list(ly.coh, ly.lnly, ly.sociso, ly.lnly.sociso)
 ly.all <- do.call(rbind, ly.list)
 
 # arrange columns properly
-ly.all <- ly.all %>% select(scenario, everything())
+ly.all <- ly.all %>% 
+  dplyr::select(scenario, everything())
 
-#rm(ly.coh, ly.lnly, ly.sociso, ly.lnly.sociso, ly.list)
+rm(ly.lnly, ly.sociso, ly.lnly.sociso, ly.list)
+rm(nolnly, nosociso, both)
 ```
 
 Now we have a dataframe with the LY outcomes (and confidence intervals) for all scenarios. We need to reformat the dataset and plot these values with the confidence intervals clearly shown.
@@ -711,7 +714,7 @@ ly.all$outcome <- factor(ly.all$outcome, levels = c('LY', 'DiseaseFLY', 'Disabil
 
 ly.ly <- ly.all %>% 
   filter(outcome == 'LY') %>%
-  select(-outcome)
+  dplyr::select(-outcome)
 
 ggplot(data = ly.ly, aes(x = scenario, y = mean, fill = scenario)) +
   geom_bar(position = 'dodge', stat = 'identity') +
@@ -723,7 +726,7 @@ ggplot(data = ly.ly, aes(x = scenario, y = mean, fill = scenario)) +
 
 ly.disease <- ly.all %>%
   filter(outcome == 'DiseaseFLY') %>%
-  select(-outcome)
+  dplyr::select(-outcome)
 
 ggplot(data = ly.disease, aes(x = scenario, y = mean, fill = scenario)) +
   geom_bar(position = 'dodge', stat = 'identity') +
@@ -735,7 +738,7 @@ ggplot(data = ly.disease, aes(x = scenario, y = mean, fill = scenario)) +
 
 ly.disability <- ly.all %>%
   filter(outcome == 'DisabilityFLY') %>%
-  select(-outcome)
+  dplyr::select(-outcome)
 
 ggplot(data = ly.disability, aes(x = scenario, y = mean, fill = scenario)) +
   geom_bar(position = 'dodge', stat = 'identity') +
@@ -744,6 +747,8 @@ ggplot(data = ly.disability, aes(x = scenario, y = mean, fill = scenario)) +
   labs(title = 'Disability Free Life Year Comparison between Intervention Scenarios') +
   xlab("Scenario") +
   ylab("Mean Disability Free Life Years")
+
+rm(ly.ly, ly.disability, ly.disease)
 ```
 
 #### Change
@@ -762,7 +767,7 @@ ly.change <- ly.all %>%
          S_max = S_change + margin_No_Social_Isolation,
          LS_min = LS_change - margin_Neither,
          LS_max = LS_change + margin_Neither) %>%
-  select(outcome, contains('L_'), contains('S_'), contains('LS_'), -contains('No_Social_Isolation')) %>%
+  dplyr::select(outcome, contains('L_'), contains('S_'), contains('LS_'), -contains('No_Social_Isolation')) %>%
   pivot_longer(cols = L_change:LS_max,
                names_sep = '_',
                names_to = c('scenario', 'statistic'),
@@ -790,6 +795,8 @@ ggsave(filename = 'ly_dfly_facet_all_confints.png',
       path = path,
       width = 9,
       height = 6)
+
+rm(ly.all, ly.change, combined.plot)
 ```
 
 ### Realistic Intervention
@@ -812,17 +819,19 @@ ly.comb.list <- list(ly.coh, ly.lnly.real, ly.sociso.real)
 ly.combined <- do.call(rbind, ly.comb.list)
 
 # arrange columns properly
-ly.combined <- ly.combined %>% select(scenario, everything())
+ly.combined <- ly.combined %>% 
+  dplyr::select(scenario, everything())
 
 ly.combined$scenario <- factor(ly.combined$scenario, levels = c('Baseline', 'Loneliness', 'Social_Isolation'))
 ly.combined$outcome <- factor(ly.combined$outcome, levels = c('LY', 'DiseaseFLY', 'DisabilityFLY'))
 ```
 
 #### LY & DFLYs
+
 ```{r}
 ly.ly <- ly.combined %>% 
   filter(outcome == 'LY') %>%
-  select(-outcome)
+  dplyr::select(-outcome)
 
 ggplot(data = ly.ly, aes(x = scenario, y = mean, fill = scenario)) +
   geom_bar(position = 'dodge', stat = 'identity') +
@@ -834,7 +843,7 @@ ggplot(data = ly.ly, aes(x = scenario, y = mean, fill = scenario)) +
 
 ly.disease <- ly.combined %>%
   filter(outcome == 'DiseaseFLY') %>%
-  select(-outcome)
+  dplyr::select(-outcome)
 
 ggplot(data = ly.disease, aes(x = scenario, y = mean, fill = scenario)) +
   geom_bar(position = 'dodge', stat = 'identity') +
@@ -846,7 +855,7 @@ ggplot(data = ly.disease, aes(x = scenario, y = mean, fill = scenario)) +
 
 ly.disability <- ly.combined %>%
   filter(outcome == 'DisabilityFLY') %>%
-  select(-outcome)
+  dplyr::select(-outcome)
 
 ggplot(data = ly.disability, aes(x = scenario, y = mean, fill = scenario)) +
   geom_bar(position = 'dodge', stat = 'identity') +
@@ -870,7 +879,7 @@ ly.change.real <- ly.combined %>%
          L_max = L_change + margin_Loneliness,
          S_min = S_change - margin_Social_Isolation,
          S_max = S_change + margin_Social_Isolation) %>%
-  select(outcome, contains('L_'), contains('S_')) %>%
+  dplyr::select(outcome, contains('L_'), contains('S_')) %>%
   pivot_longer(cols = L_change:S_max,
                names_sep = '_',
                names_to = c('scenario', 'statistic'),
@@ -898,32 +907,34 @@ combined.plot
 Need to get the detailed output for this, but this will be a really nice thing to include.
 We can show the improvements in similar plots by different subgroups. Hopefully we'll see bigger improvements in specific subgroups, perhaps a certain age group or gender. The literature I was reading about this suggests that each intervention should affect both genders differently, so should be interesting. 
 
+#### Data Checks
+
 As a first step, lets get the breakdown by gender and age group of loneliness and social isolation (for planning interventions).
 
 ```{r}
 lnly.check <- repl %>%
-  select(hhidpn, year, age, male, lnly) %>%
+  dplyr::select(hhidpn, year, age, male, lnly) %>%
   filter(year == 2012) %>%
   group_by(lnly, male) %>%
   count()
 
 lnly.check2 <- repl %>%
   filter(year == 2012) %>%
-  select(male, lnly) %>%
+  dplyr::select(male, lnly) %>%
   group_by(lnly) %>%
   summarise(n = n(),
             male = sum(male) / n,
             female = 1 - male)
 
 lnly.check3 <- long %>%
-  select(male, lnly) %>%
+  dplyr::select(male, lnly) %>%
   group_by(lnly) %>%
   summarise(n = n(),
             male = sum(male) / n,
             female = 1 - male)
 
 lnly.check4 <- stock %>%
-  select(male, lnly) %>%
+  dplyr::select(male, lnly) %>%
   group_by(lnly) %>%
   summarise(n = n(),
             male = sum(male) / n,
@@ -931,13 +942,94 @@ lnly.check4 <- stock %>%
 
 lnly.check5 <- repl %>%
   filter(year == 2012) %>%
-  select(hhidpn, year, age, male, childless, lnly) %>%
+  dplyr::select(hhidpn, year, age, male, childless, lnly) %>%
   group_by(lnly, male, childless) %>%
   count()
 ```
 
-
 #### Gender
+
+```{r}
+coh.male <- cohort %>% filter(male == 1)
+coh.female <- cohort %>% filter(male == 0)
+ly.male <- ly_outcomes_from_detailed_output(coh.male)
+ly.female <- ly_outcomes_from_detailed_output(coh.female)
+
+ly.male$gender <- 'Male'
+ly.female$gender <- 'Female'
+
+coh.gender <- rbind(ly.male, ly.female)
+coh.gender <- coh.gender %>% 
+  dplyr::select(gender, outcome, everything())
+
+coh.gender
+```
+
+```{r}
+ly.ly <- coh.gender %>% 
+  filter(outcome == 'LY') %>%
+  dplyr::select(-outcome)
+
+ly.disease <- coh.gender %>%
+  filter(outcome == 'DiseaseFLY') %>%
+  dplyr::select(-outcome)
+
+ly.disability <- coh.gender %>%
+  filter(outcome == 'DisabilityFLY') %>%
+  dplyr::select(-outcome)
+
+# Now do change plots starting with the ly.all object
+ly.change.gender <- coh.gender %>%
+  pivot_wider(names_from = 'outcome',
+              values_from = c('mean', 'min', 'max', 'margin'))# %>%
+  #mutate(L_change = mean_Loneliness - mean_Baseline,
+  #       S_change = mean_Social_Isolation - mean_Baseline,
+  #       L_min = L_change - margin_Loneliness,
+  #       L_max = L_change + margin_Loneliness,
+  #       S_min = S_change - margin_Social_Isolation,
+  #       S_max = S_change + margin_Social_Isolation) %>%
+  #select(outcome, contains('L_'), contains('S_')) %>%
+  #pivot_longer(cols = L_change:S_max,
+  #             names_sep = '_',
+  #             names_to = c('scenario', 'statistic'),
+  #             values_to = 'LifeYears') %>%
+  #pivot_wider(names_from = 'statistic',
+  #            values_from = 'LifeYears')
+```
+
+```{r}
+# Now do change plots starting with the ly.all object
+ly.change.real <- ly.combined %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('mean', 'min', 'max', 'margin')) %>%
+  mutate(L_change = mean_Loneliness - mean_Baseline,
+         S_change = mean_Social_Isolation - mean_Baseline,
+         L_min = L_change - margin_Loneliness,
+         L_max = L_change + margin_Loneliness,
+         S_min = S_change - margin_Social_Isolation,
+         S_max = S_change + margin_Social_Isolation) %>%
+  dplyr::select(outcome, contains('L_'), contains('S_')) %>%
+  pivot_longer(cols = L_change:S_max,
+               names_sep = '_',
+               names_to = c('scenario', 'statistic'),
+               values_to = 'LifeYears') %>%
+  pivot_wider(names_from = 'statistic',
+              values_from = 'LifeYears')
+
+ly.change.real$scenario <- factor(ly.change.real$scenario, levels = c('L', 'S', 'LS'))
+  
+combined.plot <- ggplot(data = ly.change.real, aes(x = scenario, y = change, fill=scenario)) +
+  geom_col() +
+  facet_wrap(~outcome) +
+  geom_errorbar(aes(ymin = min, ymax = max)) +
+  labs(title = 'Life Years, Disease Free Life Years, and Disability Free Life Years') +
+  xlab('Scenario') +
+  ylab('Change (years)')
+
+combined.plot
+```
+
+
 
 ```{r}
 

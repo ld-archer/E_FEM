@@ -1,0 +1,913 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+# Setup
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(ggplot2)
+```
+
+```{r}
+source('FEM_R/utilities.R')
+```
+
+## Data
+
+```{r}
+out.dir <- 'output/LNLY_SOCISO_TEST/'
+
+cohort <- detailed_output_append(base.out.dir = out.dir,
+                              scenario = 'ELSA_core_cohort')
+nolnly <- detailed_output_append(base.out.dir = out.dir,
+                              scenario = 'ELSA_nolnly_cohort')
+nosociso <- detailed_output_append(base.out.dir = out.dir,
+                              scenario = 'ELSA_nosociso_cohort')
+```
+
+```{r}
+# save these large files in case I overwrite the output stuff
+#write.csv(cohort, file = 'input_data/detailed_output/cohort_append_large.csv')
+#write.csv(nolnly, file = 'input_data/detailed_output/nolnly_append_large.csv')
+#write.csv(nosociso, file = 'input_data/detailed_output/nosociso_append_large.csv')
+
+# cohort <- read.csv('input_data/detailed_output/cohort_append_large.csv')
+# nolnly <- read.csv('input_data/detailed_output/nolnly_append_large.csv')
+# nosociso <- read.csv('input_data/detailed_output/nosociso_append_large.csv')
+```
+
+
+# Baseline
+
+```{r}
+coh <- cohort
+
+# generate lifeyear for people who have not died (also no disease and no disability)
+coh$lifeyear <- 1 - coh$died
+#coh$diseaseFree <- 1 - coh$anydisease
+#coh$disabilityFree <- 1 - coh$disabled
+# generate the number of repetitions for each person
+coh$nreps <- max(coh$mcrep) + 1
+
+# now the giant pipeline to calculate LYs, DFLYs (both) and confidence intervals
+coh.sum <- coh %>%
+  group_by(hhidpn, year) %>%
+  mutate(nreps = n()) %>%
+  group_by(hhidpn, mcrep) %>%
+  summarise(n = n(),
+            n_LY = sum(lifeyear),
+            n_DiseaseFLY = sum(nodisease),
+            n_DisabilityFLY = sum(nodisability),
+            two_yr_LY = n_LY * 2,
+            two_yr_DiseaseFLY = n_DiseaseFLY * 2,
+            two_yr_DisabilityFLY = n_DisabilityFLY * 2,
+            weight_intermed = sum(weight) / n) %>%
+  group_by(hhidpn) %>%
+  summarise(mean_LY_ind = mean(two_yr_LY),
+            mean_DiseaseFLY_ind = mean(two_yr_DiseaseFLY),
+            mean_DisabilityFLY_ind = mean(two_yr_DisabilityFLY),
+            weight = mean(weight_intermed))# %>%
+  
+  #summarise(n = n(),
+  #          LY_mean = weighted.mean(mean_LY_ind, w = weight),
+  #          LY_sd = sd(mean_LY_ind),
+  #          DiseaseFLY_mean = weighted.mean(mean_DiseaseFLY_ind, w = weight),
+  #          DiseaseFLY_sd = sd(mean_DiseaseFLY_ind),
+  #          DisabilityFLY_mean = weighted.mean(mean_DisabilityFLY_ind, w = weight),
+  #          DisabilityFLY_sd = sd(mean_DisabilityFLY_ind),
+  #          LY_margin = qt(p=0.975, df=n-1) * (LY_sd / sqrt(n)),
+  #          LY_min = LY_mean - LY_margin,
+  #          LY_max = LY_mean + LY_margin,
+  #          DiseaseFLY_margin = qt(p=0.975, df=n-1) * (DiseaseFLY_sd / sqrt(n)),
+  #          DiseaseFLY_min = DiseaseFLY_mean - DiseaseFLY_margin,
+  #          DiseaseFLY_max = DiseaseFLY_mean + DiseaseFLY_margin,
+  #          DisabilityFLY_margin = qt(p=0.975, df=n-1) * (DisabilityFLY_sd / sqrt(n)),
+  #          DisabilityFLY_min = DisabilityFLY_mean - DisabilityFLY_margin,
+  #          DisabilityFLY_max = DisabilityFLY_mean + DisabilityFLY_margin) %>%
+  #dplyr::select(-n) %>%
+  #pivot_longer(cols = everything(),
+  #             names_sep = '_',
+  #             names_to = c('outcome', 'statistic')) %>%
+  #filter(statistic %in% c('mean', 'min', 'max', 'margin')) %>%
+  #pivot_wider(values_from = 'value',
+  #            names_from = 'statistic')
+
+
+```
+
+
+Now lets try a histogram.
+
+```{r}
+ggplot(data = coh.sum, aes(x = mean_LY_ind)) +
+  geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+  geom_density() +
+  xlab('Life Years')
+
+ggplot(data = coh.sum, aes(x = mean_DiseaseFLY_ind)) +
+  geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+  geom_density() +
+  xlab('Disease Free Life Years')
+
+ggplot(data = coh.sum, aes(x = mean_DisabilityFLY_ind)) +
+  geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+  geom_density() +
+  xlab('Disability Free Life Years')
+```
+
+Now do a facet plot to show them all in one image. This will require pivoting the data to a longer format.
+
+```{r}
+coh.long <- ly_outcomes_detailed_density(cohort)
+
+ly.density.outcomes.facet <- ggplot(data = coh.long, aes(x = years)) +
+  geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+  geom_density() +
+  facet_wrap(~outcome, nrow=3) +
+  xlab('Years')
+ly.density.outcomes.facet
+
+path <- 'FEM_R/Loneliness_Social_Isolation/plots/'
+
+ggsave(filename = 'ly_dfly_density_facet.png',
+      plot = ly.density.outcomes.facet,
+      path = path,
+      width = 10,
+      height = 5)
+
+#rm(coh.long, ly.density.outcomes.facet)
+```
+
+How about a version with Healthy Life Years instead of DFLYs.
+
+```{r}
+coh.long.hly <- ly_hly_outcomes_detailed_density(cohort)
+
+ly.hly.density.outcomes.facet <- ggplot(data = coh.long.hly, aes(x = years)) +
+  geom_histogram(aes(y = ..density..),
+                 colour = 1, fill = "white") +
+  geom_density() +
+  facet_wrap(~outcome, nrow=3) +
+  xlab('Years')
+ly.hly.density.outcomes.facet
+
+path <- 'FEM_R/Loneliness_Social_Isolation/plots/'
+
+rm(coh.long.hly, ly.hly.density.outcomes.facet)
+```
+
+# Loneliness
+
+Now do some comparison plots! In the same fashion.
+
+```{r}
+## First get the long ly and dfly outcomes for cohort and intervention scenario
+coh.long <- ly_outcomes_detailed_density(cohort)
+lnly.long <- ly_outcomes_detailed_density(nolnly)
+#coh.long <- ly_hly_outcomes_detailed_density(cohort)
+#lnly.long <- ly_hly_outcomes_detailed_density(nolnly)
+
+# Add a column for the scenario
+coh.long$scenario <- 'Baseline'
+lnly.long$scenario <- 'No.Loneliness'
+
+#coh.long <- coh.long %>% dplyr::select(-weight)
+#lnly.long <- lnly.long %>% dplyr::select(-weight)
+
+```
+
+```{r}
+#combined <- merge(coh.long, lnly.long, by = c('hhidpn', 'outcome'))
+combined <- rbind(coh.long, lnly.long)
+
+# Now ggplot with an additional group or fill aesthetic
+ly.density.facet.lnlycomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome, nrow=3) +
+  xlab('Years')
+ly.density.facet.lnlycomp
+
+ggsave(filename = 'ly_dfly_density_facet_lnlycomp.png',
+      plot = ly.density.facet.lnlycomp,
+      path = path,
+      width = 9,
+      height = 5)
+
+rm(coh.long, lnly.long, ly.density.facet.lnlycomp)
+```
+
+Excellent!! Now it would be useful to be able to show this next to the mean plots with confidence intervals.
+
+Lets make the mean plots with confidence intervals, starting with the combined dataframe from above.
+```{r}
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Loneliness'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow = 3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'lnly_horizontal_mean_error.png',
+       path = path,
+       plot = mean.plot.horizontal.error,
+       width = 9,
+       height = 5)
+
+rm(mean.plot.horizontal.error)
+```
+
+Now change plots for emphasis.
+
+```{r}
+# lnly.change <- combined.sum %>%
+#   pivot_wider(names_from = 'scenario',
+#               values_from = c('years', 'margin')) %>%
+#   mutate(change = years_No.Loneliness - years_Baseline) %>%
+#   dplyr::select(-years_No.Loneliness, -years_Baseline, -margin_Baseline) %>%
+#   rename(margin = margin_No.Loneliness)
+# 
+# lnly.change$outcome <- factor(lnly.change$outcome, levels = c('LifeYears', 'DiseaseFree', 'DisabilityFree'))
+# 
+# lnly.change.horizontal <- ggplot(data = lnly.change, aes(x = change, y = reorder(outcome, ), fill = outcome)) +
+#   geom_col() +
+#   geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+#                  height=.4) +
+#   xlab('Years')
+# 
+# lnly.change.horizontal
+# 
+# ggsave(filename = 'lnly_change_error.png',
+#        path = path,
+#        plot = lnly.change.horizontal,
+#        width = 9,
+#        height = 5)
+# 
+# rm(lnly.change.horizontal)
+```
+
+## Sub-Populations
+
+### Gender
+
+```{r}
+# Now plots by gender
+ly.density.facet.lnlycomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + male, nrow=3) +
+  xlab('Years')
+ly.density.facet.lnlycomp
+
+ggsave(filename = 'lnly_density_facet_gender.png',
+     plot = ly.density.facet.lnlycomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, male) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Loneliness'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + male, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'lnly_facet_mean_error_gender.png',
+       path = path,
+       plot = mean.plot.horizontal.error,
+       width = 9,
+       height = 5)
+
+rm(ly.density.facet.lnlycomp, mean.plot.horizontal.error)
+```
+
+Now change plots for emphasis.
+
+```{r}
+lnly.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Loneliness - years_Baseline) %>%
+  dplyr::select(-years_No.Loneliness, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Loneliness)
+
+gender.change.horizontal <- ggplot(data = lnly.change, aes(x = change, y = male, fill = male)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years') +
+  ylab('Gender')
+
+gender.change.horizontal
+
+ggsave(filename = 'lnly_change_error_gender.png',
+       path = path,
+       plot = gender.change.horizontal,
+       width = 9,
+       height = 5)
+
+rm(combined.sum, gender.change.horizontal)
+```
+
+### Marriage Status
+
+```{r}
+# Now plots by gender
+ly.density.facet.lnlycomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + mstat, nrow=3) +
+  xlab('Years')
+ly.density.facet.lnlycomp
+
+ggsave(filename = 'ly_dfly_density_lnly_mstat.png',
+     plot = ly.density.facet.lnlycomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, mstat) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Loneliness'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + mstat, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'lnly_horizontal_mean_error_mstat.png',
+      path = path,
+      plot = mean.plot.horizontal.error,
+      width = 9,
+      height = 5)
+
+lnly.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Loneliness - years_Baseline) %>%
+  dplyr::select(-years_No.Loneliness, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Loneliness)
+
+change.plot.lnly.mstat <- ggplot(data = lnly.change, aes(x = change, y = mstat, fill = mstat)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years') +
+  ylab('Marriage Status')
+change.plot.lnly.mstat
+
+ggsave(filename = 'lnly_change_error_mstat.png',
+       path = path,
+       plot = change.plot.lnly.mstat,
+       width = 9,
+       height = 5)
+
+rm(ly.density.facet.lnlycomp, mean.plot.horizontal.error, combined.sum, lnly.change, change.plot.lnly.mstat)
+```
+
+### Living Alone
+
+```{r}
+# Now plots by gender
+ly.density.facet.lnlycomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + live_alone, nrow=3) +
+  xlab('Years')
+ly.density.facet.lnlycomp
+
+ggsave(filename = 'ly_dfly_lnly_liveAlone.png',
+     plot = ly.density.facet.lnlycomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, live_alone) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Loneliness'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + live_alone, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'lnly_horizontal_mean_error_liveAlone.png',
+      path = path,
+      plot = mean.plot.horizontal.error,
+      width = 9,
+      height = 5)
+
+lnly.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Loneliness - years_Baseline) %>%
+  dplyr::select(-years_No.Loneliness, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Loneliness)
+
+change.plot.lnly.liveAlone <- ggplot(data = lnly.change, aes(x = change, y = live_alone, fill = live_alone)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years') +
+  ylab('')
+change.plot.lnly.liveAlone
+
+ggsave(filename = 'lnly_change_error_liveAlone.png',
+      path = path,
+      plot = change.plot.lnly.liveAlone,
+      width = 9,
+      height = 5)
+
+rm(ly.density.facet.lnlycomp, combined.sum, mean.plot.horizontal.error, lnly.change, change.plot.lnly.liveAlone)
+```
+
+### Carers
+
+```{r}
+ly.density.facet.lnlycomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + carer, nrow=3) +
+  xlab('Years')
+ly.density.facet.lnlycomp
+
+ggsave(filename = 'ly_dfly_lnly_carer.png',
+     plot = ly.density.facet.lnlycomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, carer) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Loneliness'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + carer, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'lnly_horizontal_mean_error_carer.png',
+      path = path,
+      plot = mean.plot.horizontal.error,
+      width = 9,
+      height = 5)
+
+lnly.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Loneliness - years_Baseline) %>%
+  dplyr::select(-years_No.Loneliness, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Loneliness)
+
+change.plot.lnly.carer <- ggplot(data = lnly.change, aes(x = change, y = carer, fill = carer)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years') +
+  ylab('')
+change.plot.lnly.carer
+
+ggsave(filename = 'lnly_change_error_carer.png',
+      path = path,
+      plot = change.plot.lnly.carer,
+      width = 9,
+      height = 5)
+
+rm(ly.density.facet.lnlycomp, combined.sum, mean.plot.horizontal.error, lnly.change, change.plot.lnly.liveAlone)
+```
+
+
+# Social Isolation
+
+Now the same for social isolation intervention.
+
+```{r}
+#coh.long <- ly_hly_outcomes_detailed_density(cohort)
+#sociso.long <- ly_hly_outcomes_detailed_density(nosociso)
+coh.long <- ly_outcomes_detailed_density(cohort)
+sociso.long <- ly_outcomes_detailed_density(nosociso)
+
+# Add a column for the scenario
+coh.long$scenario <- 'Baseline'
+sociso.long$scenario <- 'No.Social.Isolation'
+
+#coh.long <- coh.long %>% dplyr::select(-weight)
+#sociso.long <- sociso.long %>% dplyr::select(-weight)
+
+#combined <- merge(coh.long, lnly.long, by = c('hhidpn', 'outcome'))
+combined <- rbind(coh.long, sociso.long)
+
+# Now ggplot with an additional group or fill aesthetic
+ly.density.facet.socisocomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome, nrow=3) +
+  xlab('Years')
+ly.density.facet.socisocomp
+
+ggsave(filename = 'ly_dfly_density_facet_socisocomp.png',
+      plot = ly.density.facet.socisocomp,
+      path = path,
+      width = 9,
+      height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Social.Isolation'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow = 3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'sociso_horizontal_mean_error.png',
+       path = path,
+       plot = mean.plot.horizontal.error,
+       width = 9,
+       height = 5)
+
+rm(coh.long, sociso.long, ly.density.facet.socisocomp, combined.sum, mean.plot.horizontal.error)
+```
+
+## Change
+
+Now change plots.
+
+```{r}
+sociso.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Loneliness - years_Baseline) %>%
+  dplyr::select(-years_No.Loneliness, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Loneliness)
+
+sociso.change$outcome <- factor(sociso.change$outcome, levels = c('LifeYears', 'DiseaseFree', 'DisabilityFree'))
+
+sociso.change.horizontal <- ggplot(data = sociso.change, aes(x = change, y = outcome, fill = outcome)) +
+  geom_col() +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years')
+
+sociso.change.horizontal
+
+ggsave(filename = 'sociso_change_error.png',
+       path = path,
+       plot = sociso.change.horizontal,
+       width = 9,
+       height = 5)
+
+rm(sociso.change.horizontal)
+```
+
+## Sub-Populations
+
+### Gender
+
+```{r}
+# Now plots by gender
+ly.density.facet.socisocomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + male, nrow=3) +
+  xlab('Years')
+ly.density.facet.socisocomp
+
+ggsave(filename = 'ly_dfly_sociso_gender.png',
+     plot = ly.density.facet.socisocomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, male) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Social.Isolation'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + male, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'sociso_horizontal_mean_error_gender.png',
+      path = path,
+      plot = mean.plot.horizontal.error,
+      width = 9,
+      height = 5)
+
+rm(ly.density.facet.socisocomp, mean.plot.horizontal.error)
+```
+
+Now change plots for emphasis.
+
+```{r}
+sociso.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Social.Isolation - years_Baseline) %>%
+  dplyr::select(-years_No.Social.Isolation, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Social.Isolation)
+
+change.plot.horizontal.error <- ggplot(data = sociso.change, aes(x = change, y = male, fill = male)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years')
+change.plot.horizontal.error
+
+ggsave(filename = 'sociso_facet_mean_error_gender.png',
+       path = path,
+       plot = change.plot.horizontal.error,
+       width = 9,
+       height = 5)
+
+rm(sociso.change)
+```
+
+### Marriage Status
+
+```{r}
+# Now plots by gender
+ly.density.facet.socisocomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + mstat, nrow=3) +
+  xlab('Years')
+ly.density.facet.socisocomp
+
+ggsave(filename = 'ly_dfly_density_sociso_mstat.png',
+     plot = ly.density.facet.socisocomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, mstat) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Social.Isolation'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + mstat, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'sociso_horizontal_mean_error_mstat.png',
+      path = path,
+      plot = mean.plot.horizontal.error,
+      width = 9,
+      height = 5)
+
+sociso.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Social.Isolation - years_Baseline) %>%
+  dplyr::select(-years_No.Social.Isolation, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Social.Isolation)
+
+change.plot.lnly.mstat <- ggplot(data = sociso.change, aes(x = change, y = mstat, fill = mstat)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years')
+change.plot.lnly.mstat
+
+ggsave(filename = 'sociso_change_error_mstat.png',
+       path = path,
+       plot = change.plot.lnly.mstat,
+       width = 9,
+       height = 5)
+
+rm(ly.density.facet.socisocomp, combined.sum, mean.plot.horizontal.error, sociso.change)
+```
+
+### Living Alone
+
+```{r}
+# Now plots by gender
+ly.density.facet.socisocomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + live_alone, nrow=3) +
+  xlab('Years')
+ly.density.facet.socisocomp
+
+ggsave(filename = 'ly_dfly_sociso_liveAlone.png',
+     plot = ly.density.facet.socisocomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, live_alone) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Social.Isolation'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + live_alone, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'sociso_horizontal_mean_error_liveAlone.png',
+      path = path,
+      plot = mean.plot.horizontal.error,
+      width = 9,
+      height = 5)
+
+sociso.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Social.Isolation - years_Baseline) %>%
+  dplyr::select(-years_No.Social.Isolation, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Social.Isolation)
+
+change.plot.lnly.liveAlone <- ggplot(data = sociso.change, aes(x = change, y = live_alone, fill = live_alone)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years')
+change.plot.lnly.liveAlone
+
+ggsave(filename = 'sociso_change_error_liveAlone.png',
+      path = path,
+      plot = change.plot.lnly.liveAlone,
+      width = 9,
+      height = 5)
+
+rm(ly.density.facet.socisocomp, combined.sum, mean.plot.horizontal.error, lnly.change, change.plot.lnly.liveAlone)
+```
+
+### Carer
+
+```{r}
+# Now plots by gender
+ly.density.facet.socisocomp <- ggplot(data = combined, aes(x = years, group = scenario, color = scenario)) +
+  geom_density() +
+  facet_wrap(~outcome + carer, nrow=3) +
+  xlab('Years')
+ly.density.facet.socisocomp
+
+ggsave(filename = 'ly_dfly_sociso_carer.png',
+     plot = ly.density.facet.socisocomp,
+     path = path,
+     width = 9,
+     height = 5)
+
+combined.sum <- combined %>%
+  dplyr::select(-hhidpn) %>%
+  group_by(scenario, outcome, carer) %>%
+  summarise(n = n(),
+            sd = sd(years),
+            years = weighted.mean(years, w = weight),
+            margin = qt(p=0.975, df=n-1) * (sd / sqrt(n))) %>%
+  dplyr::select(-n, -sd)
+
+combined.sum$scenario <- factor(combined.sum$scenario, levels = c('Baseline', 'No.Social.Isolation'))
+
+mean.plot.horizontal.error <- ggplot(combined.sum, aes(x = years, y = scenario, fill = scenario)) +
+  geom_col() +
+  facet_wrap(~outcome + carer, nrow=3) +
+  geom_errorbarh(aes(xmin = years - margin, xmax = years + margin),
+                 height=.4) +
+  xlab('Years')
+mean.plot.horizontal.error
+
+ggsave(filename = 'sociso_horizontal_mean_error_carer.png',
+      path = path,
+      plot = mean.plot.horizontal.error,
+      width = 9,
+      height = 5)
+
+sociso.change <- combined.sum %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('years', 'margin')) %>%
+  mutate(change = years_No.Social.Isolation - years_Baseline) %>%
+  dplyr::select(-years_No.Social.Isolation, -years_Baseline, -margin_Baseline) %>%
+  rename(margin = margin_No.Social.Isolation)
+
+change.plot.sociso.carer <- ggplot(data = sociso.change, aes(x = change, y = carer, fill = carer)) +
+  geom_col() +
+  facet_wrap(~outcome, nrow=3) +
+  geom_errorbarh(aes(xmin = change - margin, xmax = change + margin),
+                 height=.4) +
+  xlab('Years')
+change.plot.sociso.carer
+
+ggsave(filename = 'sociso_change_error_carer.png',
+      path = path,
+      plot = change.plot.sociso.carer,
+      width = 9,
+      height = 5)
+
+rm(ly.density.facet.socisocomp, combined.sum, mean.plot.horizontal.error, sociso.change, change.plot.sociso.carer)
+```
+
+
+
+
+
+
+```{r}
+
+```
+

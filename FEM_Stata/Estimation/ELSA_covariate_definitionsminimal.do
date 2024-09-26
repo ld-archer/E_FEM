@@ -5,7 +5,7 @@ global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_
 global bin_econ 
 global ols logbmi logatotb logitot orient
 global count smokef tr20 verbf
-global order adlstat iadlstat srh lnly alcfreq sociso sight hearing
+global order adlstat iadlstat srh lnly alcfreq sociso sight hearing cesd
 global unorder workstat mstat
 
 * Variable names
@@ -55,7 +55,8 @@ global order_names
     "Self-Reported Health Status"
     "Rounded categorical revised UCLA loneliness score [1-3]"
     "Alcohol consumption frequency [1-8]"
-    "Index of Social Isolation [1-6]"
+    "Index of Social Isolation [1-3]"
+    "Center for Epidemiologic Studies Depression Scale (CESD) [1-9]"
 ;
 global unorder_names
     "Work Status"

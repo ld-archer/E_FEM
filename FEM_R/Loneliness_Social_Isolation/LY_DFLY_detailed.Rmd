@@ -1,0 +1,279 @@
+---
+title: "LYs and DFLYs from detailed out"
+output: html_notebook
+---
+
+
+
+
+# Setup
+
+```{r setup, include=FALSE}
+# Need to set up the working directory
+workingDir <- "/home/luke/Documents/E_FEM_clean/E_FEM/"
+knitr::opts_knit$set(root.dir = workingDir)
+
+require(tidyverse)
+require(haven)
+require(ggplot2)
+```
+
+```{r}
+source('FEM_R/utilities.R')
+```
+
+## Data
+
+```{r}
+out.dir <- 'output/LNLY_SOCISO_TEST/'
+
+#cohort <- detailed_output_append(base.out.dir = out.dir,
+#                              scenario = 'ELSA_core_cohort')
+#nolnly <- detailed_output_append(base.out.dir = out.dir,
+#                              scenario = 'ELSA_nolnly_cohort')
+#nosociso <- detailed_output_append(base.out.dir = out.dir,
+#                              scenario = 'ELSA_nosociso_cohort')
+#both <- detailed_output_append(base.out.dir = out.dir,
+#                              scenario = 'ELSA_nolnly_nosociso_cohort')
+```
+
+```{r}
+# save these large files in case I overwrite the output stuff
+#write.csv(cohort, file = 'input_data/detailed_output/cohort_append_large.csv')
+#write.csv(nolnly, file = 'input_data/detailed_output/nolnly_append_large.csv')
+#write.csv(nosociso, file = 'input_data/detailed_output/nosociso_append_large.csv')
+#write.csv(both, file = 'input_data/detailed_output/both_append_large.csv')
+
+cohort <- read.csv('input_data/detailed_output/cohort_append_large.csv')
+nolnly <- read.csv('input_data/detailed_output/nolnly_append_large.csv')
+nosociso <- read.csv('input_data/detailed_output/nosociso_append_large.csv')
+both <- read.csv('input_data/detailed_output/both_append_large.csv')
+```
+
+# Calculate Outcomes
+
+```{r}
+# Calculate LY outcomes for all scenarios
+ly.coh <- ly_outcomes_from_detailed_output(cohort)
+ly.lnly <- ly_outcomes_from_detailed_output(nolnly)
+ly.sociso <- ly_outcomes_from_detailed_output(nosociso)
+#ly.lnly.sociso <- ly_outcomes_from_detailed_output(both)
+# Add scenario column for combining
+ly.coh$scenario <- 'Baseline'
+ly.lnly$scenario <- 'No_Loneliness'
+ly.sociso$scenario <- 'No_Social_Isolation'
+#ly.lnly.sociso$scenario <- 'Neither'
+
+# Group into list and rbind all together
+#ly.list <- list(ly.coh, ly.lnly, ly.sociso, ly.lnly.sociso)
+ly.list <- list(ly.coh, ly.lnly, ly.sociso)
+ly.all <- do.call(rbind, ly.list)
+
+# arrange columns properly
+ly.all <- ly.all %>% dplyr::select(scenario, everything())
+
+rm(ly.lnly, ly.sociso, ly.list)
+#rm(nolnly, nosociso, both)
+```
+
+# Collect and Plot
+
+```{r}
+#ly.all$scenario <- factor(ly.all$scenario, levels = c('Baseline', 'No_Loneliness', 'No_Social_Isolation', 'Neither'))
+ly.all$scenario <- factor(ly.all$scenario, levels = c('Baseline', 'No_Loneliness', 'No_Social_Isolation'))
+ly.all$outcome <- factor(ly.all$outcome, levels = c('LY', 'DiseaseFLY', 'DisabilityFLY'))
+
+ly.ly <- ly.all %>% 
+  filter(outcome == 'LY') %>%
+  dplyr::select(-outcome)
+
+ggplot(data = ly.ly, aes(x = scenario, y = mean, fill = scenario)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = min, ymax = max),
+                width = 0.2) +
+  labs(title = 'Life Year Comparison between Intervention Scenarios') +
+  xlab("Scenario") +
+  ylab("Mean Life Years")
+
+ly.disease <- ly.all %>%
+  filter(outcome == 'DiseaseFLY') %>%
+  dplyr::select(-outcome)
+
+ggplot(data = ly.disease, aes(x = scenario, y = mean, fill = scenario)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = min, ymax = max),
+                width = 0.2) +
+  labs(title = 'Disease Free Life Year Comparison between Intervention Scenarios') +
+  xlab("Scenario") +
+  ylab("Mean Disease Free Life Years")
+
+ly.disability <- ly.all %>%
+  filter(outcome == 'DisabilityFLY') %>%
+  dplyr::select(-outcome)
+
+ggplot(data = ly.disability, aes(x = scenario, y = mean, fill = scenario)) +
+  geom_bar(position = 'dodge', stat = 'identity') +
+  geom_errorbar(aes(ymin = min, ymax = max),
+                width = 0.2) +
+  labs(title = 'Disability Free Life Year Comparison between Intervention Scenarios') +
+  xlab("Scenario") +
+  ylab("Mean Disability Free Life Years")
+
+rm(ly.ly, ly.disability, ly.disease)
+```
+
+## Change
+
+```{r}
+# Now do change plots starting with the ly.all object
+ly.change <- ly.all %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('mean', 'min', 'max', 'margin')) %>%
+  mutate(L_change = mean_No_Loneliness - mean_Baseline,
+         S_change = mean_No_Social_Isolation - mean_Baseline,
+         L_min = L_change - margin_No_Loneliness,
+         L_max = L_change + margin_No_Loneliness,
+         S_min = S_change - margin_No_Social_Isolation,
+         S_max = S_change + margin_No_Social_Isolation) %>%
+  dplyr::select(outcome, contains('L_'), contains('S_'), -contains('No_Social_Isolation')) %>%
+  pivot_longer(cols = L_change:S_max,
+               names_sep = '_',
+               names_to = c('scenario', 'statistic'),
+               values_to = 'LifeYears') %>%
+  pivot_wider(names_from = 'statistic',
+              values_from = 'LifeYears')
+
+ly.change$scenario <- factor(ly.change$scenario, levels = c('L', 'S'))
+  
+combined.plot <- ggplot(data = ly.change, aes(x = scenario, y = change, fill=scenario)) +
+  geom_col() +
+  facet_wrap(~outcome) +
+  geom_errorbar(aes(ymin = min, ymax = max)) +
+  labs(title = 'Life Years, Disease Free Life Years, and Disability Free Life Years') +
+  xlab('Scenario') +
+  ylab('Change (years)')
+
+combined.plot
+
+
+path <- 'FEM_R/Loneliness_Social_Isolation/plots'
+
+ggsave(filename = 'ly_dfly_facet_scen_confints.png',
+      plot = combined.plot,
+      path = path,
+      width = 9,
+      height = 6)
+
+#rm(ly.change, combined.plot)
+```
+
+# Total Burden: Loneliness
+
+Now for actual presentation plots. First up is the total burden of loneliness. I want firstly these plots for the whole population (with confidence intervals), and then we can look at specific sub-groups. 
+
+## Full Population
+
+```{r}
+# start with the cohort and nolnly dataframes
+#coh <- cohort
+#nol <- nolnly
+
+# get LifeYear, Disease, and Disability Free life years
+ly.coh <- ly_outcomes_from_detailed_output(cohort)
+ly.lnly <- ly_outcomes_from_detailed_output(nolnly)
+
+ly.coh
+ly.lnly
+
+```
+
+### Full Plot LYs
+
+```{r}
+# First add scenario information and combine
+ly.coh$scenario <- 'Baseline'
+ly.lnly$scenario <- 'No.Loneliness'
+nolnly.comp <- rbind(ly.coh, ly.lnly)
+nolnly.comp <- nolnly.comp %>% 
+  dplyr::select(scenario, everything())
+
+# Now pivot and calculate the difference
+comp <- nolnly.comp %>%
+  dplyr::select(-min, -max) %>%
+  pivot_wider(names_from = c(scenario),
+              values_from = c(mean, margin)) %>%
+  mutate(change = mean_No.Loneliness - mean_Baseline) %>%
+  pivot_longer(cols = mean_Baseline:margin_No.Loneliness,
+               names_to = c('Statistic', 'Scenario'),
+               names_sep = '_',
+               values_to = 'Years')
+
+comp.LY <- nolnly.comp %>%
+  dplyr::select(-min, -max) %>%
+  filter(outcome == 'LY')
+
+ggplot(data = comp.LY, aes(x = scenario, y = mean, fill = scenario)) +
+  geom_col() +
+  geom_errorbar(aes(ymin = mean - margin, ymax = mean + margin))
+```
+
+### Change Plot LYs
+
+```{r}
+# Now do change plots starting with the ly.all object
+ly.change <- comp %>%
+  pivot_wider(names_from = 'scenario',
+              values_from = c('mean', 'min', 'max', 'margin')) %>%
+  mutate(L_change = mean_No_Loneliness - mean_Baseline,
+         S_change = mean_No_Social_Isolation - mean_Baseline,
+         LS_change = mean_Neither - mean_Baseline,
+         L_min = L_change - margin_No_Loneliness,
+         L_max = L_change + margin_No_Loneliness,
+         S_min = S_change - margin_No_Social_Isolation,
+         S_max = S_change + margin_No_Social_Isolation,
+         LS_min = LS_change - margin_Neither,
+         LS_max = LS_change + margin_Neither) %>%
+  dplyr::select(outcome, contains('L_'), contains('S_'), contains('LS_'), -contains('No_Social_Isolation')) %>%
+  pivot_longer(cols = L_change:LS_max,
+               names_sep = '_',
+               names_to = c('scenario', 'statistic'),
+               values_to = 'LifeYears') %>%
+  pivot_wider(names_from = 'statistic',
+              values_from = 'LifeYears')
+```
+
+
+```{r}
+comp.plot <- comp %>%
+  filter(Statistic == 'margin') %>%
+  dplyr::select(-Statistic) %>%
+  rename(margin = Years) %>%
+  dplyr::select(outcome, Scenario, change, margin) %>%
+  filter(Scenario == 'No.Loneliness') %>%
+  dplyr::select(-Scenario)
+
+comp.plot$outcome <- factor(comp.plot$outcome, levels = c('LY', 'DisabilityFLY', 'DiseaseFLY'))
+
+ggplot(data = comp.plot, aes(x = outcome, y = change)) +
+  geom_col()
+```
+
+
+
+Rural areas with higher proportions of older people also have cuts to services that keep them more isolated. I.e. bus services, high streets shops, etc.
+
+Get some census information and try to plot a quick and dirty map. This would tick the geography box and could be a good crescendo to the presentation, highlighting the need for targeted spatial policy interventions.
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+```
+

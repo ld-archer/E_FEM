@@ -39,11 +39,11 @@ lookfor <- function(data,
 
 ########## PREPARING SUMMARY OUTPUT FILE ##########
 
-prepare_ELSA <- function(elsa_long, 
-                         wave_start = 1, 
-                         wave_end = 6, 
+prepare_ELSA <- function(elsa_long,
+                         wave_start = 1,
+                         wave_end = 6,
                          print_counts = TRUE) {
-  
+
   # Get important variables
   # Select waves 1-6
   # Check if present in both first and last
@@ -61,15 +61,15 @@ prepare_ELSA <- function(elsa_long,
            in_first = ((dplyr::first(inw) == 1) & (dplyr::first(wave) == 1)),
            first_age = dplyr::first(age),
            died_wave_2 = ((wave == 2) & (died == 1)),
-           age_group = cut(x = first_age, 
+           age_group = cut(x = first_age,
                            breaks = c(50, 60, 70, 80, 90, 100),
-                           labels = c('50-60', '60-70', '70-80', '80-90', '90-100'), 
+                           labels = c('50-60', '60-70', '70-80', '80-90', '90-100'),
                            include.lowest = TRUE)) %>%
-    filter((in_first == TRUE), 
+    filter((in_first == TRUE),
            (first_age >= 50),
            ((n > 1)  | (died_wave_2 == 1))) %>% # Make sure they were in for more than 1 wave (or died in second)
     dplyr::select(-in_first, -n)
-  
+
   # check and change var types
   subset$idauniq <- as.factor(subset$idauniq)
   subset$wave <- as.numeric(subset$wave)
@@ -92,14 +92,14 @@ prepare_ELSA <- function(elsa_long,
   subset$cwtresp <- as.numeric(subset$cwtresp)
   subset$lnly <- as.factor(subset$lnly)
   subset$sociso <- as.factor(subset$sociso)
-  
+
   if(print_counts) {
     # How many people in the dataset?
     counts <- n_distinct(subset$idauniq)
     print(paste0("There are ", counts, " individuals in the prepared dataset."))
     print('-------------------')
   }
-  
+
   return(subset)
 }
 
@@ -117,9 +117,9 @@ detailed_output_append <- function(base.out.dir, scenario) {
 
 
 weighted.survey.means <- function(init.pop, transition=FALSE) {
-  
+
   require(survey)
-  
+
   if(!transition) {
     design <- svydesign(id = ~idauniq,
                         weights = ~weight,
@@ -154,13 +154,13 @@ weighted.survey.means <- function(init.pop, transition=FALSE) {
 
 ########## Life Years and DFLYs ##########
 
-ly_outcomes_from_detailed_output <- function(coh) {
-  
+ly_outcomes_from_detailed_output_min_max <- function(coh) {
+
   # generate lifeyear for people who have not died
   coh$lifeyear <- 1 - coh$died
   # generate the number of repetitions for each person
   coh$nreps <- max(coh$mcrep) + 1
-  
+
   # now the giant pipeline to calculate LYs, DFLYs (both) and confidence intervals
   coh.sum <- coh %>%
     group_by(hhidpn, year) %>%
@@ -195,15 +195,162 @@ ly_outcomes_from_detailed_output <- function(coh) {
               DisabilityFLY_margin = qt(p=0.975, df=n-1) * (DisabilityFLY_sd / sqrt(n)),
               DisabilityFLY_min = DisabilityFLY_mean - DisabilityFLY_margin,
               DisabilityFLY_max = DisabilityFLY_mean + DisabilityFLY_margin) %>%
-    select(-n) %>%
+    dplyr::select(-n) %>%
     pivot_longer(cols = everything(),
                  names_sep = '_',
                  names_to = c('outcome', 'statistic')) %>%
     filter(statistic %in% c('mean', 'min', 'max', 'margin')) %>%
     pivot_wider(values_from = 'value',
                 names_from = 'statistic')
-  
+
   return(coh.sum)
+}
+
+ly_outcomes_from_detailed_output <- function(coh) {
+
+  # generate lifeyear for people who have not died
+  coh$lifeyear <- 1 - coh$died
+  # generate the number of repetitions for each person
+  coh$nreps <- max(coh$mcrep) + 1
+
+  # now the giant pipeline to calculate LYs, DFLYs (both) and confidence intervals
+  coh.sum <- coh %>%
+    group_by(hhidpn, year) %>%
+    mutate(nreps = n()) %>%
+    group_by(hhidpn, mcrep) %>%
+    summarise(n = n(),
+              n_LY = sum(lifeyear),
+              n_DiseaseFLY = sum(nodisease),
+              n_DisabilityFLY = sum(nodisability),
+              two_yr_LY = n_LY * 2,
+              two_yr_DiseaseFLY = n_DiseaseFLY * 2,
+              two_yr_DisabilityFLY = n_DisabilityFLY * 2,
+              weight_intermed = sum(weight) / n) %>%
+    group_by(hhidpn) %>%
+    summarise(mean_LY_ind = mean(two_yr_LY),
+              mean_DiseaseFLY_ind = mean(two_yr_DiseaseFLY),
+              mean_DisabilityFLY_ind = mean(two_yr_DisabilityFLY),
+              weight = mean(weight_intermed)) %>%
+    summarise(n = n(),
+              LY_mean = weighted.mean(mean_LY_ind, w = weight),
+              LY_sd = sd(mean_LY_ind),
+              DiseaseFLY_mean = weighted.mean(mean_DiseaseFLY_ind, w = weight),
+              DiseaseFLY_sd = sd(mean_DiseaseFLY_ind),
+              DisabilityFLY_mean = weighted.mean(mean_DisabilityFLY_ind, w = weight),
+              DisabilityFLY_sd = sd(mean_DisabilityFLY_ind),
+              LY_margin = qt(p=0.975, df=n-1) * (LY_sd / sqrt(n)),
+              LY_min = LY_mean - LY_margin,
+              LY_max = LY_mean + LY_margin,
+              DiseaseFLY_margin = qt(p=0.975, df=n-1) * (DiseaseFLY_sd / sqrt(n)),
+              DiseaseFLY_min = DiseaseFLY_mean - DiseaseFLY_margin,
+              DiseaseFLY_max = DiseaseFLY_mean + DiseaseFLY_margin,
+              DisabilityFLY_margin = qt(p=0.975, df=n-1) * (DisabilityFLY_sd / sqrt(n)),
+              DisabilityFLY_min = DisabilityFLY_mean - DisabilityFLY_margin,
+              DisabilityFLY_max = DisabilityFLY_mean + DisabilityFLY_margin) %>%
+    dplyr::select(-n) %>%
+    pivot_longer(cols = everything(),
+                 names_sep = '_',
+                 names_to = c('outcome', 'statistic')) %>%
+    filter(statistic %in% c('mean', 'min', 'max', 'margin')) %>%
+    pivot_wider(values_from = 'value',
+                names_from = 'statistic') %>%
+    dplyr::select(-min, -max)
+
+  return(coh.sum)
+}
+
+
+ly_outcomes_detailed_density <- function(coh) {
+  # generate lifeyear for people who have not died
+  coh$lifeyear <- 1 - coh$died
+  # generate the number of repetitions for each person
+  coh$nreps <- max(coh$mcrep) + 1
+
+  # now the giant pipeline to calculate LYs, DFLYs (both) and confidence intervals
+  coh.sum <- coh %>%
+    group_by(hhidpn, year) %>%
+    mutate(nreps = n(),
+           last_mstat = dplyr::last(mstat),
+           live_alone = hhres == 1,
+           carer = gcareinhh1w == 1) %>%
+    group_by(hhidpn, mcrep) %>%
+    summarise(n = n(),
+              n_LY = sum(lifeyear),
+              n_DiseaseFLY = sum(nodisease),
+              n_DisabilityFLY = sum(nodisability),
+              two_yr_LY = n_LY * 2,
+              two_yr_DiseaseFLY = n_DiseaseFLY * 2,
+              two_yr_DisabilityFLY = n_DisabilityFLY * 2,
+              weight_intermed = sum(weight) / n,
+              male = max(male),
+              mstat = round(mean(last_mstat), 0),
+              live_alone = max(live_alone),
+              carer = max(carer)) %>%
+    group_by(hhidpn) %>%
+    summarise(mean_LY_ind = mean(two_yr_LY),
+              mean_DiseaseFLY_ind = mean(two_yr_DiseaseFLY),
+              mean_DisabilityFLY_ind = mean(two_yr_DisabilityFLY),
+              weight = mean(weight_intermed),
+              male = max(male),
+              mstat = round(mean(mstat), 0),
+              live_alone = max(live_alone),
+              carer = max(carer))
+  coh.long <- coh.sum %>%
+    rename(LifeYears = mean_LY_ind,
+           DiseaseFree = mean_DiseaseFLY_ind,
+           DisabilityFree = mean_DisabilityFLY_ind) %>%
+    pivot_longer(cols = LifeYears:DisabilityFree,
+                 names_to = 'outcome',
+                 values_to = 'years') %>%
+    dplyr::select(hhidpn, outcome, male, mstat, live_alone, carer, years, weight)
+
+  coh.long$outcome <- factor(coh.long$outcome, levels = c('LifeYears', 'DiseaseFree', 'DisabilityFree'))
+  coh.long$male <- factor(coh.long$male, levels = c(1, 0), labels = c('Male', 'Female'))
+  coh.long$mstat <- factor(coh.long$mstat, levels = c(1, 2, 3, 4), labels = c('Married', 'Single', 'Cohabiting', 'Widowed'))
+  coh.long$live_alone <- factor(coh.long$live_alone, levels = c(0, 1), labels = c('Cohabit', 'Alone'))
+  coh.long$carer <- factor(coh.long$carer, levels = c(0, 1), labels = c('Not Carer', 'Carer'))
+
+  return(coh.long)
+}
+
+
+ly_hly_outcomes_detailed_density <- function(coh) {
+  # generate lifeyear for people who have not died
+  coh$lifeyear <- 1 - coh$died
+  # generate the number of repetitions for each person
+  coh$nreps <- max(coh$mcrep) + 1
+
+  # now the giant pipeline to calculate LYs, DFLYs (both) and confidence intervals
+  coh.sum <- coh %>%
+    group_by(hhidpn, year) %>%
+    mutate(nreps = n()) %>%
+    group_by(hhidpn, mcrep) %>%
+    summarise(n = n(),
+              n_LY = sum(lifeyear),
+              n_HLY = sum(healthy),
+              two_yr_LY = n_LY * 2,
+              two_yr_HLY = n_HLY * 2,
+              weight_intermed = sum(weight) / n,
+              male = max(male),
+              mstat = round(mean(mstat), 0)) %>%
+    group_by(hhidpn) %>%
+    summarise(mean_LY_ind = mean(two_yr_LY),
+              mean_HLY_ind = mean(two_yr_HLY),
+              weight = mean(weight_intermed),
+              male = max(male),
+              mstat = round(mean(mstat), 0))
+  coh.long <- coh.sum %>%
+    rename(LifeYears = mean_LY_ind,
+           HealthyLifeYears = mean_HLY_ind) %>%
+    pivot_longer(cols = LifeYears:HealthyLifeYears,
+                 names_to = 'outcome',
+                 values_to = 'years') %>%
+    dplyr::select(hhidpn, outcome, male, mstat, years, weight)
+
+  coh.long$outcome <- factor(coh.long$outcome, levels = c('LifeYears', 'HealthyLifeYears'))
+  coh.long$male <- factor(coh.long$male, levels = c(1, 0), labels = c('Male', 'Female'))
+
+  return(coh.long)
 }
 
 
@@ -219,7 +366,8 @@ calc_audit_C19 <- function(indresp_data, wave_letter) {
   q2 <- paste0('c', wave_letter, '_auditc4')
   q3 <- paste0('c', wave_letter, '_auditc5_cv')
 
-  dat <- indresp_data %>% select(pidp, all_of(abst), all_of(q1), all_of(q2), all_of(q3))
+  dat <- indresp_data %>%
+    dplyr::select(pidp, all_of(abst), all_of(q1), all_of(q2), all_of(q3))
 
   # 2. Generate new audit_score var
   dat$audit_score <- 0
@@ -259,7 +407,8 @@ calc_audit_C19 <- function(indresp_data, wave_letter) {
   dat$audit_cat[dat$audit_score %in% (8:10)] <- 'high'
   dat$audit_cat[dat$audit_score %in% (11:12)] <- 'dependent'
 
-  dat <- dat %>% select(pidp, audit_score, audit_cat)
+  dat <- dat %>%
+    dplyr::select(pidp, audit_score, audit_cat)
 
   new.indresp <- merge(indresp_data, dat, by='pidp')
 
@@ -274,7 +423,8 @@ calc_audit_mainstage <- function(indresp_data_mainstage) {
   q2 <- paste0('jk_auditc4')
   q3 <- paste0('jk_auditc5')
 
-  dat <- indresp_data_mainstage %>% select(pidp, all_of(abst), all_of(q1), all_of(q2), all_of(q3))
+  dat <- indresp_data_mainstage %>%
+    dplyr::select(pidp, all_of(abst), all_of(q1), all_of(q2), all_of(q3))
 
   # 2. Generate new audit_score var
   dat$audit_score <- 0
@@ -314,7 +464,8 @@ calc_audit_mainstage <- function(indresp_data_mainstage) {
   dat$audit_cat[dat$audit_score %in% (8:10)] <- 'high'
   dat$audit_cat[dat$audit_score %in% (11:12)] <- 'dependent'
 
-  dat <- dat %>% select(pidp, audit_score, audit_cat)
+  dat <- dat %>%
+    dplyr::select(pidp, audit_score, audit_cat)
 
   new.indresp <- merge(indresp_data_mainstage, dat, by='pidp')
 

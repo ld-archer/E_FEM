@@ -694,6 +694,24 @@ namespace Vars
         l2logitot,                  ///< Lag of Log(itot)
         cesd,                       ///< Center for Epidemiological Studies - Depression (CESD) scale
         l2cesd,                     ///< Lag of Center for Epidemiological Studies - Depression (CESD) scale
+        cesd1,                      ///< CESD == 1
+        cesd2,                      ///< CESD == 2
+        cesd3,                      ///< CESD == 3
+        cesd4,                      ///< CESD == 4
+        cesd5,                      ///< CESD == 5
+        cesd6,                      ///< CESD == 6
+        cesd7,                      ///< CESD == 7
+        cesd8,                      ///< CESD == 8
+        cesd9,                      ///< CESD == 9
+        l2cesd1,                    ///< L2CESD == 1
+        l2cesd2,                    ///< L2CESD == 1
+        l2cesd3,                    ///< L2CESD == 1
+        l2cesd4,                    ///< L2CESD == 1
+        l2cesd5,                    ///< L2CESD == 1
+        l2cesd6,                    ///< L2CESD == 1
+        l2cesd7,                    ///< L2CESD == 1
+        l2cesd8,                    ///< L2CESD == 1
+        l2cesd9,                    ///< L2CESD == 1
         sight,                      ///< Self-rated eyesight
         l2sight,                    ///< Lag of Self-rated eyesight
         hearing,                    ///< Self-rated hearing

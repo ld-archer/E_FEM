@@ -431,15 +431,37 @@ replace sociso = sociso + 1 if kcntm == 0 & !missing(kcntm) /*Kids contact less 
 replace sociso = sociso + 1 if rcntm == 0 & !missing(rcntm) /*Relatives contact less than monthly*/
 replace sociso = sociso + 1 if fcntm == 0 & !missing(fcntm) /*friends contact less than monthly*/
 replace sociso = sociso + 1 if socyr == 0 & !missing(socyr) /*not member of religious group, committee, or other organisation*/
+* Now count number of missing to understand data a bit better
+gen sociso_mflag = 0
+replace sociso_mflag = sociso_mflag + 1 if missing(mstat)
+replace sociso_mflag = sociso_mflag + 1 if missing(kcntm)
+replace sociso_mflag = sociso_mflag + 1 if missing(rcntm)
+replace sociso_mflag = sociso_mflag + 1 if missing(fcntm)
+replace sociso_mflag = sociso_mflag + 1 if missing(socyr)
 * drop elements of index
 drop kcntm rcntm fcntm socyr
+
+********** NEW VERSION OF THIS (22/3/23) **********
+* First lets get a summary version of this to handle missing values
+* We want to get the fraction of these that are true (i.e. proportion from 0-1) and multiply by 6
+* To get this proportion we need to divide the score by 6 - sociso_mflag
+gen sociso_prop = sociso / (6 - sociso_mflag) if !missing(sociso) & !missing(sociso_mflag)
+
+* Now multiply the prop by 6 & round to get a score from 1 - 6, low to high
+gen sociso_v2 = round(sociso_prop * 6, 1)
+replace sociso_v2 = . if insc == 0
+* Now recode to a 1-3 scale
+recode sociso_v2 (1/2=1) (3/4=2) (5/6=3)
+
+drop sociso
+rename sociso_v2 sociso
 * Dummy vars
 gen sociso1 = (sociso == 1) & !missing(sociso)
 gen sociso2 = (sociso == 2) & !missing(sociso)
 gen sociso3 = (sociso == 3) & !missing(sociso)
-gen sociso4 = (sociso == 4) & !missing(sociso)
-gen sociso5 = (sociso == 5) & !missing(sociso)
-gen sociso6 = (sociso == 6) & !missing(sociso)
+*gen sociso4 = (sociso == 4) & !missing(sociso)
+*gen sociso5 = (sociso == 5) & !missing(sociso)
+*gen sociso6 = (sociso == 6) & !missing(sociso)
 
 ****** ALCOHOL ******
 ** Moving from the previous consumptiong based alcohol vars in the FEM (alcbase/alcstat) to a frequency based version (scako)
@@ -672,9 +694,9 @@ label var sociso "Social Isolation"
 label var sociso1 "Social Isolation == 1"
 label var sociso2 "Social Isolation == 2"
 label var sociso3 "Social Isolation == 3"
-label var sociso4 "Social Isolation == 4"
-label var sociso5 "Social Isolation == 5"
-label var sociso6 "Social Isolation == 6"
+*label var sociso4 "Social Isolation == 4"
+*label var sociso5 "Social Isolation == 5"
+*label var sociso6 "Social Isolation == 6"
 
 label var workstat "Working Status"
 label var employed "Employed"
@@ -717,7 +739,7 @@ save varlabs.dta, replace
 restore
 
 local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl demene catracte tr20 verbf orient
-local risk smoken smokev smokef bmi drink lnly alcfreq sociso physact cesd sight hearing 
+local risk smoken smokev smokef bmi drink lnly alcfreq sociso sociso1 sociso2 sociso3 physact cesd sight hearing
 local binecon employed inactive retired ahown
 local cntecon itotx atotbx
 local demog age_yrs male white
