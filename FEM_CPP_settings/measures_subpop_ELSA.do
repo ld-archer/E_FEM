@@ -58,7 +58,7 @@ local measures
 					p_drink		i_drink		n_drink
 					a_alcfreq
 					p_alcfreq1 p_alcfreq2 p_alcfreq3 p_alcfreq4
-					p_alcfreq5 p_alcfreq6 p_alcfreq7 p_alcfreq8 
+					p_alcfreq5 p_alcfreq6 p_alcfreq7 p_alcfreq8
 					p_physact	n_physact	i_physact
 					a_mstat 	p_single 	p_married	p_widowed	p_cohab
 					a_lnly		
@@ -97,7 +97,7 @@ f - female
 if "`subpops'" == "debug" {
 	local subpop all m f 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
 }
-else if "`subpops'" == "handover" {
+else if "`subpops'" == "handovers" {
 	local subpop all m f 55p_f_l 55p_m_l
 }
 else if "`subpops'" == "alcohol" {

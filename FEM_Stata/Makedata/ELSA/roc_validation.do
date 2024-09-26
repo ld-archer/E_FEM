@@ -6,6 +6,7 @@ Using the cross-validation sample/estimates.
 clear all
 
 quietly include ../../../fem_env.do
+*quietly include /home/luke/Documents/WORK/E_FEM/E_FEM/fem_env.do
 
 local maxrep 500
 local minyr 2002
@@ -18,8 +19,8 @@ foreach scn of local scenarios {
 	* append all of the simulations
 	forvalues yr = `minyr' (2) `maxyr' {
 		forvalues rep = 1/`maxrep' {
-			*append using /home/luke/Documents/E_FEM_clean/ROC_Analysis/`scn'/detailed_output/y`yr'_rep`rep'.dta
-			*append using /home/luke/Documents/E_FEM_clean/E_FEM/output/ROC/`scn'/detailed_output/y`yr'_rep`rep'.dta
+			*append using /home/luke/Documents/WORK/E_FEM_clean/ROC_Analysis/`scn'/detailed_output/y`yr'_rep`rep'.dta
+			*append using /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/`scn'/detailed_output/y`yr'_rep`rep'.dta
 			append using $output_dir/ROC/`scn'/detailed_output/y`yr'_rep`rep'.dta
 		}
 	}
@@ -28,21 +29,21 @@ foreach scn of local scenarios {
 	* 2016 if not dead
 	bys hhidpn mcrep (year): keep if _n == _N
 	
-	gen obese = (bmi > 30) if !missing(bmi)
+	gen obese1 = (bmi > 30) if !missing(bmi)
 	gen obese_3 = (bmi > 40) if !missing(bmi)
 	
-	foreach var in died cancre diabe hearte hibpe lunge stroke obese obese_3 demene alzhe anyadl anyiadl {
+	foreach var in died cancre diabe hearte hibpe lunge stroke obese1 obese_3 demene alzhe anyadl anyiadl {
 		rename `var' `var'_elsa
 	}
 	
-	keep hhidpn died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa mcrep
-	collapse died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa, by(hhidpn)
+	keep hhidpn died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese1_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa mcrep
+	collapse died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese1_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa, by(hhidpn)
 	
 	tempfile ELSA_FEM
 	save `ELSA_FEM'
 	
 	*use $outdata/psid_analytic.dta, replace
-    *use ../../../input_data/ELSA_long.dta, replace
+	*use /home/luke/Documents/WORK/E_FEM/E_FEM/input_data/ELSA_long.dta, replace
 	use $outdata/ELSA_long.dta, replace
 	keep if wave >= 3
 	merge m:1 hhidpn using `ELSA_FEM'
@@ -73,7 +74,9 @@ foreach scn of local scenarios {
 	
 	roctab died died_elsa
 	roctab died died_elsa, graph saving($output_dir/ROC/roc_plots/`scn'_died, replace) title("2002-2012 Mortality") scheme(s1mono)
+	*roctab died died_elsa, graph saving(/home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_plots/`scn'_died, replace) title("2002-2012 Mortality") scheme(s1mono)
 	graph export $output_dir/ROC/roc_img/`scn'_died.pdf, replace
+	*graph export /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_img/`scn'_died.pdf, replace
 
 	gen wv1Check = 0
 	gen wv6Check = 0
@@ -89,7 +92,7 @@ foreach scn of local scenarios {
 	}
 
 	* Obesity initial var
-	bys hhidpn (year): gen obese_init = bmi[1] > 30 
+	bys hhidpn (year): gen obese1_init = bmi[1] > 30 
 	* Drop waves after 6 (after 2012)
 	drop if wave > 6
 	* Keep last year respondent in data
@@ -98,7 +101,7 @@ foreach scn of local scenarios {
 
 	*bys hhidpn (year): keep if wave == 6
 
-	save test_`scn'.dta, replace
+	*save /home/luke/Documents/WORK/E_FEM/E_FEM/output/test_`scn'.dta, replace
 
 	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe anyadl anyiadl {
 		if "`var'" == "cancre" {
@@ -145,12 +148,14 @@ foreach scn of local scenarios {
 		* & if `select'
 		roctab `var' `var'_elsa if `var'_init == 0 
 		roctab `var' `var'_elsa if `var'_init == 0, graph saving($output_dir/ROC/roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
+		*roctab `var' `var'_elsa if `var'_init == 0, graph saving(/home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_plots/`scn'_`var', replace) title("`label2'") 
 		graph export $output_dir/ROC/roc_img/`scn'_`var'.pdf, replace
+		*graph export /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_img/`scn'_`var'.pdf, replace
 	}
 	
 	*obese_3
-	foreach var in obese   {
-		if "`var'" == "obese" {
+	foreach var in obese1   {
+		if "`var'" == "obese1" {
 			local label2 "`minyr'-`maxyr' obese"
 		}
 		else if "`var'" == "obese_3" {
@@ -160,6 +165,8 @@ foreach scn of local scenarios {
 		roctab `var' `var'_elsa 
 		roctab `var' `var'_elsa , graph saving($output_dir/ROC/roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
 		graph export $output_dir/ROC/roc_img/`scn'_`var'.pdf, replace
+		*roctab `var' `var'_elsa , graph saving(/home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_plots/`scn'_`var', replace) title("`label2'") scheme(s1mono)
+		*graph export /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_img/`scn'_`var'.pdf, replace
 	}
 
 
@@ -169,7 +176,7 @@ foreach scn of local scenarios {
 }
 
 *obese_3
-foreach var in died cancre diabe hearte hibpe lunge stroke obese demene alzhe anyadl anyiadl {
+foreach var in died cancre diabe hearte hibpe lunge stroke obese1 demene alzhe anyadl anyiadl {
 	if "`var'" == "died" {
 		local label2 "`minyr'-`maxyr' mortality"
 	} 
@@ -191,7 +198,7 @@ foreach var in died cancre diabe hearte hibpe lunge stroke obese demene alzhe an
 	else if "`var'" == "stroke" {
 		local label2 "`minyr'-`maxyr' incident stroke"
 	} 
-	else if "`var'" == "obese" {
+	else if "`var'" == "obese1" {
 		local label2 "`minyr'-`maxyr' obese"
 	}
 	else if "`var'" == "obese_3" {
@@ -212,6 +219,8 @@ foreach var in died cancre diabe hearte hibpe lunge stroke obese demene alzhe an
 	
 	graph combine $output_dir/ROC/roc_plots/ELSA_minimal_`var'.gph $output_dir/ROC/roc_plots/ELSA_ROC_`var'.gph, scheme(s1mono) title("`label2'")
 	graph export $output_dir/ROC/roc_img/combined_roc_`var'.pdf, replace
+	*graph combine /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_plots/ELSA_minimal_`var'.gph /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_plots/ELSA_ROC_`var'.gph, scheme(s1mono) title("`label2'")
+	*graph export /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/roc_img/combined_roc_`var'.pdf, replace
 }
 
 
