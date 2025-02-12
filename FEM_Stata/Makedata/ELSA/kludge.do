@@ -35,7 +35,7 @@ gen loghatotax = 0
 gen l2loghatotax = 0
 
 * Disease status prior to starting HRS survey
-foreach var in canc diabe heart hibp lung strok {
+foreach var in cancre diabe heart hibpe lunge stroke {
                 gen f`var'50 = 0
 }
 
@@ -94,40 +94,40 @@ if "`scen'" == "base" {
                         smokev lunge lnly sociso workstat alzhe arthre asthmae demene parkine psyche ///
                         smoken hchole smokef tr20 verbf orient alcfreq logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact ///
-                        cesd sight hearing ahown
+                        cesd sight hearing ahown icare //icarehrs
 }
 else if "`scen'" == "CV1" |  {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl alcfreq logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso physact ///
-                        cesd sight hearing ahown
+                        cesd sight hearing ahown icare //icarehrs
 }
 else if "`scen'" == "CV2" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl logatotb logitot hhres socyr gcareinhh1w ///
                         mstat lnly sociso alzhe demene workstat smokef tr20 verbf orient ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
-                        cesd sight hearing ahown
+                        cesd sight hearing ahown icare //icarehrs
 }
 else if "`scen'" == "min" {
     local hotdeck_vars logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot hchole hipe educl logatotb logitot hhres socyr gcareinhh1w ///
                         lnly sociso alzhe demene workstat smokef tr20 verbf orient ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
-                        cesd sight hearing ahown
+                        cesd sight hearing ahown icare //icarehrs
 }
 else if "`scen'" == "valid" {
     local hotdeck_vars logbmi educl cancre hibpe diabe hearte stroke smokev ///
                         lunge smoken itot lnly sociso workstat alzhe arthre asthmae demene ///
                         parkine psyche hipe hchole smokef tr20 verbf orient logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
-                        cesd sight hearing ahown
+                        cesd sight hearing ahown icare //icarehrs
 }
 else if "`scen'" == "ROC" {
     local hotdeck_vars lnly sociso logbmi white cancre hibpe diabe hearte stroke smokev lunge smoken arthre ///
                         psyche asthmae parkine itot educl workstat alzhe demene logatotb logitot hhres socyr gcareinhh1w ///
                         hchole smokef hipe angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe alcfreq physact ///
-                        cesd sight hearing ahown tr20 verbf orient
+                        cesd sight hearing ahown tr20 verbf orient icare //icarehrs
 }
 else {
     di "Something has gone wrong with kludge.do, this error should not be reachable"
@@ -155,14 +155,14 @@ foreach var of varlist  asthmae parkine physact cancre diabe hearte hibpe ///
                         srh3 srh4 srh5 hipe mstat alzhe demene employed inactive ///
                         retired logatotb logitot hhres socyr gcareinhh1w ///
                         angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso ///
-                        cesd sight hearing ahown tr20 verbf orient {
+                        cesd sight hearing ahown tr20 verbf orient icare {
                             
     replace `var' = l2`var' if missing(`var') & !missing(l2`var')
     replace l2`var' = `var' if missing(l2`var') & !missing(`var')
 }
 
 * Some lags still missing info
-foreach var of varlist arthre asthmae cancre diabe hearte hibpe lunge psyche stroke parkine alzhe demene gcareinhh1w {
+foreach var of varlist arthre asthmae cancre diabe hearte hibpe lunge psyche stroke parkine alzhe demene gcareinhh1w icare {
     replace l2`var' = 0 if missing(`var') & missing(l2`var')
 }
 
@@ -258,6 +258,10 @@ gen flogbmi50 = l2logbmi
 * Now handle logical accounting with drinking and smoking
 *replace drinkd = 0 if drink == 0
 replace smokev = 1 if smoken == 1
+replace smokev = 1 if l2smoken == 1
+replace smokev = 1 if smokef > 0
+replace smokev = 1 if l2smokef > 0
+replace l2smokev = 1 if smokev == 1
 
 * Still missing some l2drink
 replace drink = 1 if missing(drink)
@@ -289,3 +293,6 @@ replace l2smkstat = 2 if missing(l2smkstat)
 gen work = employed if !missing(employed)
 gen l2work = l2employed if !missing(l2employed)
 
+
+* Impute informal care hours after imputing informal care flag
+replace icarehrs = 0 if icare == 0

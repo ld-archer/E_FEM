@@ -20,12 +20,14 @@ local select_smoke_stop !died & l2smoken == 1  /*INCIDENCE*/
 local select_srh !died & wave != 3
 local select_smokef !died & smoken == 1
 local select_logbmi !died & (wave==2 | wave==4 | wave==6 | wave==8 | wave==9) /* Only estimate bmi model using waves 2,4,6,8,9 as other waves are imputed */
-local select_hchole !died & l2hchole == 0 & wave > 1 /*INCIDENCE*/
-local select_hipe !died & l2hipe == 0 & age > 59 /*INCIDENCE  Hip Fracture question only asked if respondent is aged 60+ */
-local select_lnly !died & wave > 1 /* Loneliness questions only asked from wave 2 onwards */
-*local select_lnlys3 !died & wave > 1 /* Loneliness questions only asked from wave 2 onwards */
-local select_alcfreq !died & drink == 1 /* Only calculate alcfreq if drink == 1*/
-local select_verbf !died & wave != 6 /* not available in wave 6*/
+local select_hchole !died & l2hchole == 0 & wave > 1    /*INCIDENCE*/
+local select_hipe !died & l2hipe == 0 & age > 59        /*INCIDENCE  Hip Fracture question only asked if respondent is aged 60+ */
+local select_lnly !died & wave > 1                      /* Loneliness questions only asked from wave 2 onwards */
+*local select_lnlys3 !died & wave > 1                   /* Loneliness questions only asked from wave 2 onwards */
+local select_alcfreq !died & drink == 1                 /* Only calculate alcfreq if drink == 1*/
+local select_verbf !died & wave != 6                    /* not available in wave 6*/
+local select_icare !died & wave > 1                     /* Not available in first wave */
+local select_icarehrs !died & wave > 5 & icare == 1
 
 * FOR CROSS VALIDATION 2 - Restrict all models to waves 1-4
 if "`defmod'" == "CV2" {
@@ -38,8 +40,8 @@ local varlist adlstat iadlstat drink exstat cancre diabe ///
                 logbmi hchole hipe mstat lnly demene ///
                 workstat logatotb logitot smokef ///
                 angine hrtatte tr20 verbf orient ///
-                conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso physact
-
+                conhrtfe hrtmre hrtrhme catracte osteoe lnly sociso physact ///
+                icare icarehrs
 foreach v in `varlist' {
     local select_`v' `select_`v'' `CV2'
 }

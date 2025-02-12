@@ -42,9 +42,9 @@ local measures
 						i_died    n_died
 						a_bmi     q05_bmi   q50_bmi   q95_bmi
 						p_adl1	  p_adl2    p_adl3p
-						p_iadl1   p_iadl2p
+						p_iadl1   p_iadl2p 	n_iadl2p
 						a_adlstat 
-						a_iadlstat
+						a_iadlstat 
 						a_anyadl  n_anyadl  p_anyadl
 						a_anyiadl n_anyiadl p_anyiadl
 						a_age     d_age
@@ -55,6 +55,8 @@ local measures
 						a_smokef	q05_smokef	q50_smokef	q95_smokef
 						t_atotb 	a_atotb
 						t_itot		a_itot
+						p_icare i_icare n_icare
+						t_icarehrs a_icarehrs
 					p_drink		i_drink		n_drink
 					a_alcfreq
 					p_alcfreq1 p_alcfreq2 p_alcfreq3 p_alcfreq4
@@ -92,6 +94,8 @@ f - female
 7584 - 75 to 84
 85p - 85 plus
 65p - 65 plus
+
+More conventions can be added in the summary_output_gen.do script, where they need to be defined along with the above groups
 */
 
 if "`subpops'" == "debug" {
@@ -105,6 +109,9 @@ else if "`subpops'" == "alcohol" {
 }
 else if "`subpops'" == "roc" {
 	local subpop all m f
+}
+else if "`subpops'" == "collab" {
+	local subpop 70p 70p_cancre
 }
 else {
 	local subpop all m f

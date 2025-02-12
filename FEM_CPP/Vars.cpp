@@ -249,6 +249,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::internal_id]					 = VarInfo("internal_id", "simulation internal ID, used for debugging", VarTypes::Long);
 	info[Vars::iwbeg]                = VarInfo("iwbeg", "R interview begin date Approx Range [16116, 16451]", VarTypes::Double);
 	info[Vars::iwstat]               = VarInfo("iwstat", "R interview status Approx Range [1, 1]", VarTypes::Short);
+    info[Vars::icare]               = VarInfo("icare", "R receives informal care [0, 1]", VarTypes::Boolean);
+    info[Vars::icarehrs]            = VarInfo("icarehrs", "R informal care hours received", VarTypes::Double);
 	info[Vars::jewish]             = VarInfo("jewish", "Religion - Jewish", VarTypes::Boolean);
 	info[Vars::k6score]             = VarInfo("k6score", "Kessler 6 score", VarTypes::Double);
 	info[Vars::k6severe]             = VarInfo("k6severe", "Kessler 6 score is severe", VarTypes::Boolean);
@@ -315,6 +317,8 @@ VarsInfo::VarsInfo() {
 	info[Vars::l2iadl1]                = VarInfo("l2iadl1", "Lag of IADL 1 [0, 1]", VarTypes::Boolean, Vars::l2iadlstat, 2);
 	info[Vars::l2iadl2p]               = VarInfo("l2iadl2p", "Lag of IADL 2+ [0, 1]", VarTypes::Boolean, Vars::l2iadlstat, 3);
 	info[Vars::l2iadlstat]                = VarInfo("l2iadlstat", "Lag of IADL Status", VarTypes::Short);
+    info[Vars::l2icare]                 = VarInfo("l2icare", "Lag of receiving informal care", VarTypes::Boolean);
+    info[Vars::l2icarehrs]              = VarInfo("l2icarehrs", "Lag of informal care hours received", VarTypes::Double);
 	info[Vars::l2iearn]               = VarInfo("l2iearn", "Lag of Individual earnings in 1000s, Approx Range [0, 646]", VarTypes::Double);
 	info[Vars::l2iearnuc]		     = VarInfo("l2iearnuc", "Lag of Individual earnings in 100s, uncapped", VarTypes::Double);
 	info[Vars::l2iearnx]              = VarInfo("l2iearnx", "Lag of Individual earnings in 1000s-max 200, Approx Range [0, 200]", VarTypes::Float);
@@ -482,6 +486,7 @@ VarsInfo::VarsInfo() {
 	info[Vars::phearte]              = VarInfo("phearte", "Prob(heart disease)", VarTypes::Float);
 	info[Vars::phearta]              = VarInfo("phearta", "Prob(recent heart attack)", VarTypes::Float);
 	info[Vars::pinpatient_ever]      = VarInfo("pinpatient_ever", "Prob(inpatient_ever)", VarTypes::Float);
+    info[Vars::picare]                = VarInfo("picare", "Prob(icare)", VarTypes::Float);
 	info[Vars::phibpe]               = VarInfo("phibpe", "Prob(hypertension)", VarTypes::Float);
 	info[Vars::phicap_nonzero]       = VarInfo("phicap_nonzero", "Prob(non zero household capital income)", VarTypes::Float);
 	info[Vars::phipe]               = VarInfo("phipe", "Prob(Hip Fracture)", VarTypes::Float);
@@ -995,6 +1000,8 @@ VarsInfo::VarsInfo() {
     lag_map[Vars::tr20] = Vars::l2tr20;
     lag_map[Vars::verbf] = Vars::l2verbf;
     lag_map[Vars::orient] = Vars::l2orient;
+    lag_map[Vars::icare] = Vars::l2icare;
+    lag_map[Vars::icarehrs] = Vars::l2icarehrs;
 
 
 
@@ -1040,6 +1047,7 @@ VarsInfo::VarsInfo() {
     prob_map[Vars::catracte] =      Vars::pcatracte;
     prob_map[Vars::osteoe] =        Vars::posteoe;
     prob_map[Vars::physact] =       Vars::pphysact;
+    prob_map[Vars::icare] =         Vars::picare;
 
 	// Ordered
 	//prob_map[Vars::smokev] =		Vars::psmkstat2;

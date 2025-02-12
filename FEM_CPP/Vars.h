@@ -183,6 +183,8 @@ namespace Vars
 		isret,                    ///< income: R SoCSec Retirment Approx Range [0, 47046.87], stored as Double
 		iwbeg,                    ///< R interview begin date Approx Range [16116, 16451], stored as Double
 		iwstat,                   ///< R interview status Approx Range [1, 1], stored as Short
+		icare,                      ///< R receives informal care [0, 1], stored as Boolean
+		icarehrs,                   ///< R informal care hours received, stored as Double
 		jewish,										///< Religion - Jewish
 		kid_byravg,								///< Mean birth year of children
 		k6score,									///<K6 score
@@ -260,6 +262,8 @@ namespace Vars
 		l2iearnx,                  ///< Lag of Individual earnings in 1000s-max 200, Approx Range [0, 200], stored as Short
 		l2insulin,                 ///< Lag of insulin
 		l2iwstat,                  ///< Lag of R interview status, Approx Range [1, 1], stored as Short
+		l2icare,                    ///< Lag of R interview status Approx Range [1, 1], stored as Short
+		l2icarehrs,                 ///< Lag of R informal care hours received, stored as Double
 		l2k6score, 								///<Lag of Kessler 6 score
 		l2k6severe,									///< Lag of Kessler 6 score is severe
 		l2logbmi,				  ///< Lag of Log(BMI), stored as Double
@@ -431,7 +435,8 @@ namespace Vars
         piadlstat1,                  ///< Probability of iadlstat==1
 		piadlstat2,                  ///< Probability of iadlstat==2
 		piadlstat3,                  ///< Probability of iadlstat==3
-		pinpatient_ever,		  ///< Probability of inpatient_ever, stored as Double
+		pinpatient_ever,		  ///< Probability of inpatient_ever, stored as Double4
+		picare,                     ///< Probability of icare, stored as Float
 		pk6severe,									///< Probability of severe Kessler 6 score 	
 		plunge,                   ///< Probability of lung cancer, stored as Double
 		poasiclaim, 							///<Probability of SS OASI claiming in PSID, Stored as Double

@@ -11,8 +11,8 @@ set maxvar 15000
 **************************************************
 
 ***define folder locations***
-local stataraw "/home/luke/Documents/E_FEM_clean/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se"
-local output "/home/luke/Documents/E_FEM_clean/E_FEM/input_data"
+local stataraw "/home/luke/Documents/WORK/E_FEM/ELSA/UKDA-5050-stata_09-09-21/stata/stata13_se"
+local output "/home/luke/Documents/WORK/E_FEM/E_FEM/input_data"
 
 ***define raw files***
 *Using 38th edition, released March 2023
@@ -64,10 +64,10 @@ global wave_8_fina "`stataraw'/wave_8_elsa_financial_dvs_eul_v1.dta"
 global wave_8_nurs "`stataraw'/elsa_nurse_w8w9_data_eul.dta"
 global wave_8_derv "`stataraw'/wave_8_elsa_ifs_dvs_eul_v1.dta"
 global wave_9_core "`stataraw'/wave_9_elsa_data_eul_v1.dta"
-*global wave_9_fina "`stataraw'/wave_9_financial_derived_variables.dta"
-global wave_9_fina "`stataraw'/wave_9_financial_derived_variables_v2.dta"
-*global wave_9_derv "`stataraw'/wave_9_ifs_derived_variables.dta"
-global wave_9_derv "`stataraw'/wave_9_ifs_derived_variables_v2.dta"
+global wave_9_fina "`stataraw'/wave_9_financial_derived_variables.dta"
+*global wave_9_fina "`stataraw'/wave_9_financial_derived_variables_v2.dta"
+global wave_9_derv "`stataraw'/wave_9_ifs_derived_variables.dta"
+*global wave_9_derv "`stataraw'/wave_9_ifs_derived_variables_v2.dta"
 
 
 ***define programs***

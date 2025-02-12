@@ -9,6 +9,7 @@ set maxvar 15000
 include ../../fem_env.do
 
 local scen: env scen
+*local scen "CV1"
 
 log using crossvalidation_ELSA_`scen'.log, replace
 
@@ -36,15 +37,16 @@ local maxwave 9
 ********************************
 
 *use `input'/H_ELSA_f_2002-2016.dta, clear
-*use ../../../input_data/H_ELSA_f_2002-2016.dta, clear
 *use ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta, clear
 use `input'/H_ELSA_g2_wv_specific.dta, clear
+*use ../../input_data/H_ELSA_g2_wv_specific.dta, clear
 
 gen hhidpn = idauniq
 
 if "`scen'" == "CV1" {
 	* Keep only those used in the simulation (simulation==1)
 	merge 1:1 idauniq using `input'/cross_validation/crossvalidation.dta, keepusing(simulation)
+	*merge 1:1 idauniq using ../../input_data/cross_validation/crossvalidation.dta, keepusing(simulation)
 	*merge 1:1 hhidpn using ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta/*, keep(match)*/
 	tab _merge
 	keep if simulation == 1
@@ -53,6 +55,7 @@ if "`scen'" == "CV1" {
 else if "`scen'" == "minimal" {
 	* Keep the same people from minimal run. Use flag var created in generate_stock_pop.do
 	merge 1:1 idauniq using `input'/ELSA_stock_min_flag.dta /*, keep(match) nogenerate*/
+	*merge 1:1 idauniq using ../../input_data/ELSA_stock_min_flag.dta /*, keep(match) nogenerate*/
 	*merge 1:1 hhidpn using ../../output/ELSA_core_base/detailed_output/y2012_rep1.dta/*, keep(match)*/
 	tab _merge
 	keep if _merge == 3
@@ -65,6 +68,8 @@ keep
 	raracem
 	ragender
 	rabyear
+
+	inw*sc
 
 	r*iwindy
 	r*iwstat
@@ -137,6 +142,11 @@ keep
 	r*tr20
 	r*verbf
 	r*orient
+	r*rcaany_e           // receives any informal care
+	r*rscarehpw_e       // hours informal care: spouse
+	r*rccarehpw_e       // hours informal care: kids/grandkids
+	r*rrcarehpw_e       // hours informal care: relatives
+	r*rfcarehpw_e       // hours informal care: non-relatives
 ;
 #d cr
 
@@ -144,9 +154,17 @@ keep
 generate r9mbmi = r9mweight / r8mheight^2
 drop r*mheight r*mweight
 
+capture log close
+
+* Rename self completion flag var
+forvalues wv = `minwave'/`maxwave' {
+    rename inw`wv'sc insc`wv'
+}
+
 * Reshape this data to long
 #d ;
 local shapelist
+	insc@
 	r@iwindy
 	r@iwstat
 	r@agey
@@ -214,6 +232,11 @@ local shapelist
 	r@tr20
 	r@verbf
 	r@orient
+	r@rcaany_e           // receives any informal care
+	r@rscarehpw_e       // hours informal care: spouse
+	r@rccarehpw_e       // hours informal care: kids/grandkids
+	r@rrcarehpw_e       // hours informal care: relatives
+	r@rfcarehpw_e       // hours informal care: non-relatives
 ;
 #d cr
 
@@ -313,7 +336,7 @@ label var mstat "Marriage / Partnership status"
 label var jphysl "Job physical activity level"
 
 *** Others
-foreach var in gcareinhh1w child cesd sight hearing tr20 verbf orient {
+foreach var in gcareinhh1w child cesd sight hearing tr20 verbf orient rcaany_e rscarehpw_e rccarehpw_e rrcarehpw_e rfcarehpw_e {
 	ren r`var' `var'
 }
 
@@ -598,6 +621,24 @@ gen iwyear = 2000 + 2*wave
 
 gen childless = child > 0
 
+****** Informal Care Hours Variables ******
+* Need to combine the hours from multiple variables into one
+
+rename rcaany_e icare
+
+gen icarehrs = 0
+replace icarehrs = icarehrs + rscarehpw_e if !missing(rscarehpw_e)
+replace icarehrs = icarehrs + rccarehpw_e if !missing(rccarehpw_e)
+replace icarehrs = icarehrs + rrcarehpw_e if !missing(rrcarehpw_e)
+replace icarehrs = icarehrs + rfcarehpw_e if !missing(rfcarehpw_e)
+
+label variable icare "Receives informal caregiving"
+label variable icarehrs "Informal care hours"
+
+drop rscarehpw_e rccarehpw_e rrcarehpw_e rfcarehpw_e
+
+
+****** Final Step ******
 
 gen FEM = 0
 gen year = iwyear
@@ -722,6 +763,9 @@ label var tr20 "Total word recall"
 label var verbf "Verbal fluency"
 label var orient "Date naming (orient)"
 
+label var icare "Receives informal care"
+label var icarehrs "Informal care hours received"
+
 
 * Replace smokef to missing for people who don't smoke
 replace smokef = . if smoken == 0 & !missing(smoken)
@@ -738,8 +782,8 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl demene catracte tr20 verbf orient
-local risk smoken smokev smokef bmi drink lnly alcfreq sociso sociso1 sociso2 sociso3 physact cesd sight hearing
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl demene catracte tr20 verbf orient // icare
+local risk smoken smokev smokef bmi drink lnly alcfreq sociso1 sociso2 sociso3 physact cesd sight hearing // sociso
 local binecon employed inactive retired ahown
 local cntecon itotx atotbx
 local demog age_yrs male white

@@ -72,6 +72,7 @@ input_data/*.csv
 !input_data/ukevo.xls
 input_data/detailed_output/*
 input_data/detailed_output/
+#*.dta
 
 # Cross validation data
 analysis/techdoc_ELSA/ELSA_2002_2016.dta

@@ -1,0 +1,108 @@
+---
+title: "Cancer in 70+ Population"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: true
+    df_print: paged
+    code_folding: hide
+---
+
+
+
+
+
+```{r setup, include=FALSE}
+require(tidyverse)
+require(haven)
+require(ggplot2)
+
+# Set up the working directory
+workingDir <- "/home/luke/Documents/WORK/E_FEM/E_FEM/output/SCENARIO/"
+knitr::opts_knit$set(root.dir = workingDir)
+```
+
+
+```{r data, include=FALSE}
+scen_dir <- "ELSA_70p_cancre"
+
+data <- read_dta(paste0(scen_dir, '/ELSA_70p_cancre_summary.dta'))
+data.byrep <- read_dta(paste0(scen_dir, '/ELSA_70p_cancre_by_rep.dta'))
+```
+
+
+# Population Size
+
+```{r}
+# Number of over 70s in sample (using m_startpop variable)
+ggplot(data, aes(x = year, y = m_startpop_70p)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Population count over 70') +
+  xlab('Year') +
+  ylab('Population Count (millions)')
+
+ggplot(data, aes(x = year, y = m_startpop_70p_cancre)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Population count over 70 with Cancer') +
+  xlab('Year') +
+  ylab('Population Count (millions)')
+
+pop_size <- data %>%
+  select(year, m_endpop_70p_cancre)
+
+pop_size
+```
+
+# 2+ IADLS
+
+```{r}
+ggplot(data, aes(x = year, y = n_iadl2p_70p_cancre)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Number of 70+ Cancer patients with 2+ IADLs') +
+  xlab('Year') +
+  ylab('Population Count')
+
+# create a count of cancer patients with 2+ IADLs using m_endpop and p_iadl2p
+iadl2p <- data %>%
+  select(year, n_iadl2p_70p_cancre)
+iadl2p
+```
+
+# Informal Care Hours
+
+```{r}
+ggplot(data, aes(x = year, y = t_icarehrs_70p_cancre)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Total Informal Care Hours') +
+  xlab('Year') +
+  ylab('Care Hours')
+
+ggplot(data, aes(x = year, y = a_icarehrs_70p_cancre)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Average Informal Care Hours') +
+  xlab('Year') +
+  ylab('Care Hours')
+
+icare_hrs <- data %>%
+  select(year, t_icarehrs_70p_cancre, a_icarehrs_70p_cancre)
+icare_hrs
+```
+
+
+
+
+
+
+
+
+```{r}
+
+```
+

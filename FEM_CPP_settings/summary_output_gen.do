@@ -99,6 +99,30 @@ forvalues x = 1/`measures_l' {
 			local sel "& age >= 65"
 			local samp "age 65 plus"
 		}
+		else if "`b'" == "50p" {
+			local sel "& age >= 50"
+			local samp "age 50 plus"
+		}
+		else if "`b'" == "60p" {
+			local sel "& age >= 60"
+			local samp "age 60 plus"
+		}
+		else if "`b'" == "70p" {
+			local sel "& age >= 70"
+			local samp "age 70 plus"
+		}
+		else if "`b'" == "70p_cancre" {
+			local sel "& age >= 70 & cancre == 1"
+			local samp "age 70 plus with cancer"
+		}
+		else if "`b'" == "80p" {
+			local sel "& age >= 80"
+			local samp "age 80 plus"
+		}
+		else if "`b'" == "90p" {
+			local sel "& age >= 90"
+			local samp "age 90 plus"
+		}
 		else if "`b'" == "55p_l" {
 			local sel "& age >= 55 & died == 0"
 			local samp "age 55 plus living"
@@ -143,13 +167,21 @@ forvalues x = 1/`measures_l' {
 			local sel "& age >= 50 & age < 60"
 			local samp "age 50 to 59"
 		}
-		else if "`b'" == "60p" {
-			local sel "& age >= 60"
-			local samp "age 60 plus"
-		}
 		else if "`b'" == "6064" {
 			local sel "& age >= 60 & age < 65"
 			local samp "age 60 to 64"
+		}
+		else if "`b'" == "6069" {
+			local sel "& age >= 60 & age < 70"
+			local samp "age 60 to 69"
+		}
+		else if "`b'" == "7079" {
+			local sel "& age >= 70 & age < 80"
+			local samp "age 70 to 79"
+		}
+		else if "`b'" == "8089" {
+			local sel "& age >= 80 & age < 90"
+			local samp "age 80 to 89"
 		}
 		else if "`b'" == "m_6064" {
 			local sel "& male == 1 & age >= 60 & age < 65"

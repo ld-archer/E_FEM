@@ -13,6 +13,31 @@ local scr : env SCENARIO
 *use $outdata/H_ELSA_f_2002-2016.dta, clear
 use $outdata/H_ELSA_g2_wv_specific.dta, clear
 
+* Merge in the ELSA HCAP, 1 wave of data available for 2018 (between wave 8 & 9) for a sample of individuals aged 65+
+*merge 1:1 idauniq using $outdata/h_elsa_hcap_a.dta, nogenerate
+
+
+
+
+* Try to add the EOL data to the harmonized dataset
+* This test is initially about finding individuals with cancer that was not recorded in the survey before their death
+*use $outdata/H_ELSA_EOL_a2.dta
+
+merge 1:1 idauniq using $outdata/H_ELSA_EOL_a2.dta, nogenerate
+
+* Using ELSA EOL data to fill in some missing chronic disease information (just cancre for now)
+forvalues wv = 1(1)5 {
+    * cancre == 1 if cancre anytime == 1 & wave == last completed wave
+    replace r`wv'cancre = 1 if r`wv'cancre == 0 & raxcancre == 1 & ralstcore == `wv'
+    replace r`wv'lunge = 1 if r`wv'lunge == 0 & raxlung == 1 & ralstcore == `wv'
+    replace r`wv'hearte = 1 if r`wv'hearte == 0 & raxheart == 1 & ralstcore == `wv'
+    replace r`wv'hrtatte = 1 if r`wv'hrtatte == 0 & raxhrtatt == 1 & ralstcore == `wv'
+    replace r`wv'stroke = 1 if r`wv'stroke == 0 & raxstrok == 1 & ralstcore == `wv'
+    replace r`wv'diabe = 1 if r`wv'diabe == 0 & raxdiab == 1 & ralstcore == `wv'
+    replace r`wv'diabe = 1 if r`wv'diabe == 0 & raxdiab == 1 & ralstcore == `wv'
+}
+
+
 global firstwave 1
 global lastwave 9
 
@@ -117,7 +142,7 @@ r*mealsa
 r*housewka
 r*hibpe
 r*diabe 
-r*cancre 
+r*cancre
 r*lunge
 r*hearte
 r*stroke 
@@ -175,6 +200,12 @@ h*ahown
 r*tr20
 r*verbf
 r*orient
+r*memrye
+r*rcaany_e           // receives any informal care
+r*rscarehpw_e       // hours informal care: spouse
+r*rccarehpw_e       // hours informal care: kids/grandkids
+r*rrcarehpw_e       // hours informal care: relatives
+r*rfcarehpw_e       // hours informal care: non-relatives
 ;
 #d cr
 
@@ -193,8 +224,17 @@ forvalues wv = $firstwave/$lastwave {
 
 * Also rename exercise variables in the near future
 forvalues wv = $firstwave/$lastwave {
-    /*Remove '_e' from labour force status var (don't know why they link inlcuding these)*/
+    /*Remove '_e' suffix from some variables*/
     rename r`wv'lbrf_e r`wv'lbrf
+    rename r`wv'rcaany_e r`wv'rcaany
+}
+
+forvalues wv = 6/$lastwave {
+    /*Remove '_e' suffix from some variables*/
+    rename r`wv'rscarehpw_e r`wv'rscarehpw
+    rename r`wv'rccarehpw_e r`wv'rccarehpw
+    rename r`wv'rrcarehpw_e r`wv'rrcarehpw
+    rename r`wv'rfcarehpw_e r`wv'rfcarehpw
 }
 
 * Rename variables to make reshape easier and have names consistent with US FEM
@@ -282,6 +322,12 @@ foreach var in
     tr20
     verbf
     orient
+    memrye
+    rcaany
+    rscarehpw
+    rccarehpw
+    rrcarehpw
+    rfcarehpw
       { ;
             forvalues i = $firstwave(1)$lastwave { ;
                 cap confirm var r`i'`var';
@@ -335,7 +381,8 @@ reshape long iwstat cwtresp strat iwindy iwindm agey walkra dressa batha eata be
     drink educl mstat hchole hipe shlt atotb itot smokef lnlys alzhe demene
     lbrf coupid GOR angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe
     complac leftout isolate lnlys3 scako kcntm rcntm fcntm socyr jphysl hhres 
-    gcareinhh1w child cesd sight hearing ahown tr20 verbf orient
+    gcareinhh1w child cesd sight hearing ahown tr20 verbf orient mmse_score memrye
+    rcaany rscarehpw rccarehpw rrcarehpw rfcarehpw
 , i(idauniq) j(wave)
 ;
 #d cr
@@ -425,6 +472,12 @@ label variable ahown "Whether owns home"
 label variable tr20 "Word recall summary score"
 label variable verbf "Verbal fluency score"
 label variable orient "Cognition Orient (summary date naming)"
+label variable memrye "Memory Problems Ever"
+label variable rcaany "Receives informal caregiving"
+label variable rscarehpw "Hours informal care: Spouse"
+label variable rccarehpw "Hours informal care: Kids/Grandkids"
+label variable rrcarehpw "Hours informal care: Relatives"
+label variable rfcarehpw "Hours informal care: Non-relatives"
 
 
 * Use harmonised education var
@@ -840,6 +893,29 @@ gen childless = child > 0
 rename demene demene_initial
 gen demene = alzhe | demene_initial if !missing(alzhe) | !missing(demene_initial)
 
+
+****** Informal Care Hours Variables ******
+* Need to combine the hours from multiple variables into one
+
+rename rcaany icare
+
+gen icarehrs = 0
+replace icarehrs = icarehrs + rscarehpw if !missing(rscarehpw)
+replace icarehrs = icarehrs + rccarehpw if !missing(rccarehpw)
+replace icarehrs = icarehrs + rrcarehpw if !missing(rrcarehpw)
+replace icarehrs = icarehrs + rfcarehpw if !missing(rfcarehpw)
+
+label variable icare "Receives informal caregiving"
+label variable icarehrs "Informal care hours"
+
+drop rscarehpw rccarehpw rrcarehpw rfcarehpw
+
+* Do some basic imputation
+replace icare = 1 if icarehrs > 0
+replace icare = 0 if icare == .x  // .x is missing character for no difficulty with ADL/IADLS
+replace icarehrs = 0 if icare == 0
+
+
 *** Generate lagged variables ***
 * xtset tells stata data is panel data (i.e. longitudinal)
 xtset hhidpn wave
@@ -951,6 +1027,9 @@ foreach var in
     tr20
     verbf
     orient
+    memrye
+    icare
+    icarehrs
     {;
         gen l2`var' = L.`var';
     };
@@ -985,17 +1064,22 @@ drop r*fagey
 
 *** DROP VARS CURRENTLY NOT IN USE ***
 * These variables are not in use at the minute, and all they do is pollute the std::out and logs so I'm going to remove them for now
-*drop r*idauniq
-*drop r*GOR
-*drop r*inw
+*drop idauniq
+drop GOR
+drop inw
 *drop r*insc
-*drop r*inw3lh
-*drop r*strat
-*drop r*radyear
-*drop r*lbrf
-*drop r*complac
-*drop r*leftout
-*drop r*isolate
+drop inw3lh
+drop strat
+drop radyear
+*drop lbrf
+drop complac
+drop leftout
+drop isolate
+drop r*dsight
+drop r*nsight
+*drop atotb
+*drop itot
+drop child
 
 *save ../../../input_data/ELSA_long.dta, replace
 save $outdata/ELSA_long.dta, replace

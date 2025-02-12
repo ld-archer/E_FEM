@@ -82,6 +82,9 @@ lnly_sociso: clean_settings
 lnly_sociso: core_prep simulation_lnly_sociso
 
 
+collab: SUBPOP = collab
+collab: clean_settings core_prep simulation_core_scen
+
 ### Combined rules
 
 ## Preparation
@@ -340,7 +343,7 @@ roc_validation: $(MAKEDATA)/roc_validation.do
 	mkdir -p $(OUTDATA)/ROC/roc_img/old/
 	mkdir -p $(OUTDATA)/ROC/roc_plots/
 	rm -f $(OUTDATA)/ROC/old/*.pdf
-	cp -f $(OUTDATA)/ROC/roc_img/*.pdf ../ROC_Analysis/old/
+	#cp -f $(OUTDATA)/ROC/roc_img/*.pdf ../ROC_Analysis/old/
 	cd $(MAKEDATA) && datain=$(OUTDATA)/ROC dataout=$(OUTDATA)/ROC $(STATA) roc_validation.do
 
 

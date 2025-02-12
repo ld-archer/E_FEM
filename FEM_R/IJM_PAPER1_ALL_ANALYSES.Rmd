@@ -275,7 +275,7 @@ combined$Age_Group <- factor(combined$Age_Group, levels = c('6064', '6569', '707
 # Sort
 combined <- arrange(combined, source, Condition, Gender, Age_Group)
 # Function to filter the combined dataset and visualise
-visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/E_FEM_clean/Deliverables/E-FEM_Paper/figures/validation/ageUK') {
+visAgeUKValid <- function(data, cd, gender, path = '/home/luke/Documents/WORK/E_FEM/Deliverables/IJM_Feb22/figures/validation/ageUK') {
   
   if(gender == 'M') {
     full_gender <- 'Male'
@@ -546,7 +546,7 @@ compareSurvivalCurve <- function(cohort, intervention, int_name, save=FALSE,
   # Calculate age and survival curves
   cohort$Age <- (cohort$year - 2012) + 50
   intervention$Age <- (intervention$year - 2012) + 50
-  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all+[1]
+  cohort$Survival <- cohort$m_endpop_all / cohort$m_endpop_all[1]
   intervention$Survival <- intervention$m_endpop_all / intervention$m_endpop_all[1]
 
   survivals <- data.frame(cohort$Age, cohort$Survival, intervention$Survival)
