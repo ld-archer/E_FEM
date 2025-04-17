@@ -74,6 +74,14 @@ input_data/detailed_output/*
 input_data/detailed_output/
 #*.dta
 
+FEM_Stata/Estimates/restrictedvars/*/*.dta
+FEM_Stata/Estimates/restrictedvars/*.dta
+base_data/*.dta
+base_data/*.dta.gz
+base_data/*.csv.gz
+!base_data/census_pop_proj.dta
+input_data/psid_*.dta
+
 # Cross validation data
 analysis/techdoc_ELSA/ELSA_2002_2016.dta
 analysis/techdoc_ELSA/ELSA_2002_2018.dta
@@ -119,3 +127,4 @@ FEM_Stata/Estimates/ELSA_core/estimatescore.xls
 
 # visual studio stuff
 .vscode/
+site/

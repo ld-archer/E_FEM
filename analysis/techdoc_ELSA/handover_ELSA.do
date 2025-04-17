@@ -26,8 +26,11 @@ quietly include ../../FEM_CPP_settings/measures_subpop_ELSA.do
 *use ../../input_data/ELSA_long.dta, clear
 use $outdata/ELSA_long.dta, clear
 
+local target_min_age 70
+
 * Keep people ages 55+
-keep if age >= 55
+*keep if age >= 55
+keep if age >= `target_min_age'
 
 * ADL measures
 *gen anyadl = (adlstat > 1) if !missing(adlstat)
@@ -42,14 +45,14 @@ keep if age >= 55
 
 * Outcomes, most of whats in measures_subpop_ELSA.do
 local outcome cancre diabe hearte hibpe lunge stroke demene alzhe
-*local outcome2 employed // abstainer moderate increasingRisk highRisk
-local outcome3 bmi alcfreq //alcbase
-local outcome4 anyadl adl3p anyiadl iadl2p
+local outcome2 icare // employed abstainer moderate increasingRisk highRisk
+local outcome3 bmi icarehrs // alcfreq alcbase
+local outcome4 anyadl adl3p anyiadl iadl2p 
 local outcome5 alcfreq1 alcfreq2 alcfreq3 alcfreq4 alcfreq5 alcfreq6 alcfreq7 alcfreq8
 
 local seoutcome secancre=cancre sediabe=diabe sehearte=hearte sehibpe=hibpe selunge=lunge sestroke=stroke sedemene=demene sealzhe=alzhe
-*local seoutcome2 seemployed=employed // seabstainer=abstainer semoderate=moderate seincreasingRisk=increasingRisk sehighRisk=highRisk
-local seoutcome3 sebmi=bmi sealcfreq=alcfreq //sealcbase=alcbase
+local seoutcome2 seicare=icare // seemployed=employed seabstainer=abstainer semoderate=moderate seincreasingRisk=increasingRisk sehighRisk=highRisk
+local seoutcome3 sebmi=bmi seicarehrs=icarehrs // sealcfreq=alcfreq sealcbase=alcbase
 local seoutcome4 seanyadl=anyadl seadl3p=adl3p seanyiadl=anyiadl seiadl2p=iadl2p
 local seoutcome5 sealcfreq1=alcfreq1 sealcfreq2=alcfreq2 sealcfreq3=alcfreq3 sealcfreq4=alcfreq4 sealcfreq5=alcfreq5 sealcfreq6=alcfreq6 sealcfreq7=alcfreq7 sealcfreq8=alcfreq8
 
@@ -64,16 +67,16 @@ foreach var of varlist `outcome' `outcome2' `outcome3' `outcome4' `outcome5' {
 
 * p for prevalence
 foreach var of varlist `outcome' `outcome2' `outcome5' {
-	rename `var' p_`var'_all_ELSA55p
+	rename `var' p_`var'_all_ELSA`target_min_age'p
 }
 
 * a for average
 foreach var of varlist `outcome3' {
-	rename `var' a_`var'_all_ELSA55p
+	rename `var' a_`var'_all_ELSA`target_min_age'p
 }
 
 foreach var of varlist `outcome4' {
-	rename `var' p_`var'_all_ELSA55p
+	rename `var' p_`var'_all_ELSA`target_min_age'p
 }
 
 tempfile ELSA
@@ -142,19 +145,19 @@ forvalues sex = 0/1 {
 		}
 		else if "`var'" == "abstainer" {
 			local title "Abstains from alcohol consumption"
-			replace p_`var'_all_ELSA55p = . if year < 2008
+			replace p_`var'_all_ELSA`target_min_age'p = . if year < 2008
 		}
 		else if "`var'" == "moderate" {
 			local title "Moderate alcohol consumption"
-			replace p_`var'_all_ELSA55p = . if year < 2008
+			replace p_`var'_all_ELSA`target_min_age'p = . if year < 2008
 		}
 		else if "`var'" == "increasingRisk" {
 			local title "Increasing Risk alcohol consumption"
-			replace p_`var'_all_ELSA55p = . if year < 2008
+			replace p_`var'_all_ELSA`target_min_age'p = . if year < 2008
 		}
 		else if "`var'" == "highRisk" {
 			local title "High Risk alcohol consumption"
-			replace p_`var'_all_ELSA55p = . if year < 2008
+			replace p_`var'_all_ELSA`target_min_age'p = . if year < 2008
 		}
 		else if "`var'" == "alcfreq1" {
 			local title "Alcohol Consumption Frequency 1"
@@ -180,10 +183,13 @@ forvalues sex = 0/1 {
 		else if "`var'" == "alcfreq8" {
 			local title "Alcohol Consumption Frequency 8"
 		}
+		else if "`var'" == "icare" {
+			local title "Receives Informal Care"
+		}
 
 		
-		twoway scatter p_`var'_all_ELSA55p year if male == `sex', mstyle(p1) msize(small) || ///
-			line p_`var'_55p_`s'_l year, lpattern(shortdash) ///
+		twoway scatter p_`var'_all_ELSA`target_min_age'p year if male == `sex', mstyle(p1) msize(small) || ///
+			line p_`var'_`target_min_age'p_`s'_l year, lpattern(shortdash) ///
 			, title("`title'") legend(off) xtitle("") ylabel(,format(%9.2f) angle(horizontal)) ///
 			scheme(s1mono) ///
 			saving(`var'_`suf', replace)
@@ -197,14 +203,17 @@ forvalues sex = 0/1 {
 		}
 		else if "`var'" == "alcbase" {
 			local title "Alcohol Consumption (Units)"
-			replace a_`var'_all_ELSA55p = . if year < 2008
+			replace a_`var'_all_ELSA`target_min_age'p = . if year < 2008
 		}
 		else if "`var'" == "alcfreq" {
 			local title "Alcohol Consumption Frequency (8 levels)"
 		}
+		else if "`var'" == "icarehrs" {
+			local title "Informal Care Hours"
+		}
 
-		twoway scatter a_`var'_all_ELSA55p year if male == `sex', mstyle(p1) msize(small) || ///
-			line a_`var'_55p_`s'_l year, lpattern(shortdash) ///
+		twoway scatter a_`var'_all_ELSA`target_min_age'p year if male == `sex', mstyle(p1) msize(small) || ///
+			line a_`var'_`target_min_age'p_`s'_l year, lpattern(shortdash) ///
 			, title("`title'") legend(off) xtitle("") ylabel(,format(%9.2f) angle(horizontal)) ///
 			scheme(s1mono) ///
 			saving(`var'_`suf', replace)

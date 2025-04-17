@@ -782,7 +782,7 @@ save `varlabs', replace
 save varlabs.dta, replace
 restore
 
-local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl demene catracte tr20 verbf orient // icare
+local binhlth cancre diabe hearte hibpe lunge stroke anyadl anyiadl demene catracte tr20 verbf orient icare
 local risk smoken smokev smokef bmi drink lnly alcfreq sociso1 sociso2 sociso3 physact cesd sight hearing // sociso
 local binecon employed inactive retired ahown
 local cntecon itotx atotbx

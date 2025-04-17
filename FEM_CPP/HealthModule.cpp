@@ -582,6 +582,22 @@ void HealthModule::process(PersonVector& persons, unsigned int year, Random* ran
                 }
 			}
 
+            // Handle informal care accounting (between icare and icarehrs)
+            if(elsa_data) {
+                // if no informal care this wave, informal care hours must equal 0
+                if(person->get(Vars::icare) == 0) {
+                    person->set(Vars::icarehrs, 0);
+                }
+                // if informal care hours == 0, icare == 0
+                if(person->get(Vars::icarehrs) == 0) {
+                    person->set(Vars::icare, 0);
+                }
+                // if informal care hours > 0, icare == 1
+                if(person->get(Vars::icarehrs) > 0) {
+                    person->set(Vars::icare, 1);
+                }
+            }
+
 			// Calculate wealth quintiles and assign TODO: Come back to this
 			//if(elsa_data) {
 			    // need sum of wealth first

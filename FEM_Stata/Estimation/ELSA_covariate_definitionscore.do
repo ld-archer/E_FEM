@@ -131,7 +131,7 @@ global allvars_died        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2cancre 
 *** Chronic Diseases
 *CANCRE
 * `lvars_smoke' `lvars_alcfreq' `lvars_lnly' `lvars_sociso'
-global allvars_cancre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2physact
+global allvars_cancre           $dvars $lvars_age l2logbmi_l30 l2logbmi_30p `lvars_smoke' l2physact `lvars_alcfreq'
 * DIABE
 *global allvars_diabe        $dvars $lvars_age l2logbmi_l30 l2logbmi_30p
 global allvars_diabe            $dvars $lvars_age l2logbmi_l30 l2logbmi_30p l2hibpe l2hchole l2physact 

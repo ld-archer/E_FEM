@@ -1,10 +1,10 @@
 
 
 *** DEPENDANT VARIABLES
-global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact
+global bin_hlth cancre diabe hearte stroke hibpe lunge asthmae died drink smoke_start smoke_stop hchole demene angine hrtatte conhrtfe hrtmre hrtrhme catracte osteoe physact icare
 global bin_econ 
 global ols logbmi logatotb logitot orient
-global count smokef tr20 verbf
+global count smokef tr20 verbf icarehrs
 global order adlstat iadlstat srh lnly alcfreq sociso sight hearing cesd
 global unorder workstat mstat
 
@@ -32,6 +32,7 @@ global bin_hlth_names
     "Cataracts"
     "Osteoporosis"
     "Physically Active"
+    "Receives Informal caregiving"
 ;
 global bin_econ_names
 ;
@@ -39,15 +40,13 @@ global ols_names
     "Log(BMI)"
     "Total Family Wealth"
     "Total Couple Level Income"
-    "Smoking Intensity (# cigs/day)"
-    "Total word recall"
-    "Verbal fluency score"
     "Date naming (orient)"
 ;
 global count_names
     "Number of cigarettes consumed per day"
     "Total word recall"
     "Verbal fluency score"
+    "Informal care hours"
 ;
 global order_names 
     "ADL status"

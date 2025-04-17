@@ -1,0 +1,246 @@
+---
+title: "FEM Cancer Statistics"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: true
+    df_print: paged
+    code_folding: hide
+---
+
+Some analyses to spark off collaboration with other FEM models in Europe (and Bryan of course!).
+
+# Setup
+
+## Libraries
+```{r "setup", include=FALSE}
+library(tidyverse)
+library(haven)
+library(ggplot2)
+library(here)
+library(scales)
+
+theme_set(theme_bw())
+
+
+#workingDir <- "/home/luke/Documents/E_FEM/E_FEM/"
+workingDir <- normalizePath('../../')
+print(workingDir)
+
+knitr::opts_knit$set(root.dir = workingDir)
+rm(workingDir)
+```
+
+# DATA
+
+## Starting Populations
+```{r}
+stock <- read_dta('input_data/ELSA_stock.dta')
+repl <- read_dta('input_data/ELSA_repl.dta')
+trans <- read_dta('input_data/ELSA_transition.dta')
+```
+
+## Output
+```{r}
+base <- read_dta('output/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta')
+cohort <- read_dta('output/COMPLETE/ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+```
+
+## Estimates and Projections
+```{r}
+estimates <- read.csv('FEM_R/Sep24/Eng_midyearEstimates_2011_2021.csv')
+projections <- read.csv('FEM_R/Sep24/Eng_pop_proj_2018base.csv')
+```
+
+# Combine Estimates and Projections
+
+First need to combine the midyear estimates with the population projections for England and format them into something we can work with.
+
+## MidYear Estimates
+
+```{r}
+# Remove commas and convert population columns to numeric
+est <- estimates %>%
+  mutate(across(starts_with("population_"), ~as.numeric(gsub(",", "", .))))
+
+# Create age groups (e.g., 50-59, 60-69, etc.)
+est <- est %>%
+  mutate(age_group = cut(age, 
+                         breaks = c(seq(50, 90, by = 10), Inf),  # Add Inf for 90+
+                         include.lowest = TRUE, 
+                         right = FALSE, 
+                         labels = c("50-59", "60-69", "70-79", "80-89", "90+")))
+
+# Sum by age group and sex using the new syntax for across()
+est_by_sex <- est %>%
+  group_by(sex, age_group) %>%
+  summarise(across(starts_with("population_"), ~sum(.x, na.rm = TRUE)), .groups = "drop")
+
+# Sum by age group for both sexes combined
+est_total <- est %>%
+  group_by(age_group) %>%
+  summarise(across(starts_with("population_"), ~sum(.x, na.rm = TRUE)), .groups = "drop")
+
+# View the results by sex
+print(est_by_sex)
+
+# View the results for both sexes combined
+print(est_total)
+
+# Write the results to a CSV
+write.csv(est_by_sex, "FEM_R/Sep24/Eng_midyearEstimates_by_sex.csv", row.names = FALSE)
+write.csv(est_total, "FEM_R/Sep24/Eng_midyearEstimates_total.csv", row.names = FALSE)
+
+rm(est, estimates)
+```
+
+## Population Projections
+
+```{r}
+# Function to clean column names and collapse age groups
+collapse_age_groups <- function(df) {
+  
+  # First remove the All ages row as its going to be incorrect by the end of the function
+  df <- df %>%
+    filter(AGE.GROUP != 'All ages')
+  
+  # Convert the year columns to numeric (except AGE.GROUP)
+  df <- df %>%
+    mutate(across(-AGE.GROUP, ~ as.numeric(.)))  # Convert all but AGE.GROUP to numeric
+  
+  # Filter out rows where AGE.GROUP is below 50
+  df_filtered <- df %>%
+    filter(AGE.GROUP %in% c("50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80-84", "85-89", "90+", "All ages"))
+  
+  # Collapse age groups into 10-year intervals for ages 50+
+  df_collapsed <- df_filtered %>%
+    mutate(AGE.GROUP = case_when(
+      AGE.GROUP %in% c("50-54", "55-59") ~ "50-59",
+      AGE.GROUP %in% c("60-64", "65-69") ~ "60-69",
+      AGE.GROUP %in% c("70-74", "75-79") ~ "70-79",
+      AGE.GROUP %in% c("80-84", "85-89") ~ "80-89",
+      TRUE ~ AGE.GROUP  # Keep other categories (e.g., "90+", "All ages") as they are
+    )) %>%
+    # Group by age group and sum across all years
+    group_by(AGE.GROUP) %>%
+    summarise(across(everything(), sum, na.rm = TRUE), .groups = "drop") %>%
+    rename_with(~ gsub("^X", "population_", .x), starts_with("X")) %>%
+    rename(age_group = AGE.GROUP)
+  
+  return(df_collapsed)
+}
+
+
+# Apply the function to your dataset
+proj <- collapse_age_groups(projections)
+
+rm(projections)
+```
+
+## Combine
+
+```{r}
+# Give midyear estimates priority over projections in the case of overlapping data
+proj_dropped <- proj %>%
+  select(-population_2018, -population_2019, -population_2020, -population_2021, -population_2022)
+
+# Now merge on age group column
+combined_est_proj <- merge(est_total, proj_dropped, by = 'age_group')
+
+# finally pivot df so rows == years, and we can fix the age_group colname and the prefixes whilst were at it
+combined <- combined_est_proj %>%
+  pivot_longer(cols = population_2011:population_2043, names_to = "year", values_to = "population") %>%
+  pivot_wider(names_from = age_group, values_from = population) %>%
+  mutate(year = gsub("population_", "", year)) %>%
+  mutate(year = as.numeric(year))
+
+
+```
+
+Quick plot to check that this data looks reasonable.
+
+```{r}
+# First pivot then plot
+combined_plot <- combined %>%
+  pivot_longer(cols = `50-59`:`90+`,
+               names_to = 'age_group',
+               values_to = 'population_count')
+
+ggplot(combined_plot, aes(x = year, y = population_count, group = age_group, colour = age_group)) +
+  geom_line() +
+  geom_vline(xintercept = 2022, linetype = 'dashed') +
+  annotate("text", x = 2021.5, y = 3000000, label = "2022", angle = 90) +
+  xlab('Year') +
+  ylab('Population Count')
+
+# geom_label(aes(2022, 1.2), label = '2022', show.legend = FALSE) +
+```
+
+Looks alright. The dashed line at 2022 is to show the cross-over between midyear estimates and population projections.
+
+
+# Cancer Statistics
+
+XXXX who runs the Irish FEM model would like us to produce some counts of individuals with cancer in specific age ranges. Check the email to see if he mentioned the specific age ranges (he doesn't). Nik said 70+ so lets start there.
+
+Therefore step 1 is to get the midyear estimates and projections for ages 70+ by aggregating some of the information in the combined_est_proj dataframe.
+After that, we can multiply the prevalence from our dataset for the 70+ population by these estimates/projected population counts.
+
+```{r}
+# First prepare the population counts dataset to keep just the 70+ population for all years to 2043
+# drop the 5059 and 6069 columns, then sum the rest for 70+ age group
+combined_70p <- combined %>%
+  select(-`50-59`, -`60-69`) %>%
+  mutate(pop_70p = `70-79` + `80-89` + `90+`) %>%
+  select(year, pop_70p)
+
+combined_70p
+```
+
+
+```{r}
+# Now get the FEM columns we need to compare
+# To calculate the counts of cancer patients over the age of 70 at the national level,
+#   we need the prevalence of cancer in this age group at each year.
+#   We can then multiply the prevalence by the counts for that year (in the 
+#   combined_70p dataframe created above) to get the national level value
+FEM_cancre <- base %>%
+  select(year, p_cancre_70p)
+
+# Now merge the 2 dataframes on year (keep only years in FEM dataset)
+merged <- merge(x = FEM_cancre, y = combined_70p, by = 'year', all.x = TRUE, all.y = FALSE)
+
+# Remove any years where population counts doesn't have any data
+#   (at time of writing we have counts up to 2043)
+merged <- merged[complete.cases(merged),]
+
+# Last is to multiply the values together and plot results just for fun
+merged$national_cancre <- round(merged$p_cancre_70p * merged$pop_70p)
+
+merged
+```
+
+
+
+```{r}
+# format counts to 1,000,000s
+merged_formatted <- merged %>%
+  mutate(national_cancre = national_cancre / 1000000,
+         pop_70p = pop_70p / 1000000)
+
+merged_formatted
+
+ggplot(merged_formatted, aes(x = year, y = national_cancre)) +
+  geom_line() +
+  labs(title = "Projected Cancer Prevalence in 70+ adults",
+       subtitle = 'English FEM') +
+  xlab('Year') +
+  ylab('Projected Cancer Prevalence (millions)')
+```
+
+
+
+
+

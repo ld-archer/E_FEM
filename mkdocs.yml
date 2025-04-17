@@ -1,0 +1,10 @@
+site_name: English Future Elderly Model
+nav:
+  - Home: index.md
+  - Workflow Overview: workflow.md
+  - Data Preparation: dataprep.md
+  - Simulation: simulation.md
+  - Post-Processing: postproc.md
+  - Input & Output: in_out.md
+  - Extending the Model: extending.md
+theme: readthedocs

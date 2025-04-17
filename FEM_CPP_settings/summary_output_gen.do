@@ -78,6 +78,14 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "f" {
 			local sel "& male == 0"
 			local samp "female"
+		}
+		else if "`b'" == "m_70p" {
+			local sel "& male == 1 & age >= 70"
+			local samp "male & 70+"
+		}
+		else if "`b'" == "f_70p" {
+			local sel "& male == 0 & age >= 70"
+			local samp "female & 70+"
 		} 	
 		else if "`b'" == "5564" {
 			local sel "& age >= 55 & age < 65"
@@ -135,9 +143,29 @@ forvalues x = 1/`measures_l' {
 			local sel "& age >= 55 & male == 0 & died == 0"
 			local samp "female age 55 plus living"
 		}
+		else if "`b'" == "70p_l" {
+			local sel "& age >= 70 & died == 0"
+			local samp "age 70 plus living"
+		}
+		else if "`b'" == "70p_m_l" {
+			local sel "& age >= 70 & male == 1 & died == 0"
+			local samp "male age 70 plus living"
+		}
+		else if "`b'" == "70p_f_l" {
+			local sel "& age >= 70 & male == 0 & died == 0"
+			local samp "female age 70 plus living"
+		}
 		else if "`b'" == "educ1" {
 			local sel "& hsless == 1"
 			local samp "Less than HS"
+		}
+		else if "`b'" == "hsless" {
+			local sel "& hsless == 1"
+			local samp "Less than HS"
+		}
+		else if "`b'" == "hsless_70p" {
+			local sel "& hsless == 1 & age >= 70"
+			local samp "Less than HS & 70+"
 		}
 		else if "`b'" == "educ2" {
 			local sel "& hsless == 0 & college == 0"
@@ -146,6 +174,14 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "educ3" {
 			local sel "& college == 1"
 			local samp "College"
+		}
+		else if "`b'" == "college" {
+			local sel "& college == 1"
+			local samp "College"
+		}
+		else if "`b'" == "college_70p" {
+			local sel "& college == 1 & age >= 70"
+			local samp "College & 70+"
 		}
 		else if "`b'" == "obese" {
 			local sel "& obese == 1"
@@ -374,6 +410,22 @@ forvalues x = 1/`measures_l' {
 		else if "`b'" == "highMC" {
 			local sel "& highMC == 1"
 			local samp "Most Common: HighRisk"
+		}
+		else if "`b'" == "married" {
+			local sel "& married == 1"
+			local samp "Married"
+		}
+		else if "`b'" == "single" {
+			local sel "& single == 1"
+			local samp "Single"
+		}
+		else if "`b'" == "married_70p" {
+			local sel "& married == 1 & age >= 70"
+			local samp "Married & 70+"
+		}
+		else if "`b'" == "single_70p" {
+			local sel "& single == 1 & age >= 70"
+			local samp "Single & 70+"
 		}
 
 		* Prevalence measures

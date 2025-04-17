@@ -55,8 +55,8 @@ local measures
 						a_smokef	q05_smokef	q50_smokef	q95_smokef
 						t_atotb 	a_atotb
 						t_itot		a_itot
-						p_icare i_icare n_icare
-						t_icarehrs a_icarehrs
+						p_icare 	i_icare 	n_icare
+						t_icarehrs 	a_icarehrs
 					p_drink		i_drink		n_drink
 					a_alcfreq
 					p_alcfreq1 p_alcfreq2 p_alcfreq3 p_alcfreq4
@@ -71,7 +71,7 @@ local measures
 					n_sociso1	n_sociso2	n_sociso3
 					a_workstat
 					p_employed  i_employed  n_employed
-					p_inactive i_inactive n_inactive
+					p_inactive 	i_inactive 	n_inactive
 					p_retired	i_retired	n_retired
 					n_anydisease 	p_anydisease	a_anydisease
 					n_nodisease		p_nodisease		a_nodisease
@@ -102,7 +102,7 @@ if "`subpops'" == "debug" {
 	local subpop all m f 60p 5059 m_6064 f_6064 m_6569 f_6569 m_7074 f_7074 m_7579 f_7579 m_8084 f_8084 m_8589 f_8589 m_9094 f_9094 m_9599 f_9599 m_100p f_100p
 }
 else if "`subpops'" == "handovers" {
-	local subpop all m f 55p_f_l 55p_m_l
+	local subpop all m f 55p_f_l 55p_m_l 70p_f_l 70p_m_l
 }
 else if "`subpops'" == "alcohol" {
 	local subpop all m f m_5564 f_5564 m_6574 f_6574 m_75p f_75p m_5564_drink f_5564_drink m_6574_drink f_6574_drink m_75p_drink f_75p_drink abstainer moderate increasingRisk highRisk mup_treated abstainerMC moderateMC increasingMC highMC

@@ -1,5 +1,5 @@
 /** \file
-Generate alternative BMI measure for initial conditions – to use in transition models.
+Generate alternative BMI measure for initial conditions ï¿½ to use in transition models.
 Steps: 1 - Bring in data with all waves for all individuals selected (from hrs_analytic_recoded.dta)
 	2 - Compute BMI deciles for individuals with no BMI measure at age 50-55 in two steps 
 		* looking at same wave, 5 years age range, gender and race

@@ -1,0 +1,382 @@
+---
+title: "FEM Dementia"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: true
+    df_print: paged
+    code_folding: hide
+---
+
+# Setup
+
+## Libraries
+```{r "setup", include=FALSE}
+library(tidyverse)
+library(haven)
+library(ggplot2)
+library(here)
+library(scales)
+library(survey)
+
+theme_set(theme_bw())
+
+
+#workingDir <- "/home/luke/Documents/E_FEM/E_FEM/"
+workingDir <- normalizePath('../../')
+
+print(workingDir)
+
+knitr::opts_knit$set(root.dir = workingDir)
+rm(workingDir)
+```
+
+# Helper Functions
+
+```{r}
+lookfor <- function(data,
+                    keywords = "weight|sample",
+                    labels = TRUE,
+                    ignore.case = TRUE) {
+  # search scope
+  n <- names(data)
+  if(!length(n)) stop("there are no names to search in that object")
+  # search function
+  look <- function(x) { grep(paste(keywords, collapse="|"), x, ignore.case = ignore.case) }
+  # names search
+  x <- look(n)
+  variable <- n[x]
+  # foreign objects
+  l <- attr(data, "variable.labels")
+  if(is.null(l)) l <- attr(data, "var.labels")
+  # memisc objects
+  if(grepl("data.set|importer", class(data))) {
+    suppressMessages(suppressWarnings(require(memisc)))
+    l <- as.vector(description(data))
+  }
+  if(length(l) & labels) {
+    # search labels
+    y <- look(l)
+    # remove duplicates, reorder
+    x <- sort(c(x, y[!(y %in% x)]))
+    # add variable labels
+    variable <- n[x]
+    label <- l[x]
+    variable <- cbind(variable, label)
+  }
+  # output
+  if(length(x)) return(as.data.frame(variable, x))
+  else message("Nothing found. Sorry.")
+}
+```
+
+
+# DATA
+
+## Starting Populations
+```{r}
+long <- read_dta('input_data/ELSA_long.dta')
+stock <- read_dta('input_data/ELSA_stock.dta')
+#repl <- read_dta('input_data/ELSA_repl.dta')
+#trans <- read_dta('input_data/ELSA_transition.dta')
+```
+
+
+```{r}
+# Set up a dataframe for comparison
+# HCAP data was collected between wave 8 and 9 (2018)
+# Unfortunately there is no variable to determine whether a respondent took part in the HCAP, so we're going to have to do this the hard way
+
+# If we start with the raw harmonised dataset (wide format) we can select the variables we want for just waves 8 and 9
+# then merge the HCAP on to this data and see who has data (i.e. drop missings)
+raw_full <- read_dta('input_data/H_ELSA_g2_wv_specific.dta')
+
+hcap_full <- read_dta('input_data/h_elsa_hcap_a.dta')
+```
+
+```{r}
+raw <- raw_full %>%
+  select(idauniq, r8demene, r9demene, r8alzhe, r9alzhe, r8memrye, r9memrye, r8agey, r9agey) %>%
+  mutate(across(c(-idauniq), as.numeric))
+
+# select target variables from the HCAP and create some variables such as mmse category
+hcap <- hcap_full %>%
+  select(idauniq, contains('mmse_scor')) %>%
+  mutate(mmse_cat = cut(r1mmse_score,   # Cut the MMSE score into 4 levels as seen here 
+             breaks = c(-Inf, 9, 18, 24, Inf), # https://www.dementiacarecentral.com/mini-mental-state-exam/
+             labels = c('Severe Dementia', 'Moderate Dementia', 'Mild Dementia', 'No Dementia'),
+             right = TRUE),
+         mmse_num = 5 - as.numeric(mmse_cat))
+
+merged <- merge(raw, hcap, by = 'idauniq')
+merged2 <- merged %>%
+  select(idauniq, r8agey, r8demene) %>%
+  filter(r8agey >= 65)
+```
+
+
+## Output
+```{r}
+base <- read_dta('output/COMPLETE/ELSA_core_base/ELSA_core_base_summary.dta')
+cohort <- read_dta('output/COMPLETE/ELSA_core_cohort/ELSA_core_cohort_summary.dta')
+```
+
+## HCAP Information
+
+See [the cohort profile update on the HCAP](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8271185/) for more information.
+
+# Summary Statistics
+
+
+```{r}
+require(survey)
+weighted.survey.means <- function(init.pop, transition=FALSE) {
+  
+  if(!transition) {
+    design <- svydesign(id = ~idauniq,
+                      weights = ~weight,
+                      data = init.pop)
+  } else if(transition) {
+    # Error from missing cwtresp var - drop all that are missing to solve
+    init.pop <- init.pop[complete.cases(init.pop$cwtresp),]
+    design <- svydesign(id = ~idauniq,
+                      weights = ~cwtresp,
+                      data = init.pop)
+  }
+  print(svymean(~age, design, na.rm=TRUE))
+  print(svyvar(~age, design, na.rm=TRUE))
+  print(svymean(~male, design, na.rm=TRUE))
+  print(svymean(~bmi, design, na.rm=TRUE))
+  print(svyvar(~bmi, design, na.rm=TRUE))
+  print(svymean(~smoken, design, na.rm=TRUE))
+  print(svymean(~smokev, design, na.rm=TRUE))
+  print(svymean(~hsless, design, na.rm=TRUE))
+  print(svymean(~college, design, na.rm=TRUE))
+  print('---------------------')
+  print(svymean(~alzhe, design, na.rm=TRUE))
+  print(svymean(~demene, design, na.rm=TRUE))
+  print(svymean(~memrye, design, na.rm=TRUE))
+}
+
+print('########################')
+#weighted.survey.means(long)
+print('########################')
+weighted.survey.means(stock)
+print('########################')
+```
+
+
+# Dementia Assessments in ELSA & ELSA-HCAP
+
+Between ELSA and the ELSA-HCAP, there are 3 broad assessments used to assess cognitive functioning, as well as the binary variables for diagnosis of Dementia (demene), Alzheimers (alzhe), and memory problems (memrye).
+
+The 3 broad assessments are:
+
+- Modified Telephone Interview for Cognitive Status (mTICS or TICS-m)
+- Jorm Informant Questionnaire on Cognitive Decline in the Elderly (IQCODE)
+- Mini-Mental State Examination (MMSE)
+
+The mTICS and IQCODE are available in both ELSA and ELSA-HCAP, whereas the MMSE is only available in ELSA-HCAP. This is due to ELSA missing the information on orientation in place.
+
+## mTICS
+
+Information on the mTICS assessment can be found [in this paper by Knopman et al. (2009)](https://karger.com/ned/article/34/1/34/210720/Validation-of-the-Telephone-Interview-for). The modified TICS assessment includes the following items:
+
+- Name, age, date, phone number                                 (9 points)
+- Counting backwards                                            (2 points)
+- Word Recall (immediate and delayed)                           (20 points total, 10 each)
+- Subtractions (7s)                                             (5 points)
+- Responsive naming                                             (4)
+- Repetition                                                    (2)
+- Current Prime Minister & Monarch (and current US President)   (4)
+- Finger Tapping                                                (2)
+- Word Opposites                                                (2)
+
+Each item is worth a number of points out of a total of either 50 or 39, depending on where you look. Please note the points totals given in the list above are taken from the Knopman paper linked above. The final total can be adjusted for years of education according to an algorithm developed by [Gallo and Breitner](https://www.cambridge.org/core/journals/psychological-medicine/article/alzheimers-disease-in-the-nasnrc-registry-of-ageing-twin-veterans-iv-performance-characteristics-of-a-twostage-telephone-screening-procedure-for-alzheimers-dementia/42371C35A0000DD9193DA7E5DF9D92D1). Specifically, add 5 points for less than 8 years of education, add 2 points for 8-10 years, no adjustment for 11-15 years, and subtract 2 points for 16 or more years of education.
+
+At present I cannot find any guidance specific to ELSA that details how many points are associated with each category, or specifically how to use them. It appears that the questions in the Cognition section or ELSA are based around this assessment, but do not include the full 
+
+# Analysis
+
+First a list of variables that are associated with Dementia in both the original harmonised data, and the Harmonised Cognitive Assessment Protocol (HCAP). See [here for a paper validating the modified TICS](https://karger.com/ned/article/34/1/34/210720/Validation-of-the-Telephone-Interview-for). 
+
+
+### ELSA:
+
+- alzhe :: Alzheimers
+- demene :: Dementia
+- memrye :: Memory Problems
+- slfmem :: Self-reported memory
+- imrc :: Immediate word recall
+- dlrc :: Delayed word recall
+- tr20 :: Recall summary score
+- orient :: cognition orient (summary date naming) (includes mo :: month, dy :: day, yr ::year, dw ::day of week)
+- verbf :: verbal fluency score
+- numer_e :: numeracy score
+- prmt1 :: Prospective memory task 1
+- bwc20 :: Backwards counting from 20 (only wave 7+)
+- ser7 :: Serial 7s (wave 7+)
+- scis :: Object naming Scissors (7+)
+- cact :: Object naming Cactus (7+)
+- mnrc :: Current Monarch (7+)
+- pm :: Current Prime Minister (7+)
+- pres :: Current US President (7+)
+
+### HCAP:
+
+- mo :: Cognition date naming -month
+- yr :: "" -year
+- dw :: "" -day of the week
+- season :: "" -season
+- date :: "" -date
+- orient_t5 :: Orientation to time (combined score previous 5 measures)
+
+- country :: Cognition place naming -country
+- county :: "" -county
+- city :: "" -city
+- street :: "" -street
+- building :: "" -building
+- orient_p5 :: Orientation to place (combined score previous 5)
+
+- imrc3 :: Immediate word recall (0-3)
+- dlrc3 :: Delayed word recall (0-3)
+- ser7 :: Serial 7s
+- backward_s :: Backward spelling
+
+- object1 :: Naming object correct -watch
+- object2 :: "" -pencil
+- object :: Total object naming (0-2)
+
+- repeat :: Able to repeat a phrase
+- combfol :: Able to read and close eyes
+- execu :: Cognition able to do 3-stage task
+- senten :: Able to write a sentence
+- draw :: Cognition able to draw assigned picture
+
+- mmse_score :: MMSE total score (sum of orient_t5, orient_p5, imrc3, dlrc3, ser7, object, repeat, combfol, execu, senten, draw)
+
+- word1 :: Word list learning trial 1 (0-10)
+- word2 :: Word list learning trial 2 (0-10)
+- word3 :: Word list learning trial 3 (0-10)
+- word_total :: Word list learning total (0-30)
+
+- wre_org :: Word list recognition: original (0-10)
+- wre_foil :: Word list recognition: foil (0-10)
+- wre_score :: Word list recognition (0-20)
+
+- bm_immex :: Brave man story immediate recall: summary score (0-6)
+- bm_reclex :: Brave man story delayed recall: summary score (0-6)
+- lmb_imm :: Robbery story immediate recall: summary score (0-25)
+- lmb_recl :: Robbery story delayed recall: summary score (0-25)
+- log_reco :: Logical memory recognition score (0-15)
+
+- scis :: Cognition scissors
+- cactus :: Cognition cactus
+- prime :: Cognition Prime Minister
+- tics_score :: TICS 3-item score (0-3)
+
+- verbal :: Verbal fluency: animal naming -correct
+- verbal_inc :: Verbal fluency: animal naming -incorrect
+
+- lc_score :: Letter cancel: # correct
+- lc_inc :: Letter cancel: # missed
+
+- cp_score :: Constructional Praxis score (0-11)
+- cpr_score :: Constructional Praxis score -recall (0-11)
+
+- bc_score :: Backward counting score
+- bc_final :: Backward counting score -final number
+- bc_inc :: Backward counting score -incorrect number
+
+- csid_score :: CSID 4-item score (0-4) (Cognition: elbow; hammer; store; point)
+
+- rv_score :: Raven's test score (0-7)
+
+- dig_inc :: Symbol digit # incorrect (0-20)
+- dig_anw :: Symbol digit # of answers (0-72)
+- dig_score :: Symbol digit score (0-72)
+
+- ns_score :: Number series score
+
+- tma_score :: Trial making A score
+- tmb_score :: Trial making B score
+
+- borient :: Factor analysis broad domain -orientation
+- blangf :: "" -language/fluency
+- bvsp :: "" -visuospatial
+- bmemory :: "" -memory
+- bexefu :: "" -executive function
+- sgcp :: Factor analysis broad domain -General Cognitive Factor (combination of factor analysis broad domains)
+
+- mmse_scorz :: MMSE total score (0-30) (stdized)
+- word_totaz :: Word list learning total (0-30) (stdized)
+- word_dz :: Word list learning recall (0-10) (stdized)
+- wre_scorez :: Word list recognition (0-20) (stdized)
+- log_recoz :: Logical memory recognition score (0-15) (stdized)
+- bm_immexz :: Brave man immediate: summary score (0-6) (stdized)
+- bm_reclexz :: Brave man recall: summary score (0-6) (stdized)
+- verbalz :: Verbal fluency: animal naming -correct (0-6) (stdized)
+- csid_scorz :: CSID 4-item score (0-4) (stdized)
+- rv_scorez :: Raven's test score (0-17) (stdized)
+- cog_totalz :: Total cognition score (stdized)
+
+
+
+# Comparisons
+
+```{r}
+compare_hcap <- function(data, binary_var, compare_var, cont = FALSE) {
+  print('##################################################')
+  comp1 <- data[[binary_var]]
+  comp2 <- data[[compare_var]]
+  
+  print(paste0("Variable 1 is: ", binary_var))
+  print(paste0("Variable 2 is: ", compare_var))
+  
+  # correlation first
+  if (cont) {
+    cor <- cor(comp1, comp2, use = "complete.obs")
+  } else {
+    cor <- cor(comp1, comp2, method="pearson", use = "complete.obs")
+  }
+  
+  print("Correlation:")
+  print(cor)
+  print(" ")
+  
+  # Now T-test
+  t_test_res <- t.test(comp2 ~ comp1)
+  print("T Test:")
+  print(t_test_res)
+  print(" ")
+  print('##################################################')
+}
+```
+
+## MMSE
+
+
+```{r}
+# Comparable variable:
+#   MMSE (continuous)
+
+compare_hcap(data = merged, binary_var = 'r8demene', compare_var = 'r1mmse_score', cont = TRUE)
+compare_hcap(data = merged, binary_var = 'r9demene', compare_var = 'r1mmse_score', cont = TRUE)
+```
+
+```{r}
+# Comparable variable:
+#   MMSE (categorical/numeric)
+compare_hcap(data = merged, binary_var = 'r8demene', compare_var = 'mmse_num', cont = TRUE)
+compare_hcap(data = merged, binary_var = 'r9demene', compare_var = 'mmse_num', cont = TRUE)
+```
+
+```{r}
+# Comparable variable:
+#   MMSE score (standardised)
+compare_hcap(data = merged, binary_var = 'r8demene', compare_var = 'r1mmse_scorz', cont = TRUE)
+compare_hcap(data = merged, binary_var = 'r9demene', compare_var = 'r1mmse_scorz', cont = TRUE)
+```
+

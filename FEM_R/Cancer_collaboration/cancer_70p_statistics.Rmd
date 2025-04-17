@@ -27,9 +27,10 @@ knitr::opts_knit$set(root.dir = workingDir)
 
 ```{r data, include=FALSE}
 scen_dir <- "ELSA_70p_cancre"
+#scen_dir <- "ELSA_core_base"
 
-data <- read_dta(paste0(scen_dir, '/ELSA_70p_cancre_summary.dta'))
-data.byrep <- read_dta(paste0(scen_dir, '/ELSA_70p_cancre_by_rep.dta'))
+data <- read_dta(paste0(scen_dir, '/', scen_dir, '_summary.dta'))
+data.byrep <- read_dta(paste0(scen_dir, '/', scen_dir, '_by_rep.dta'))
 ```
 
 
@@ -42,20 +43,54 @@ ggplot(data, aes(x = year, y = m_startpop_70p)) +
   geom_point() +
   labs(title = 'Population count over 70') +
   xlab('Year') +
-  ylab('Population Count (millions)')
+  ylab('Population Count (Millions)')
 
 ggplot(data, aes(x = year, y = m_startpop_70p_cancre)) +
   geom_line() +
   geom_point() +
   labs(title = 'Population count over 70 with Cancer') +
   xlab('Year') +
-  ylab('Population Count (millions)')
+  ylab('Population Count (Millions)')
+
+ggplot(data, aes(x = year, y = n_cancre_70p)) +
+  geom_line() +
+  geom_point()
 
 pop_size <- data %>%
-  select(year, m_endpop_70p_cancre)
+  select(year, p_cancre_70p, n_cancre_70p, n_cancre_70p_cancre) %>%
+  mutate(n_cancre_mill = n_cancre_70p_cancre / 1000000)
+  #mutate(cancer_pop = m_endpop_70p * p_cancre_70p) %>%
+  #select(year, n_cancre_70p, cancer_pop)
 
 pop_size
+
+ggplot(pop_size, aes(x = year, y = n_cancre_mill)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Projected Cancer Prevalence in 70+ Adults',
+       subtitle = 'English FEM',
+       x = 'Year',
+       y = 'Prevalence (Millions)')
 ```
+
+# Cancer Population Size
+
+```{r}
+pop_size <- data %>%
+  select(year, n_cancre_70p_cancre) %>%
+  mutate(cancer_millions = n_cancre_70p_cancre / 1000000)
+
+pop_size
+
+ggplot(pop_size, aes(x = year, y = cancer_millions)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Projected Cancer Prevalence in 70+ Adults',
+       subtitle = 'English FEM',
+       x = 'Year',
+       y = 'Prevalence (Millions)')
+```
+
 
 # 2+ IADLS
 
@@ -69,33 +104,59 @@ ggplot(data, aes(x = year, y = n_iadl2p_70p_cancre)) +
 
 # create a count of cancer patients with 2+ IADLs using m_endpop and p_iadl2p
 iadl2p <- data %>%
-  select(year, n_iadl2p_70p_cancre)
+  select(year, p_iadl2p_70p_cancre, n_iadl2p_70p_cancre) %>%
+  mutate(n_iadl2p_mill = n_iadl2p_70p_cancre / 1000000)
+
 iadl2p
+
+ggplot(iadl2p, aes(x = year, y = n_iadl2p_mill)) +
+  geom_line() +
+  geom_point() +
+  labs(title = 'Number of 70+ Cancer patients with 2+ IADLs') +
+  xlab('Year') +
+  ylab('Population Count (Millions)')
+
 ```
 
 # Informal Care Hours
 
 ```{r}
-ggplot(data, aes(x = year, y = t_icarehrs_70p_cancre)) +
+icare_hrs <- data %>%
+  select(year, t_icarehrs_70p_cancre, a_icarehrs_70p_cancre) %>%
+  mutate(t_icarehrs_mill = t_icarehrs_70p_cancre / 1000000)
+icare_hrs
+
+
+ggplot(icare_hrs, aes(x = year, y = t_icarehrs_mill)) +
   geom_line() +
   geom_point() +
   labs(title = 'Total Informal Care Hours') +
   xlab('Year') +
-  ylab('Care Hours')
+  ylab('Care Hours (Millions)')
 
-ggplot(data, aes(x = year, y = a_icarehrs_70p_cancre)) +
+ggplot(icare_hrs, aes(x = year, y = a_icarehrs_70p_cancre)) +
   geom_line() +
   geom_point() +
   labs(title = 'Average Informal Care Hours') +
   xlab('Year') +
   ylab('Care Hours')
-
-icare_hrs <- data %>%
-  select(year, t_icarehrs_70p_cancre, a_icarehrs_70p_cancre)
-icare_hrs
 ```
 
 
+# Diagnostics
+
+```{r}
+ggplot(data, aes(x = year)) +
+  geom_line(aes(y = m_endpop_m_70p, colour = 'Male')) +
+  geom_line(aes(y = m_endpop_f_70p, colour = 'Female')) +
+  scale_colour_manual(name = 'Gender', values = c("Male" = "red", "Female" = "green"))
+
+
+ggplot(data, aes(x = year)) +
+  geom_line(aes(y = m_endpop_m_70p, colour = 'Male')) +
+  geom_line(aes(y = m_endpop_f_70p, colour = 'Female')) +
+  scale_colour_manual(name = 'Gender', values = c("Male" = "red", "Female" = "green"))
+```
 
 
 

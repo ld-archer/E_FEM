@@ -9,6 +9,7 @@ quietly include ../../../fem_env.do
 *quietly include /home/luke/Documents/WORK/E_FEM/E_FEM/fem_env.do
 
 local maxrep 500
+
 local minyr 2002
 local maxyr 2012
 
@@ -22,6 +23,7 @@ foreach scn of local scenarios {
 			*append using /home/luke/Documents/WORK/E_FEM_clean/ROC_Analysis/`scn'/detailed_output/y`yr'_rep`rep'.dta
 			*append using /home/luke/Documents/WORK/E_FEM/E_FEM/output/ROC/`scn'/detailed_output/y`yr'_rep`rep'.dta
 			append using $output_dir/ROC/`scn'/detailed_output/y`yr'_rep`rep'.dta
+			*append using output/ROC/ELSA_ROC/detailed_output/y`yr'_rep`rep'.dta
 		}
 	}
 	
@@ -32,12 +34,12 @@ foreach scn of local scenarios {
 	gen obese1 = (bmi > 30) if !missing(bmi)
 	gen obese_3 = (bmi > 40) if !missing(bmi)
 	
-	foreach var in died cancre diabe hearte hibpe lunge stroke obese1 obese_3 demene alzhe anyadl anyiadl {
+	foreach var in died cancre diabe hearte hibpe lunge stroke obese1 obese_3 demene alzhe anyadl anyiadl icare iadl2p {
 		rename `var' `var'_elsa
 	}
 	
-	keep hhidpn died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese1_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa mcrep
-	collapse died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese1_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa, by(hhidpn)
+	keep hhidpn died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese1_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa icare_elsa iadl2p_elsa mcrep
+	collapse died_elsa cancre_elsa diabe_elsa hearte_elsa hibpe_elsa lunge_elsa stroke_elsa obese1_elsa obese_3_elsa demene_elsa alzhe_elsa anyadl_elsa anyiadl_elsa icare_elsa iadl2p_elsa, by(hhidpn)
 	
 	tempfile ELSA_FEM
 	save `ELSA_FEM'
@@ -87,7 +89,7 @@ foreach scn of local scenarios {
 	* Keep only if weight is present and positive
 	keep if cwtresp > 0 & cwtresp < .
 	* Generate flag for first year with var
-	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe anyadl anyiadl {	
+	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe anyadl anyiadl icare iadl2p {  // 
 		bys hhidpn: egen `var'_init = min(`var')
 	}
 
@@ -103,7 +105,7 @@ foreach scn of local scenarios {
 
 	*save /home/luke/Documents/WORK/E_FEM/E_FEM/output/test_`scn'.dta, replace
 
-	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe anyadl anyiadl {
+	foreach var in cancre diabe hearte hibpe lunge stroke demene alzhe anyadl anyiadl icare iadl2p {  // 
 		if "`var'" == "cancre" {
 			local label2 "`minyr'-`maxyr' incident cancer"
 			local label3 "Cancer"
@@ -144,6 +146,14 @@ foreach scn of local scenarios {
 			local label2 "`minyr'-`maxyr' incident IADL"
 			local label3 "IADL"
 		}
+		else if "`var'" == "icare" {
+			local label2 "`minyr' - `maxyr' incident recieves informal care"
+			local label3 "Recieves Informal Care"
+		}
+		else if "`var'" == "iadl2p" {
+			local label2 "`minyr' - `maxyr' incident 2+ IADLs"
+			local label3 "2+ IADLs"
+		}
 		
 		* & if `select'
 		roctab `var' `var'_elsa if `var'_init == 0 
@@ -176,7 +186,7 @@ foreach scn of local scenarios {
 }
 
 *obese_3
-foreach var in died cancre diabe hearte hibpe lunge stroke obese1 demene alzhe anyadl anyiadl {
+foreach var in died cancre diabe hearte hibpe lunge stroke obese1 demene alzhe anyadl anyiadl icare iadl2p {  // 
 	if "`var'" == "died" {
 		local label2 "`minyr'-`maxyr' mortality"
 	} 
@@ -215,6 +225,12 @@ foreach var in died cancre diabe hearte hibpe lunge stroke obese1 demene alzhe a
 	}
 	else if "`var'" == "anyiadl" {
 		local label2 "`minyr'-`maxyr' incident IADL"
+	}
+	else if "`var'" == "icare" {
+		local label2 "`minyr' - `maxyr' incident recieves informal care"
+	}
+	else if "`var'" == "iadl2p" {
+		local label2 "`minyr' - `maxyr' incident 2+ IADLs"
 	}
 	
 	graph combine $output_dir/ROC/roc_plots/ELSA_minimal_`var'.gph $output_dir/ROC/roc_plots/ELSA_ROC_`var'.gph, scheme(s1mono) title("`label2'")
